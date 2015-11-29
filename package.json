@@ -1,0 +1,23 @@
+{
+  "name": "nCore",
+  "version": "0.0.1",
+  "description": "nCore - event based framework to build bulletproof web applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sapotero/nCore.git"
+  },
+  "keywords": [
+    "events",
+    "mvvc",
+    "framework"
+  ],
+  "author": "Sapozhnikov Egor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sapotero/nCore/issues"
+  }
+}
