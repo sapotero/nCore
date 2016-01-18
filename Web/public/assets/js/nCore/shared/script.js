@@ -196,7 +196,8 @@ jQuery(function($) {
           
           var __url = '';
           
-          if ( this.name === 'conditions' && this.value === 'group' ) {
+          // приоритет группы вне зависимости от автокомплитеров навешанных на поле
+          if ( /*this.name === 'conditions'*/ && this.value === 'group' ) {
             __url = 'classifiers/groups/groups.json';
           };
 
