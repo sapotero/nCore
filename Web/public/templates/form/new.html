@@ -1,0 +1,67 @@
+<!-- <link href="../assets/css/mui.min.css" rel="stylesheet"> -->
+<link href="../assets/css/elements/elements.css" rel="stylesheet">
+<link href="../assets/css/dragula.min.css" rel="stylesheet">
+
+
+<link rel="import" href="../templates/elements/core-criteria.html">
+<link rel="import" href="../templates/elements/core-input.html">
+
+<style>
+  .formSidebar{
+    width: 360px;
+    height: 800px;
+    }
+  .formConfig{
+    width: 300px;
+    height: 800px;
+    }
+  .formMain{
+    height: 800px;
+    width: calc(100% - 360px - 360px);
+    }
+  .formContainer{
+    min-height: calc(100% - 1px);
+    height: 1px;
+  }
+
+</style>
+<table class="mui-table animatedSlow formContainer">
+  <tr>
+    <td class="formSidebar" style="background: #eeeeee">
+      <ul>
+        <core-criteria class="mui-col-lg-12" source="doc" origin="test" conditions="or" value='{"name="test","value="test"}' criteria-conditions="or"></core-criteria>
+        <div> test </div>
+        <core-input></core-input>
+        <div><span class="handle">+</span>Move me, but you can use the plus sign to drag me around.</div>
+      </ul>
+
+    <div class='wrapper'>
+      <div id='left-defaults' class='container'>
+        <div>You can move these elements between these two containers</div>
+        <div>Moving them anywhere else isn't quite possible</div>
+        <div>Anything can be moved around. That includes images, <a href='https://github.com/bevacqua/dragula'>links</a>, or any other nested elements.
+        <div class='image-thing'><img src='resources/icon.svg' alt='dragula'/></div><sub>(You can still click on links, as usual!)</sub>
+        </div>
+      </div>
+      <div id='right-defaults' class='container'>
+        <div>There's also the possibility of moving elements around in the same container, changing their position</div>
+        <div>This is the default use case. You only need to specify the containers you want to use</div>
+        <div>More interactive use cases lie ahead</div>
+        <div>Moving <code>&lt;input/&gt;</code> elements works just fine. You can still focus them, too. <input placeholder='See?' /></div>
+        <div>Make sure to check out the <a href='https://github.com/bevacqua/dragula#readme'>documentation on GitHub!</a></div>
+      </div>
+    </div>
+
+    </td>
+    <td class="formMain">
+
+    </td>
+    <td class="formConfig">&nbsp;</td>
+  </tr>
+</table>
+
+<script>
+  jQuery(function($) {
+    dragula([$('left-defaults'), $('right-defaults')]);
+  })();
+</script>

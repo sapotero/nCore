@@ -1,0 +1,47 @@
+ru:
+  fixes:
+    sequences:
+      state_structure_answer_register: Отправка ответа в ОГВ
+      org_citizen_answer_register: Отправка ответа организации/гражданину
+      register: Реестры
+      ddo: Передача внутри провайдера
+      list: Списки
+      fake_register: Внесистемные реестры
+      npa_register: Реестры НПА
+      answer_register: Отправка ответа
+    document:
+      card:
+        incoming_documents: Входящие документы
+        secret_incoming_documents: Входящие секретные
+        attorney_letters: Доверенности
+        outgoing_documents: Исходящие документы
+        secret_outgoing_documents: Исходящие секретные
+        orders: Приказы старые
+        orders_ddo: Приказы
+        secret_orders: Приказы старые секретные
+        incoming_orders: Нормативные правовые акты
+        secret_incoming_orders: НПА секретные
+        citizen_requests: Обращения граждан
+        to_court: На предоставление интересов МВД России в суде
+        to_deals: "На подписание договоров, соглашений, сделок"
+        to_internal_economy: На осуществление хозяйственной деятельности и деятельности с имуществом МВД России
+        to_orders: На размещение заказа (в том числе в рамках государственного оборонного заказа) на поставку материально-технических ресурсов и выполнении работ и (или) на заключение соответствующих контрактов
+        to_finance: По финансовым вопросам
+        to_other: "По вопросам, не относящимся к перечисленным в пунктах 1-5"
+        fio_performer: ФИО исполнителя
+        subdivision_performer: Подразделение исполнителя
+        performer_phone: Телефон исполнителя
+        performer_on_hands: На руки
+        performer_receiver: Кем получен
+        performer_extension: Доб.
+        performer_pages_count: К-во листов
+        state_registration: Государственная регистрация
+        state_registration_number: №
+        state_registration_date: Дата
+        cause: Основание
+        cause_number: №
+        cause_date: Дата
+        change_order_number: № изменяемого приказа
+        change_order_date: Дата
+        change_order_year: Год
+        change_order_action: Действие

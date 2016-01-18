@@ -1,0 +1,29 @@
+ru:
+  mongoid:
+    attributes:
+      provider:
+        actived: Используется
+        name: Наименование подразделения делопроизводства и режима
+        organizations_ids: Список организаций
+        used_organizations: Уже используются
+        control_repeat_period: Период контроля повторности
+        control_repeat_period_settings: Период контроля повторности
+        organization_id: Головное подразделение
+        ddo_id: Подразделение делопроизводства и режима
+        input_catalog: Каталог входящих из МЭДО документов
+        password: Пароль
+        login: Логин
+        ftp: IP адрес сервера
+        fields_values_settings: 'Настройка значений для поля Адресовано'
+        fields_values_settings_sender_county: 'Настройка значений для поля Страна'
+        fields_values_settings_sender_region: 'Настройка значений для поля Регион'
+        fields_values_settings_sender_city: 'Настройка значений для поля Населённый пункт'
+        fields_values_settings_department: 'Настройка значений для поля Подразделение'
+        organization_title_settings: Настройка отображения организации
+      help/page:
+        code: Код справочной страницы
+        title: Заголовок
+        content: Содержимое
+      external_system:
+        name: Название
+        token: Токен

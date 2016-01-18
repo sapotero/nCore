@@ -1,0 +1,384 @@
+<!-- шаблон критерия -->
+<template id="item">
+  <style> @import '../assets/css/mui.min.css'; </style>
+  <style type="text/css">
+    .mui-content-padded{
+      margin: 10px;
+    }
+    .mui-pagination {
+        display: inline-block;
+        margin: 0 auto;
+        padding-left: 0;
+        border-radius: 10px;
+    }
+    .mui-pagination > li {
+        display: inline;
+    }
+    .mui-pagination > li > a,
+    .mui-pagination > li > span {
+        line-height: 1.428571429;
+        position: relative;
+        float: left;
+        margin-left: -1px;
+        padding: 6px 12px;
+        text-decoration: none;
+        color: #007aff;
+        background-color: #fff;
+        border-radius: 20px;
+    }
+    .mui-pagination > li:first-child > a,
+    .mui-pagination > li:first-child > span {
+        margin-left: 0;
+        background-clip: padding-box;
+    }
+    .mui-pagination > li:last-child > a,
+    .mui-pagination > li:last-child > span {
+
+        background-clip: padding-box;
+    }
+    .mui-pagination > li:active > a,
+    .mui-pagination > li:active > a:active,
+    .mui-pagination > li:active > span,
+    .mui-pagination > li:active > span:active,
+    .mui-pagination > li.mui-active > a,
+    .mui-pagination > li.mui-active > a:active,
+    .mui-pagination > li.mui-active > span,
+    .mui-pagination > li.mui-active > span:active {
+        z-index: 2;
+        cursor: default;
+        color: #fff;
+        border-color: #007aff;
+        background-color: #007aff;
+    }
+    .mui-pagination > li.mui-disabled > span,
+    .mui-pagination > li.mui-disabled > span:active,
+    .mui-pagination > li.mui-disabled > a,
+    .mui-pagination > li.mui-disabled > a:active {
+        opacity: .6;
+        color: #777;
+        border: 1px solid #ddd;
+        background-color: #fff;
+    }
+    .mui-pagination-sm > li > a,
+    .mui-pagination-sm > li > span {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+    .autocomplete-suggestions {
+        text-align: left; cursor: default; border: 1px solid #ccc; border-top: 0; background: #fff; box-shadow: -1px 1px 3px rgba(0,0,0,.1);
+        position: absolute; display: none; z-index: 9999; max-height: 254px; overflow: hidden; overflow-y: auto; box-sizing: border-box;
+    }
+    .autocomplete-suggestion { 
+        position: relative; padding: 0 .6em; line-height: 23px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.02em; color: #333;
+    }
+    .autocomplete-suggestion b {
+        font-weight: normal; color: #1f8dd6;
+    }
+    .autocomplete-suggestion.selected {
+        background: #f0f0f0;
+    }
+  </style>
+
+  <div class="mui-col-lg-12" style="padding: 0 10 0 00px;">
+    <div class="mui-panel mui--z1">
+      <legend id="caption">Title</legend>
+
+      <div class="mui-select mui-col-lg-3">
+        <select name="type">
+          <option disabled="disabled" selected="selected">Выберите тип</option>
+          <option value="group">Группа</option>
+          <option value="journal">Справочник</option>
+        </select>
+      </div>
+
+      <div class="mui-select mui-col-lg-9">
+        <select name="source">
+          <option disabled="disabled" selected="selected">Выберите название</option>
+        </select>
+      </div>
+
+      <div class="mui-textfield mui-col-lg-12">
+        <input name="search" type="text" placeholder="Поиск...">
+      </div>
+    </div>
+    <div style="background: #fff; margin: 10px;" class="">
+      <table id="selected" class="mui-table mui-table--bordered mui--hide">
+        <thead>
+          <tr>
+            <td width="5%"> <input name ='checkAll' type="checkbox"> </td>
+            <td> Название группы / ФИО </td>
+          </tr>
+        </thead>
+        <tbody id="table" style="">
+        </tbody>
+      </table>
+      <div class="mui--clearfix"></div>
+      <div class="mui--text-left mui-col-lg-7">
+        <div class="mui-content-padded  mui--hide">
+          <ul class="mui-pagination mui-pagination-sm">
+            <li class="mui-previous">
+              <a href="#" onclick="return false;"> &laquo; </a>
+            </li>
+            <li>
+              <a href="#" onclick="return false;"> 1 </a>
+            </li>
+            <li>
+              <a href="#" onclick="return false;"> 2 </a>
+            </li>
+            <li class="mui-active">
+              <a href="#" onclick="return false;"> 3 </a>
+            </li>
+            <li>
+              <a href="#" onclick="return false;"> 4 </a>
+            </li>
+            <li>
+              <a href="#" onclick="return false;"> 5 </a>
+            </li>
+            <li class="mui-next">
+              <a href="#" onclick="return false;"> &raquo; </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="mui--text-right mui-col-lg-5">
+        <button type="submit" class="mui-btn mui-btn--danger mui-btn--raised"  name="cancel" style="margin: 10px;">Отмена</button>
+        <button type="submit" class="mui-btn mui-btn--primary mui-btn--raised" name="submit" style="margin: 10px;">Добавить</button>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="mui-panel mui-col-lg-4" style="margin-left: 0 0 0 10px; min-height: 400px; height: 100px;"> -->
+    
+  </div>
+
+</template>
+
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc           = document,
+      thisDoc           = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate      = thisDoc.querySelector('template#item').content,
+      CoreModalProto    = Object.create(HTMLElement.prototype);
+
+  CoreModalProto.setCaption = function(data){
+    this.captionElement.textContent = data;
+  };
+  CoreModalProto.setLimit = function(data){
+    this.limit = data;
+  };
+  CoreModalProto.setOffset = function(data){
+    this.offset = data;
+  };
+  CoreModalProto.setTotal = function(data){
+    this.total = data;
+  };
+  CoreModalProto.setSelected = function(data){
+    this.selected = data;
+  };
+  CoreModalProto.setType = function(data){
+    this.type = data;
+  };
+  CoreModalProto.setSource = function(data){
+    this.source = data;
+  };
+
+  CoreModalProto.createdCallback = function(){
+    this.initialize();
+  };
+
+  CoreModalProto.attributeChangedCallback = function( attr, oldVal, newVal) {
+    switch( attr ){
+      case 'limit':
+        this.setLimit( newVal );
+        break;
+      case 'offset':
+        this.setOffset( newVal );
+        break;
+      case 'total':
+        this.setTotal( newVal );
+        break;
+      case 'selected':
+        this.setSelected( newVal );
+        break;
+      case 'type':
+        this.setType( newVal );
+        break;
+      case 'source':
+        this.setSource( newVal );
+        break;
+      case 'caption':
+        this.setCaption( newVal );
+        break;
+      default:
+        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        break;
+
+    };
+  };
+  CoreModalProto.create = function(config) {
+    console.log('CoreCriteriaProto create', config);
+
+    var shadowRoot = this.createShadowRoot(),
+        item = thatDoc.importNode(itemTemplate, true);
+    shadowRoot.appendChild(item);
+    // this.shadowRoot = shadowRoot;
+  };
+
+  CoreModalProto.clearSource = function(){
+    this.sourceElement.innerHTML = '<option disabled="disabled" selected="selected">Выберите название</option>';
+  };
+  CoreModalProto.clearTable = function(){
+    this.selectedElement.innerHTML = '';
+    this.selectedElement.parentNode.classList.add('mui--hide');
+  };
+
+  CoreModalProto.getGroups = function(){
+    var element = this.sourceElement,
+        url = "/groups.json";
+
+    nCore.query.get( url )
+      .success(function (data) {
+        for (var i = data.length - 1; i >= 0; i--) {
+          var g  = data[i],
+          el     = document.createElement('option');
+          el.textContent = g['full_title'];
+          el.value       = g['_id'];
+          // console.log(g, el, element);
+          element.appendChild(el);
+        };
+      }).error(function (data) {
+      console.error('[!] groups', data)
+    });
+  };
+
+  CoreModalProto.getMembers = function(id){
+    var element = this.selectedElement,
+        url = "/members.json?group_id="+id,
+        root = this;
+    this.clearTable();
+    this.selectedElement.parentNode.classList.remove('mui--hide');
+
+    nCore.query.get( url )
+      .success(function (data) {
+        console.log('members recv data:', data, element);
+        
+        for (var i = data.length - 1; i >= 0; i--) {
+          var d = data[i],
+              tmp = '<tr> <td width="5%"> <input type="checkbox"> </td><td data-member-id="'+d._id+'"" data-group-id="'+id+'" data-provider-id="'+d.provider_id+'">'+d.member_name+'</td></tr>';
+          element.innerHTML += tmp;
+        };
+
+      }).error(function (data) {
+      console.error('[!] Members', data)
+    });
+  };
+
+  CoreModalProto.getSelectedType = function(){
+    return this.typeElement[ this.typeElement.selectedIndex ].value;
+  };
+
+  CoreModalProto.getSelectedSource = function(){
+    return this.sourceElement[ this.sourceElement.selectedIndex ].value;
+  };
+
+  CoreModalProto.getSelected = function(){
+    var selected = this.selectedElement.querySelectorAll('input[type=checkbox]:checked'),
+        array = [];
+    for (var i = selected.length - 1; i >= 0; i--) {
+      // console.log('parent', selected[i].parentNode.parentNode, 'last', selected[i].parentNode.parentNode.lastChild);
+      array.push({
+        group_id    : selected[i].parentNode.parentNode.lastChild.dataset.groupId,
+        member_id   : selected[i].parentNode.parentNode.lastChild.dataset.memberId,
+        provider_id : selected[i].parentNode.parentNode.lastChild.dataset.providerId,
+        name        : selected[i].parentNode.parentNode.lastChild.textContent
+      });
+    };
+    return array;
+    // console.log( 'getSelected', this.selectedElement,  );
+    // // return this.querySelectorAll('input[type=checkbox]:checked')
+  };
+
+  CoreModalProto.initialize = function(){
+    var root = this;
+
+
+    this.limit    = this.getAttribute('limit');
+    this.offset   = this.getAttribute('offset');
+    this.total    = this.getAttribute('total');
+    this.selected = this.getAttribute('selected');
+    this.type     = this.getAttribute('type');
+    this.source   = this.getAttribute('source');
+    this.caption  = this.getAttribute('caption');
+    
+    this.create();
+
+    this.captionElement  = this.shadowRoot.querySelector('#caption');
+    this.selectedElement = this.shadowRoot.querySelector('#table');
+    this.typeElement     = this.shadowRoot.querySelector('[name = "type"]');
+    this.sourceElement   = this.shadowRoot.querySelector('[name = "source"]');
+    this.submit          = this.shadowRoot.querySelector('[name = "submit"]');
+    this.cancel          = this.shadowRoot.querySelector('[name = "cancel"]');
+    this.checkAll        = this.shadowRoot.querySelector('[name = "checkAll"]');
+
+
+    this.checkAll.addEventListener('change', function(e){
+      
+      if ( root.checkAll.hasOwnProperty('checked') ) {
+        root.checkAll.setAttribute( 'checked', root.checkAll.getAttribute('checked') == checked ? 'null' : 'checked' );
+      } else {
+        root.checkAll.setAttribute('checked', root.checkAll.getAttribute('checked'))
+      }
+
+      var checkboxs = root.shadowRoot.querySelectorAll('[type="checkbox"]');
+      for (var i = checkboxs.length - 1; i >= 0; i--) {
+        checkboxs[i].setAttribute('checked', 'checked');
+      };
+      console.log('change', e, checkboxs, root);
+    });
+
+    this.cancel.addEventListener('click', function(){
+      console.log('cancel click' );
+      mui.overlay('off');
+    });
+
+    this.submit.addEventListener('click', function(){
+      console.log('submit click' );
+      nCore.document.root.publish('addGroupData', root.getSelected() );
+      mui.overlay('off');
+    });
+
+
+    this.typeElement.addEventListener('change', function( e ) {
+      switch( root.getSelectedType() ){
+        case 'group':
+          root.getGroups();
+          break;
+        case 'journal':
+          root.clearSource();
+          root.clearTable();
+          break;
+        default:
+          root.clearSource();
+          // root.clearTable();
+          console.warn('wrong type');
+          break;
+      };
+    });
+
+    this.sourceElement.addEventListener('change', function( e ) {
+      console.log( 'change group', root.getSelectedSource() );
+      // root.clearTable();
+      root.getMembers( root.getSelectedSource() );
+    });
+
+    console.log( 'CoreInputProto initialize', this, this.shadowRoot);
+    this.setCaption( this.caption );
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-modal', {
+    prototype: CoreModalProto
+  });
+
+})(window, document);
+</script>

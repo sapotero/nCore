@@ -1,0 +1,213 @@
+ru:
+  provider_settings:
+    registers_senders:
+      title: Настройка отправителя
+      name: Наименование отправителя
+      name_for_cover: Наименование отправителя в конверте
+      same: Совп.
+      phone: Телефон отправителя
+      save:  Сохранить
+    contract_number:
+      title: Редактирование номера договора
+      add: Добавить
+      journal_type: Тип журнала
+      contract_number: Номер договора
+      text: "Укажите через запятую номера договоров для каждого из журналов:"
+      save: Сохранить
+    control_repeat_period:
+      title: Период контроля повторности
+      check_for: Проверять за период
+      calendar_days: календарных дней
+      save: Сохранить
+    journals:
+      title: Редактирование журналов
+      journal_title: Наименование журнала
+      journal_url: URL-адрес
+      save: Сохранить
+    organization_title_settings:
+      title: Мои организации
+      organization: Организация
+      organization_title: Наименование
+      address: Адрес
+      save: Сохранить
+      choose_from_list: Необходимо выбрать из списка
+    journals_links_info_cards:
+      title: Настройка отображения ссылок в ИК
+      journal_title: Наименование журнала
+      journal_show_info_card: Отображать ссылки
+      save: Сохранить
+    outgoing_documents_passage_settings:
+      title: Настройка прохождения исходящих документов
+      doc_type: Вид исходящего документа
+      passage_type: Тип прохождения
+      save: Сохранить
+    secret_outgoing_documents_passage_settings:
+      title: Настройка прохождения исходящих секретных документов
+      doc_type: Вид исходящего секретного документа
+      passage_type: Тип прохождения
+      save: Сохранить
+    document_apply:
+      title: Параметры согласования документов
+      journal_type: Тип журнала
+      table:
+        document_type: Тип документа
+        automatic_apply_period: "Срок автоматического согласования, календарных дней"
+        edit_period: Срок исправления
+        automatic_apply: Автоматическое согласование
+      save: Сохранить
+    registration_number:
+      title: Настройка формирования регистрационных номеров
+      journal_type: Тип журнала
+      table:
+        prefix: "Префикс Рег.№"
+        register_prefix: "Префикс реестров/списков"
+        prefix_resending_documents: 'Префикс пересылаемых документов'
+        separate_resending_numeration: 'Отдельная нумерация пересылаемых документов'
+        document_type: Тип документа
+        security_classification: Гриф секретности
+        postfix: "Постфикс Рег.№"
+        example: "Пример отображения автоматически присвоенного Рег.№"
+        citizen_surname: Отображать 1-ю букву фамилии в номере
+        save: Сохранить
+    report_tasks:
+      title: Настройка отчётов
+      save: Сохранить
+      ttl: Удалять отчеты через
+      days: дней
+    reception_acceptor_day_info:
+      title: Сведения о приёме граждан руководством Министерства и подразделений МВД России
+      save: Сохранить
+      display: Да
+      do_not_display: Нет
+      display_leadership_of_the_ministry: Отображать «Руководство министерства»
+    register_number:
+      title: Настройка формирования номеров реестров/списков
+      type: Тип
+      table:
+        prefix: "Префикс"
+        journal_type: Раздел
+        postfix: "Постфикс"
+        example: "Пример отображения"
+        save: Сохранить
+    postfix_settings:
+      title: Настройка постфиксов документов
+      journal_type: Тип журнала
+      table:
+        document_type: Тип документа
+        security_classification: Гриф секретности
+        special_mark: Литер
+        postfix: "Постфикс Рег.№"
+        example: "Пример отображения"
+        save: Сохранить
+    medo:
+      title: Интеграция с МЭДО
+      journal_type: Тип журнала
+      fields:
+        input_catalog: Каталог входящих из МЭДО документов
+        output_catalog: Каталог исходящих в МЭДО документов
+        npa_input_catalog: Каталог входящих из АП НПА
+        npa_output_catalog: Каталог исходящих в АП НПА
+        login: Логин
+        password: Пароль
+        auto_send: "Автоматически отправлять документы в МЭДО, сформированные в ответ на загруженные"
+      save: Сохранить
+      not_uniq_input_catalog: для разных журналов должен быть уникален
+      cant_be_blank: не может быть пустым
+      has_wrong_value: имеет неверное значение
+      notify_address: Адреса уведомлений МЭДО
+      citizen_requests: Обращение граждан
+      incoming_orders: Регистрация НПА
+      incoming_documents: Входящий документ
+    fields_values_settings:
+      selected: необходимо выбрать из списка
+    control_documents_types:
+      title: Типы контрольных документов
+      journal_type: Тип журнала
+      control_after_check: Постановка на контроль только после отметки
+      control: Постановка на контроль
+      print_control: Печать КК
+      attach_stamp: Ставить печать
+      save: Сохранить
+    citizen_requests_organizations:
+      title: Настройка организаций для обращений граждан
+      table:
+        organization: Организация
+      errors:
+        citizen_requests_organization_already_exists: "Выбранная организация уже находится в списке!"
+    primary_consideration:
+      title: Настройки первичного рассмотрения
+      journal_type: "Тип журнала"
+      fields:
+        official: "Сотрудник"
+      save: "Сохранить"
+    scan_folders:
+      title: Настройка потокового сканирования
+      journal_type: Тип журнала
+      fields:
+        ftp: IP адрес сервера
+        login: Логин
+        password: Пароль
+        folder: Папка для сохранения образов
+        after_save_delete: Удалять при прикреплении
+      save: Сохранить
+      cant_be_blank: не может быть пустым
+      has_wrong_value: имеет неверное значение
+    fields_values:
+      title: Настройка полей по умолчанию
+      journal_type: Тип журнала
+      fields:
+        receiver_id: Получатель
+        reception: Приёмная МВД России
+        addressed_to: Адресовано
+        character: Характер
+        document_type: Вид документа
+        receive_channel: Способ доставки
+        security_classification: Гриф
+        sender_country: Страна
+        sender_region: Регион/Региональный центр
+        sender_city: Населённый пункт
+        department: Подразделение
+      save: Сохранить
+    changes_applied: Изменения сохранены
+    blocked_numbers:
+      title: Резервирование номеров
+      journal_type: Тип журнала
+      filter:
+        year: Год
+        document_type: Тип документа
+        security_classification: Гриф секретности
+        must_be_present: Обязательно для заполнения
+      table:
+        reserved_numbers: Зарезервированные номера
+        number: "Интервал номеров (напр. 1,25,35-45)"
+        to_reserve: Резервировать
+        no_blocked_numbers: Для этого журнала нет зарезервированных номеров.
+        reg_number: Рег. номер
+        reserve_date: Дата резерва
+        document_type: Тип документа
+        security_classification: Гриф секретности
+        year: Год
+    bpe_settings:
+      title: Настройка бизнес-процессов
+      text_false: выключена
+      text_true: включена
+      decisions_text: "Необходимость утверждения резолюций документов"
+      primary_consideration_text: "Передача документов между группами"
+      show_decisions_from_other_providers: "Отображение резолюций из других провайдеров"
+      use_reports_registration_book_text: "КУСП"
+      registration_controllable: "Контроль за регистрацией документов"
+      images_pass_allowed: "Отображение электронных образов на главном окне"
+    orders_delivery_groups:
+      title: Группы развёрсток для приказов
+      group_ddo: Развёрстка для приказов ДДО
+      groups_paper: Развёрстки для прочих приказов
+      groups_electronic: Развёрстки для электронной рассылки
+      save: Сохранить
+    control_stamp_groups:
+      title: Настройка штампа
+      group: Группа простановки штампа
+      save: Сохранить
+    performance_control_person:
+      title: Сотрудник контролирующий исполнение документа
+      person_name: ФИО сотрудника
+      save: Сохранить

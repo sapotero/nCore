@@ -1,0 +1,218 @@
+<!-- Главная панелька с кнопками -->
+<link rel="import" href="../templates/elements/core-modal.html">
+
+<table class="mui-table no-margin-bottom">
+  <tr>
+    <td class="mui-col-md-2">&nbsp;</td>
+
+    <td class="mui-col-md-8 bar ">
+      <div class="mui-panel mainbar  mui--z1" id="paperBar">
+      </div>
+    </td>
+    <td class="mui-col-md-2">
+      <div id="cellSettings" class="mui--z1">
+        
+        <ul class="mui-tabs__bar s cellSettings mui-tabs__bar--justified">
+
+          <li class="mui--is-active">
+            <a data-mui-toggle="tab" data-mui-controls="criteriaGroupTab" class="mui--text-white">Критерии</a>
+          </li>
+          <li>
+            <a data-mui-toggle="tab" data-mui-controls="formulaGroupTab" class="mui--text-white">Свойства</a>
+          </li>
+        </ul>
+
+        <div class="mui-tabs__pane mui--is-active" id="criteriaGroupTab">
+
+          <div class="mui-col-md-12 firstTimeCriteria">
+            <div class="mui--text-center"> Нет критериев поиска</div>
+          </div>
+
+          <ul class="criteriaSelector mui-col-md-12">
+
+          </ul>
+
+          <div class="mui-col-md-12">
+            <button class="addCriteriaGroupButton mui-btn mui-btn--accent mui-btn--small mui-btn--fab addCriteriaGroup mui--z3"> + </button>
+          </div>
+
+        </div>
+        <div class="mui-tabs__pane" id="formulaGroupTab">
+          <div class="panelSelectorGroup formulaSettings">
+            <div class="mui-checkbox">
+              <label>
+                <input type="checkbox" class="formula" name="appg" value="">
+                АППГ
+              </label>
+            </div>
+            <div class="mui-checkbox">
+              <label>
+                <input type="checkbox" class="formula" name="total" value="">
+                Всего
+              </label>
+            </div>
+            <div class="mui-checkbox">
+              <label>
+                <input type="checkbox" class="formula" name="percent" value="">
+                Процент
+              </label>
+            </div>
+          </div>
+
+          <div class="formulaSelectorGroupTemplate panelSelectorGroup">
+            <li class=" mui-col-md-12 mui-panel mui-panel-group formulaSelectorGroup mui--z2">
+              <span class="formulaSelectorGroupName mui--pull-left"> Формула </span>
+              <span class="formulaSelectorGroupName mui--pull-right">
+                <button class="mui-btn mui-btn--primary mui-btn--small addCriteriaItemToGroup"> Добавить </button>
+              </span>
+              <ul class="formulaSelectorGroupList mui-row">
+              </ul>
+            </li>
+            <div class="mui-select mui-col-md-12 connectionGroup mui--hide">
+              <select>
+                <option value="and">И</option>
+                <option value="or">ИЛИ</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </td>
+  </tr>
+</table>
+
+<!-- Отчет -->
+<table class="mui-table animatedSlow paperZoom">
+  <tr>
+    <td class="mui-col-md-2">&nbsp;</td>
+
+    <!-- Лист -->
+    <td class="mui-col-md-8 ">
+      <div class="mui-panel mui--z2" id="paper">
+
+      </div>
+    </td>
+
+    <td class="mui-col-md-2">&nbsp;</td>
+  </tr>
+</table>
+<!-- 
+
+
+      <table style="width: 100%;">
+  <tbody>
+    <tr>
+      <td style="width: 33.3333%;" class="fr-highlighted">
+        <br>
+      </td>
+      <td style="width: 33.3333%;" class="fr-highlighted" data-query='[{"query":[{"criteria_condition":"and","source":"incoming_documents","conditions":"equal","origin_name":"554c5fc858040000f0000001","value":"a"}],"conditions":"and"}]' data-name="undefined">a</td>
+      <td style="width: 33.3333%;" class="fr-highlighted" data-query='[{"query":[{"criteria_condition":"and","source":"incoming_documents","conditions":"equal","origin_name":"562a3ae1c1aa00003d000001","value":"b"}],"conditions":"and"}]' data-name="undefined">b</td>
+    </tr>
+    <tr>
+      <td style="width: 33.3333%;" class="fr-thick" data-query='[{"query":[{"criteria_condition":"and","source":"incoming_documents","conditions":"equal","origin_name":"562a3ae1c1aa00003d000001","value":"1"}],"conditions":"and"}]' data-name="undefined">1</td>
+      <td style="width: 33.3333%;">
+        <br>
+      </td>
+      <td style="width: 33.3333%;">
+        <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 33.3333%;" class="fr-thick" data-query='[{"query":[{"criteria_condition":"and","source":"incoming_documents","conditions":"equal","origin_name":"562a3ae1c1aa00003d000001","value":"2"}],"conditions":"and"}]' data-name="undefined">2</td>
+      <td style="width: 33.3333%;">
+        <br>
+      </td>
+      <td style="width: 33.3333%;">
+        <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+ -->
+
+<!-- шаблон группы -->
+<div class="criteriaSelectorGroupTemplate">
+  <li class=" mui-col-md-12 mui-panel mui-panel-group criteriaSelectorGroup mui--z2">
+    <span class="criteriaSelectorGroupName mui--pull-left"> Группа </span>
+    <span class="criteriaSelectorGroupName mui--pull-right">
+      <button class="mui-btn mui-btn--primary mui-btn--small addCriteriaItemToGroup"> Добавить </button>
+    </span>
+    <ul class="criteriaSelectorGroupList mui-row">
+    </ul>
+  </li>
+  <div class="mui-select mui-col-md-12 connectionGroup mui--hide">
+    <select>
+      <option value="and">И</option>
+      <option value="or">ИЛИ</option>
+    </select>
+  </div>
+</div>
+
+<!-- шаблон критерия -->
+<li class="criteriaSelectorItemTemplate criteriaSelectorItem mui-panel mui-col-md-12  mui--text-center mui--align-middle">
+  <div class="criteriaSelectorItemHeader">
+    <div class="criteriaSelectorItemName mui--pull-left">Критерий</div>
+    <span class="criteriaSelectorItemOptions mui--pull-right">
+      <!-- <i class="fa fa-sort-down"></i> -->
+      <!-- <i class="fa fa-reorder criteriaMenuItem settings"></i> -->
+      <select class="itemSelectCondition criteriaSelectorItemCondition">
+        <!-- <option value="" disabled selected>Связь</option> -->
+        <option value="and">И</option>
+        <option value="or">ИЛИ</option>
+      </select>
+
+      <i class="fa fa-trash-o criteriaMenuItem remove"></i>
+    </span>
+    <div class="mui--clearfix"></div>
+  </div>
+  <div class="criteriaForm hide">
+      <select name="table_name" style="width: 92%; padding: 15px auto;padding-top: 15px; margin-bottom: 20px;">
+        <!-- <option value="554c5fc85804000014000001">Справочник</option> -->
+        <option disabled="true">Выберете журнал</option>
+      </select>
+
+      <select name="origin_name" style="width: 92%; padding: 15px auto;padding-top: 15px; margin-bottom: 20px;">
+        <option disabled="true">Выберете поле</option>
+      </select>
+      
+      <select name="conditions" style="width: 92%; padding: 15px auto;padding-top: 15px; margin-bottom: 20px; text-align: left;">
+        <option value="equal">Точное совпадение</option>
+        <option value="not_equal">Не</option>
+        <option value="regexp">Частичное совпадение</option>
+        <option value="full_text">Ключевые слова</option>
+        <option value="group">Группа</option>
+      </select>
+      
+      <input class="muiFieldField" type="text" name="value" placeholder="Значение">
+      <!-- <div class="mui-textfield mui-col-md-12"> -->
+        <!-- <label></label> -->
+      <!-- </div> -->
+      
+      <input type="hidden" name="data_type" value='string' >
+      <input type="hidden" name="russian_name" >
+  </div>
+</li>
+
+<div class="nCoreDocumentSettings mui--hide">
+  <form onsubmit="nCore.document.root.publish('updateDocument', this); return false;">
+    <legend>Свойства документа</legend>
+    <div class="mui-textfield mui-textfield--float-label">
+      <input type="text" class="nCoreName" name="nCoreName">
+      <label>Название</label>
+    </div>
+    <div class="mui-textfield mui-textfield--float-label">
+      <input type="text" class="nCoreDescription" name="nCoreDescription">
+      <label>Описание</label>
+    </div>
+    <div class="mui-textfield mui-textfield--float-label">
+      <input type="date" class="nCorePeriodStart" name="nCorePeriodStart">
+      <label>Начало периода</label>
+    </div>
+    <div class="mui-textfield mui-textfield--float-label">
+      <input type="date" class="nCorePeriodEnd" name="nCorePeriodEnd">
+      <label>Окончание периода</label>
+    </div>
+    <button type="submit" class="mui-btn mui-btn--raised">Сохранить</button>
+  </form>
+</div>

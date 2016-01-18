@@ -1,0 +1,30 @@
+ru:
+  global_search:
+    cards_count:
+      error_not_found: Данных, удовлетворяющих условиям фильтра, не найдено
+    table:
+      reg_number: Рег №
+      reg_date: Дата рег.
+      journal_type: Журнал
+
+    index:
+      title: Поиск по всем журналам
+      reg_number: Регистрационный №
+      external_document_number: № поступившего
+      reg_date: Дата регистрации
+      receipt_date: Дата поступившего
+      signer_name: ФИО подписавшего
+      pages_count: Листов документа
+      from: Откуда
+      addressed_to: Адресовано
+      short_description: Краткое содержание
+      journals: Журналы
+      archive_year: Архив
+
+      date_from: с
+      date_till: по
+      close: Закрыть
+      search: Искать
+      clear: Очистить
+    results:
+      title: Результаты Поиска по всем журналам

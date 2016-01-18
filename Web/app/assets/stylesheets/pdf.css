@@ -1,0 +1,15 @@
+* {
+  box-sizing: border-box;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td, th {
+  padding: 0;
+}
+
+.fr-view table td, .fr-view table th {
+  border: 1px solid #dddddd;
+}

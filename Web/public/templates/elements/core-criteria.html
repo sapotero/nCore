@@ -1,0 +1,275 @@
+<!-- шаблон критерия -->
+<template id="item">
+  <style> @import "assets/css/mui.min.css"; </style>
+  <style type="text/css">
+    .autocomplete-suggestions {
+      text-align: left; cursor: default; border: 1px solid #ccc; border-top: 0; background: #fff; box-shadow: -1px 1px 3px rgba(0,0,0,.1);
+      position: absolute; display: none; z-index: 9999; max-height: 254px; overflow: hidden; overflow-y: auto; box-sizing: border-box;
+    }
+    .autocomplete-suggestion { 
+      position: relative; padding: 0 .6em; line-height: 23px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.02em; color: #333;
+    }
+    .autocomplete-suggestion b {
+      font-weight: normal; color: #1f8dd6;
+    }
+    .autocomplete-suggestion.selected {
+      background: #f0f0f0;
+    }
+  </style>
+  <li class="mui--z1 criteriaSelectorItem mui-panel mui-col-md-12 ">
+    <div class="criteriaSelectorItemHeader">
+      <div class="criteriaSelectorItemName mui--pull-left">Критерий</div>
+      <span class="criteriaSelectorItemOptions mui--pull-right">
+        <!-- <i class="fa fa-sort-down"></i> -->
+        <!-- <i class="fa fa-reorder criteriaMenuItem settings"></i> -->
+        <div class="mui-select">
+          <select class="itemSelectCondition criteriaSelectorItemCondition">
+            <!-- <option value="" disabled selected>Связь</option> -->
+            <option value="and">И</option>
+            <option value="or">ИЛИ</option>
+          </select>
+        </div>
+
+        <i class="fa fa-trash-o criteriaMenuItem remove"></i>
+      </span>
+      <div class="mui--clearfix"></div>
+    </div>
+    <div class="criteriaForm hide mui-select">
+        <!-- <input class="mui-textfield" placeholder="Выберете справочник" name="table_name"> -->
+        <select placeholder="Выберете справочник" name="table_name">
+          <option disabled="true">Выберете справочник</option>
+        </select>
+
+        <select name="origin_name">
+          <option disabled="true">Выберете поле</option>
+        </select>
+        
+        <select name="conditions">
+          <option disabled="true">Выберете условие</option>
+          <option value="equal">Точное совпадение</option>
+          <option value="not_equal">Не</option>
+          <option value="regexp">Частичное совпадение</option>
+          <option value="full_text">Ключевые слова</option>
+          <option value="in">Группа</optoin>
+        </select>
+        
+        <input class="mui-textfield" type="text" name="value" placeholder="Начните ввод">
+        <!-- <input class="mui-textfield" placeholder="Выберете справочник" name="table_name"> -->
+        
+    </div>
+  </li>
+</template>
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc           = document,
+      thisDoc           = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate      = thisDoc.querySelector('template#item').content,
+      CoreCriteriaProto = Object.create(HTMLElement.prototype);
+  
+  // CoreCriteriaProto.select = 'World';
+  
+  CoreCriteriaProto.createdCallback = function(){
+    this.initialize();
+  };
+
+  CoreCriteriaProto.create = function(config){
+    console.log( 'CoreCriteriaProto create', config );
+
+    var shadowRoot = this.createShadowRoot(),
+    item = thatDoc.importNode( itemTemplate, true );
+    shadowRoot.appendChild(item);
+
+    var header      = shadowRoot.querySelector('.criteriaSelectorItemHeader'),
+    form            = shadowRoot.querySelector('.criteriaForm'),
+    headerCondition = shadowRoot.querySelector('select.itemSelectCondition');
+
+    ////////////////////////////////////////////////////
+    // клик по заголовку -> скрываем/показываем форму //
+    ////////////////////////////////////////////////////
+
+    header.addEventListener('click', function( e ) {
+      console.log('header clicked', this, e);
+      form.classList.toggle( 'hide' );
+    });
+
+    //////////////////////////
+    // клик по связи группы //
+    //////////////////////////
+    
+    headerCondition.addEventListener('click', function( e ) {
+      console.log('headerCondition', this, e);
+      e.stopPropagation();
+      e.preventDefault();
+      return false;
+    });
+
+
+    var table_name  = form.querySelector('[name="table_name"]'),
+        origin_name = form.querySelector('[name="origin_name"]'),
+        input_name  = form.querySelector('[name="value"]'),
+        keys        = JSON.parse( window.localStorage.getItem('criteriaKeys') );
+
+    // если не загружали ранее значения справочников
+    if ( window.localStorage.getItem('criteriaKeys') === null ) {
+      var request = new XMLHttpRequest();
+      request.open('GET', 'http://localhost/rails/sources.json', true);
+
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          var data = JSON.parse(request.responseText);
+
+          for (var i = 0; i < data.length; i++) {
+            var source = data[i];
+            window.localStorage.setItem(source.type, JSON.stringify(source.data) );
+          };
+
+          var keys = [];
+          data.filter(function(v,i ) {
+            console.log('filter', v,i);
+            keys.push({
+              value: v.type,
+              name: v.name
+            });
+          });
+          
+          window.localStorage.setItem('criteriaKeys', JSON.stringify(keys) );
+
+        } else {
+          console.log( 'CoreCriteriaProto fetch error', request );
+        }
+      };
+
+      request.onerror = function( error ) {
+        console.log( 'CoreCriteriaProto error', error );
+      };
+
+      request.send();
+    }
+    else {
+      var table_name = form.querySelector('[name="table_name"]');
+          keys       = JSON.parse( window.localStorage.getItem('criteriaKeys') );
+      
+      for (var i = 0; i < keys.length; i++) {
+        var option   = document.createElement('option')
+        option.value = keys[i].value;
+        option.text  = keys[i].name;
+        table_name.appendChild( option );
+      };
+    };
+
+    table_name.addEventListener('change', function( e ) {
+      origin_name.innerHTML = '<option selected disabled="true">Выберете поле</option>';
+
+      var keys = JSON.parse( window.localStorage.getItem( table_name.value ) );
+      console.log( keys );
+      for (var i = 0; i < keys.length; i++) {
+        var option   = document.createElement('option')
+        option.value = keys[i]._id;
+        option.text  = keys[i].russian_name;
+
+        if ( keys[i].autocomplete_url !== '' ) {
+          option.dataset.autocomplete = keys[i].autocomplete_url;
+          option.dataset.method       = keys[i].autocomplete_title;
+        };
+        origin_name.appendChild( option );
+      };
+    });
+
+    origin_name.addEventListener('change', function( e ) {
+      console.log( origin_name.value, origin_name.options[ origin_name.selectedIndex ] );
+      input_name.value = '';
+    });
+
+    input_name.addEventListener('input', function( e ){
+     
+      /////////////////////////////////////////////////////
+      // если автокомплитер, то захуячим его в поле //
+      /////////////////////////////////////////////////////
+
+      var xhr,
+          url = 'http://localhost/rails'+origin_name.options[ origin_name.selectedIndex ].dataset.autocomplete;
+      this.autocomplete = autoComplete({
+        selector: input_name,
+        source: function(term, response){
+          try {xhr.abort(); } catch(e){}
+          xhr = $.getJSON( url, { term: input_name.value },
+            function(data){
+              var r = [];
+              for (var i = data.length - 1; i >= 0; i--) {
+                r.push( data[i].term );
+              };
+              response( r );
+          });
+        },
+        onSelect: function(e, term, item){
+          try {xhr.abort(); } catch(e){}
+          xhr = $.getJSON( url, { term: term },
+            function(data){
+              console.log( 'CoreCriteriaProto onselect', data );
+              input_name.dataset.value = data[0]._id;
+              input_name.dataset.text  = data[0].term;
+          });
+        }
+      }, thatDoc, shadowRoot);
+    });
+  };
+
+  CoreCriteriaProto.attributeChangedCallback = function( attr, oldVal, newVal) {
+    switch( attr ){
+      case 'source':
+        this.setSource( newVal );
+        break;
+      case 'origin':
+        this.setOrigin( newVal );
+        break;
+      case 'criteria':
+        this.setCriteria( newVal );
+        break;
+      case 'value':
+        this.setValue( newVal );
+        break;
+      case 'criteria-conditions':
+        this.setCriteriaConditions( newVal );
+        break;
+      default:
+        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        break;
+
+    };
+  };
+
+  CoreCriteriaProto.initialize = function(){
+    this.source             = this.getAttribute('source');
+    this.origin             = this.getAttribute('origin');
+    this.value              = this.getAttribute('value');
+    this.conditions         = this.getAttribute('conditions');
+    this.criteriaConditions = this.getAttribute('criteria-conditions');
+    
+    console.log( 'CoreCriteriaProto initialize', this);
+    this.create();
+
+  };
+
+  CoreCriteriaProto.setSource = function(data){
+    this.source = data;
+  };
+  CoreCriteriaProto.setOrigin = function(data){
+    this.origin = data;
+  };
+  CoreCriteriaProto.setValue = function(data){
+    this.value = data;
+  };
+  CoreCriteriaProto.setConditions = function(data){
+    this.conditions = data;
+  };
+  CoreCriteriaProto.setCriteriaConditions = function(data){
+    this.criteriaConditions = data;
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-criteria', {
+    prototype: CoreCriteriaProto
+  });
+
+})(window, document);
+</script>

@@ -1,0 +1,49 @@
+ru:
+  globals:
+    index:
+      title: Глобальные настройки
+      save: Сохранить
+  trash:
+    index:
+      document_images: Электронные образы
+  errors:
+    register_number:
+      not_all_journals_selected: 'Настройте нумерацию для всех разделов!'
+    subdivision_position_already_exists: 'Введенные параметры уже существуют в шапке резолюции'
+    full_title_already_exists: 'Уже существует шапка с наименованием'
+    needs_to_be_selected_from_list: 'необходимо выбрать из списка'
+    warning: 'Предупреждение'
+    messages:
+      selected: 'необходимо выбрать из списка'
+  mongoid:
+    attributes:
+      card:
+        document_type: 'Тип документа'
+  will_paginate:
+    next_label: "&raquo"
+    previous_label: "&laquo"
+
+  elastic_search_fields:
+    index:
+      title: Настройка расширенного поиска
+      journal_type: Журнал
+      origin_name: Наименование поля
+      autocompletes: Автозаполнение
+      add: Добавить
+      save: Сохранить
+      journal_types: Журналы
+      copy: Копировать
+
+  users_count: Количество пользователей
+  active_users_count: Количество активных пользователей
+  incoming_documents: Входящие документы
+  outgoing_documents: Исходящие документы
+  orders: Приказы старые
+  incoming_orders: Нормативные правовые акты
+  citizen_requests: Обращения граждан
+  secret_incoming_documents: Входящие секретные
+  secret_outgoing_documents: Исходящие секретные
+  secret_orders: Приказы старые секретные
+  secret_incoming_orders: НПА секретные
+  orders_ddo: Приказы
+  attorney_letters: Доверенности

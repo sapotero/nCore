@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>nCore.cellss</title>
+
+    <link href="assets/css/mui.min.css" rel="stylesheet">
+    <link href="assets/css/fr.css" rel="stylesheet">
+    <link href="assets/css/select2.css" rel="stylesheet">
+    <link href="assets/css/style/index.css" rel="stylesheet" id="nCoreThemeRoller">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/menu.css" rel="stylesheet">
+    <script src="assets/js/nCore/shared/dragula.min.js?v1=0.9.1"></script>
+    
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> -->
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body class="hide-sidedrawer">
+  <div id="nCoreDocumentId">nCore</div>
+
+    <div id="sidedrawer" class="mui--no-user-select">
+      <div id="sidedrawer-brand" class="mui--appbar-line-height mui--text-title">
+        <div class="mui--text-center">
+          <i class=" mui--text-black fa fa-stack-overflow">
+            <span class="mui--text-headline mui--text-black-54"> Документы </span>
+          </i>
+        </div>
+      </div>
+      <div class="mui-devider"></div>
+      <ul class="layoutSideMenu">
+        <li>
+            <strong>
+              <a data-type="report" class="layoutSideMenuItem">Отчеты</a>
+            </strong>
+          </li>
+          <li>
+            <strong>
+              <a data-type="buiseness" class="layoutSideMenuItem">Бизнес-процессы</a>
+            </strong>
+          </li>
+          <li>
+            <strong>
+              <a data-type="form" class="layoutSideMenuItem">Экранные формы</a>
+            </strong>
+          </li>
+          <li>
+            <strong>
+              <a data-type="print" class="layoutSideMenuItem">Печатные формы</a>
+            </strong>
+          </li>
+      </ul>
+    </div>
+
+    <header id="header">
+      <nav id="appbar" class="mui-container-fluid mui-appbar mui--z1" style="z-index: 3">
+        <table width="100%">
+          <tbody>
+            <tr class="mui--appbar-height">
+              <td>
+                <a class="sidedrawer-toggle mui--visible-xs-inline-block js-show-sidedrawer">☰</a>
+                <a class="sidedrawer-toggle mui--hidden-xs js-hide-sidedrawer">☰</a>
+                <span class="mui--text-title mui--visible-xs-inline-block"></span>
+                <span class="mui--text-headline" id="nCoreDocumentHeadLine"> Отчёт </span>
+              </td>
+              
+              <td class="mui--align-middle">
+                <!-- <div class="mui-textfield"><input type="text" name="nCoreDocumentAuthor"></div> -->
+              </td>
+
+              <td class="mui--text-right">
+                <div id="appbar-social-links" class="mui--hidden-xs">
+
+                  <!-- кнопки изменения отображения -->
+                  <!-- <button class="indexViewChange mui-btn mui-btn--small mui-btn--raised" data-view-type="list">
+                    <i class="fa fa-list"></i>
+                  </button> -->
+                  <!-- <button class="indexViewChange mui-btn mui-btn--small mui-btn--raised" data-view-type="thumb">
+                  <i class="fa fa-th"></i>
+                  </button> -->
+
+                  <i class="fa fa-user" data-bind="true" data-name="nCoreDocumentAuthor" data-action="input" id='nCoreDocumentAuthor' data-user-id="current_user._id" data-provider-id="<%=current_user.provider_id%>">
+                    <%= current_user.official_name %>
+                  </i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </nav>
+    </header>
+    <div class="loader loaderTop" id="loaderProgress"></div>
+
+    <div id="content-wrapper">
+
+    </div>
+
+
+    <button class="mui-btn mui-btn--accent mui-btn--fab AddDocument mui--z3">+</button>
+
+    <script src="assets/js/nCore/shared/jquery.js"></script>
+    <script src="assets/js/nCore/shared/base64.js"></script>
+    <script src="assets/js/nCore/shared/autoComplete.js"></script>
+    <script src="assets/js/nCore/nCore.js?v1=0.9.1"></script>
+  </body>
+</html>

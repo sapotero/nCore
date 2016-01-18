@@ -1,0 +1,39 @@
+ 
+.menu {
+  position: absolute;
+  z-index: 100;
+  opacity: 0;
+  -webkit-transform: translate(0, 0) scale(0.95);
+  -moz-transform:    translate(0, 0) scale(0.95);
+  -o-transform:      translate(0, 0) scale(0.95);
+  -ms-transform:     translate(0, 0) scale(0.95);
+  transform:         translate(0, 0) scale(0.95);
+  
+  -webkit-transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+  -moz-transition:    transform 0.1s ease-out, opacity 0.1s ease-out;
+  -o-transition:      transform 0.1s ease-out, opacity 0.1s ease-out;
+  -ms-transition:     transform 0.1s ease-out, opacity 0.1s ease-out;
+  transition:         transform 0.1s ease-out, opacity 0.1s ease-out;
+  /*transition: transform 0.1s ease-out, opacity 0.1s ease-out;*/
+  pointer-events: none;
+}
+
+.show-menu, .menu-item:hover > .menu {
+  opacity: 1;
+  -webkit-transform: translate(0, 0) scale(1);
+  -moz-transform:    translate(0, 0) scale(1);
+  -o-transform:      translate(0, 0) scale(1);
+  -ms-transform:     translate(0, 0) scale(1);
+  transform:         translate(0, 0) scale(1);
+  pointer-events: auto;
+}
+
+.menu-item:hover > .menu {
+  /*-webkit-transition-delay: 100ms;*/
+  /*transition-delay: 300ms;*/
+  -webkit-transition-delay: 200ms;
+  -moz-transition-delay:    200ms;
+  -o-transition-delay:      200ms;
+  -ms-transition-delay:     200ms;
+  transition-delay:         200ms;
+}

@@ -1,0 +1,254 @@
+ru:
+  providers:
+    index:
+      changes_applied: Изменения сохранены
+      provider_saved: Делопроизводственное подразделение добавлено
+      provider_not_selected: Ваша учетная запись не принадлежит ни одному делопроизводственному отделению
+    primary_consideration:
+      title: 'Ответственные на первичное рассмотрение'
+      save: 'Сохранить'
+      close: 'Закрыть'
+    primary_consideration_form:
+      journal_type: 'Тип журнала'
+      official: 'Сотрудник'
+    control_repeat_period:
+      title: 'Период контроля повторности'
+      check_for: 'Проверять за период'
+      calendar_days: 'календарных дней'
+      save: 'Сохранить'
+      close: 'Закрыть'
+    matching_params_docs:
+      title: 'Параметры согласования документов'
+      journal_type: 'Тип журнала'
+      doc_type: 'Тип документа'
+      auto_agreement_period: 'Срок автоматического согласования, календарных дней'
+      auto_agreement: 'Автоматическое согласование'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    reg_numbers_formation:
+      title: 'Настройка формирования регистрационных номеров'
+      journal_type: 'Тип журнала'
+      doc_type: 'Тип документа'
+      reg_numbers_prefix: 'Префикс Рег.№'
+      registers_prefix: 'Префикс реестров/списков'
+      reg_numbers_postfix: 'Постфикс Рег. №'
+      example_display: 'Пример отображения автоматически присвоенного Рег.№'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    medo_integration:
+      title: 'Интеграция с МЭДО'
+      incoming_catalog: 'Каталог входящих в МЭДО документов'
+      outgoing_catalog: 'Каталог исходящих из МЭДО документов'
+      login: 'Логин'
+      password: 'Пароль'
+      journal: 'Журнал'
+      auto_send: 'Автоматически отправлять документы в МЭДО, сформированные в ответ на загруженные'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    fias_load:
+      title: 'Загрузка сведений из ФИАС'
+      choose_bd_fias_file: 'Выберите файл обновленной БД ФИАС'
+      close: 'Закрыть'
+      load: 'Загрузить'
+    journals_editing:
+      title: 'Редактирование журналов'
+      journal_name: 'Наименование журнала'
+      journal_editing: 'Редактирование журнала'
+      edit_journal: 'Редактировать'
+      url: 'URL-адрес'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    journals_editing_table:
+      title: 'Редактирование журналов'
+      journal_name: 'Наименование журнала'
+      journal_editing: 'Редактирование журнала'
+      edit_journal: 'Редактировать'
+      url: 'URL-адрес'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    edit_journal_form:
+      journal_name: 'Наименование журнала'
+      journal_editing: 'Редактирование журнала'
+      edit_journal: 'Редактировать'
+      url: 'URL-адрес'
+      close: 'Закрыть'
+      save: 'Сохранить'
+  resolution_types:
+    index:
+      title: 'Типы резолюций'
+      add_resolution_type: 'Добавить тип резолюции'
+      res_type_edit_title: 'Добавление/Редактирование типа резолюции'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    resolutions_table:
+      resolution_name: 'Наименование типа резолюции'
+      resolution_short_name: 'Сокращенное наименование'
+      subdivision: 'Подразделение'
+      position: 'Должность'
+      add_resolution_type: 'Добавить тип резолюции'
+      edit_resloution: 'Редактировать'
+      remove_resolution: 'Удалить'
+      remove_confirm_title: 'Предупреждение'
+      remove_confirm_text: 'Вы уверены, что хотите удалить тип резолюции'
+    form:
+      title: 'Типы резолюций'
+      resolution_name: 'Наименование типа резолюции'
+      resolution_short_name: 'Сокращенное наименование'
+      subdivision: 'Подразделение'
+      position: 'Должность'
+      add_position: 'Добавить должность'
+      edit_resloution: 'Редактировать'
+      res_type_edit_title: 'Добавление/Редактирование типа резолюции'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    new_form:
+      new_resolution_type_title: 'Добавление типа резолюции'
+      create_resolution_type_title: 'Добавление типа резолюции'
+      edit_resolution_type_title: 'Редактирование типа резолюции'
+      update_resolution_type_title: 'Редактирование типа резолюции'
+    edit_form:
+      res_type_edit_title: 'Редактирование типа резолюции'
+  letterhead_resolutions:
+    index:
+      title: 'Шапки бланков резолюций'
+      close: 'Закрыть'
+      save: 'Сохранить'
+      add_letterhead_resolution: 'Добавить шапку бланка резолюции'
+    letterheads_table:
+      letterhead_name: 'Наименование шапки'
+      edit_head: 'Редактировать'
+      contents: 'Содержание'
+      subdivision: 'Подразделение'
+      position: 'Должность'
+      add_position: 'Добавить должность'
+      add_letterhead_resolution: 'Добавить шапку бланка резолюции'
+      edit_letterhead: 'Добавление/Редактирование шапки резолюции'
+      remove_confirm_title: 'Предупреждение'
+      remove_confirm_text: 'Вы уверены, что хотите удалить шапку бланка резолюции'
+      remove_letterhead: 'Удалить'
+    new:
+      new_letterhead: 'Добавление шапки резолюции'
+      create_letterhead: 'Добавление шапки резолюции'
+      edit_letterhead: 'Редактирование шапки резолюции'
+      update_letterhead: 'Редактирование шапки резолюции'
+    edit:
+      edit_letterhead: 'Редактирование шапки резолюции'
+    form:
+      title: 'Шапки бланков резолюций'
+      letterhead_name: 'Наименование шапки'
+      edit_head: 'Редактировать'
+      contents: 'Содержание'
+      subdivision: 'Подразделение'
+      position: 'Должность'
+      add_position: 'Добавить должность'
+      add_letterhead_resolution: 'Добавить шапку бланка резолюции'
+      edit_letterhead: 'Добавление/Редактирование шапки резолюции'
+      close: 'Закрыть'
+      save: 'Сохранить'
+  cover_letter_heads:
+    index:
+      title: 'Шапки сопроводительных писем'
+      close: 'Закрыть'
+      save: 'Сохранить'
+      add_cover_letter_head: 'Добавить шапку сопроводительного письма'
+    cover_letter_heads_table:
+      full_title: 'Полное наименование шапки'
+      edit_head: 'Редактировать'
+      organization_name: 'Наименование организации'
+      organization_address: 'Адрес организации'
+      organization_phone: 'Телефон организации'
+      add_cover_letter_head: 'Добавить шапку сопроводительного письма'
+      edit_cover_letter_head: 'Добавление/Редактирование шапки сопроводительного письма'
+      remove_confirm_title: 'Предупреждение'
+      remove_confirm_text: 'Вы уверены, что хотите удалить шапку сопроводительного письма'
+      remove_head: 'Удалить'
+    new:
+      new_cover_letter_head: 'Добавление шапки сопроводительного письма'
+      create_cover_letter_head: 'Добавление шапки сопроводительного письма'
+      edit_cover_letter_head: 'Редактирование шапки сопроводительного письма'
+      update_cover_letter_head: 'Редактирование шапки сопроводительного письма'
+    edit:
+      edit_cover_letter_head: 'Редактирование шапки сопроводительного письма'
+    form:
+      title: 'Шапки бланков сопроводительных писем'
+      cover_letter_head_name: 'Наименование шапки'
+      ministry: 'Министерство'
+      department: 'Департамент'
+      edit_head: 'Редактировать'
+      organization_name: 'Наименование организации'
+      organization_address: 'Адрес организации'
+      organization_phone: 'Телефон организации'
+      add_cover_letter_head: 'Добавить шапку сопроводительного письма'
+      edit_cover_letter_head: 'Добавление/Редактирование шапки сопроводительного письма'
+      close: 'Закрыть'
+      save: 'Сохранить'
+  fias:
+    index:
+      title: 'Загрузка сведений из ФИАС'
+      choose_bd_fias_file: 'Выберите файл обновленной БД ФИАС'
+      close: 'Закрыть'
+      load: 'Загрузить'
+  subdivisions:
+    close: 'Закрыть'
+    index:
+      title: 'Список подразделений делопроизводства и режима региона'
+      served_subdivisions_list: 'Список обслуживаемых подразделений'
+      close: 'Закрыть'
+      save: 'Сохранить'
+      add: 'Добавить'
+      edit_list: 'Изменить список'
+    add:
+      subdivision: 'Добавить подразделение делопроизводства и режима'
+      close: 'Закрыть'
+    list:
+      close: 'Закрыть'
+      edit_list: 'Изменить список'
+      subdivision: 'Список обслуживаемых подразделений'
+    edit:
+      subdivision: 'Список обслуживаемых подразделений'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    edit_modal_tree:
+      served_subdivisions_edit: 'Список обслуживаемых подразделений'
+      close: 'Закрыть'
+      save: 'Сохранить'
+    table:
+      number: '№ п/п'
+      subdivision_name: 'Наименование подразделения'
+      commands: 'Команды'
+  reports:
+    index:
+      title: 'Просмотр групп для отчётов'
+      reports: 'Отчеты'
+      group_name: 'Наименование группы'
+      commands: 'Команды'
+      empty: 'Пусто'
+    report_groups:
+      report_group: 'Группа отчета'
+      commands: 'Команды'
+      empty: 'Пусто'
+    groups:
+      group_name: 'Наименование группы'
+      commands: 'Команды'
+      empty: 'Пусто'
+  inspection_document_types:
+    index:
+      title: 'Типы контрольных документов'
+      journals: 'Журналы'
+      setted_to_control: 'Постановка на контроль'
+      print_kk: 'Печать КК'
+      close: 'Закрыть'
+      save: 'Сохранить'
+  citizen_requests_organisations:
+    index:
+      title: 'Настройка организаций для обращений граждан'
+      organisation: 'Организация'
+      save: 'Сохранить'
+      close: 'Закрыть'
+    table:
+      organisation: 'Организация'
+  external_systems:
+    index:
+      external_system_saved: Внешняя система успешно сохранена
+      changes_applied: Изменения успешно сохранены
+      external_system_not_found: Внешняя система не найдена
