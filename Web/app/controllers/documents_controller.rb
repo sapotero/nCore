@@ -69,15 +69,15 @@ class DocumentsController < ApplicationController
   # PATCH/PUT /documents/1
   def update
     ap params
-    @document.body = params[ :body ]
+    @document.body        = params[ :body ]
+    @document.periodStart = params[ :periodStart ]
+    @document.periodEnd   = params[ :periodEnd ]
+    @document.name        = params[ :name ]
+    @document.description = params[ :description ]
+    @document.query       = params[ :query ]
+
     if @document.update({
-      :name        => params[ :name ],
-      :description => params[ :description ],
-      :datetime    => params[ :datetime ],
-      :body        => params[ :body ],
-      :periodStart => params[ :periodStart ],
-      :periodEnd   => params[ :periodEnd ],
-      :query       => params[ :query ]
+      :datetime    => params[ :datetime ]
     })
       render :json => @document
     else

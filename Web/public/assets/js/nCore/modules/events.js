@@ -116,6 +116,8 @@ nCore.events = (function(){
         query       : nCore.document.cellQuery() || '',
         body        : Base64.encode(document.querySelectorAll('.fr-element.fr-view')[document.querySelectorAll('.fr-element.fr-view').length-1].innerHTML),
       };
+      nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value   );
+      nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
       nCore.document.setTitle( data.elements.nCoreName.value );
 
       // nCore.document.setAttributes(nCoreDocumentAttributes);
@@ -272,7 +274,11 @@ nCore.events = (function(){
         nCore.query.get('documents/' + id + '.json', {id: id})
           .success(function (rawDocument) {
             console.log('***raw', rawDocument);
+            
             nCore.document.load(rawDocument);
+
+            nCore.document.setPeriodEnd(  rawDocument.periodEnd);
+            nCore.document.setPeriodStart(rawDocument.periodStart);
             
             nCore.document.setTitle( rawDocument.name );
 
