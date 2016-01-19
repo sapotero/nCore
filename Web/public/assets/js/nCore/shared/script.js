@@ -280,7 +280,12 @@ jQuery(function($) {
             }).on('change', function(){
               // this.dataset.name = this.options[this.selectedIndex].value;
               // nCore.modules.table.activeCell().dataset.name = this.options[this.selectedIndex].value;
-              nCore.modules.table.event.publish('newCellSettingsChange',  this.options[this.selectedIndex].text );
+              
+              if (this.nodeName === 'SELECT') {
+                nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
+              };
+
+              nCore.modules.table.event.publish('newCellSettingsChange');
             });
           } else {
             var parent = this.parentNode,

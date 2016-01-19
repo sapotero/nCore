@@ -528,7 +528,8 @@ nCore.modules.table = (function(){
         name        : _data.name
       })
       dataCell.textContent = _data.name;
-
+      dataCell.dataset.query = JSON.stringify(_data.query);
+      
       table.appendChild(clone);
     };
   };

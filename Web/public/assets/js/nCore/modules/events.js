@@ -553,7 +553,7 @@ nCore.events = (function(){
               var card = cardTemplate.cloneNode(true);
               card.classList.remove('criteriaSelectorItemTemplate');
               card.classList.remove('mui--hide');
-              console.log('ITEM', item, 'CARD', card);
+              // console.log('ITEM', item, 'CARD', card);
 
               var form = card.getElementsByClassName('criteriaForm')[0];
 
@@ -647,24 +647,31 @@ nCore.events = (function(){
         } else {
           document.getElementsByClassName('firstTimeCriteria')[0].classList.remove('mui--hide');
         }
-      }
-      ;
+      };
 
       for (var k = 0; k < __elements_to_update.length; k++) {
         var _a = __elements_to_update[k];
+        // console.log('_a', _a);
         for (var o = 0; o < _a.length; o++) {
 
           // console.log('root ->', _a[o]);
           if (!_a[o].element.dataset.hasOwnProperty('old')) {
             _a[o].element.dataset.old = 1;
           }
-          ;
+
+          if (_a[o].element.name == 'value' ) {
+            // console.log('--> name', _a[o].element, activeCell.dataset.name );
+            
+            _a[o].element.dataset.name  = activeCell.dataset.name;
+            _a[o].element.dataset.value = _a[o].val;
+
+
+          };
+
           $(_a[o].element).val(_a[o].val).trigger('change');
           $(_a[o].element).trigger('change');
         }
-        ;
       }
-      ;
       // console.log('group_array', tab);
       // console.log('_elements_to_update', __elements_to_update);
 
@@ -744,6 +751,10 @@ nCore.events = (function(){
 
       if (activeCell) {
         activeCell.dataset.query = JSON.stringify(_query);
+      };
+
+      if (NAME) {
+        console.log('NAME', NAME);
         activeCell.dataset.name = NAME
       };
 

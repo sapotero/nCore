@@ -304,21 +304,57 @@ window.onload = (function( window, document, undefined) {
   CoreModalProto.getSelected = function(){
     var selected = this.selectedElement.querySelectorAll('input[type=checkbox]:checked'),
         array = [];
+
+    console.log( 'core-modal: selected', selected );
+
     for (var i = selected.length - 1; i >= 0; i--) {
       // console.log('parent', selected[i].parentNode.parentNode, 'last', selected[i].parentNode.parentNode.lastChild);
       array.push({
-        criteria_source    : this.criteria_source(),
-        criteria_origin    : this.criteria_origin(),
-        group_id    : selected[i].parentNode.parentNode.lastChild.dataset.groupId,
-        group_id    : selected[i].parentNode.parentNode.lastChild.dataset.groupId,
-        member_id   : selected[i].parentNode.parentNode.lastChild.dataset.memberId,
-        provider_id : selected[i].parentNode.parentNode.lastChild.dataset.providerId,
-        name        : selected[i].parentNode.parentNode.lastChild.textContent
+        group_id        : selected[i].parentNode.parentNode.lastChild.dataset.groupId,
+        member_id       : selected[i].parentNode.parentNode.lastChild.dataset.memberId,
+        provider_id     : selected[i].parentNode.parentNode.lastChild.dataset.providerId,
+        name            : selected[i].parentNode.parentNode.lastChild.textContent,
+        query           : this.generateQuery( selected[i].parentNode.parentNode.lastChild.dataset.memberId )
       });
     };
     return array;
     // console.log( 'getSelected', this.selectedElement,  );
     // // return this.querySelectorAll('input[type=checkbox]:checked')
+  };
+
+  CoreModalProto.populateCriteriaSource = function(){
+    var criteriaKeys = JSON.parse(nCore.storage.criteriaKeys);
+    for (var j = 0; j < criteriaKeys.length; j++) {
+      var option = document.createElement('option');
+      option.value = criteriaKeys[j].value;
+      option.text = criteriaKeys[j].name;
+      this.criteria_source.appendChild(option);
+    }
+  };
+
+  CoreModalProto.populateCriteriaOrigin = function(source){
+    this.criteria_origin.innerHTML = '';
+    var keys = JSON.parse(nCore.storage[source]);
+    for (var j = 0; j < keys.length; j++) {
+      var option = document.createElement('option');
+      option.value = keys[j]._id;
+      option.text  = keys[j].russian_name;
+      keys[j].autocomplete_url ? option.dataset.auto = keys[j].autocomplete_url : false;
+
+      this.criteria_origin.appendChild(option);
+    }
+  };
+
+  CoreModalProto.generateQuery = function(ID){
+    return [
+        {"query":[{
+          "criteria_condition":"and",
+          "source": this.criteria_source.value,
+          "conditions":"equal",
+          "origin_name":  this.criteria_origin.value,
+          "value": ID
+        }],
+      "conditions":"and"}]
   };
 
   CoreModalProto.initialize = function(){
@@ -345,6 +381,8 @@ window.onload = (function( window, document, undefined) {
     this.submit          = this.shadowRoot.querySelector('[name = "submit"]');
     this.cancel          = this.shadowRoot.querySelector('[name = "cancel"]');
     this.checkAll        = this.shadowRoot.querySelector('[name = "checkAll"]');
+
+    this.populateCriteriaSource();
 
 
     this.checkAll.addEventListener('change', function(e){
@@ -397,7 +435,17 @@ window.onload = (function( window, document, undefined) {
       root.getMembers( root.getSelectedSource() );
     });
 
-    console.log( 'CoreInputProto initialize', this, this.shadowRoot);
+    // выбор справочника/поля для тиражирования
+    this.criteria_source.addEventListener('change', function( e ) {
+      console.log('change', e, this, this.value );
+      root.populateCriteriaOrigin(this.value);
+    });
+
+    this.criteria_origin.addEventListener('change', function( e ) {
+      
+    });
+
+    console.log( 'CoreInputProto initialize', this, this.criteria_source, this.criteria_origin, this.shadowRoot);
     this.setCaption( this.caption );
   };
 
