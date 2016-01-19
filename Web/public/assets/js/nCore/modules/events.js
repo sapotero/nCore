@@ -553,6 +553,7 @@ nCore.events = (function(){
               var card = cardTemplate.cloneNode(true);
               card.classList.remove('criteriaSelectorItemTemplate');
               card.classList.remove('mui--hide');
+              console.log('ITEM', item, 'CARD', card);
 
               var form = card.getElementsByClassName('criteriaForm')[0];
 
@@ -597,8 +598,16 @@ nCore.events = (function(){
               origin_name.appendChild(_df);
 
               _elements_to_update.push({name: 'conditions', val: item.conditions})
+              var criteriaCondition = card.querySelector('select.itemSelectCondition');
 
-              var criteriaCondition = card.getElementsByClassName('criteriaSelectorItemCondition')[0].value = item.criteriaCondition;
+              for (var i = criteriaCondition.options.length - 1; i >= 0; i--) {
+                var option = criteriaCondition.options[i];
+                if ( option.value == item.criteria_condition ) {
+                  option.selected = 'true'
+                  card.getElementsByClassName('criteriaSelectorItemCondition')[0].selectedIndex = i;
+                };
+              };
+
 
               list.appendChild(card);
 
@@ -736,8 +745,7 @@ nCore.events = (function(){
       if (activeCell) {
         activeCell.dataset.query = JSON.stringify(_query);
         activeCell.dataset.name = NAME
-      }
-      ;
+      };
 
       // console.log('newCellSettings | activeCell -> ',activeCell,  JSON.stringify(_query) )
     });
