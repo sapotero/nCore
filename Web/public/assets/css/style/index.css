@@ -283,7 +283,16 @@ buttons {
 }
 
 @media print {
-  body * {
+  * {
+    visibility: hidden;
+    background-color: #fff;
+  }
+  .AddDocument{
+    display: none;
+    visibility: hidden;
+  }
+  .addCriteriaGroupButton {
+    display: none;
     visibility: hidden;
   }
 
@@ -295,18 +304,19 @@ buttons {
     margin: 0;
     padding: 0px;
   }*/
-  .fr-wrapper *{
+  .fr-element *{
     visibility: visible;
   }
-  .printArea {
+
+/*  .printArea {
     position: absolute;
     left: 0;
     top: 0;
-  }
+  }*/
 }
 
 @page {
-  /*margin: 5mm;*/
+  margin: 1mm;
 }
 
 .mui-tabs__bar.s {

@@ -24081,9 +24081,9 @@ $.FroalaEditor.RegisterCommand('flask', {
         
         head_cell.style.whiteSpace = 'nowrap';
         head_cell.style.height = height + 'px';
-        // head_cell.style.width = height + 'px';
+        head_cell.style.width = '2%';
 
-        head_cell.innerHTML = "<div class='_rotated' style='transform: translate(0, "+(height/20)+"px) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
+        head_cell.innerHTML = "<div class='_rotated' style='padding: 20px 2px; transform: translate(0, "+(height/20)+"px) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
     }
     // nCore.document.root.publish('showGroupModal')
   }
