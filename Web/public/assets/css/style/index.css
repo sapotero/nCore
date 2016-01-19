@@ -705,15 +705,7 @@ buttons {
 }
 
 .cellRotate{
-  position:relative;
-  left: 20px;
-  -moz-transform:rotate(-90deg); 
-  -moz-transform-origin:left;
-  -webkit-transform: rotate(-90deg);
-  -webkit-transform-origin: left;
-  -o-transform: rotate(-90deg);
-  -o-transform-origin: left;
-  display: block;
+  white-space: nowrap;
 }
 
 .rotatedCell {

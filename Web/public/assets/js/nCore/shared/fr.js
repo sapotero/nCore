@@ -24034,20 +24034,57 @@ $.FroalaEditor.RegisterCommand('adjust', {
   undo: false,
   refreshAfterCallback: false,
   callback: function () {
+    nCore.document.root.publish('showGroupModal')
+  }
+});
+
+$.FroalaEditor.DefineIcon('flask', {NAME: 'flask'});
+$.FroalaEditor.RegisterCommand('flask', {
+  title: 'Повернуть на 90',
+  focus: false,
+  undo: false,
+  refreshAfterCallback: false,
+  callback: function () {
 
     ///////////////////////////////////
     // поворот ячейки на 90 шрадусов //
     ///////////////////////////////////
+    
+    /*
+    th.rotate {
+      height: 140px;
+      white-space: nowrap;
+    }
 
-    // var el = this.selection.element();
-    // // console.log('phone', this,this.selection.element(), this.$el);
+    th.rotate > div {
+      transform: translate(25px, 51px) rotate(315deg);
+      width: 30px;
+    }
+    th.rotate > div > span {
+      border-bottom: 1px solid #ccc;
+      padding: 5px 10px;
+    }
+    */
 
-    // if ( el.classList.contains('cellRotate') ) {
-    //     el.classList.remove('cellRotate');
-    // } else{
-    //     el.classList.add('cellRotate');
-    //     // el.style.height = el.offsetWidth + 'px';
-    // }
-    nCore.document.root.publish('showGroupModal')
+    var el = this.selection.element();
+    console.log('90 -> ', this, '++',this.selection.element(), this.el);
+
+    var head_cell = this.selection.element(),
+        height = head_cell.offsetWidth + head_cell.offsetWidth*0.2;
+
+    if ( head_cell.classList.contains('cellRotate') ) {
+        head_cell.classList.remove('cellRotate');
+        head_cell.innerHTML = head_cell.querySelector('._rotated').innerHTML;
+        head_cell.style.height = '20px';
+    } else{
+        head_cell.classList.add('cellRotate');
+        
+        head_cell.style.whiteSpace = 'nowrap';
+        head_cell.style.height = height + 'px';
+        // head_cell.style.width = height + 'px';
+
+        head_cell.innerHTML = "<div class='_rotated' style='transform: translate(0, "+(height/20)+"px) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
+    }
+    // nCore.document.root.publish('showGroupModal')
   }
 });
