@@ -119,6 +119,9 @@ jQuery(function($) {
   // показываем по умолчанию //
   /////////////////////////////
   nCore.router.add('', function () {
+    var preloadItems = [ 'documents', 'forms' ];
+    nCore.preloader.event.publish( 'loadItem', preloadItems );
+    
     location.hash = '#/report'
     // document.title = 'INDEX';
     // nCore.templates.render('report/index', function(data){ 

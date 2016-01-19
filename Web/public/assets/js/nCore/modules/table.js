@@ -259,10 +259,9 @@ nCore.modules.table = (function(){
       for (var z = 0; z < side_elements.length; z++) {
         sideRows.push(side_elements[z])
       };
-
     } else {
       for (var z = 0; z < side_elements.length; z++) {
-        sideRows.push(side_elements[z].parentNode)
+        sideRows.push( side_elements[z].parentNode );
       };
     }
 
@@ -298,8 +297,6 @@ nCore.modules.table = (function(){
       // point.style.top  = (coordinates.top+coordinates.bottom)/2 + 'px';
       // point.style.left = (coordinates.left+coordinates.right)/2 + 'px';
       // document.body.appendChild(point);
-
-
       sideRowsCenter.push( {center: (coordinates.top+coordinates.bottom)/2, el: sideRows[v] } );
     };
 
@@ -396,8 +393,6 @@ nCore.modules.table = (function(){
             query.concat( rowQuery );
           };
 
-
-
         }
         else {
 
@@ -444,8 +439,8 @@ nCore.modules.table = (function(){
           // div.style.border = '2px solid red';
           // div.style.width = '2px';
           // div.style.height = '2px';
-          // div.style.top  = dataRowsCenter[a]+5+'px';
-          // div.style.left = ((coordinates.left + coordinates.right)/2)+5+'px';
+          // div.style.top  = dataRowsCenter[a]+'px';
+          // div.style.left = ((coordinates.left + coordinates.right)/2)+'px';
           // div.classList.add('POINT');
           // document.body.appendChild(div);
           // console.log('**row', ___dataCell, document.elementFromPoint( (coordinates.left + coordinates.right)/2 , dataRowsCenter[a] ) );
@@ -476,7 +471,7 @@ nCore.modules.table = (function(){
       // rowQuery = [];
     };
 
-    // dataRow.style.display = 'none';
+    dataRow.style.display = 'none';
     dataRow.parentNode.removeChild(dataRow);
     
     console.log( 'cellData:', cellData );

@@ -835,18 +835,16 @@ nCore.events = (function(){
       // если уже есть загруженные справочники
       // то пока ничего не делаем
       // TODO: запилить синхронизацию
-      if (nCore.storage.hasOwnProperty('criteriaKeys')) {
-        return true;
-      } else {
-        nCore.query.get('sources.json')
-          .success(function (data) {
+      // if (nCore.storage.hasOwnProperty('criteriaKeys')) {
+      //   return true;
+      // } else {
+        nCore.query.get('sources.json').success(function (data) {
             console.warn('loadCriteria -> get', data);
 
             for (var i = 0; i < data.length; i++) {
               var source = data[i];
               nCore.storage.setItem(source.type, JSON.stringify(source.data));
             }
-            ;
 
             var keys = [];
             data.filter(function (v, i) {
@@ -861,8 +859,7 @@ nCore.events = (function(){
           }).error(function (data) {
           console.error('[!] loadCriteria -> get', data)
         });
-      }
-      ;
+      // }
     });
   };
 

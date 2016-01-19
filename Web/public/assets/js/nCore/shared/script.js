@@ -173,6 +173,9 @@ jQuery(function($) {
   // клик по критерию
   $('.criteriaMenuItem.settings, .criteriaSelectorItemHeader').live('click', function(e){
 
+    // убрать из прода
+    nCore.preloader.event.publish('loadCriteria');
+    
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child    = el.children('.criteriaForm');
 
