@@ -78,10 +78,27 @@
         background: #f0f0f0;
     }
   </style>
-
+  <!-- <link rel="import" href="../core-criteria.html"> -->
   <div class="mui-col-lg-12" style="padding: 0 10 0 00px;">
     <div class="mui-panel mui--z1">
+      
+      <!-- <core-criteria></core-criteria> -->
+
       <legend id="caption">Title</legend>
+
+      <div class="mui-select mui-col-lg-3">
+        <select name="criteria_source">
+          <option disabled="disabled" selected="selected">Выберите справочник</option>
+        </select>
+      </div>
+
+      <div class="mui-select mui-col-lg-9">
+        <select name="criteria_origin">
+          <option disabled="disabled" selected="selected">Выберите поле</option>
+        </select>
+      </div>
+
+      <div class="mui--divider-bottom col-lg-12">&nbsp;</div>
 
       <div class="mui-select mui-col-lg-3">
         <select name="type">
@@ -97,9 +114,11 @@
         </select>
       </div>
 
+      <!-- <div class="mui--divider-left"></div>
       <div class="mui-textfield mui-col-lg-12">
         <input name="search" type="text" placeholder="Поиск...">
-      </div>
+      </div> -->
+
     </div>
     <div style="background: #fff; margin: 10px;" class="">
       <table id="selected" class="mui-table mui-table--bordered mui--hide">
@@ -288,6 +307,9 @@ window.onload = (function( window, document, undefined) {
     for (var i = selected.length - 1; i >= 0; i--) {
       // console.log('parent', selected[i].parentNode.parentNode, 'last', selected[i].parentNode.parentNode.lastChild);
       array.push({
+        criteria_source    : this.criteria_source(),
+        criteria_origin    : this.criteria_origin(),
+        group_id    : selected[i].parentNode.parentNode.lastChild.dataset.groupId,
         group_id    : selected[i].parentNode.parentNode.lastChild.dataset.groupId,
         member_id   : selected[i].parentNode.parentNode.lastChild.dataset.memberId,
         provider_id : selected[i].parentNode.parentNode.lastChild.dataset.providerId,
@@ -312,6 +334,9 @@ window.onload = (function( window, document, undefined) {
     this.caption  = this.getAttribute('caption');
     
     this.create();
+
+    this.criteria_source = this.shadowRoot.querySelector('[name = "criteria_source"]');
+    this.criteria_origin = this.shadowRoot.querySelector('[name = "criteria_origin"]');
 
     this.captionElement  = this.shadowRoot.querySelector('#caption');
     this.selectedElement = this.shadowRoot.querySelector('#table');

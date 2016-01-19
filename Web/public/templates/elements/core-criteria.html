@@ -50,7 +50,7 @@
           <option value="not_equal">Не</option>
           <option value="regexp">Частичное совпадение</option>
           <option value="full_text">Ключевые слова</option>
-          <option value="in">Группа</optoin>
+          <option value="group">Группа</optoin>
         </select>
         
         <input class="mui-textfield" type="text" name="value" placeholder="Начните ввод">
@@ -113,7 +113,7 @@ window.onload = (function( window, document, undefined) {
     // если не загружали ранее значения справочников
     if ( window.localStorage.getItem('criteriaKeys') === null ) {
       var request = new XMLHttpRequest();
-      request.open('GET', 'http://localhost/rails/sources.json', true);
+      request.open('GET', 'sources.json', true);
 
       request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
@@ -188,7 +188,7 @@ window.onload = (function( window, document, undefined) {
       /////////////////////////////////////////////////////
 
       var xhr,
-          url = 'http://localhost/rails'+origin_name.options[ origin_name.selectedIndex ].dataset.autocomplete;
+          url = origin_name.options[ origin_name.selectedIndex ].dataset.autocomplete;
       this.autocomplete = autoComplete({
         selector: input_name,
         source: function(term, response){
