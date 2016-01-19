@@ -83,6 +83,14 @@ nCore.router = (function(){
       lookup: lookup,
       run: function(url) {
         var result = lookup(url);
+
+        // // хак для медленного соединения
+        // var _i = setInterval(function(){
+        //   if ( nCore.document.hasOwnProperty('root') ) {
+        //     nCore.document.init();
+        //     clearInterval(_i);
+        //   };
+        // }, 5);
   
         result.callback && result.callback({
           url    : url,
@@ -106,8 +114,8 @@ nCore.router = (function(){
  */
 
 jQuery(function($) {
-
-  /////////////////////////////
+  setTimeout(function(){
+     /////////////////////////////
   // показываем по умолчанию //
   /////////////////////////////
   nCore.router.add('', function () {
@@ -308,4 +316,6 @@ jQuery(function($) {
 
   window.addEventListener('hashchange', processHash);
   processHash();
+}, 100);
+
 });

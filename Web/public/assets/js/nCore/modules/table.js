@@ -519,6 +519,13 @@ nCore.modules.table = (function(){
           clone = _clone.cloneNode(true),
           dataCell = clone.querySelector('.fr-thick:first-child');
       
+      // очищаем ячейки
+      var _td    = clone.cells;
+      for (var z = _td.length - 1; z >= 0; z--) {
+        _td[z].textContent = '';
+        // console.log('td', _td[i]);
+      };
+
       console.log( 'dataCell', dataCell, _data, _clone, table );
 
       dataCell.dataset.group = JSON.stringify( {
@@ -529,7 +536,7 @@ nCore.modules.table = (function(){
       })
       dataCell.textContent = _data.name;
       dataCell.dataset.query = JSON.stringify(_data.query);
-      
+
       table.appendChild(clone);
     };
   };

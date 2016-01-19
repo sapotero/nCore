@@ -23964,7 +23964,7 @@ $.FroalaEditor.RegisterCommand('cog', {
 
 $.FroalaEditor.DefineIcon('floppy-o', {NAME: 'floppy-o'});
 $.FroalaEditor.RegisterCommand('floppy-o', {
-  title: 'floppy-o',
+  title: 'Сохранение',
   focus: false,
   undo: false,
   refreshAfterCallback: false,
@@ -23987,7 +23987,7 @@ $.FroalaEditor.RegisterCommand('floppy-o', {
 
 $.FroalaEditor.DefineIcon('calculator', {NAME: 'calculator'});
 $.FroalaEditor.RegisterCommand('calculator', {
-  title: 'calculator',
+  title: 'Расчёт',
   focus: false,
   undo: false,
   refreshAfterCallback: false,
@@ -24002,9 +24002,9 @@ $.FroalaEditor.RegisterCommand('calculator', {
   }
 });
 
-$.FroalaEditor.DefineIcon('phone', {NAME: 'phone'});
+$.FroalaEditor.DefineIcon('phone', {NAME: 'wrench'});
 $.FroalaEditor.RegisterCommand('phone', {
-  title: 'phone',
+  title: 'Свойства документа',
   focus: false,
   undo: false,
   refreshAfterCallback: false,
@@ -24027,9 +24027,9 @@ $.FroalaEditor.RegisterCommand('phone', {
   }
 });
 
-$.FroalaEditor.DefineIcon('adjust', {NAME: 'adjust'});
+$.FroalaEditor.DefineIcon('adjust', {NAME: 'reorder'});
 $.FroalaEditor.RegisterCommand('adjust', {
-  title: 'adjust',
+  title: 'Тиражирование',
   focus: false,
   undo: false,
   refreshAfterCallback: false,
