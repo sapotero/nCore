@@ -121,7 +121,7 @@ jQuery(function($) {
   });
 
   // изменение значения полей -> обновляем значения в ячейке
-  $('select, select[name="value"], input[name="value"]').live('change', function(){
+  $('select[name="value"], input[name="value"]').live('change', function(){
     nCore.modules.table.event.publish('newCellSettingsChange' );
     return false;
   })

@@ -600,11 +600,27 @@ nCore.events = (function(){
               _elements_to_update.push({name: 'conditions', val: item.conditions})
               var criteriaCondition = card.querySelector('select.itemSelectCondition');
 
+              // console.log( '**', criteriaCondition, item );
+
+              // var _options = criteriaCondition.options;
+              // for (var b = 0; b < _options.length; b++) {
+              //   var option = _options[b];
+              //   if ( option.value == item.criteria_condition ) {
+              //     option.selected = 'selected'
+              //     criteriaCondition.selectedIndex = b;
+
+              //     console.log( '*****', criteriaCondition, item, card.getElementsByClassName('criteriaSelectorItemCondition') );
+              //   };
+              // };
+
               for (var i = criteriaCondition.options.length - 1; i >= 0; i--) {
                 var option = criteriaCondition.options[i];
                 if ( option.value == item.criteria_condition ) {
-                  option.selected = 'true'
-                  card.getElementsByClassName('criteriaSelectorItemCondition')[0].selectedIndex = i;
+                  option.selected = 'selected'
+                  criteriaCondition.selectedIndex = option.index;
+                  card.getElementsByClassName('criteriaSelectorItemCondition')[0].selectedIndex = option.index;
+
+                  console.log( '*****', criteriaCondition, item, card.getElementsByClassName('criteriaSelectorItemCondition') );
                 };
               };
 
@@ -617,7 +633,7 @@ nCore.events = (function(){
 
                 // console.log('* el', el.element);
               }
-              // console.log('* card', card);
+              console.log('* card', card, item);
 
               var _tmp = card.querySelector('[name="value"]');
               _elements_to_update.push({element: _tmp, val: item.value})
@@ -708,9 +724,11 @@ nCore.events = (function(){
     // изменение критериев поиска активной ячейки
     nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME) {
 
+      // переписать с jQuery на js
+      console.log('active cell', activeCell);
       var _query = [],
-        list = $(".criteriaSelector"),
-        criterias = list.children('div');
+        list = document.querySelector(".criteriaSelector"),
+        criterias = list.querySelectorAll('div');
 
       for (var i = 0; i < criterias.length; i++) {
         var criteria = $(criterias[i]),
@@ -733,6 +751,9 @@ nCore.events = (function(){
             head = item.children('.criteriaSelectorItemHeader'),
             form = item.children('.criteriaForm');
 
+          var _select = head[0].querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition');
+          console.log( '---', _select, _select.selectedIndex, _select.options[ _select.selectedIndex ] );
+
           data.query.push({
             criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
             source             : form.children('select[name="table_name"]').val(),
@@ -744,17 +765,21 @@ nCore.events = (function(){
         ;
 
         _query.push(data);
-      }
-      ;
-      // console.log('newCellSettingsChange -> data -> ', data)
-      // console.log('before: ', activeCell)
+      };
 
+      // очищаем пустые группы перед добавлением в query
+      var _result_query = [];
+      for (var c = _query.length - 1; c >= 0; c--) {
+        if ( _query[c].query.length ) {
+          _result_query.push( _query[c] );
+        };
+      };
+      
       if (activeCell) {
-        activeCell.dataset.query = JSON.stringify(_query);
+        activeCell.dataset.query = JSON.stringify(_result_query);
       };
 
       if (NAME) {
-        console.log('NAME', NAME);
         activeCell.dataset.name = NAME
       };
 

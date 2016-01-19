@@ -314,7 +314,7 @@ window.onload = (function( window, document, undefined) {
         member_id       : selected[i].parentNode.parentNode.lastChild.dataset.memberId,
         provider_id     : selected[i].parentNode.parentNode.lastChild.dataset.providerId,
         name            : selected[i].parentNode.parentNode.lastChild.textContent,
-        query           : this.generateQuery( selected[i].parentNode.parentNode.lastChild.dataset.memberId )
+        query           : this.generateQuery( selected[i].parentNode.parentNode.lastChild.dataset.groupId )
       });
     };
     return array;
@@ -348,11 +348,11 @@ window.onload = (function( window, document, undefined) {
   CoreModalProto.generateQuery = function(ID){
     return [
         {"query":[{
-          "criteria_condition":"and",
-          "source": this.criteria_source.value,
-          "conditions":"equal",
-          "origin_name":  this.criteria_origin.value,
-          "value": ID
+          "criteria_condition" : "and",
+          "source"             : this.criteria_source.value,
+          "conditions"         : "group",
+          "origin_name"        : this.criteria_origin.value,
+          "value"              : ID
         }],
       "conditions":"and"}]
   };
