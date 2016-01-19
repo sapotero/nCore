@@ -114,7 +114,7 @@ nCore.events = (function(){
         periodEnd   : data.elements.nCorePeriodEnd.value,
         datetime    : new Date().getTime(),
         query       : nCore.document.cellQuery() || '',
-        body        : Base64.encode(document.querySelectorAll('.fr-element.fr-view')[document.querySelectorAll('.fr-element.fr-view').length-1].innerHTML),
+        body        : Base64.encode(document.getElementById('paper').querySelector('.fr-element.fr-view').innerHTML),
       };
       nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value   );
       nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
@@ -172,7 +172,7 @@ nCore.events = (function(){
           name        : nCore.document.name(),
           description : nCore.document.description(),
           datetime    : new Date().getTime(),
-          body        : Base64.encode(document.querySelectorAll('.fr-element.fr-view')[document.querySelectorAll('.fr-element.fr-view').length-1].innerHTML),
+          body        : Base64.encode(document.getElementById('paper').querySelector('.fr-element.fr-view').innerHTML),
           query       : nCore.document.cellQuery() || '',
           periodStart : nCore.document.periodStart(),
           periodEnd   : nCore.document.periodEnd()
@@ -201,7 +201,7 @@ nCore.events = (function(){
           name        : nCore.document.name(),
           description : nCore.document.description(),
           datetime    : new Date().getTime(),
-          body        : Base64.encode(document.querySelectorAll('.fr-element.fr-view')[document.querySelectorAll('.fr-element.fr-view').length-1].innerHTML),
+          body        : Base64.encode(document.getElementById('paper').querySelector('.fr-element.fr-view').innerHTML),
           query       : nCore.document.cellQuery() || '',
           periodStart : nCore.document.periodStart(),
           periodEnd   : nCore.document.periodEnd()
