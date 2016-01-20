@@ -89,21 +89,21 @@
       d || new b(this, c)
     })
   }, a.fn.froalaEditor.Constructor = b, a.FroalaEditor = b, a.FroalaEditor.MODULES.node = function (b) {
-    function c(b) {
+    function contents(b) {
       return b && "IFRAME" != b.tagName ? a(b)
         .contents() : []
     }
 
-    function d(b) {
+    function isBlock(b) {
       return b ? b.nodeType != Node.ELEMENT_NODE ? !1 : a.FroalaEditor.BLOCK_TAGS.indexOf(b.tagName.toLowerCase()) >= 0 : !1
     }
 
-    function e(b, e) {
+    function isEmpty(b, e) {
       if (a(b)
           .find("table")
           .length > 0) return !1;
-      var f = c(b);
-      1 == f.length && d(f[0]) && (f = c(f[0]));
+      var f = contents(b);
+      1 == f.length && isBlock(f[0]) && (f = contents(f[0]));
       for (var g = !1, h = 0; h < f.length; h++) {
         var i = f[h];
         if (!e || !a(i)
@@ -116,22 +116,22 @@
       return !0
     }
 
-    function f(c) {
+    function blockParent(c) {
       for (; c && c.parentNode !== b.$el.get(0) && (!c.parentNode || !a(c.parentNode)
         .hasClass("fr-inner"));)
-        if (c = c.parentNode, d(c)) return c;
+        if (c = c.parentNode, isBlock(c)) return c;
       return null
     }
 
-    function g(c, e, f) {
+    function deepestParent(c, e, f) {
       if ("undefined" == typeof e && (e = []), "undefined" == typeof f && (f = !0), e.push(b.$el.get(0)), e.indexOf(c.parentNode) >= 0 || c.parentNode && a(c.parentNode)
           .hasClass("fr-inner") || c.parentNode && a.FroalaEditor.SIMPLE_ENTER_TAGS.indexOf(c.parentNode.tagName) >= 0 && f) return null;
       for (; e.indexOf(c.parentNode) < 0 && c.parentNode && !a(c.parentNode)
-        .hasClass("fr-inner") && (a.FroalaEditor.SIMPLE_ENTER_TAGS.indexOf(c.parentNode.tagName) < 0 || !f) && (!d(c) || !d(c.parentNode) || !f);) c = c.parentNode;
+        .hasClass("fr-inner") && (a.FroalaEditor.SIMPLE_ENTER_TAGS.indexOf(c.parentNode.tagName) < 0 || !f) && (!isBlock(c) || !isBlock(c.parentNode) || !f);) c = c.parentNode;
       return c
     }
 
-    function h(a) {
+    function rawAttributes(a) {
       var b = {}
         , c = a.attributes;
       if (c)
@@ -142,8 +142,8 @@
       return b
     }
 
-    function i(a) {
-      for (var b = "", c = h(a), d = Object.keys(c)
+    function attributes(a) {
+      for (var b = "", c = rawAttributes(a), d = Object.keys(c)
         .sort(), e = 0; e < d.length; e++) {
         var f = d[e]
           , g = c[f];
@@ -152,65 +152,65 @@
       return b
     }
 
-    function j(a) {
+    function clearAttributes(a) {
       for (var b = a.attributes, c = 0; c < b.length; c++) {
         var d = b[c];
         a.removeAttribute(d.nodeName)
       }
     }
 
-    function k(a) {
-      return "<" + a.tagName.toLowerCase() + i(a) + ">"
+    function openTagString(a) {
+      return "<" + a.tagName.toLowerCase() + attributes(a) + ">"
     }
 
-    function l(a) {
+    function closeTagString(a) {
       return "</" + a.tagName.toLowerCase() + ">"
     }
 
-    function m(b, c) {
+    function isFirstSibling(b, c) {
       "undefined" == typeof c && (c = !0);
       for (var d = b.previousSibling; d && c && a(d)
         .hasClass("fr-marker");) d = d.previousSibling;
-      return d ? d.nodeType == Node.TEXT_NODE && "" === d.textContent ? m(d) : !1 : !0
+      return d ? d.nodeType == Node.TEXT_NODE && "" === d.textContent ? isFirstSibling(d) : !1 : !0
     }
 
-    function n(b) {
+    function isVoid(b) {
       return b && a.FroalaEditor.VOID_ELEMENTS.indexOf((b.tagName || "")
           .toLowerCase()) >= 0
     }
 
-    function o(a) {
+    function isList(a) {
       return a ? ["UL", "OL"].indexOf(a.tagName) >= 0 : !1
     }
 
-    function p(a) {
+    function isElement(a) {
       return a === b.$el.get(0)
     }
 
-    function q(a) {
-      return a === b.document.activeElement && (!b.document.hasFocus || b.document.hasFocus()) && !!(p(a) || a.type || a.href || ~a.tabIndex)
+    function hasFocus(a) {
+      return a === b.document.activeElement && (!b.document.hasFocus || b.document.hasFocus()) && !!(isElement(a) || a.type || a.href || ~a.tabIndex)
     }
 
-    function r(a) {
+    function isEditable(a) {
       return !a.getAttribute || "false" != a.getAttribute("contenteditable")
     }
     return {
-      isBlock: d
-      , isEmpty: e
-      , blockParent: f
-      , deepestParent: g
-      , rawAttributes: h
-      , attributes: i
-      , clearAttributes: j
-      , openTagString: k
-      , closeTagString: l
-      , isFirstSibling: m
-      , isList: o
-      , isElement: p
-      , contents: c
-      , isVoid: n
-      , hasFocus: q
-      , isEditable: r
+      isBlock: isBlock
+      , isEmpty: isEmpty
+      , blockParent: blockParent
+      , deepestParent: deepestParent
+      , rawAttributes: rawAttributes
+      , attributes: attributes
+      , clearAttributes: clearAttributes
+      , openTagString: openTagString
+      , closeTagString: closeTagString
+      , isFirstSibling: isFirstSibling
+      , isList: isList
+      , isElement: isElement
+      , contents: contents
+      , isVoid: isVoid
+      , hasFocus: hasFocus
+      , isEditable: isEditable
     }
   }, a.extend(a.FroalaEditor.DEFAULTS, {
     htmlAllowedTags: ["a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "blockquote", "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "datalist", "dd", "del", "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hgroup", "hr", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark", "menu", "menuitem", "meter", "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "queue", "rp", "rt", "ruby", "s", "samp", "script", "style", "section", "select", "small", "source", "span", "strike", "strong", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "time", "tr", "track", "u", "ul", "var", "video", "wbr"]
@@ -294,7 +294,7 @@
       return g
     }
 
-    function j(a, c, d) {
+    function exec(a, c, d) {
       a = e(a);
       var g = a
         , j = null;
@@ -310,12 +310,12 @@
       return f(k)
     }
 
-    function k(a) {
+    function invisibleSpaces(a) {
       return a.replace(/\u200b/g, "")
         .length == a.length ? a : b.clean.exec(a, c)
     }
 
-    function l() {
+    function toHTML5() {
       var c = b.$el.find(Object.keys(a.FroalaEditor.HTML5Map)
         .join(","))
         .filter(function () {
@@ -360,16 +360,16 @@
       b.indexOf("\n") >= 0 && (a.innerHTML = b.replace(/\n/g, "<br>"))
     }
 
-    function p(c, d, e, f) {
+    function html(c, d, e, f) {
       "undefined" == typeof d && (d = []), "undefined" == typeof e && (e = []), "undefined" == typeof f && (f = !1), c = c.replace(/\u0009/g, "");
       var g, h = a.merge([], b.opts.htmlAllowedTags);
       for (g = 0; g < d.length; g++) h.indexOf(d[g]) >= 0 && h.splice(h.indexOf(d[g]), 1);
       var i = a.merge([], b.opts.htmlAllowedAttrs);
       for (g = 0; g < e.length; g++) i.indexOf(e[g]) >= 0 && i.splice(i.indexOf(e[g]), 1);
-      return u = new RegExp("^" + h.join("$|^") + "$", "gi"), w = new RegExp("^" + i.join("$|^") + "$", "gi"), v = new RegExp("^" + b.opts.htmlRemoveTags.join("$|^") + "$", "gi"), c = j(c, n, !0)
+      return u = new RegExp("^" + h.join("$|^") + "$", "gi"), w = new RegExp("^" + i.join("$|^") + "$", "gi"), v = new RegExp("^" + b.opts.htmlRemoveTags.join("$|^") + "$", "gi"), c = exec(c, n, !0)
     }
 
-    function q() {
+    function quotes() {
       for (var c = b.$el.find("blockquote + blockquote"), d = 0; d < c.length; d++) {
         var e = a(c[d]);
         b.node.attributes(c[d]) == b.node.attributes(e.prev()
@@ -378,7 +378,7 @@
       }
     }
 
-    function r() {
+    function tables() {
       for (var c = b.$el.find("tr")
         .filter(function () {
           return a(this)
@@ -406,7 +406,7 @@
         })
     }
 
-    function s() {
+    function lists() {
       for (var c = b.$el.find("ol + ol, ul + ul"), d = 0; d < c.length; d++) {
         var e = a(c[d]);
         b.node.attributes(c[d]) == b.node.attributes(e.prev()
@@ -472,20 +472,20 @@
         .remove()
     }
 
-    function t() {
+    function _init() {
       b.opts.fullPage && a.merge(b.opts.htmlAllowedTags, ["head", "title", "style", "link", "base", "body", "html"])
     }
     var u, v, w, x = []
       , x = [];
     return {
-      _init: t
-      , html: p
-      , toHTML5: l
-      , tables: r
-      , lists: s
-      , quotes: q
-      , invisibleSpaces: k
-      , exec: j
+      _init: _init
+      , html: html
+      , toHTML5: toHTML5
+      , tables: tables
+      , lists: lists
+      , quotes: quotes
+      , invisibleSpaces: invisibleSpaces
+      , exec: exec
     }
   }, a.FroalaEditor.XS = 0, a.FroalaEditor.SM = 1, a.FroalaEditor.MD = 2, a.FroalaEditor.LG = 3, a.FroalaEditor.MODULES.helpers = function (b) {
     function c() {
@@ -508,48 +508,48 @@
       return a
     }
 
-    function e() {
-      return /(iPad|iPhone|iPod)/g.test(navigator.userAgent) && !h()
+    function isIOS() {
+      return /(iPad|iPhone|iPod)/g.test(navigator.userAgent) && !isWindowsPhone()
     }
 
-    function f() {
-      return /(Android)/g.test(navigator.userAgent) && !h()
+    function isAndroid() {
+      return /(Android)/g.test(navigator.userAgent) && !isWindowsPhone()
     }
 
-    function g() {
+    function isBlackberry() {
       return /(Blackberry)/g.test(navigator.userAgent)
     }
 
-    function h() {
+    function isWindowsPhone() {
       return /(Windows Phone)/gi.test(navigator.userAgent)
     }
 
-    function i() {
-      return f() || e() || g()
+    function isMobile() {
+      return isAndroid() || isIOS() || isBlackberry()
     }
 
-    function j() {
+    function requestAnimationFrame() {
       return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (a) {
           window.setTimeout(a, 1e3 / 60)
         }
     }
 
-    function k(a) {
+    function getPx(a) {
       return parseInt(a, 10) || 0
     }
 
-    function l() {
+    function scrennSize() {
       var b = a('<div class="fr-visibility-helper"></div>')
         .appendTo("body")
-        , c = k(b.css("margin-left"));
+        , c = getPx(b.css("margin-left"));
       return b.remove(), c
     }
 
-    function m() {
+    function isTouch() {
       return "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch
     }
 
-    function n(a) {
+    function isURL(a) {
       if (!/^(https?:|ftps?:|)\/\//.test(a)) return !1;
       a = String(a)
         .replace(/</g, "%3C")
@@ -560,9 +560,9 @@
       return b.test(a)
     }
 
-    function o(a) {
+    function sanitizeURL(a) {
       if (/^(https?:|ftps?:|)\/\//.test(a)) {
-        if (!n(a)) return ""
+        if (!isURL(a)) return ""
       }
       else a = encodeURIComponent(a)
         .replace(/%23/g, "#")
@@ -586,11 +586,11 @@
       return a
     }
 
-    function p(a) {
+    function isArray(a) {
       return a && !a.propertyIsEnumerable("length") && "object" == typeof a && "number" == typeof a.length
     }
 
-    function q(a) {
+    function RGBtoHEX(a) {
       function b(a) {
         return ("0" + parseInt(a, 10)
           .toString(16))
@@ -605,7 +605,7 @@
       }
     }
 
-    function r(a) {
+    function HEXtoRGB(a) {
       var b = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
       a = a.replace(b, function (a, b, c, d) {
         return b + b + c + c + d + d
@@ -614,7 +614,7 @@
       return c ? "rgb(" + parseInt(c[1], 16) + ", " + parseInt(c[2], 16) + ", " + parseInt(c[3], 16) + ")" : ""
     }
 
-    function s(b) {
+    function getAligment(b) {
       var c = (b.css("text-align") || "")
         .replace(/-(.*)-/g, "");
       if (["left", "right", "justify", "center"].indexOf(c) < 0) {
@@ -637,32 +637,32 @@
       return c
     }
 
-    function t() {
+    function _init() {
       b.browser = d(), b.ie_version = c()
     }
     var u;
     return {
-      _init: t
-      , isIOS: e
-      , isAndroid: f
-      , isBlackberry: g
-      , isWindowsPhone: h
-      , isMobile: i
-      , requestAnimationFrame: j
-      , getPX: k
-      , screenSize: l
-      , isTouch: m
-      , sanitizeURL: o
-      , isArray: p
-      , RGBToHex: q
-      , HEXtoRGB: r
-      , isURL: n
-      , getAlignment: s
+      _init: _init
+      , isIOS: isIOS
+      , isAndroid: isAndroid
+      , isBlackberry: isBlackberry
+      , isWindowsPhone: isWindowsPhone
+      , isMobile: isMobile
+      , requestAnimationFrame: requestAnimationFrame
+      , getPX: getPx
+      , screenSize: scrennSize
+      , isTouch: isTouch
+      , sanitizeURL: sanitizeURL
+      , isArray: isArray
+      , RGBToHex: RGBtoHEX
+      , HEXtoRGB: HEXtoRGB
+      , isURL: isURL
+      , getAlignment: getAligment
     }
   }, a.FroalaEditor.MODULES.events = function (b) {
     function c(a, c, d) {
       a.on(c.split(" ")
-          .join("." + b.id + " ") + "." + b.id, d), r("destroy", function () {
+          .join("." + b.id + " ") + "." + b.id, d), on("destroy", function () {
         a.off(c.split(" ")
             .join("." + b.id + " ") + "." + b.id)
       })
@@ -670,39 +670,39 @@
 
     function d() {
       c(b.$el, "cut copy paste beforepaste", function (a) {
-        s(a.type, [a])
+        trigger(a.type, [a])
       })
     }
 
     function e() {
       c(b.$el, "click mouseup mousedown touchstart touchend dragenter dragover dragleave dragend drop", function (a) {
-        s(a.type, [a])
+        trigger(a.type, [a])
       })
     }
 
     function f() {
       c(b.$el, "keydown keypress keyup input", function (a) {
-        s(a.type, [a])
+        trigger(a.type, [a])
       })
     }
 
     function g() {
       c(b.$window, b._mousedown, function (a) {
-        s("window.mousedown", [a]), n()
+        trigger("window.mousedown", [a]), enableBlur()
       }), c(b.$window, b._mouseup, function (a) {
-        s("window.mouseup", [a])
+        trigger("window.mouseup", [a])
       }), c(b.$window, "keydown keyup touchmove", function (a) {
-        s("window." + a.type, [a])
+        trigger("window." + a.type, [a])
       })
     }
 
     function h() {
       c(b.$document, "drop", function (a) {
-        s("document.drop", [a])
+        trigger("document.drop", [a])
       })
     }
 
-    function i(c) {
+    function focus(c) {
       if ("undefined" == typeof c && (c = !0), !b.$wp) return !1;
       if (!b.core.hasFocus() && c) return b.$el.focus(), !1;
       if (!b.core.hasFocus() || b.$el.find(".fr-marker")
@@ -725,12 +725,12 @@
 
     function j() {
       c(b.$el, "focus", function (a) {
-        p() && (i(!1), y === !1 && s(a.type, [a]))
+        blurActive() && (focus(!1), y === !1 && trigger(a.type, [a]))
       }), c(b.$el, "blur", function (a) {
-        p() && y === !0 && s(a.type, [a])
-      }), r("focus", function () {
+        blurActive() && y === !0 && trigger(a.type, [a])
+      }), on("focus", function () {
         y = !0
-      }), r("blur", function () {
+      }), on("blur", function () {
         y = !1
       })
     }
@@ -763,40 +763,40 @@
       }, 100))
     }
 
-    function n() {
+    function enableBlur() {
       w = !0
     }
 
-    function o() {
+    function disableBlur() {
       w = !1
     }
 
-    function p() {
+    function blurActive() {
       return w
     }
 
-    function q(a, c, d) {
+    function bindClick(a, c, d) {
       a.on(b._mousedown, c, function (a) {
         l(a)
       }), a.on(b._mouseup + " " + b._move, c, function (a) {
         m(a, d)
       }), a.on("mousedown click mouseup", c, function (a) {
         a.stopPropagation()
-      }), r("window.mouseup", function () {
+      }), on("window.mouseup", function () {
         a.find(c)
-          .removeClass("fr-selected"), n()
-      }), r("destroy", function () {
+          .removeClass("fr-selected"), enableBlur()
+      }), on("destroy", function () {
         a.off(b._mousedown, c), a.off(b._mouseup + " " + b._move)
       })
     }
 
-    function r(a, b, c) {
+    function on(a, b, c) {
       "undefined" == typeof c && (c = !1);
       var d = x[a] = x[a] || [];
       c ? d.unshift(b) : d.push(b)
     }
 
-    function s(c, d, e) {
+    function trigger(c, d, e) {
       if (!b.edit.isDisabled() || e) {
         var f, g = x[c];
         if (g)
@@ -806,7 +806,7 @@
       }
     }
 
-    function t(c, d, e) {
+    function chainTrigger(c, d, e) {
       if (!b.edit.isDisabled() || e) {
         var f, g = x[c];
         if (g)
@@ -819,28 +819,28 @@
       for (var a in x) delete x[a]
     }
 
-    function v() {
-      k(), e(), g(), h(), f(), j(), n(), d(), r("destroy", u)
+    function _init() {
+      k(), e(), g(), h(), f(), j(), enableBlur(), d(), on("destroy", u)
     }
     var w, x = {}
       , y = !1;
     return {
-      _init: v
-      , on: r
-      , trigger: s
-      , bindClick: q
-      , disableBlur: o
-      , enableBlur: n
-      , blurActive: p
-      , focus: i
-      , chainTrigger: t
+      _init: _init
+      , on: on
+      , trigger: trigger
+      , bindClick: bindClick
+      , disableBlur: disableBlur
+      , enableBlur: enableBlur
+      , blurActive: blurActive
+      , focus: focus
+      , chainTrigger: chainTrigger
     }
   }, a.FroalaEditor.INVISIBLE_SPACE = "&#8203;", a.FroalaEditor.START_MARKER = '<span class="fr-marker" data-id="0" data-type="true" style="display: none; line-height: 0;">' + a.FroalaEditor.INVISIBLE_SPACE + "</span>", a.FroalaEditor.END_MARKER = '<span class="fr-marker" data-id="0" data-type="false" style="display: none; line-height: 0;">' + a.FroalaEditor.INVISIBLE_SPACE + "</span>", a.FroalaEditor.MARKERS = a.FroalaEditor.START_MARKER + a.FroalaEditor.END_MARKER, a.FroalaEditor.MODULES.markers = function (b) {
     function c(c, d) {
       return a('<span class="fr-marker" data-id="' + d + '" data-type="' + c + '" style="display: ' + (b.browser.safari ? "none" : "inline-block") + '; line-height: 0;">' + a.FroalaEditor.INVISIBLE_SPACE + "</span>", b.document)[0]
     }
 
-    function d(d, e, f) {
+    function place(d, e, f) {
       try {
         var g = d.cloneRange();
         if (g.collapse(e), g.insertNode(c(e, f)), e === !0 && d.collapsed)
@@ -881,7 +881,7 @@
       }
     }
 
-    function e() {
+    function insert() {
       if (!b.$wp) return null;
       try {
         var c = b.selection.ranges(0)
@@ -906,10 +906,10 @@
       catch (i) {}
     }
 
-    function f(a) {
+    function insertAtPoint(a) {
       var c = a.clientX
         , d = a.clientY;
-      g();
+      remove();
       var f, h = null;
       if ("undefined" != typeof b.document.caretPositionFromPoint ? (f = b.document.caretPositionFromPoint(c, d), h = b.document.createRange(), h.setStart(f.offsetNode, f.offset), h.setEnd(f.offsetNode, f.offset)) : "undefined" != typeof b.document.caretRangeFromPoint && (f = b.document.caretRangeFromPoint(c, d), h = b.document.createRange(), h.setStart(f.startContainer, f.startOffset), h.setEnd(f.startContainer, f.startOffset)), null !== h && "undefined" != typeof b.window.getSelection) {
         var i = b.window.getSelection();
@@ -921,33 +921,33 @@
         j.moveToPoint(c, d), h.setEndPoint("EndToEnd", j), h.select()
       }
       catch (k) {}
-      e()
+      insert()
     }
 
-    function g() {
+    function remove() {
       b.$el.find(".fr-marker")
         .remove()
     }
     return {
-      place: d
-      , insert: e
-      , insertAtPoint: f
-      , remove: g
+      place: place
+      , insert: insert
+      , insertAtPoint: insertAtPoint
+      , remove: remove
     }
   }, a.FroalaEditor.MODULES.selection = function (b) {
-    function c() {
+    function text() {
       var a = "";
       return b.window.getSelection ? a = b.window.getSelection() : b.document.getSelection ? a = b.document.getSelection() : b.document.selection && (a = b.document.selection.createRange()
         .text), a.toString()
     }
 
-    function d() {
+    function get() {
       var a = "";
       return a = b.window.getSelection ? b.window.getSelection() : b.document.getSelection ? b.document.getSelection() : b.document.selection.createRange()
     }
 
-    function e(a) {
-      var c = d()
+    function ranges(a) {
+      var c = get()
         , e = [];
       if (c && c.getRangeAt && c.rangeCount)
         for (var e = [], f = 0; f < c.rangeCount; f++) e.push(c.getRangeAt(f));
@@ -955,34 +955,34 @@
       return "undefined" != typeof a ? e[a] : e
     }
 
-    function f() {
-      var a = d();
+    function clear() {
+      var a = get();
       try {
         a.removeAllRanges ? a.removeAllRanges() : a.empty ? a.empty() : a.clear && a.clear()
       }
       catch (b) {}
     }
 
-    function g() {
-      var f = d();
+    function element() {
+      var f = get();
       try {
         if (f.rangeCount) {
-          var g = e(0)
+          var g = ranges(0)
             , h = g.startContainer;
           if (h.nodeType == Node.ELEMENT_NODE) {
             var i = !1;
             if (h.childNodes.length > 0 && h.childNodes[g.startOffset]) {
               for (var j = h.childNodes[g.startOffset]; j && j.nodeType == Node.TEXT_NODE && 0 == j.textContent.length;) j = j.nextSibling;
-              j && j.textContent.replace(/\u200B/g, "") === c()
+              j && j.textContent.replace(/\u200B/g, "") === text()
                 .replace(/\u200B/g, "") && (h = j, i = !0)
             }
             else if (!g.collapsed && h.nextSibling && h.nextSibling.nodeType == Node.ELEMENT_NODE) {
               var j = h.nextSibling;
-              j && j.textContent.replace(/\u200B/g, "") === c()
+              j && j.textContent.replace(/\u200B/g, "") === text()
                 .replace(/\u200B/g, "") && (h = j, i = !0)
             }!i && h.childNodes.length > 0 && a(h.childNodes[0])
               .text()
-              .replace(/\u200B/g, "") === c()
+              .replace(/\u200B/g, "") === text()
               .replace(/\u200B/g, "") && ["BR", "IMG", "HR"].indexOf(h.childNodes[0].tagName) < 0 && (h = h.childNodes[0])
           }
           for (; h.nodeType != Node.ELEMENT_NODE && h.parentNode;) h = h.parentNode;
@@ -997,22 +997,22 @@
       return b.$el.get(0)
     }
 
-    function h() {
-      var f = d();
+    function endElement() {
+      var f = get();
       try {
         if (f.rangeCount) {
-          var g = e(0)
+          var g = ranges(0)
             , h = g.endContainer;
           if (h.nodeType == Node.ELEMENT_NODE) {
             var i = !1;
             if (h.childNodes.length > 0 && h.childNodes[g.endOffset] && a(h.childNodes[g.endOffset])
-                .text() === c()) h = h.childNodes[g.endOffset], i = !0;
+                .text() === text()) h = h.childNodes[g.endOffset], i = !0;
             else if (!g.collapsed && h.previousSibling && h.previousSibling.nodeType == Node.ELEMENT_NODE) {
               var j = h.previousSibling;
-              j && j.textContent.replace(/\u200B/g, "") === c()
+              j && j.textContent.replace(/\u200B/g, "") === text()
                 .replace(/\u200B/g, "") && (h = j, i = !0)
             }!i && h.childNodes.length > 0 && a(h.childNodes[h.childNodes.length - 1])
-              .text() === c() && ["BR", "IMG", "HR"].indexOf(h.childNodes[h.childNodes.length - 1].tagName) < 0 && (h = h.childNodes[h.childNodes.length - 1])
+              .text() === text() && ["BR", "IMG", "HR"].indexOf(h.childNodes[h.childNodes.length - 1].tagName) < 0 && (h = h.childNodes[h.childNodes.length - 1])
           }
           for (h.nodeType == Node.TEXT_NODE && 0 == g.endOffset && h.previousSibling && h.previousSibling.nodeType == Node.ELEMENT_NODE && (h = h.previousSibling); h.nodeType != Node.ELEMENT_NODE && h.parentNode;) h = h.parentNode;
           for (var k = h; k && "HTML" != k.tagName;) {
@@ -1026,19 +1026,19 @@
       return b.$el.get(0)
     }
 
-    function i(a, b) {
+    function rangeElement(a, b) {
       var c = a;
       return c.nodeType == Node.ELEMENT_NODE && c.childNodes.length > 0 && c.childNodes[b] && (c = c.childNodes[b]), c.nodeType == Node.TEXT_NODE && (c = c.parentNode), c
     }
 
-    function j() {
+    function blocks() {
       var c = []
-        , f = d();
-      if (t() && f.rangeCount)
-        for (var g = e(), h = 0; h < g.length; h++) {
+        , f = get();
+      if (inEditor() && f.rangeCount)
+        for (var g = ranges(), h = 0; h < g.length; h++) {
           var j = g[h]
-            , k = i(j.startContainer, j.startOffset)
-            , l = i(j.endContainer, j.endOffset);
+            , k = rangeElement(j.startContainer, j.startOffset)
+            , l = rangeElement(j.endContainer, j.endOffset);
           b.node.isBlock(k) && c.indexOf(k) < 0 && c.push(k);
           var m = b.node.blockParent(k);
           m && c.indexOf(m) < 0 && c.push(m);
@@ -1053,10 +1053,10 @@
       return c
     }
 
-    function k() {
+    function save() {
       if (b.$wp) {
         b.markers.remove();
-        for (var a = e(), c = [], d = 0; d < a.length; d++)
+        for (var a = ranges(), c = [], d = 0; d < a.length; d++)
           if (a[d].startContainer !== b.document) {
             var f = a[d]
               , g = f.collapsed
@@ -1075,12 +1075,12 @@
       }
     }
 
-    function l() {
+    function restore() {
       var c = b.$el.find('.fr-marker[data-type="true"]');
       if (!b.$wp) return c.remove(), !1;
       if (0 === c.length) return !1;
-      b.core.hasFocus() || b.browser.msie || b.browser.webkit || b.$el.focus(), f();
-      for (var e = d(), g = 0; g < c.length; g++) {
+      b.core.hasFocus() || b.browser.msie || b.browser.webkit || b.$el.focus(), clear();
+      for (var e = get(), g = 0; g < c.length; g++) {
         var h = a(c[g])
           .data("id")
           , i = c[g]
@@ -1183,13 +1183,13 @@
       return !0
     }
 
-    function o() {
-      for (var a = e(), b = 0; b < a.length; b++)
+    function isCollapsed() {
+      for (var a = ranges(), b = 0; b < a.length; b++)
         if (!a[b].collapsed) return !1;
       return !0
     }
 
-    function p(a) {
+    function info(a) {
       var c, d, e = !1
         , f = !1;
       if (b.window.getSelection) {
@@ -1203,13 +1203,13 @@
       }
     }
 
-    function q() {
-      if (o()) return !1;
+    function isFull() {
+      if (isCollapsed()) return !1;
       b.$el.find("td")
         .prepend('<span class="fr-mk">' + a.FroalaEditor.INVISIBLE_SPACE + "</span>"), b.$el.find("img")
         .append('<span class="fr-mk">' + a.FroalaEditor.INVISIBLE_SPACE + "</span>");
       var c = !1
-        , d = p(b.$el.get(0));
+        , d = info(b.$el.get(0));
       return d.atStart && d.atEnd && (c = !0), b.$el.find(".fr-mk")
         .remove(), c
     }
@@ -1262,10 +1262,10 @@
       return d
     }
 
-    function t() {
+    function inEditor() {
       try {
         if (!b.$wp) return !1;
-        for (var a = e(0), c = a.commonAncestorContainer; c && !b.node.isElement(c);) c = c.parentNode;
+        for (var a = ranges(0), c = a.commonAncestorContainer; c && !b.node.isElement(c);) c = c.parentNode;
         return b.node.isElement(c) ? !0 : !1
       }
       catch (d) {
@@ -1273,8 +1273,8 @@
       }
     }
 
-    function u() {
-      k();
+    function remove() {
+      save();
       for (var c = function (b) {
         for (var c = b.previousSibling; c && c.nodeType == Node.TEXT_NODE && 0 == c.textContent.length;) {
           var d = c
@@ -1370,10 +1370,10 @@
           }
         }
       }
-      b.opts.keepFormatOnDelete || b.html.fillEmptyBlocks(!0), b.html.cleanEmptyTags(!0), b.clean.lists(), b.html.normalizeSpaces(), l()
+      b.opts.keepFormatOnDelete || b.html.fillEmptyBlocks(!0), b.html.cleanEmptyTags(!0), b.clean.lists(), b.html.normalizeSpaces(), restore()
     }
 
-    function v(c) {
+    function setAtStart(c) {
       if (a(c)
           .find(".fr-marker")
           .length > 0) return !1;
@@ -1382,7 +1382,7 @@
         .prepend(a.FroalaEditor.MARKERS)
     }
 
-    function w(c) {
+    function setAtEnd(c) {
       if (a(c)
           .find(".fr-marker")
           .length > 0) return !1;
@@ -1391,52 +1391,52 @@
         .append(a.FroalaEditor.MARKERS)
     }
 
-    function x(c) {
+    function setBefore(c) {
       for (var d = c.previousSibling; d && d.nodeType == Node.TEXT_NODE && 0 == d.textContent.length;) d = d.previousSibling;
-      return d ? (b.node.isBlock(d) ? w(d) : "BR" == d.tagName ? a(d)
+      return d ? (b.node.isBlock(d) ? setAtEnd(d) : "BR" == d.tagName ? a(d)
         .before(a.FroalaEditor.MARKERS) : a(d)
         .after(a.FroalaEditor.MARKERS), !0) : !1
     }
 
-    function y(c) {
+    function setAfter(c) {
       for (var d = c.nextSibling; d && d.nodeType == Node.TEXT_NODE && 0 == d.textContent.length;) d = d.nextSibling;
-      return d ? (b.node.isBlock(d) ? v(d) : a(d)
+      return d ? (b.node.isBlock(d) ? setAtStart(d) : a(d)
         .before(a.FroalaEditor.MARKERS), !0) : !1
     }
     return {
-      text: c
-      , get: d
-      , ranges: e
-      , clear: f
-      , element: g
-      , endElement: h
-      , save: k
-      , restore: l
-      , isCollapsed: o
-      , isFull: q
-      , inEditor: t
-      , remove: u
-      , blocks: j
-      , info: p
-      , setAtEnd: w
-      , setAtStart: v
-      , setBefore: x
-      , setAfter: y
-      , rangeElement: i
+      text: text
+      , get: get
+      , ranges: ranges
+      , clear: clear
+      , element: element
+      , endElement: endElement
+      , save: save
+      , restore: restore
+      , isCollapsed: isCollapsed
+      , isFull: isFull
+      , inEditor: inEditor
+      , remove: remove
+      , blocks: blocks
+      , info: info
+      , setAtEnd: setAtEnd
+      , setAtStart: setAtStart
+      , setBefore: setBefore
+      , setAfter: setAfter
+      , rangeElement: rangeElement
     }
   }, a.FroalaEditor.UNICODE_NBSP = String.fromCharCode(160), a.FroalaEditor.VOID_ELEMENTS = ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr"], a.FroalaEditor.BLOCK_TAGS = ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "ul", "ol", "li", "table", "td", "th", "thead", "tfoot", "tbody", "tr", "hr", "dl", "dt", "dd"], a.extend(a.FroalaEditor.DEFAULTS, {
     htmlAllowedEmptyTags: ["textarea", "a", "iframe", "object", "video", "style", "script", ".fa"]
     , htmlSimpleAmpersand: !1
   }), a.FroalaEditor.MODULES.html = function (b) {
-    function c() {
+    function defaultTag() {
       return b.opts.enter == a.FroalaEditor.ENTER_P ? "p" : b.opts.enter == a.FroalaEditor.ENTER_DIV ? "div" : b.opts.enter == a.FroalaEditor.ENTER_BR ? null : void 0
     }
 
-    function d(c) {
+    function emptyBlocks(c) {
       "undefined" == typeof c && (c = !1);
       var d, g, h = [];
       if (c)
-        for (d = b.$el.find(f()), g = 0; g < d.length; g++) {
+        for (d = b.$el.find(blockTagsQuery()), g = 0; g < d.length; g++) {
           for (var i = b.node.contents(d[g]), j = !1, k = 0; k < i.length; k++)
             if (i[k].nodeType != Node.COMMENT_NODE && (i[k].nodeType == Node.ELEMENT_NODE && a.FroalaEditor.VOID_ELEMENTS.indexOf(i[k].tagName.toLowerCase()) >= 0 || i[k].textContent && i[k].textContent.replace(/\u200B/g, "")
                 .length > 0)) {
@@ -1444,25 +1444,25 @@
               break
             }
           j || 0 !== a(d[g])
-            .find(f())
+            .find(blockTagsQuery())
             .length || h.push(d[g])
         }
       else
-        for (d = b.$el.find(e()), g = 0; g < d.length; g++) 0 === a(d[g])
-          .find(f())
+        for (d = b.$el.find(emptyBlockTagsQuery()), g = 0; g < d.length; g++) 0 === a(d[g])
+          .find(blockTagsQuery())
           .length && h.push(d[g]);
       return a(a.makeArray(h))
     }
 
-    function e() {
+    function emptyBlockTagsQuery() {
       return a.FroalaEditor.BLOCK_TAGS.join(":empty, ") + ":empty"
     }
 
-    function f() {
+    function blockTagsQuery() {
       return a.FroalaEditor.BLOCK_TAGS.join(", ")
     }
 
-    function g() {
+    function cleanEmptyTags() {
       var c = a.merge(["TD", "TH"], a.FroalaEditor.VOID_ELEMENTS);
       c = a.merge(c, b.opts.htmlAllowedEmptyTags);
       var d, e;
@@ -1477,7 +1477,7 @@
     }
 
     function h(d, e) {
-      var f = c();
+      var f = defaultTag();
       if (e && (f = 'div class="fr-temp-div"'), f)
         for (var g = b.node.contents(d.get(0)), h = null, i = 0; i < g.length; i++) {
           var j = g[i];
@@ -1513,7 +1513,7 @@
         }
     }
 
-    function i(c, d, e) {
+    function wrap(c, d, e) {
       return b.$wp ? ("undefined" == typeof c && (c = !1), "undefined" == typeof d && (d = !1), "undefined" == typeof e && (e = !1), h(b.$el, c), b.$el.find(".fr-inner")
         .each(function () {
           h(a(this), c)
@@ -1526,7 +1526,7 @@
         }))) : !1
     }
 
-    function j() {
+    function unwrap() {
       b.$el.find("div.fr-temp-div")
         .each(function () {
           a(this)
@@ -1544,8 +1544,8 @@
         .removeAttr("class")
     }
 
-    function k(b) {
-      d(b)
+    function fillEmptyBlocks(b) {
+      emptyBlocks(b)
         .not("hr")
         .filter(function () {
           return "false" != a(this)
@@ -1556,28 +1556,28 @@
         .append("<br/>")
     }
 
-    function l() {
-      return b.$el.find(f())
+    function blocks() {
+      return b.$el.find(blockTagsQuery())
     }
 
-    function m(a) {
+    function cleanBlankSpaces(a) {
       "undefined" == typeof a && (a = b.$el.get(0));
       for (var c = b.node.contents(a), d = c.length - 1; d >= 0; d--)
         if (c[d].nodeType == Node.TEXT_NODE && b.node.isBlock(a)) {
           for (var e = -1; e != c[d].textContent.length;) e = c[d].textContent.length, c[d].textContent = c[d].textContent.replace(/(?!^)  (?!$)/g, " ");
           c[d].textContent = c[d].textContent.replace(/^  /g, " "), c[d].textContent = c[d].textContent.replace(/  $/g, " "), b.node.isBlock(a) && (c[d].previousSibling || (c[d].textContent = c[d].textContent.replace(/^ */, "")), c[d].nextSibling || (c[d].textContent = c[d].textContent.replace(/ *$/, "")))
         }
-        else m(c[d])
+        else cleanBlankSpaces(c[d])
     }
 
     function n(a) {
       return a && (b.node.isBlock(a) || ["STYLE", "SCRIPT", "HEAD", "BR", "HR"].indexOf(a.tagName) >= 0 || a.nodeType == Node.COMMENT_NODE)
     }
 
-    function o(c) {
+    function normalizeSpaces(c) {
       if ("undefined" == typeof c && (c = b.$el.get(0)), c.nodeType == Node.ELEMENT_NODE && ["STYLE", "SCRIPT", "HEAD"].indexOf(c.tagName) < 0)
         for (var d = b.node.contents(c), e = d.length - 1; e >= 0; e--) a(d[e])
-          .hasClass("fr-marker") || o(d[e]);
+          .hasClass("fr-marker") || normalizeSpaces(d[e]);
       else if (c.nodeType == Node.TEXT_NODE && c.textContent.length > 0) {
         var f = c.previousSibling
           , g = c.nextSibling;
@@ -1593,12 +1593,12 @@
       }
     }
 
-    function p(c) {
+    function doNormalize(c) {
       if ("undefined" == typeof c && (c = b.$el.get(0)), c.nodeType == Node.ELEMENT_NODE && ["STYLE", "SCRIPT", "HEAD"].indexOf(c.tagName) < 0) {
         for (var d = b.node.contents(c), e = d.length - 1; e >= 0; e--)
           if (!a(d[e])
               .hasClass("fr-marker")) {
-            var f = p(d[e]);
+            var f = doNormalize(d[e]);
             if (1 == f) return !0
           }
       }
@@ -1626,45 +1626,45 @@
       return c ? b.implementation.createDocumentType(c[1], c[3], c[4]) : b.implementation.createDocumentType("html")
     }
 
-    function s(a) {
+    function getDoctype(a) {
       var b = a.doctype
         , c = "<!DOCTYPE html>";
       return b && (c = "<!DOCTYPE " + b.name + (b.publicId ? ' PUBLIC "' + b.publicId + '"' : "") + (!b.publicId && b.systemId ? " SYSTEM" : "") + (b.systemId ? ' "' + b.systemId + '"' : "") + ">"), c
     }
 
     function t() {
-      i(), m(), g(), o(), k(!0), b.clean.quotes(), b.clean.lists(), b.clean.tables(), b.clean.toHTML5(), b.clean.quotes(), b.placeholder.refresh(), b.selection.restore(), u()
+      wrap(), cleanBlankSpaces(), cleanEmptyTags(), normalizeSpaces(), fillEmptyBlocks(!0), b.clean.quotes(), b.clean.lists(), b.clean.tables(), b.clean.toHTML5(), b.clean.quotes(), b.placeholder.refresh(), b.selection.restore(), checkIfEmpty()
     }
 
-    function u() {
-      b.core.isEmpty() && (null != c() ? 0 === b.$el.find(f())
-        .length && (b.core.hasFocus() ? (b.$el.html("<" + c() + ">" + a.FroalaEditor.MARKERS + "<br/></" + c() + ">"), b.selection.restore()) : b.$el.html("<" + c() + "><br/></" + c() + ">")) : 0 === b.$el.find("*:not(.fr-marker):not(br)")
+    function checkIfEmpty() {
+      b.core.isEmpty() && (null != defaultTag() ? 0 === b.$el.find(blockTagsQuery())
+        .length && (b.core.hasFocus() ? (b.$el.html("<" + defaultTag() + ">" + a.FroalaEditor.MARKERS + "<br/></" + defaultTag() + ">"), b.selection.restore()) : b.$el.html("<" + defaultTag() + "><br/></" + defaultTag() + ">")) : 0 === b.$el.find("*:not(.fr-marker):not(br)")
         .length && (b.core.hasFocus() ? (b.$el.html(a.FroalaEditor.MARKERS + "<br/>"), b.selection.restore()) : b.$el.html("<br/>")))
     }
 
-    function v(a, b) {
+    function extractNode(a, b) {
       return q(a, "<" + b + "[^>]*?>([\\w\\W]*)</" + b + ">", 1)
     }
 
-    function w(c, d) {
+    function extractNodeAttrs(c, d) {
       var e = a("<div " + (q(c, "<" + d + "([^>]*?)>", 1) || "") + ">");
       return b.node.rawAttributes(e.get(0))
     }
 
-    function x(a) {
+    function extractDoctype(a) {
       return q(a, "<!DOCTYPE([^>]*?)>", 0) || "<!DOCTYPE html>"
     }
 
-    function y(a) {
+    function set(a) {
       var c = b.clean.html(a, [], [], b.opts.fullPage);
       if (c = c.replace(/\r|\n/g, ""), b.opts.fullPage) {
-        var d = (v(c, "body") || c)
+        var d = (extractNode(c, "body") || c)
           .replace(/\r|\n/g, "")
-          , e = w(c, "body")
-          , f = v(c, "head") || "<title></title>"
-          , g = w(c, "head")
-          , h = x(c)
-          , i = w(c, "html");
+          , e = extractNodeAttrs(c, "body")
+          , f = extractNode(c, "head") || "<title></title>"
+          , g = extractNodeAttrs(c, "head")
+          , h = extractDoctype(c)
+          , i = extractNodeAttrs(c, "html");
         b.$el.html(d), b.node.clearAttributes(b.$el.get(0)), b.$el.attr(e), b.$head.html(f), b.node.clearAttributes(b.$head.get(0)), b.$head.attr(g), b.node.clearAttributes(b.$html.get(0)), b.$html.attr(i), b.iframe_document.doctype.parentNode.replaceChild(r(h, b.iframe_document), b.iframe_document.doctype)
       }
       else b.$el.html(c);
@@ -1677,7 +1677,7 @@
         }), b.events.trigger("html.set")
     }
 
-    function z(a, c) {
+    function get(a, c) {
       var d = "";
       b.events.trigger("html.beforeGet");
       var e, f = [];
@@ -1707,7 +1707,7 @@
         }
         for (e = 0; e < f.length; e++) f[e].getAttribute("class") && (f[e].setAttribute("fr-original-class", f[e].getAttribute("class")), f[e].removeAttribute("class"))
       }
-      if (b.core.isEmpty() ? b.opts.fullPage && (d = s(b.iframe_document), d += "<html" + b.node.attributes(b.$html.get(0)) + ">" + b.$html.html() + "</html>") : ("undefined" == typeof a && (a = !1), b.opts.fullPage ? (d = s(b.iframe_document), d += "<html" + b.node.attributes(b.$html.get(0)) + ">" + b.$html.html() + "</html>") : d = b.$el.html()), !b.opts.useClasses && !c)
+      if (b.core.isEmpty() ? b.opts.fullPage && (d = getDoctype(b.iframe_document), d += "<html" + b.node.attributes(b.$html.get(0)) + ">" + b.$html.html() + "</html>") : ("undefined" == typeof a && (a = !1), b.opts.fullPage ? (d = getDoctype(b.iframe_document), d += "<html" + b.node.attributes(b.$html.get(0)) + ">" + b.$html.html() + "</html>") : d = b.$el.html()), !b.opts.useClasses && !c)
         for (e = 0; e < f.length; e++) f[e].getAttribute("fr-original-class") && (f[e].setAttribute("class", f[e].getAttribute("fr-original-class")), f[e].removeAttribute("fr-original-class")), f[e].setAttribute("style", f[e].getAttribute("fr-original-style")), f[e].removeAttribute("fr-original-style");
       d = d.replace(/<pre(?:[\w\W]*?)>(?:[\w\W]*?)<\/pre>/g, function (a) {
         return a.replace(/<br>/g, "\n")
@@ -1716,7 +1716,7 @@
       return "string" == typeof r && (d = r), d
     }
 
-    function A() {
+    function getSelected() {
       var c = function (c, d) {
         for (; d && (d.nodeType == Node.TEXT_NODE || !b.node.isBlock(d));) d && d.nodeType != Node.TEXT_NODE && a(c)
           .wrapInner(b.node.openTagString(d) + b.node.closeTagString(d)), d = d.parentNode;
@@ -1752,7 +1752,7 @@
     function B(b) {
       var c = a("<div>")
         .html(b);
-      return c.find(f())
+      return c.find(blockTagsQuery())
           .length > 0
     }
 
@@ -1761,14 +1761,14 @@
       return c.innerHTML = a, b.selection.setAtEnd(c), c.innerHTML
     }
 
-    function D(a) {
+    function escapeEntities(a) {
       return a.replace(/</gi, "&lt;")
         .replace(/>/gi, "&gt;")
         .replace(/"/gi, "&quot;")
         .replace(/'/gi, "&apos;")
     }
 
-    function E(c, d) {
+    function insert(c, d) {
       "" !== b.selection.text() && b.selection.remove();
       var e;
       if (e = d ? c : b.clean.html(c), c.indexOf('class="fr-marker"') < 0 && (e = C(e)), b.core.isEmpty()) b.$el.html(e);
@@ -1797,7 +1797,7 @@
       t(), b.events.trigger("html.inserted")
     }
 
-    function F(c) {
+    function cleanWhiteTags(c) {
       var d = null;
       "undefined" == typeof c && (d = b.selection.element());
       var e, f;
@@ -1816,37 +1816,37 @@
       } while (f)
     }
 
-    function G() {
+    function init() {
       var a = function () {
-        F(), b.placeholder && b.placeholder.refresh()
+        cleanWhiteTags(), b.placeholder && b.placeholder.refresh()
       };
-      b.events.on("mouseup", a), b.events.on("keydown", a), b.events.on("contentChanged", u)
+      b.events.on("mouseup", a), b.events.on("keydown", a), b.events.on("contentChanged", checkIfEmpty)
     }
     return {
-      defaultTag: c
-      , emptyBlocks: d
-      , emptyBlockTagsQuery: e
-      , blockTagsQuery: f
-      , fillEmptyBlocks: k
-      , cleanEmptyTags: g
-      , cleanWhiteTags: F
-      , normalizeSpaces: o
-      , doNormalize: p
-      , cleanBlankSpaces: m
-      , blocks: l
-      , getDoctype: s
-      , set: y
-      , get: z
-      , getSelected: A
-      , insert: E
-      , wrap: i
-      , unwrap: j
-      , escapeEntities: D
-      , checkIfEmpty: u
-      , extractNode: v
-      , extractNodeAttrs: w
-      , extractDoctype: x
-      , _init: G
+      defaultTag: defaultTag
+      , emptyBlocks: emptyBlocks
+      , emptyBlockTagsQuery: emptyBlockTagsQuery
+      , blockTagsQuery: blockTagsQuery
+      , fillEmptyBlocks: fillEmptyBlocks
+      , cleanEmptyTags: cleanEmptyTags
+      , cleanWhiteTags: cleanWhiteTags
+      , normalizeSpaces: normalizeSpaces
+      , doNormalize: doNormalize
+      , cleanBlankSpaces: cleanBlankSpaces
+      , blocks: blocks
+      , getDoctype: getDoctype
+      , set: set
+      , get: get
+      , getSelected: getSelected
+      , insert: insert
+      , wrap: wrap
+      , unwrap: unwrap
+      , escapeEntities: escapeEntities
+      , checkIfEmpty: checkIfEmpty
+      , extractNode: extractNode
+      , extractNodeAttrs: extractNodeAttrs
+      , extractDoctype: extractDoctype
+      , _init: init
     }
   }, a.extend(a.FroalaEditor.DEFAULTS, {
     height: null
