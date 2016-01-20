@@ -523,15 +523,16 @@ nCore.modules.table = (function(){
 
       console.log( 'dataCell', dataCell, _data, _clone, table );
 
-      dataCell.dataset.group = JSON.stringify( {
-        group_id    : _data.group_id,
-        member_id   : _data.member_id,
-        provider_id : _data.provider_id,
-        name        : _data.name
-      })
-      dataCell.textContent = _data.name;
-      dataCell.dataset.query = JSON.stringify(_data.query);
-
+      if ( dataCell ) {
+        dataCell.dataset.group = JSON.stringify( {
+          group_id    : _data.group_id,
+          member_id   : _data.member_id,
+          provider_id : _data.provider_id,
+          name        : _data.name
+        })
+        dataCell.textContent = _data.name;
+        dataCell.dataset.query = JSON.stringify(_data.query);
+      };
       table.appendChild(clone);
     };
   };

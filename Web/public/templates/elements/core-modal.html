@@ -294,11 +294,11 @@ window.onload = (function( window, document, undefined) {
   };
 
   CoreModalProto.getSelectedType = function(){
-    return this.typeElement[ this.typeElement.selectedIndex ].value;
+    return this.typeElement.value;
   };
 
   CoreModalProto.getSelectedSource = function(){
-    return this.sourceElement[ this.sourceElement.selectedIndex ].value;
+    return this.sourceElement.value;
   };
 
   CoreModalProto.getSelected = function(){

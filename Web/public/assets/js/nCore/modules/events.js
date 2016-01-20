@@ -258,7 +258,9 @@ nCore.events = (function(){
         // toolbarBottom: true
       });
       
-      document.querySelector('.fr-wrapper').nextSibling.textContent = '';
+      if ( document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor' ) {
+        document.querySelector('.fr-wrapper').nextSibling.textContent = '';
+      };
 
     });
 
