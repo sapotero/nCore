@@ -1190,16 +1190,16 @@
     }
 
     function info(a) {
-      var c, d, e = !1
-        , f = !1;
+      var c, d, atStart = !1
+        , atEnd = !1;
       if (b.window.getSelection) {
         var g = b.window.getSelection();
-        g.rangeCount && (c = g.getRangeAt(0), d = c.cloneRange(), d.selectNodeContents(a), d.setEnd(c.startContainer, c.startOffset), e = "" === d.toString(), d.selectNodeContents(a), d.setStart(c.endContainer, c.endOffset), f = "" === d.toString())
+        g.rangeCount && (c = g.getRangeAt(0), d = c.cloneRange(), d.selectNodeContents(a), d.setEnd(c.startContainer, c.startOffset), atStart = "" === d.toString(), d.selectNodeContents(a), d.setStart(c.endContainer, c.endOffset), atEnd = "" === d.toString())
       }
-      else b.document.selection && "Control" != b.document.selection.type && (c = b.document.selection.createRange(), d = c.duplicate(), d.moveToElementText(a), d.setEndPoint("EndToStart", c), e = "" === d.text, d.moveToElementText(a), d.setEndPoint("StartToEnd", c), f = "" === d.text);
+      else b.document.selection && "Control" != b.document.selection.type && (c = b.document.selection.createRange(), d = c.duplicate(), d.moveToElementText(a), d.setEndPoint("EndToStart", c), atStart = "" === d.text, d.moveToElementText(a), d.setEndPoint("StartToEnd", c), atEnd = "" === d.text);
       return {
-        atStart: e
-        , atEnd: f
+        atStart: atStart
+        , atEnd: atEnd
       }
     }
 
@@ -1854,42 +1854,42 @@
     , heightMin: null
     , width: null
   }), a.FroalaEditor.MODULES.size = function (a) {
-    function b() {
+    function syncIframe() {
       a.opts.height && a.$el.css("minHeight", a.opts.height - a.helpers.getPX(a.$el.css("padding-top")) - a.helpers.getPX(a.$el.css("padding-bottom"))), a.$iframe.height(a.$el.outerHeight(!0))
     }
 
-    function c() {
+    function refresh() {
       a.opts.height && (a.$wp.height(a.opts.height), a.$el.css("minHeight", a.opts.height - a.helpers.getPX(a.$el.css("padding-top")) - a.helpers.getPX(a.$el.css("padding-bottom")))), a.opts.heightMin && a.$el.css("minHeight", a.opts.heightMin), a.opts.heightMax && a.$wp.css("maxHeight", a.opts.heightMax), a.opts.width && a.$box.width(a.opts.width)
     }
 
-    function d() {
-      return a.$wp ? (c(), void(a.opts.iframe && (a.events.on("keyup", b), a.events.on("commands.after", b), a.events.on("html.set", b), a.events.on("init", b), a.events.on("initialized", b)))) : !1
+    function init() {
+      return a.$wp ? (refresh(), void(a.opts.iframe && (a.events.on("keyup", syncIframe), a.events.on("commands.after", syncIframe), a.events.on("html.set", syncIframe), a.events.on("init", syncIframe), a.events.on("initialized", syncIframe)))) : !1
     }
     return {
-      _init: d
-      , syncIframe: b
-      , refresh: c
+      _init: init
+      , syncIframe: syncIframe
+      , refresh: refresh
     }
   }, a.extend(a.FroalaEditor.DEFAULTS, {
     language: null
   }), a.FroalaEditor.LANGUAGE = {}, a.FroalaEditor.MODULES.language = function (b) {
-    function c(a) {
+    function translate(a) {
       return e && e.translation[a] ? e.translation[a] : a
     }
 
-    function d() {
+    function init() {
       a.FroalaEditor.LANGUAGE && (e = a.FroalaEditor.LANGUAGE[b.opts.language]), e && e.direction && (b.opts.direction = e.direction)
     }
     var e;
     return {
-      _init: d
-      , translate: c
+      _init: init
+      , translate: translate
     }
   }, a.extend(a.FroalaEditor.DEFAULTS, {
     placeholderText: "Type something"
     , placeholderFontFamily: "Arial, Helvetica, sans-serif"
   }), a.FroalaEditor.MODULES.placeholder = function (b) {
-    function c() {
+    function show() {
       var c = 0
         , d = b.node.contents(b.$el.get(0));
       d.length && d[0].nodeType == Node.ELEMENT_NODE ? (c = b.helpers.getPX(a(d[0])
@@ -1899,50 +1899,50 @@
         .text(b.language.translate(b.opts.placeholderText || b.$original_element.attr("placeholder") || ""))
     }
 
-    function d() {
+    function hide() {
       b.$wp.removeClass("show-placeholder")
     }
 
-    function e() {
+    function isVisible() {
       return b.$wp ? b.$wp.hasClass("show-placeholder") : !0
     }
 
-    function f() {
-      return b.$wp ? void(b.core.isEmpty() ? c() : d()) : !1
+    function refresh() {
+      return b.$wp ? void(b.core.isEmpty() ? show() : hide()) : !1
     }
 
-    function g() {
-      return b.$wp ? (b.$placeholder = a('<span class="fr-placeholder"></span>'), b.$wp.append(b.$placeholder), b.events.on("init", f), b.events.on("input", f), b.events.on("keydown", f), b.events.on("keyup", f), void b.events.on("contentChanged", f)) : !1
+    function _init() {
+      return b.$wp ? (b.$placeholder = a('<span class="fr-placeholder"></span>'), b.$wp.append(b.$placeholder), b.events.on("init", refresh), b.events.on("input", refresh), b.events.on("keydown", refresh), b.events.on("keyup", refresh), void b.events.on("contentChanged", refresh)) : !1
     }
     return {
-      _init: g
-      , show: c
-      , hide: d
-      , refresh: f
-      , isVisible: e
+      _init: _init
+      , show: show
+      , hide: hide
+      , refresh: refresh
+      , isVisible: isVisible
     }
   }, a.FroalaEditor.MODULES.edit = function (a) {
-    function b() {
+    function disableDesign() {
       a.browser.mozilla && (a.document.execCommand("enableObjectResizing", !1, "false"), a.document.execCommand("enableInlineTableEditing", !1, "false"))
     }
 
-    function c() {
-      a.$wp && (a.$el.attr("contenteditable", !0), a.$el.removeClass("fr-disabled"), a.$tb && a.$tb.removeClass("fr-disabled"), b()), f = !1
+    function on() {
+      a.$wp && (a.$el.attr("contenteditable", !0), a.$el.removeClass("fr-disabled"), a.$tb && a.$tb.removeClass("fr-disabled"), disableDesign()), f = !1
     }
 
-    function d() {
+    function off() {
       a.$wp && (a.$el.attr("contenteditable", !1), a.$el.addClass("fr-disabled"), a.$tb.addClass("fr-disabled")), f = !0
     }
 
-    function e() {
+    function isDisabled() {
       return f
     }
     var f = !1;
     return {
-      on: c
-      , off: d
-      , disableDesign: b
-      , isDisabled: e
+      on: on
+      , off: off
+      , disableDesign: disableDesign
+      , isDisabled: isDisabled
     }
   }, a.extend(a.FroalaEditor.DEFAULTS, {
     editorClass: null
@@ -1959,7 +1959,7 @@
     , scrollableContainer: "body"
     , keepFormatOnDelete: !1
   }), a.FroalaEditor.MODULES.core = function (b) {
-    function c(a) {
+    function injectStyle(a) {
       b.opts.iframe && b.$head.append('<style data-fr-style="true">' + a + "</style>")
     }
 
@@ -1984,7 +1984,7 @@
         .addClass("fr-" + b.opts.direction), b.$el.attr("dir", b.opts.direction), b.$wp.attr("dir", b.opts.direction), b.opts.zIndex > 1 && b.$box.css("z-index", b.opts.zIndex), b.$box && b.opts.theme && b.$box.addClass(b.opts.theme + "-theme")
     }
 
-    function f() {
+    function isEmpty() {
       return b.node.isEmpty(b.$el.get(0))
     }
 
@@ -1996,7 +1996,7 @@
       }
     }
 
-    function h(a, c) {
+    function getXHR(a, c) {
       var d = new XMLHttpRequest;
       d.open(c, a, !0), b.opts.requestWithCORS && (d.withCredentials = !0);
       for (var e in b.opts.requestHeaders) d.setRequestHeader(e, b.opts.requestHeaders[e]);
@@ -2009,11 +2009,11 @@
         .tagName ? (b.$box.replaceWith(b.$original_element), b.$original_element.show()) : (b.$el.off("contextmenu.rightClick"), b.$wp.replaceWith(b.html.get()), b.$box.removeClass("fr-view fr-ltr fr-box " + (b.opts.editorClass || "")), b.opts.theme && b.$box.addClass(b.opts.theme + "-theme")))
     }
 
-    function j() {
+    function hasFocus() {
       return b.node.hasFocus(b.$el.get(0))
     }
 
-    function k() {
+    function _init() {
       if (a.FroalaEditor.INSTANCES.push(b), g(), b.$wp) {
         e(), b.html.set(b._original_html), b.$el.attr("spellcheck", b.opts.spellcheck), b.helpers.isMobile() && (b.$el.attr("autocomplete", b.opts.spellcheck ? "on" : "off"), b.$el.attr("autocorrect", b.opts.spellcheck ? "on" : "off"), b.$el.attr("autocapitalize", b.opts.spellcheck ? "on" : "off")), b.opts.disableRightClick && b.$el.on("contextmenu.rightClick", function (a) {
           return 2 == a.button ? !1 : void 0
@@ -2031,11 +2031,11 @@
       }), b.$original_element.val(b.html.get()))
     }
     return {
-      _init: k
-      , isEmpty: f
-      , getXHR: h
-      , injectStyle: c
-      , hasFocus: j
+      _init: _init
+      , isEmpty: isEmpty
+      , getXHR: getXHR
+      , injectStyle: injectStyle
+      , hasFocus: hasFocus
     }
   }, a.FroalaEditor.COMMANDS = {
     bold: {
@@ -2313,7 +2313,7 @@
       return c
     }
 
-    function e(e) {
+    function _startEnter(e) {
       var f, g = c(e)
         , h = g.nextSibling
         , i = g.previousSibling
@@ -2344,7 +2344,7 @@
         .remove())
     }
 
-    function f(d) {
+    function _middleEnter(d) {
       for (var e = c(d), f = "", g = d, h = "", i = ""; g != e;) {
         g = g.parentNode;
         var j = "A" == g.tagName && b.cursor.isAtEnd(d, g) ? "fr-to-remove" : "";
@@ -2361,7 +2361,7 @@
         .replaceWith(k)
     }
 
-    function g(d) {
+    function _endEnter(d) {
       for (var e = c(d), f = a.FroalaEditor.MARKERS, g = d; g != e;) {
         g = g.parentNode;
         var h = "A" == g.tagName && b.cursor.isAtEnd(d, g) ? "fr-to-remove" : "";
@@ -2375,7 +2375,7 @@
         .after(f)
     }
 
-    function h(e) {
+    function _backspace(e) {
       var f = c(e)
         , g = f.previousSibling;
       if (g) {
@@ -2436,7 +2436,7 @@
       }
     }
 
-    function i(d) {
+    function _del(d) {
       var e, f = c(d)
         , g = f.nextSibling;
       if (g) {
@@ -2474,11 +2474,11 @@
       }
     }
     return {
-      _startEnter: e
-      , _middleEnter: f
-      , _endEnter: g
-      , _backspace: h
-      , _del: i
+      _startEnter: _startEnter
+      , _middleEnter: _middleEnter
+      , _endEnter: _endEnter
+      , _backspace: _backspace
+      , _del: _del
     }
   }, a.FroalaEditor.NO_DELETE_TAGS = ["TH", "TD", "TABLE"], a.FroalaEditor.SIMPLE_ENTER_TAGS = ["TH", "TD", "LI", "DL", "DT"], a.FroalaEditor.MODULES.cursor = function (b) {
     function c(a) {
@@ -2947,7 +2947,7 @@
         .css("right", 0))) : !1
     }
 
-    function i() {
+    function _init() {
       var c = a.opts.key || [""];
       "string" == typeof c && (c = [c]), a.ul = !0;
       for (var d = 0; d < c.length; d++) {
@@ -2970,7 +2970,7 @@
     }()
       , n = b(c);
     return {
-      _init: i
+      _init: _init
     }
   }, a.FroalaEditor.ENTER_P = 0, a.FroalaEditor.ENTER_DIV = 1, a.FroalaEditor.ENTER_BR = 2, a.FroalaEditor.KEYCODE = {
     BACKSPACE: 8
@@ -3126,7 +3126,7 @@
       A = !1
     }
 
-    function m() {
+    function isIME() {
       return A
     }
 
@@ -3136,7 +3136,7 @@
       if (16 === i) return !0;
       if (229 === i) return A = !0, !0;
       A = !1;
-      var j = s(i) && !r(c)
+      var j = isCharacter(i) && !ctrlKey(c)
         , l = i == a.FroalaEditor.KEYCODE.BACKSPACE || i == a.FroalaEditor.KEYCODE.DELETE;
       if (b.selection.isFull() && !b.opts.keepFormatOnDelete || l && b.placeholder.isVisible() && b.opts.keepFormatOnDelete) {
         if (j || l) {
@@ -3145,7 +3145,7 @@
         }
         b.selection.restore()
       }
-      i == a.FroalaEditor.KEYCODE.ENTER ? c.shiftKey ? e(c) : d(c) : i != a.FroalaEditor.KEYCODE.BACKSPACE || r(c) ? i != a.FroalaEditor.KEYCODE.DELETE || r(c) ? i == a.FroalaEditor.KEYCODE.SPACE ? h(c) : i == a.FroalaEditor.KEYCODE.TAB ? k(c) : r(c) || !s(c.which) || b.selection.isCollapsed() || b.selection.remove() : g(c) : f(c), b.events.enableBlur()
+      i == a.FroalaEditor.KEYCODE.ENTER ? c.shiftKey ? e(c) : d(c) : i != a.FroalaEditor.KEYCODE.BACKSPACE || ctrlKey(c) ? i != a.FroalaEditor.KEYCODE.DELETE || ctrlKey(c) ? i == a.FroalaEditor.KEYCODE.SPACE ? h(c) : i == a.FroalaEditor.KEYCODE.TAB ? k(c) : ctrlKey(c) || !isCharacter(c.which) || b.selection.isCollapsed() || b.selection.remove() : g(c) : f(c), b.events.enableBlur()
     }
 
     function o(c) {
@@ -3207,7 +3207,7 @@
         .hasClass("fr-marker") && "IFRAME" != k.tagName && (b.selection.save(), o(b.node.contents(k)), b.selection.restore()), !b.browser.mozilla && b.html.doNormalize() && (b.selection.save(), b.html.normalizeSpaces(), b.selection.restore())
     }
 
-    function r(a) {
+    function ctrlKey(a) {
       if (-1 != navigator.userAgent.indexOf("Mac OS X")) {
         if (a.metaKey && !a.altKey) return !0
       }
@@ -3215,7 +3215,7 @@
       return !1
     }
 
-    function s(c) {
+    function isCharacter(c) {
       if (c >= a.FroalaEditor.KEYCODE.ZERO && c <= a.FroalaEditor.KEYCODE.NINE) return !0;
       if (c >= a.FroalaEditor.KEYCODE.NUM_ZERO && c <= a.FroalaEditor.KEYCODE.NUM_MULTIPLY) return !0;
       if (c >= a.FroalaEditor.KEYCODE.A && c <= a.FroalaEditor.KEYCODE.Z) return !0;
@@ -3248,20 +3248,20 @@
 
     function t(a) {
       var c = a.which;
-      return r(a) || c >= 37 && 40 >= c ? !0 : (y || (z = b.snapshot.get()), clearTimeout(y), void(y = setTimeout(function () {
+      return ctrlKey(a) || c >= 37 && 40 >= c ? !0 : (y || (z = b.snapshot.get()), clearTimeout(y), void(y = setTimeout(function () {
         y = null, b.undo.saveStep()
       }, 500)))
     }
 
     function u(a) {
-      return r(a) ? !0 : void(z && y && (b.undo.saveStep(z), z = null))
+      return ctrlKey(a) ? !0 : void(z && y && (b.undo.saveStep(z), z = null))
     }
 
-    function v() {
+    function forceUndo() {
       y && (clearTimeout(y), b.undo.saveStep(), z = null)
     }
 
-    function w() {
+    function _init() {
       if (b.events.on("keydown", t), b.events.on("input", i), b.events.on("keyup", u), b.events.on("keypress", l), b.events.on("keydown", n), b.events.on("keyup", q), b.events.on("html.inserted", q), b.events.on("cut", j), b.$el.get(0)
           .msGetInputContext) try {
         b.$el.get(0)
@@ -3278,11 +3278,11 @@
     }
     var x, y, z, A = !1;
     return {
-      _init: w
-      , ctrlKey: r
-      , isCharacter: s
-      , forceUndo: v
-      , isIME: m
+      _init: _init
+      , ctrlKey: ctrlKey
+      , isCharacter: isCharacter
+      , forceUndo: forceUndo
+      , isIME: isIME
     }
   }, a.extend(a.FroalaEditor.DEFAULTS, {
     pastePlain: !1
@@ -3425,7 +3425,7 @@
       return d.html()
     }
 
-    function k() {
+    function init() {
       b.events.on("copy", c), b.events.on("cut", c), b.events.on("paste", d), b.$el.on("contextmenu", function (a) {
         2 == a.button && (setTimeout(function () {
           q = !1
@@ -3434,15 +3434,15 @@
     }
     var l, m, n, o, p, q = !1;
     return {
-      _init: k
+      _init: init
     }
   }, a.FroalaEditor.MODULES.tooltip = function (b) {
-    function c() {
+    function hide() {
       b.$tooltip.removeClass("fr-visible")
         .css("left", "-3000px")
     }
 
-    function d(c, d) {
+    function to(c, d) {
       if (c.data("title") || c.data("title", c.attr("title")), !c.data("title")) return !1;
       c.removeAttr("title"), b.$tooltip.text(c.data("title")), b.$tooltip.addClass("fr-visible");
       var e = c.offset()
@@ -3454,18 +3454,18 @@
         .top + c.outerHeight())
     }
 
-    function e(e, f, g) {
+    function bind(e, f, g) {
       b.helpers.isMobile() || (e.on("mouseenter", f, function (b) {
         a(b.currentTarget)
-          .hasClass("fr-disabled") || d(a(b.currentTarget), g)
+          .hasClass("fr-disabled") || to(a(b.currentTarget), g)
       }), e.on("mouseleave " + b._mousedown + " " + b._mouseup, f, function (a) {
-        c()
+        hide()
       })), b.events.on("destroy", function () {
         e.off("mouseleave " + b._mousedown + " " + b._mouseup, f), e.off("mouseenter", f)
       }, !0)
     }
 
-    function f() {
+    function _init() {
       b.helpers.isMobile() || (b.$tooltip = a('<div class="fr-tooltip"></div>'), b.opts.theme && b.$tooltip.addClass(b.opts.theme + "-theme"), a(b.original_document)
         .find("body")
         .append(b.$tooltip), b.events.on("destroy", function () {
@@ -3475,10 +3475,10 @@
       }, !0))
     }
     return {
-      _init: f
-      , hide: c
-      , to: d
-      , bind: e
+      _init: _init
+      , hide: hide
+      , to: to
+      , bind: bind
     }
   }, a.FroalaEditor.ICON_DEFAULT_TEMPLATE = "font_awesome", a.FroalaEditor.ICON_TEMPLATES = {
     font_awesome: '<i class="fa fa-[NAME]"></i>'
@@ -3532,7 +3532,7 @@
   }, a.FroalaEditor.DefineIcon = function (b, c) {
     a.FroalaEditor.ICONS[b] = c
   }, a.FroalaEditor.MODULES.icon = function (b) {
-    function c(b) {
+    function create(b) {
       var c = null
         , d = a.FroalaEditor.ICONS[b];
       if ("undefined" != typeof d) {
@@ -3544,7 +3544,7 @@
       return c || b
     }
     return {
-      create: c
+      create: create
     }
   }, a.FroalaEditor.MODULES.button = function (b) {
     function c(c) {
@@ -3578,7 +3578,7 @@
         .outerWidth())), g.removeClass("fr-active")
     }
 
-    function d(c) {
+    function exec(c) {
       c.addClass("fr-blink"), setTimeout(function () {
         c.removeClass("fr-blink")
       }, 500);
@@ -3590,13 +3590,13 @@
 
     function e(b) {
       var c = a(b.currentTarget);
-      d(c)
+      exec(c)
     }
 
     function f(d) {
       var f = a(d.currentTarget);
       0 != f.parents(".fr-popup")
-        .length || f.data("popup") || b.popups.hideAll(), f.hasClass("fr-dropdown") ? c(d) : (e(d), a.FroalaEditor.COMMANDS[f.data("cmd")] && 0 != a.FroalaEditor.COMMANDS[f.data("cmd")].refreshAfterCallback && o())
+        .length || f.data("popup") || b.popups.hideAll(), f.hasClass("fr-dropdown") ? c(d) : (e(d), a.FroalaEditor.COMMANDS[f.data("cmd")] && 0 != a.FroalaEditor.COMMANDS[f.data("cmd")].refreshAfterCallback && bulkRefresh())
     }
 
     function g(a) {
@@ -3612,7 +3612,7 @@
       return a.stopPropagation(), b.opts.toolbarInline ? !1 : void 0
     }
 
-    function j(c, d) {
+    function bindCommands(c, d) {
       b.events.bindClick(c, ".fr-command:not(.fr-disabled)", f), c.on(b._mousedown + " " + b._mouseup + " " + b._move, ".fr-dropdown-menu", h), c.on(b._mousedown + " " + b._mouseup + " " + b._move, ".fr-dropdown-menu .fr-dropdown-wrapper", i);
       var e = c.get(0)
         .ownerDocument
@@ -3659,7 +3659,7 @@
       return i
     }
 
-    function m(c, d) {
+    function buildList(c, d) {
       for (var e = "", f = 0; f < c.length; f++) {
         var g = c[f]
           , h = a.FroalaEditor.COMMANDS[g];
@@ -3673,37 +3673,37 @@
       return e
     }
 
-    function n(c) {
+    function refresh(c) {
       var d, e = c.data("cmd");
       c.hasClass("fr-dropdown") ? d = c.next() : c.removeClass("fr-active"), a.FroalaEditor.COMMANDS[e] && a.FroalaEditor.COMMANDS[e].refresh ? a.FroalaEditor.COMMANDS[e].refresh.apply(b, [c, d]) : b.refresh[e] ? b.refresh[e](c, d) : b.refresh["default"](c, e)
     }
 
-    function o() {
+    function bulkRefresh() {
       return 0 == b.events.trigger("buttons.refresh") ? !0 : void setTimeout(function () {
         for (var c = b.selection.inEditor() && b.core.hasFocus(), d = 0; d < q.length; d++) {
           var e = a(q[d])
             , f = e.data("cmd");
           0 == e.parents(".fr-popup")
-            .length ? c || a.FroalaEditor.COMMANDS[f] && a.FroalaEditor.COMMANDS[f].forcedRefresh ? n(e) : e.hasClass("fr-dropdown") || e.removeClass("fr-active") : e.parents(".fr-popup")
-            .is(":visible") && n(e)
+            .length ? c || a.FroalaEditor.COMMANDS[f] && a.FroalaEditor.COMMANDS[f].forcedRefresh ? refresh(e) : e.hasClass("fr-dropdown") || e.removeClass("fr-active") : e.parents(".fr-popup")
+            .is(":visible") && refresh(e)
         }
       }, 0)
     }
 
-    function p() {
-      b.events.on("mouseup", o), b.events.on("keyup", o), b.events.on("blur", o), b.events.on("focus", o), b.events.on("contentChanged", o)
+    function _init() {
+      b.events.on("mouseup", bulkRefresh), b.events.on("keyup", bulkRefresh), b.events.on("blur", bulkRefresh), b.events.on("focus", bulkRefresh), b.events.on("contentChanged", bulkRefresh)
     }
     var q = [];
     return {
-      _init: p
-      , buildList: m
-      , bindCommands: j
-      , refresh: n
-      , bulkRefresh: o
-      , exec: d
+      _init: _init
+      , buildList: buildList
+      , bindCommands: bindCommands
+      , refresh: refresh
+      , bulkRefresh: bulkRefresh
+      , exec: exec
     }
   }, a.FroalaEditor.MODULES.position = function (b) {
-    function c() {
+    function getBoundingRect() {
       var c, d = b.selection.ranges(0);
       if (d && d.collapsed && b.selection.inEditor()) {
         var e = !1;
@@ -3762,18 +3762,18 @@
           .left), d
     }
 
-    function f(d) {
-      var e = c();
+    function forSelection(d) {
+      var e = getBoundingRect();
       d.css("top", 0)
         .css("left", 0);
       var f = e.top + e.height
         , h = e.left + e.width / 2 - d.outerWidth() / 2 + a(b.original_window)
           .scrollLeft();
       b.opts.iframe || (f += a(b.original_window)
-        .scrollTop()), g(h, f, d, e.height)
+        .scrollTop()), at(h, f, d, e.height)
     }
 
-    function g(a, c, f, g) {
+    function at(a, c, f, g) {
       var h = f.data("container");
       h && "BODY" != h.get(0)
         .tagName && (a && (a -= h.offset()
@@ -3897,16 +3897,16 @@
             })
         }
         else a("body" == b.opts.scrollableContainer ? b.original_window : b.opts.scrollableContainer)
-          .on("scroll.sticky" + b.id, l), a(b.original_window)
-          .on("resize.sticky" + b.id, l), b.events.on("initialized", l), b.events.on("focus", l), a(b.original_window)
-          .on("resize", "textarea", l)
+          .on("scroll.sticky" + b.id, refresh), a(b.original_window)
+          .on("resize.sticky" + b.id, refresh), b.events.on("initialized", refresh), b.events.on("focus", refresh), a(b.original_window)
+          .on("resize", "textarea", refresh)
     }
 
-    function l() {
+    function refresh() {
       for (var a = 0; a < b._stickyElements.length; a++) i(b._stickyElements[a])
     }
 
-    function m(a) {
+    function addSticky(a) {
       a.addClass("fr-sticky"), b.helpers.isIOS() && a.addClass("fr-sticky-ios"), j() || b._stickyElements.push(a.get(0))
     }
 
@@ -3916,16 +3916,16 @@
         .off("resize.sticky" + b.id)
     }
 
-    function o() {
+    function _init() {
       k(), b.events.on("destroy", n, !0)
     }
     return {
-      _init: o
-      , forSelection: f
-      , addSticky: m
-      , refresh: l
-      , at: g
-      , getBoundingRect: c
+      _init: _init
+      , forSelection: forSelection
+      , addSticky: addSticky
+      , refresh: refresh
+      , at: at
+      , getBoundingRect: getBoundingRect
     }
   }, a.extend(a.FroalaEditor.DEFAULTS, {
     toolbarInline: !1
@@ -3976,7 +3976,7 @@
         .on("orientationchange.buttons." + b.id, f)
     }
 
-    function h(c, d) {
+    function showInline(c, d) {
       b.helpers.isMobile() ? b.toolbar.show() : setTimeout(function () {
         if (c && c.which == a.FroalaEditor.KEYCODE.ESC);
         else if (b.selection.inEditor() && b.core.hasFocus() && !b.popups.areVisible() && (b.opts.toolbarVisibleWithoutSelection && c && "keyup" != c.type || !b.selection.isCollapsed() && !b.keys.isIME() || d)) {
@@ -3986,22 +3986,22 @@
       }, 0)
     }
 
-    function i() {
+    function hide() {
       return 0 == b.events.trigger("toolbar.hide") ? !1 : void b.$tb.hide()
     }
 
-    function j() {
+    function show() {
       return 0 == b.events.trigger("toolbar.show") ? !1 : void b.$tb.show()
     }
 
     function k() {
-      b.events.on("window.mousedown", i), b.events.on("keydown", i), b.events.on("blur", i), b.events.on("window.mouseup", h), b.events.on("window.keyup", h), b.events.on("keydown", function (b) {
-        b && b.which == a.FroalaEditor.KEYCODE.ESC && i()
-      }), b.$wp.on("scroll.toolbar", h), b.events.on("commands.after", h)
+      b.events.on("window.mousedown", hide), b.events.on("keydown", hide), b.events.on("blur", hide), b.events.on("window.mouseup", showInline), b.events.on("window.keyup", showInline), b.events.on("keydown", function (b) {
+        b && b.which == a.FroalaEditor.KEYCODE.ESC && hide()
+      }), b.$wp.on("scroll.toolbar", showInline), b.events.on("commands.after", showInline)
     }
 
     function l() {
-      b.events.on("focus", h, !0), b.events.on("blur", i, !0)
+      b.events.on("focus", showInline, !0), b.events.on("blur", hide, !0)
     }
 
     function m() {
@@ -4019,7 +4019,7 @@
         .remove()
     }
 
-    function o() {
+    function _init() {
       return b.$wp ? (b.$tb = a('<div class="fr-toolbar"></div>'), b.opts.theme && b.$tb.addClass(b.opts.theme + "-theme"), b.opts.zIndex > 1 && b.$tb.css("z-index", b.opts.zIndex + 1), "auto" != b.opts.direction && b.$tb.removeClass("fr-ltr fr-rtl")
         .addClass("fr-" + b.opts.direction), b.helpers.isMobile() ? b.$tb.addClass("fr-mobile") : b.$tb.addClass("fr-desktop"), m(), r = b.$tb.get(0)
         .ownerDocument, s = "defaultView" in r ? r.defaultView : r.parentWindow, d(), g(), b.$tb.on(b._mousedown + " " + b._mouseup, function (a) {
@@ -4028,12 +4028,12 @@
       }), void b.events.on("destroy", n, !0)) : !1
     }
 
-    function p() {
+    function disable() {
       !u && b.$tb && (b.$tb.find("> .fr-command")
         .addClass("fr-disabled fr-no-refresh"), u = !0)
     }
 
-    function q() {
+    function enable() {
       u && b.$tb && (b.$tb.find("> .fr-command")
         .removeClass("fr-disabled fr-no-refresh"), u = !1), b.button.bulkRefresh()
     }
@@ -4041,12 +4041,12 @@
     t[a.FroalaEditor.XS] = b.opts.toolbarButtonsXS || b.opts.toolbarButtons, t[a.FroalaEditor.SM] = b.opts.toolbarButtonsSM || b.opts.toolbarButtons, t[a.FroalaEditor.MD] = b.opts.toolbarButtonsMD || b.opts.toolbarButtons, t[a.FroalaEditor.LG] = b.opts.toolbarButtons;
     var u = !1;
     return {
-      _init: o
-      , hide: i
-      , show: j
-      , showInline: h
-      , disable: p
-      , enable: q
+      _init: _init
+      , hide: hide
+      , show: show
+      , showInline: showInline
+      , disable: disable
+      , enable: enable
     }
   }, a.FroalaEditor.SHORTCUTS_MAP = {
     69: {
@@ -4096,11 +4096,11 @@
       }
     }
 
-    function d() {
+    function init() {
       b.events.on("keydown", c, !0), b.events.on("keyup", c, !0)
     }
     return {
-      _init: d
+      _init: init
     }
   }, a.FroalaEditor.MODULES.snapshot = function (a) {
     function b(a) {
@@ -4139,7 +4139,7 @@
       }
     }
 
-    function f() {
+    function get() {
       var b = {};
       if (a.events.trigger("snapshot.before"), b.html = a.$el.html(), b.ranges = [], a.selection.inEditor() && a.core.hasFocus())
         for (var c = a.selection.ranges(), d = 0; d < c.length; d++) b.ranges.push(e(c[d]));
@@ -4163,20 +4163,20 @@
       catch (j) {}
     }
 
-    function i(b) {
+    function restore(b) {
       a.$el.html() != b.html && a.$el.html(b.html);
       var c = a.selection.get();
       a.selection.clear(), a.events.focus(!0);
       for (var d = 0; d < b.ranges.length; d++) h(c, b.ranges[d])
     }
 
-    function j(a, b) {
+    function equal(a, b) {
       return a.html != b.html ? !1 : JSON.stringify(a.ranges) != JSON.stringify(b.ranges) ? !1 : !0
     }
     return {
-      get: f
-      , restore: i
-      , equal: j
+      get: get
+      , restore: restore
+      , equal: equal
     }
   }, a.FroalaEditor.MODULES.undo = function (a) {
     function b(b) {
@@ -4536,19 +4536,19 @@
       })
     }
 
-    function f() {
+    function update() {
       var a = b.popups.get("text.edit")
         , c = a.find("input")
         .val();
       0 == c.length && (c = b.opts.placeholderText), "INPUT" === b.$el.prop("tagName") ? b.$el.attr("placeholder", c) : b.$el.text(c), b.events.trigger("contentChanged"), b.popups.hide("text.edit")
     }
 
-    function g() {
+    function init() {
       b.opts.editInPopup && (c(), e())
     }
     return {
-      _init: g
-      , update: f
+      _init: init
+      , update: update
     }
   }, a.FroalaEditor.RegisterCommand("updateText", {
     focus: !1
