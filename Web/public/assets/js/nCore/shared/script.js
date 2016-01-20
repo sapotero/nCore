@@ -8,6 +8,11 @@ if (typeof jQuery.fn.live == 'undefined' || !(jQuery.isFunction(jQuery.fn.live))
   });
 }
 jQuery(function($) {
+  
+  $('div#paper').on('froalaEditor.initialized', function (e, editor) {
+    document.querySelector('.fr-wrapper').nextSibling.textContent += 'test';
+  });
+
   var $bodyEl              = $('body'),
   $sidedrawerEl            = $('#sidedrawer'),
   $cellSettings            = $('#cellSettings'),
@@ -175,7 +180,7 @@ jQuery(function($) {
 
     // убрать из прода
     nCore.preloader.event.publish('loadCriteria');
-    
+
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child    = el.children('.criteriaForm');
 

@@ -257,6 +257,9 @@ nCore.events = (function(){
         // toolbarStickyOffset: 100,
         // toolbarBottom: true
       });
+      
+      document.querySelector('.fr-wrapper').nextSibling.textContent = '';
+
     });
 
     // изменение типа документа

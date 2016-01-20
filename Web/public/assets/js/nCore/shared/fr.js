@@ -1582,6 +1582,7 @@ if (function(e, t) {
                 e ? at.readyWait++ : at.ready(!0)
             },
             ready: function(e) {
+                console.log('ready');
                 if (e === !0 ? !--at.readyWait : !at.isReady) {
                     if (!ht.body) return setTimeout(at.ready);
                     at.isReady = !0, e !== !0 && --at.readyWait > 0 || (kt.resolveWith(ht, [at]), at.fn.triggerHandler && (at(ht).triggerHandler("ready"), at(ht).off("ready")))
@@ -23786,6 +23787,7 @@ window.FDKModernizr = function(e, t, n) {
         t = function() {
             return $("#froala-editor").on("froalaEditor.initialized", function() {
                 return setTimeout(function() {
+
                     return $(".inline-editor").froalaEditor({
                         toolbarInline: !0,
                         charCounterCount: !1,
