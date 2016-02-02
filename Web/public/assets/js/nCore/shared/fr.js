@@ -5119,7 +5119,7 @@ window.FDKModernizr = function(e, t, n) {
                         this.events.trigger("form.submit")
                     }, this)), n()
                 }, this),
-                a = e.proxy(function() {
+                a = e.proxy(function() {``
                     this.$el = this.$original_element, this.$el.attr("contenteditable", !0).css("outline", "none"), this.opts.multiLine = !1, this.$original_element.trigger("froala.doInit")
                 }, this),
                 r = e.proxy(function() {
@@ -24040,7 +24040,7 @@ $.FroalaEditor.RegisterCommand('adjust', {
   }
 });
 
-$.FroalaEditor.DefineIcon('flask', {NAME: 'flask'});
+$.FroalaEditor.DefineIcon('flask', {NAME: 'level-up'});
 $.FroalaEditor.RegisterCommand('flask', {
   title: 'Повернуть на 90',
   focus: false,
@@ -24048,28 +24048,29 @@ $.FroalaEditor.RegisterCommand('flask', {
   refreshAfterCallback: false,
   callback: function () {
 
-    ///////////////////////////////////
-    // поворот ячейки на 90 шрадусов //
-    ///////////////////////////////////
-    
-    /*
-    th.rotate {
-      height: 140px;
-      white-space: nowrap;
-    }
-
-    th.rotate > div {
-      transform: translate(25px, 51px) rotate(315deg);
-      width: 30px;
-    }
-    th.rotate > div > span {
-      border-bottom: 1px solid #ccc;
-      padding: 5px 10px;
-    }
-    */
-
     var el = this.selection.element();
-    console.log('90 -> ', this, '++',this.selection.element(), this.el);
+    console.log('90 -> ', this, '++',this.selection.element(), this.el, el.style);
+
+    // как вариант на канвасе поворачивать текст
+    // var element = document.createElement('canvas');
+    // element.id = this.selection.element().parentNode.rowIndex + " - " + this.selection.element().cellIndex
+    // element.width = 20;
+
+    // // this.selection.element().textContent = '';
+    // this.selection.element().appendChild( element );
+
+    // var canvas = document.getElementById( element.id );
+    // var context = canvas.getContext("2d");
+    // context.save();
+    // context.translate( canvas.width / 2, canvas.height / 2 );
+    // context.rotate( -Math.PI / 2 );
+    // context.font = "16px serif";
+    // context.fillStyle = "#00df00";
+    // context.textAlign = "center";
+    // context.fillText( el.textContent, 0, 0 );
+    // context.restore();
+
+    // this.selection.element().textContent = '';
 
     // this.selection.element()
     if ( this.selection.element().nodeName == 'TD' ) {

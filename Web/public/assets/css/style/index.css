@@ -285,6 +285,13 @@ buttons {
   padding: 0px 10px;
 }
 
+.documentTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 5px;
+  text-overflow: ellipsis;
+}
+
 @media print {
   * {
     visibility: hidden;

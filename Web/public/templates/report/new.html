@@ -98,39 +98,7 @@
     <td class="mui-col-md-2">&nbsp;</td>
   </tr>
 </table>
-<!-- 
 
-
-      <table style="width: 100%;">
-  <tbody>
-    <tr>
-      <td style="width: 33.3333%;" class="fr-highlighted">
-        <br>
-      </td>
-      <td style="width: 33.3333%;" class="fr-highlighted" data-query='[{"query":[{"criteria_condition":"and","source":"incoming_documents","conditions":"equal","origin_name":"554c5fc858040000f0000001","value":"a"}],"conditions":"and"}]' data-name="undefined">a</td>
-      <td style="width: 33.3333%;" class="fr-highlighted" data-query='[{"query":[{"criteria_condition":"and","source":"incoming_documents","conditions":"equal","origin_name":"562a3ae1c1aa00003d000001","value":"b"}],"conditions":"and"}]' data-name="undefined">b</td>
-    </tr>
-    <tr>
-      <td style="width: 33.3333%;" class="fr-thick" data-query='[{"query":[{"criteria_condition":"and","source":"incoming_documents","conditions":"equal","origin_name":"562a3ae1c1aa00003d000001","value":"1"}],"conditions":"and"}]' data-name="undefined">1</td>
-      <td style="width: 33.3333%;">
-        <br>
-      </td>
-      <td style="width: 33.3333%;">
-        <br>
-      </td>
-    </tr>
-    <tr>
-      <td style="width: 33.3333%;" class="fr-thick" data-query='[{"query":[{"criteria_condition":"and","source":"incoming_documents","conditions":"equal","origin_name":"562a3ae1c1aa00003d000001","value":"2"}],"conditions":"and"}]' data-name="undefined">2</td>
-      <td style="width: 33.3333%;">
-        <br>
-      </td>
-      <td style="width: 33.3333%;">
-        <br>
-      </td>
-    </tr>
-  </tbody>
-</table>
- -->
 
 <!-- шаблон группы -->
 <div class="criteriaSelectorGroupTemplate">
@@ -142,7 +110,7 @@
     <ul class="criteriaSelectorGroupList mui-row">
     </ul>
   </li>
-  <div class="mui-select mui-col-md-12 connectionGroup mui--hide">
+  <div class="mui-select mui-col-md-12 connectionGroup">
     <select>
       <option value="and">И</option>
       <option value="or">ИЛИ</option>
@@ -182,7 +150,10 @@
         <option value="not_equal">Не</option>
         <option value="regexp">Частичное совпадение</option>
         <option value="full_text">Ключевые слова</option>
+        <option value="exist">Присутствует</option>
         <option value="group">Группа</option>
+        <option value="not_in_group">Исключая группу</option>
+        <option value="range" >За период</option>
       </select>
       
       <input class="muiFieldField" type="text" name="value" placeholder="Значение">

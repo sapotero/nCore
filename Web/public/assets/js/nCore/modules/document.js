@@ -109,22 +109,20 @@ nCore.document = (function(){
     };
 
     nCore.document.root.publish('setDocumentAttributes', data);
-    
 
   },
   load = function load(config){
     console.log('+++', config);
 
-    nCoreDocumentId        = config._id
-    nCoreTitle             = config.title
-    nCoreType              = config.type
-    nCoreName              = config.name
-    nCoreDescription       = config.description
-    nCoreDocumentCellQuery = config.query
-    nCoreIsNew             = false
+    nCoreDocumentId        = config._id;
+    nCoreTitle             = config.title;
+    nCoreType              = config.type;
+    nCoreName              = config.name;
+    nCoreDescription       = config.description;
+    nCoreDocumentCellQuery = config.query;
+    nCoreIsNew             = false;
 
-    document.querySelector( '.fr-wrapper' ).classList.remove('show-placeholder');
-    document.querySelectorAll( '.fr-element.fr-view' )[ document.querySelectorAll( '.fr-element.fr-view' ).length-1 ].innerHTML = Base64.decode( config.body );
+    $('#paper').froalaEditor('html.set', Base64.decode( config.body ));
   },
   createNew = function createNew(url){
     var overlayEl = mui.overlay('on');
@@ -154,6 +152,14 @@ nCore.document = (function(){
       location.hash = "#tables/"+ ( url ? url: "new" )
     },1000);
   },
+  generateNew = function generateNew(){
+    nCoreDocumentId = '',
+    nCoreIsNew = true,
+    nCoreName = '',
+    nCoreDescription = '',
+    nCoreDocumentCellQuery = {};
+    nCore.document.setTitle('Новый документ');
+  },
   save = function save(conf){
     console.log('save conf', conf);
   },
@@ -161,7 +167,7 @@ nCore.document = (function(){
     return nCoreTitle;
   },
   setTitle = function setTitle(t){
-    nCoreTitle = t;
+    nCoreTitle = t ? t : nCoreTitle;
     document.querySelector('#nCoreDocumentHeadLine').textContent = nCoreTitle;
   };
 
@@ -192,6 +198,7 @@ nCore.document = (function(){
     periodStart     : periodStart,
     setPeriodStart  : setPeriodStart,
     periodEnd       : periodEnd,
-    setPeriodEnd    : setPeriodEnd
+    setPeriodEnd    : setPeriodEnd,
+    generateNew     : generateNew
   };
 })();

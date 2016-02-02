@@ -114,7 +114,7 @@ nCore.events = (function(){
         periodEnd   : data.elements.nCorePeriodEnd.value,
         datetime    : new Date().getTime(),
         query       : nCore.document.cellQuery() || '',
-        body        : Base64.encode(document.getElementById('paper').querySelector('.fr-element.fr-view').innerHTML),
+        body        : Base64.encode(),
       };
       nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value   );
       nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
@@ -172,7 +172,7 @@ nCore.events = (function(){
           name        : nCore.document.name(),
           description : nCore.document.description(),
           datetime    : new Date().getTime(),
-          body        : Base64.encode(document.getElementById('paper').querySelector('.fr-element.fr-view').innerHTML),
+          body        : Base64.encode(),
           query       : nCore.document.cellQuery() || '',
           periodStart : nCore.document.periodStart(),
           periodEnd   : nCore.document.periodEnd()
@@ -201,7 +201,7 @@ nCore.events = (function(){
           name        : nCore.document.name(),
           description : nCore.document.description(),
           datetime    : new Date().getTime(),
-          body        : Base64.encode(document.getElementById('paper').querySelector('.fr-element.fr-view').innerHTML),
+          body        : Base64.encode( $('#paper').froalaEditor('html.get') ),
           query       : nCore.document.cellQuery() || '',
           periodStart : nCore.document.periodStart(),
           periodEnd   : nCore.document.periodEnd()
@@ -240,32 +240,26 @@ nCore.events = (function(){
       // }
     });
 
+    nCore.document.root.subscribe('generateNewDocument', function () {
+      nCore.document.generateNew();
+    });
+
     // [NEW] изменение свойств документа
     nCore.document.root.subscribe('initEditor', function (data) {
       console.log('initEditor');
-      var editor = $('div#paper').froalaEditor({
-        toolbarButtons: [
-          'file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline',  'fontSize', '|', 'color', /*'paragraphStyle'*/, '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
+      $('div#paper').froalaEditor({
+        toolbarButtons   : [ 'file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline',  'fontSize', '|', 'color', /*'paragraphStyle'*/, '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
+        toolbarButtonsMD : [ 'file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline',  'fontSize', '|', 'color', /*'paragraphStyle'*/, '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
+        toolbarButtonsSM : [ 'file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline',  'fontSize', '|', 'color', /*'paragraphStyle'*/, '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
+        toolbarButtonsXS : [ 'file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline',  'fontSize', '|', 'color', /*'paragraphStyle'*/, '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
         language: 'ru',
         charCounterCount: false,
         toolbarSticky: false
-        // раскоментировать когда будет выкладывать в прод
-        // toolbarButtons: ['file-o', 'floppy-o', '|', 'bold', 'italic', 'underline', 'strikeThrough', 'fontSize', '|', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', '|','alignLeft', 'alignCenter', 'alignRight', '|','formatOL', 'formatUL', '|','outdent', 'indent', '|','insertImage', 'insertTable', '|', 'html', '|','undo', 'redo', '|', 'cog'],
-        // toolbarInline: true,
-        // theme: 'gray',
-        // tableEditButtons: ['tableRows', 'tableColumns', 'tableCells', 'tableCellVerticalAlign', 'tableRemove']
-        // toolbarStickyOffset: 100,
-        // toolbarBottom: true
       });
 
-      editor.on('froalaEditor.initialized', function(){
+      $('div#paper').on('froalaEditor.initialized', function (e, editor) {
         console.log('init');
       });
-
-      
-      if ( document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor' ) {
-        document.querySelector('.fr-wrapper').nextSibling.textContent = '';
-      };
 
     });
 
@@ -341,7 +335,8 @@ nCore.events = (function(){
       setTimeout(function () {
         mui.overlay('off');
         document.body.classList.add('hide-sidedrawer');
-        location.hash = "#" + documentType + "/new"
+         nCore.document.root.publish('generateNewDocument');;
+        location.hash = "#" + documentType + "/new";
       }, 1000);
     });
 
@@ -371,7 +366,7 @@ nCore.events = (function(){
       ;
 
       var items = JSON.parse(nCore.storage.getItem(type));
-      // console.log('storage: ', items);
+      console.log('storage: ', items);
 
       var helper = {
         documentTitle: {
@@ -381,7 +376,7 @@ nCore.events = (function(){
         },
         documentDate: {
           text: function (params) {
-            return this.date || new Date();
+            return this.date || new Date().toLocaleString();
           }
         },
         documentId: {
@@ -420,7 +415,7 @@ nCore.events = (function(){
 
       var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
         _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
-        // когда включим изменение вида
+        // когда б
         // _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
 
       for (var i = 0; i < _mui_rows.length; i++) {
@@ -539,12 +534,13 @@ nCore.events = (function(){
             // console.log('criterias',  criterias);
             // console.log('conditions', groupConditions);
 
-            var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
-              groupTemplate = _groupTemplate.cloneNode(true),
+            var _groupTemplate     = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
+              groupTemplate        = _groupTemplate.cloneNode(true),
               groupSelectCondition = groupTemplate.getElementsByTagName('select')[0];
 
             if (groupConditions) {
               for (var v = 0; v < groupSelectCondition.options.length; v++) {
+                console.log('groupSelectCondition', groupSelectCondition);
                 if (groupSelectCondition[v].value === groupConditions) {
                   _selectedIindex = v;
                   break;
@@ -554,16 +550,20 @@ nCore.events = (function(){
 
               groupTemplate.getElementsByClassName('connectionGroup')[0].classList.remove('mui--hide');
             }
-            ;
 
             for (var b = 0; b < criterias.length; b++) {
-              var _elements_to_update = [];
-              var item = criterias[b],
-                list = groupTemplate.getElementsByClassName('criteriaSelectorGroupList')[0],
-                cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
+              var _elements_to_update = [],
+                  item         = criterias[b],
+                  list         = groupTemplate.getElementsByClassName('criteriaSelectorGroupList')[0],
+                  cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
 
-              // console.log('!! criteria', item);
-
+              // проверка на незаполненые поля в критерии
+              console.log('!! criteria', item);
+              if ( item.source == null && item.origin_name == null ) {
+                activeCell.dataset.query = '[]';
+                console.error('ERROR', activeCell.dataset.query );
+                continue;
+              }
 
               var card = cardTemplate.cloneNode(true);
               card.classList.remove('criteriaSelectorItemTemplate');
@@ -603,11 +603,15 @@ nCore.events = (function(){
                 option.value = originTable[q]._id;
                 option.text = originTable[q].russian_name;
                 option.dataset.auto = originTable[q].autocomplete_url;
+                option.dataset.type = originTable[q].data_type;
+                
                 originTable[q].autocomplete_url ? option.dataset.auto = originTable[q].autocomplete_url : false;
+                originTable[q].data_type        ? option.dataset.type = originTable[q].data_type        : false;
+
+
                 if (item.origin_name === originTable[q]._id) {
                   _elements_to_update.push({name: 'origin_name', val: item.origin_name})
                 }
-
                 _df.appendChild(option);
               }
               origin_name.appendChild(_df);
@@ -691,12 +695,9 @@ nCore.events = (function(){
           }
 
           if (_a[o].element.name == 'value' ) {
-            // console.log('--> name', _a[o].element, activeCell.dataset.name );
-            
+            // console.log('--> value', _a[o].element, activeCell.dataset.name );
             _a[o].element.dataset.name  = activeCell.dataset.name;
             _a[o].element.dataset.value = _a[o].val;
-
-
           };
 
           $(_a[o].element).val(_a[o].val).trigger('change');
@@ -741,6 +742,7 @@ nCore.events = (function(){
 
       // переписать с jQuery на js
       console.log('active cell', activeCell);
+
       var _query = [],
         list = document.querySelector(".criteriaSelector"),
         criterias = list.querySelectorAll('div');
@@ -767,14 +769,14 @@ nCore.events = (function(){
             form = item.children('.criteriaForm');
 
           var _select = head[0].querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition');
-          console.log( '---', _select, _select.selectedIndex, _select.options[ _select.selectedIndex ] );
+          // console.log( '---', _select, form.children('input[type="date"]'), form.children('input[type="date"]') ? ({ start: form.children('input[name="date_start"]').val(), end: form.children('input[name="date_end"]').val() }) : form.children('[name="value"]').val(), form.children('[name="value"]').val() );
 
           data.query.push({
             criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
             source             : form.children('select[name="table_name"]').val(),
             conditions         : form.children('select[name="conditions"]').val(),
             origin_name        : form.children('select[name="origin_name"]').val(),
-            value              : form.children('select[name="value"]').val() ? form.children('select[name="value"]').val()          : form.children('input[name="value"]').val()
+            value              : form.children('input[type="date"]').length ? { start: form.children('input[name="date_start"]').val(), end: form.children('input[name="date_end"]').val() } : form.children('[name="value"]').val()
           });
         }
         ;
@@ -782,12 +784,16 @@ nCore.events = (function(){
         _query.push(data);
       };
 
+
       // очищаем пустые группы перед добавлением в query
       var _result_query = [];
       for (var c = _query.length - 1; c >= 0; c--) {
         if ( _query[c].query.length ) {
           _result_query.push( _query[c] );
         };
+
+        // фикс пустых клеток
+        // console.log( _query[c].query.source == null );
       };
       
       if (activeCell) {
@@ -862,7 +868,7 @@ nCore.events = (function(){
 
             var keys = [];
             data.filter(function (v, i) {
-              console.log('filter', v, i);
+              // console.log('filter', v, i);
               keys.push({
                 value: v.type,
                 name: v.name
