@@ -261,6 +261,10 @@ nCore.events = (function(){
         console.log('init');
       });
 
+       if ( document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor' ) {
+         document.querySelector('.fr-wrapper').nextSibling.textContent = '';
+       };
+
     });
 
     // изменение типа документа
