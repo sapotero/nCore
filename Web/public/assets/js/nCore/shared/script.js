@@ -195,13 +195,17 @@ jQuery(function($) {
     nCore.preloader.event.publish('loadCriteria');
 
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
-    var child    = el.children('.criteriaForm');
+    var child = el.children('.criteriaForm');
+
+    // console.log( 'element, child', el, child );
 
     $.each( child.children('select'), function(i, el){
+      console.log( el );
+
       if ( !$(el).hasClass('s2')) {
         if ( el.name === 'table_name' ) {
           var _df = new DocumentFragment();
-          var criteriaKeys = JSON.parse(nCore.storage.criteriaKeys);
+          var criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );
           for (var q = 0; q < criteriaKeys.length; q++) {
             var option = document.createElement('option');
             option.value = criteriaKeys[q].value;
@@ -218,7 +222,7 @@ jQuery(function($) {
           var __url = '';
           
           // приоритет группы вне зависимости от автокомплитеров навешанных на поле
-          if ( /*this.name === 'conditions' &&*/ this.value === 'group' || this.value === 'not_in_group' ) {
+          if ( this.value === 'group' || this.value === 'not_in_group' ) {
             __url = 'classifiers/groups/groups.json';
           };
           var _options = this.options[this.selectedIndex];
@@ -314,8 +318,10 @@ jQuery(function($) {
             });
             
           } else {
+
             var parent = this.parentNode,
                 input  = parent.querySelectorAll('[name="value"], [type="date"]');
+           
             $.each(input, function(i, el){
               // console.log(i,el)
               $(el).select2({});
@@ -326,75 +332,251 @@ jQuery(function($) {
 
 
             if ( this.options[this.selectedIndex].dataset.type === 'DateTime' ) {
-              console.log('DateTime', parent.querySelector('option[value="range"]') );
+              console.log( 'conditions', parent,  parent.querySelector('select[name="conditions"]'), nCore.types['DateTime'] );
 
-              delete parent.querySelector('option[value="range"]').disabled;
-              $('select[name="conditions"]').val('range').trigger("change");
+              // delete parent.querySelector('option[value="range"]').disabled;
 
-              var element           = document.createElement('input');
-              element.type          = 'date';
-              element.name          = 'date_start';
-              element.placeholder   = 'Start';
-              element.style.width   = "44%";
-              element.style.marginRight = "2%";
-              element.style.display = "inline-block";
-              element.classList.toggle('muiFieldField');
-              parent.appendChild(element);
+              
+              var _parent =  parent.querySelector('select[name="conditions"]');
 
-              var element           = document.createElement('input');
-              element.type          = 'date';
-              element.name          = 'date_end';
-              element.placeholder   = 'End';
-              element.style.width   = "44%";
-              element.style.display = "inline-block";
-              element.classList.toggle('muiFieldField');
-              parent.appendChild(element);
+              // убираем все options и добавляем их туда из nCore.types
+              while (_parent.firstChild) {
+                  _parent.removeChild(_parent.firstChild);
+              }
 
-              console.log('parent', parent);
+              var _options = nCore.types['DateTime'],
+                  _result = [];
+              for (var z = 0; z < _options.length; z++) {
+                _result.push( new Option(_options[z].caption, _options[z].value) );
+              };
+              $(_parent).append( _result ).val("range").trigger("change");
+              $(_parent).select2();
 
               if ( parent.querySelector('input[name="value"]') ) {
                 parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
               };
-
 
             }  else if ( this.options[this.selectedIndex].dataset.type === 'Boolean' ) {
               console.log('Boolean');
-              
-              var element   = document.createElement('select');
-              element.type          = 'text';
-              element.name          = 'value';
-              element.placeholder   = 'Значение';
-              element.style.width   = "92%";
 
-              $('select[name="conditions"]').val('equal').trigger("change");
+              var _parent =  parent.querySelector('select[name="conditions"]');
 
-              parent.appendChild(element);
-              
-              $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val("").trigger("change");
-              $(element).select2();
+              // убираем все options и добавляем их туда из nCore.types
+              while (_parent.firstChild) {
+                  _parent.removeChild(_parent.firstChild);
+              }
+
+              var _options = nCore.types['Boolean'],
+                  _result = [];
+              for (var z = 0; z < _options.length; z++) {
+                _result.push( new Option(_options[z].caption, _options[z].value) );
+              };
+              $(_parent).append( _result ).val("").trigger("change");
+              $(_parent).select2();
 
               if ( parent.querySelector('input[name="value"]') ) {
                 parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
               };
               
-            } else {
+            }  else if ( this.options[this.selectedIndex].dataset.type === 'String' ) {
+              console.log('String');
+
+              var _parent =  parent.querySelector('select[name="conditions"]');
+
+              // убираем все options и добавляем их туда из nCore.types
+              while (_parent.firstChild) {
+                  _parent.removeChild(_parent.firstChild);
+              }
+
+              var _options = nCore.types['String'],
+                  _result = [];
+              for (var z = 0; z < _options.length; z++) {
+                _result.push( new Option(_options[z].caption, _options[z].value) );
+              };
+              $(_parent).append( _result ).val("").trigger("change");
+              $(_parent).select2();
+
+              
+              // var element   = document.createElement('select');
+              // element.type          = 'text';
+              // element.name          = 'value';
+              // element.placeholder   = 'Значение';
+              // element.style.width   = "92%";
+
+              // $('select[name="conditions"]').val('equal').trigger("change");
+
+              // parent.appendChild(element);
+              
+              // $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val("").trigger("change");
+              // $(element).select2();
+
+              // if ( parent.querySelector('input[name="value"]') ) {
+              //   parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
+              // };
+              
+            }
+            else {
               // input.parentNode.removeChild( input );
               
-              // console.log('input*', input.parentNode);
+              var origin = parent.querySelector('select[name="origin_name"]');
+              console.log('input*', origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
 
-              var element   = document.createElement('input');
-              element.type          = 'text';
-              element.name          = 'value';
-              element.placeholder   = 'Значение';
-              element.classList.add('muiFieldField');
-              
-              parent.appendChild(element);
 
-              input = element;
+              if ( el.value == 'range' && origin.options[origin.selectedIndex].dataset.type === 'DateTime'  ) {
+                var element           = document.createElement('input');
+                element.type          = 'date';
+                element.name          = 'date_start';
+                element.placeholder   = 'Start';
+                element.style.width   = "44%";
+                element.style.marginRight = "2%";
+                element.style.display = "inline-block";
+                element.classList.toggle('muiFieldField');
+                parent.appendChild(element);
+
+                var element           = document.createElement('input');
+                element.type          = 'date';
+                element.name          = 'date_end';
+                element.placeholder   = 'End';
+                element.style.width   = "44%";
+                element.style.display = "inline-block";
+                element.classList.toggle('muiFieldField');
+                parent.appendChild(element);
+
+                console.log('parent', parent);
+              } else if ( el.value == 'equal' && origin.options[origin.selectedIndex].dataset.type === 'DateTime' ){
+                console.log('Date eq');
+                var element           = document.createElement('input');
+                element.type          = 'date';
+                element.name          = 'date_start';
+                element.placeholder   = 'Start';
+                element.style.width   = "92%";
+                element.style.display = "inline-block";
+                element.classList.toggle('muiFieldField');
+                parent.appendChild(element);
+
+              } else if ( el.value == 'equal' && origin.options[origin.selectedIndex].dataset.type === 'Boolean' ){
+
+                var parent  = this.parentNode,
+                element = document.createElement('select');
+                element.type          = 'text';
+                element.name          = 'value';
+                element.placeholder   = 'Значение';
+                element.style.width   = "92%";
+
+                parent.appendChild(element);
+
+                console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
+                if ( parent.querySelector('input[name="value"]') ) {
+                  parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
+                };
+
+
+                $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val("").trigger("change");
+                $(element).select2()
+                .on('change', function(){
+                  nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
+                })
+              } else if ( ( el.value == 'equal' || el.value == 'not_equal' || el.value == 'regexp' || el.value == 'full_text' ) && origin.options[origin.selectedIndex].dataset.type === 'String' && origin.options[origin.selectedIndex].dataset.hasOwnProperty('auto')  && origin.options[origin.selectedIndex].dataset.auto.length){
+                
+                console.warn('****', origin.options[origin.selectedIndex].dataset.auto);
+
+                var parent = this.parentNode,
+                input  = parent.querySelectorAll('[name="value"], [type="date"]');
+
+                $.each(input, function(i, el){
+                  // console.log(i,el)
+                  $(el).select2({});
+                  $(el).select2('destroy');
+                  parent.removeChild( el );
+                });
+                
+                // parent.removeChild( input );
+                
+                // $('select[name="conditions"]').val('equal').trigger("change");
+                if ( parent.querySelector('input[name="value"]') ) {
+                  parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
+                };
+
+                var element   = document.createElement('select');
+                element.type         = 'text';
+                element.name         = 'value';
+                element.placeholder  = 'Значение';
+                element.style.paddingBottom = '15px';
+                element.style.marginBottom = '20px;';
+                element.style.width   = '92%';
+                element.dataset.name  = 'value';
+                // console.log('emenet', element)
+
+                parent.appendChild(element);
+
+                input = element;
+
+                // /classifiers/groups/groups.json
+                $( input ).select2({
+                  ajax: {
+                    url: origin.options[origin.selectedIndex].dataset.auto,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (data) {
+                      // console.log('data', data);
+                      return { id: data._id, term: data.term };
+                    },
+                    processResults: function (data, params) {
+                      // console.log('*****', data, params);
+                      
+                       return {
+                          results: $.map(data, function(p) {
+                            var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
+                            return {
+                              id: p._id,
+                              text: val,
+                              value: val
+                            };
+                          })
+                        };
+                    },
+                    cache: true
+                  },
+                  // escapeMarkup: function (markup) { return markup; },
+                  minimumInputLength: 1,
+                  placeholder: "Начните ввод"
+                  // templateResult: function(data){
+                  //   if (data.loading) return data.text;
+                  //   var markup = "<div class='select2-result-datasitory__forks'><i class='fa fa-flash'></i> " + data._id + "</div>"
+                  //   return markup;
+                  // },
+                  // templateSelection: function(data){
+                  //   return data.short_title || data.text;
+                  // }
+                }).on('change', function(){
+                  // this.dataset.name = this.options[this.selectedIndex].value;
+                  // nCore.modules.table.activeCell().dataset.name = this.options[this.selectedIndex].value;
+                  
+                  console.warn( 'change ', this.options[this.selectedIndex].value, this.options[this.selectedIndex].textContent );
+                  
+                  if (this.nodeName === 'SELECT') {
+                    nCore.modules.table.event.publish( 'newCellSettingsChange',this.options[this.selectedIndex].textContent );
+                  };
+
+                  // console.log('change event', this);
+
+                  nCore.modules.table.event.publish('newCellSettingsChange');
+                });
+
+              } else {
+                var element   = document.createElement('input');
+                element.type          = 'text';
+                element.name          = 'value';
+                element.placeholder   = 'Значение';
+                element.classList.add('muiFieldField');
+                
+                parent.appendChild(element);
+
+              };
             };
           }
 
-            if( this.value === 'exist' ) {
+          if( this.value === 'exist' ) {
             var parent  = this.parentNode,
                 element = document.createElement('select');
             element.type          = 'text';
@@ -416,40 +598,9 @@ jQuery(function($) {
                 nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
               })
           };
-
-          
-          if ( this.name === 'origin_name' ) {
-            // );
-          };
-
-          if ( this.name === 'table_name' ) {
-            var select = this.nextElementSibling.nextElementSibling;
-            select.innerHTML = '';
-            
-            // console.log('**', this.value);
-
-            var _df = new DocumentFragment();
-            var originTable = JSON.parse( nCore.storage.getItem( this.value ) );
-            for (var q = 0; q < originTable.length; q++) {
-              var option = document.createElement('option');
-              option.value = originTable[q]._id;
-              option.text  = originTable[q].russian_name;
-              
-              if ( originTable[q].autocomplete_url ){
-                option.dataset.auto = originTable[q].autocomplete_url;
-              }
-              if ( originTable[q].data_type ){
-                option.dataset.type = originTable[q].data_type;
-              }
-
-              _df.appendChild(option);
-            };
-            select.appendChild(_df);
-          };
           
           nCore.modules.table.event.publish('newCellSettingsChange',  $(".criteriaSelector") )
         });
-
       };
     });
     child[0].classList.toggle('hide');

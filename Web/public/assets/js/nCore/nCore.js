@@ -256,6 +256,80 @@ nCore = (function(){
    };
 
   return {
+    types : {
+      String: [
+        {
+          value: "equal",
+          caption: "Точное совпадение"
+        },
+        {
+          value: "not_equal",
+          caption: "Не"
+        },
+        {
+          value: "regexp",
+          caption: "Частичное совпадение"
+        },
+        {
+          value: "full_text",
+          caption: "Ключевые слова"
+        },
+        {
+          value: "group",
+          caption: "Группа"
+        },
+        {
+          value: "not_in_group",
+          caption: "Исключая группу"
+        }
+      ],
+      DateTime: [
+        {
+          value: "equal",
+          caption: "Точное совпадение"
+        },
+        {
+          value: "range",
+          caption: "За период"
+        }
+      ],
+      Boolean:  [
+        {
+          value: "equal",
+          caption: "Точное совпадение"
+        },
+        {
+          value: "exist",
+          caption: "Присутствует"
+        }
+      ],
+      Default:  [
+        {
+          value: "equal",
+          caption: "Точное совпадение"
+        },
+        {
+          value: "not_equal",
+          caption: "Не"
+        },
+        {
+          value: "regexp",
+          caption: "Частичное совпадение"
+        },
+        {
+          value: "full_text",
+          caption: "Ключевые слова"
+        },
+        {
+          value: "group",
+          caption: "Группа"
+        },
+        {
+          value: "not_in_group",
+          caption: "Исключая группу"
+        }
+      ]
+    },
     channels  : {},
     init      : init,
     

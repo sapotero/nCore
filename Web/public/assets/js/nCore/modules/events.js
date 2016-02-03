@@ -247,6 +247,7 @@ nCore.events = (function(){
     // [NEW] изменение свойств документа
     nCore.document.root.subscribe('initEditor', function (data) {
       console.log('initEditor');
+      
       $('div#paper').froalaEditor({
         toolbarButtons   : [ 'file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline',  'fontSize', '|', 'color', /*'paragraphStyle'*/, '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
         toolbarButtonsMD : [ 'file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline',  'fontSize', '|', 'color', /*'paragraphStyle'*/, '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
@@ -758,7 +759,7 @@ nCore.events = (function(){
             source             : form.children('select[name="table_name"]').val(),
             conditions         : form.children('select[name="conditions"]').val(),
             origin_name        : form.children('select[name="origin_name"]').val(),
-            value              : form.children('input[type="date"]').length ? { start: form.children('input[name="date_start"]').val(), end: form.children('input[name="date_end"]').val() } : form.children('[name="value"]').val()
+            value              : form.children('input[type="date"]').length ? { periodStart: form.children('input[name="date_start"]').val(), periodEnd: form.children('input[name="date_end"]').val() } : form.children('[name="value"]').val()
           });
         }
         ;
