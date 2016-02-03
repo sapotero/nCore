@@ -566,7 +566,6 @@ nCore.events = (function(){
               console.log('!! criteria', item);
               if ( item.source == null && item.origin_name == null ) {
                 activeCell.dataset.query = '[]';
-                console.error('ERROR', activeCell.dataset.query );
                 continue;
               }
 
@@ -676,15 +675,85 @@ nCore.events = (function(){
           }
 
           if (_a[o].element.name == 'value' ) {
-            // console.log('--> value', _a[o].element, activeCell.dataset.name );
-            _a[o].element.dataset.name  = activeCell.dataset.name;
+
+            var el     = _a[o].element,
+                parent = el.parentNode,
+                origin = parent.querySelector('select[name="origin_name"]').options[parent.querySelector('select[name="origin_name"]').selectedIndex];
+            
+            console.log('--> value', el, origin, origin.dataset.auto );
+
+            _a[o].element.dataset.name  = activeCell.dataset.name ;
             _a[o].element.dataset.value = _a[o].val;
+
+            if (origin.dataset.hasOwnProperty('auto') && origin.dataset.auto.length) {
+
+              var element   = document.createElement('select');
+              element.name         = 'hidden_autocomplete_value';
+              element.style.paddingBottom = '15px';
+              element.style.marginBottom = '20px;';
+              element.style.width   = '92%';
+              element.dataset.name  = 'hidden_autocomplete_value';
+              // console.log('emenet', element)
+
+              parent.appendChild(element);
+
+
+              // /classifiers/groups/groups.json
+              console.log('origin.dataset.auto', origin.dataset.auto);
+              
+               
+              $( element ).select2({
+                ajax: {
+                  url: origin.dataset.auto,
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (data) {
+                    return { id: data._id, term: data.term };
+                  },
+                  processResults: function (data, params) {
+                    return {
+                      results: $.map(data, function(p) {
+                        var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
+                        return {
+                          id: p._id,
+                          text: val,
+                          value: val
+                        };
+                      })
+                    };
+                  },
+                  cache: false
+                },
+                minimumInputLength: 1,
+                placeholder: "Начните ввод"
+              }).on('change', function(){
+                // if (this.nodeName === 'SELECT') {
+                //   nCore.modules.table.event.publish( 'newCellSettingsChange',this.options[this.selectedIndex].textContent );
+                // };
+                nCore.modules.table.event.publish('newCellSettingsChange');
+              });
+
+              $(element).append( [ new Option( el.dataset.name , el.dataset.value, true) ] ).val("").trigger("change");
+
+            };
+            // parent.querySelector('')
+            // (_a[o].element.dataset)
           };
+
 
 
 
           $(_a[o].element).val(_a[o].val).trigger('change');
           $(_a[o].element).trigger('change');
+          
+          // if (_a[o].element.name == 'origin_name' ) {
+
+          //   console.warn( '***', el );
+          //   var el = _a[o].element;
+
+          //   $(el).append( new Option( activeCell.dataset.name, _a[o].val) ).val("").trigger("change");
+          //   $(el).select2();
+          // };
         }
       }
       // console.log('group_array', tab);
@@ -721,7 +790,7 @@ nCore.events = (function(){
     });
 
     // изменение критериев поиска активной ячейки
-    nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME) {
+    nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME, URL) {
 
       // переписать с jQuery на js
       // console.log('active cell', activeCell);
@@ -785,6 +854,9 @@ nCore.events = (function(){
 
       if (NAME) {
         activeCell.dataset.name = NAME
+      };
+      if (URL) {
+        activeCell.dataset.url = URL
       };
 
       // console.log('newCellSettings | activeCell -> ',activeCell,  JSON.stringify(_query) )

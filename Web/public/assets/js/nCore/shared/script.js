@@ -168,6 +168,13 @@ jQuery(function($) {
         _df.appendChild(option);
       };
       select.appendChild(_df);
+
+      console.log(select, select.selectedIndex);
+
+      select.selectedIndex = 1;
+
+      $(select).trigger("change");
+      
       return false;
     };
   })
@@ -191,18 +198,23 @@ jQuery(function($) {
   // клик по критерию
   $('.criteriaMenuItem.settings, .criteriaSelectorItemHeader').live('click', function(e){
 
-    // убрать из прода
+    // убрать из прода | каждый раз грузим справочники и критерии
     nCore.preloader.event.publish('loadCriteria');
 
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child = el.children('.criteriaForm');
 
-    // console.log( 'element, child', el, child );
-
     $.each( child.children('select'), function(i, el){
-      console.log( el );
 
       if ( !$(el).hasClass('s2')) {
+        // fix for autocomplite
+        if ( el.name == 'hidden_autocomplete_value' ) {
+          console.log('++');
+          return false;
+        } else {
+
+
+
         if ( el.name === 'table_name' ) {
           var _df = new DocumentFragment();
           var criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );
@@ -217,7 +229,8 @@ jQuery(function($) {
 
         $(el).addClass('s2');
 
-        $(el).select2().on('change', function(){
+
+        $(el).select2({ placeholder: "Выберете поле" }).on('change', function(){
           
           var __url = '';
           
@@ -250,7 +263,12 @@ jQuery(function($) {
             if ( parent.querySelector('input[name="value"]') ) {
               parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
             };
-
+            if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
+              console.log('select+');
+              $(parent.querySelector('[name="hidden_autocomplete_value"]')).select2('destroy');
+              parent.querySelector('[name="hidden_autocomplete_value"]').parentNode.removeChild( parent.querySelector('[name="hidden_autocomplete_value"]') );
+            };
+ 
             var element   = document.createElement('select');
             element.type         = 'text';
             element.name         = 'value';
@@ -305,8 +323,7 @@ jQuery(function($) {
             }).on('change', function(){
               // this.dataset.name = this.options[this.selectedIndex].value;
               // nCore.modules.table.activeCell().dataset.name = this.options[this.selectedIndex].value;
-              
-              console.warn( 'change ', this.options[this.selectedIndex].value, this.options[this.selectedIndex].textContent );
+              // console.warn( 'change ', this.options[this.selectedIndex].value, this.options[this.selectedIndex].textContent );
               
               if (this.nodeName === 'SELECT') {
                 nCore.modules.table.event.publish( 'newCellSettingsChange',this.options[this.selectedIndex].textContent );
@@ -395,31 +412,13 @@ jQuery(function($) {
               };
               $(_parent).append( _result ).val("").trigger("change");
               $(_parent).select2();
-
-              
-              // var element   = document.createElement('select');
-              // element.type          = 'text';
-              // element.name          = 'value';
-              // element.placeholder   = 'Значение';
-              // element.style.width   = "92%";
-
-              // $('select[name="conditions"]').val('equal').trigger("change");
-
-              // parent.appendChild(element);
-              
-              // $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val("").trigger("change");
-              // $(element).select2();
-
-              // if ( parent.querySelector('input[name="value"]') ) {
-              //   parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-              // };
               
             }
             else {
               // input.parentNode.removeChild( input );
               
               var origin = parent.querySelector('select[name="origin_name"]');
-              console.log('input*', origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
+              // console.log('input*', origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
 
 
               if ( el.value == 'range' && origin.options[origin.selectedIndex].dataset.type === 'DateTime'  ) {
@@ -479,10 +478,11 @@ jQuery(function($) {
               } else if ( ( el.value == 'equal' || el.value == 'not_equal' || el.value == 'regexp' || el.value == 'full_text' ) && origin.options[origin.selectedIndex].dataset.type === 'String' && origin.options[origin.selectedIndex].dataset.hasOwnProperty('auto')  && origin.options[origin.selectedIndex].dataset.auto.length){
                 
                 console.warn('****', origin.options[origin.selectedIndex].dataset.auto);
-
+                
                 var parent = this.parentNode,
-                input  = parent.querySelectorAll('[name="value"], [type="date"]');
+                input  = parent.querySelectorAll('[name="value"], [type="date"], [name="hidden_autocomplete_value"]');
 
+                
                 $.each(input, function(i, el){
                   // console.log(i,el)
                   $(el).select2({});
@@ -495,6 +495,11 @@ jQuery(function($) {
                 // $('select[name="conditions"]').val('equal').trigger("change");
                 if ( parent.querySelector('input[name="value"]') ) {
                   parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
+                };
+                if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
+                  console.log('select+');
+                  $(parent.querySelector('[name="hidden_autocomplete_value"]')).select2('destroy');
+                  parent.querySelector('[name="hidden_autocomplete_value"]').parentNode.removeChild( parent.querySelector('[name="hidden_autocomplete_value"]') );
                 };
 
                 var element   = document.createElement('select');
@@ -564,13 +569,19 @@ jQuery(function($) {
                 });
 
               } else {
-                var element   = document.createElement('input');
-                element.type          = 'text';
-                element.name          = 'value';
-                element.placeholder   = 'Значение';
-                element.classList.add('muiFieldField');
-                
-                parent.appendChild(element);
+                if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
+                  // parent.removeChild(parent.querySelector('[name="hidden_autocomplete_value"]'));
+                } else {
+                  console.log( '** default ', parent.querySelector('[name="hidden_autocomplete_value"]') );
+                  console.log('input-> create: ', this);
+                  var element   = document.createElement('input');
+                  element.type          = 'text';
+                  element.name          = 'value';
+                  element.placeholder   = 'Значение';
+                  element.classList.add('muiFieldField');
+                  parent.appendChild(element);
+                };
+
 
               };
             };
@@ -595,12 +606,20 @@ jQuery(function($) {
             $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val("").trigger("change");
             $(element).select2()
               .on('change', function(){
-                nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
+                console.log('update', this);
+                nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent );
               })
           };
           
-          nCore.modules.table.event.publish('newCellSettingsChange',  $(".criteriaSelector") )
+          nCore.modules.table.event.publish('newCellSettingsChange')
         });
+
+        };
+      };
+
+      if ( el.name == 'table_name') {
+        el.selectedIndex = 1;
+        $(el).trigger("change")
       };
     });
     child[0].classList.toggle('hide');
