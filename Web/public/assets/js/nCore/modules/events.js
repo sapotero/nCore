@@ -519,7 +519,7 @@ nCore.events = (function(){
 
       activeCell = cell;
       tab.textContent = '';
-      var __elements_to_update = [];
+      var __elements_to_update = [], criteriaCondition;
 
       if (activeCell) {
         // если есть query
@@ -576,10 +576,10 @@ nCore.events = (function(){
 
               var form = card.getElementsByClassName('criteriaForm')[0];
 
-              var table_name = form.querySelector('select[name="table_name"]'),
-                origin_name = form.querySelector('select[name="origin_name"]'),
-                conditions = form.querySelector('select[name="conditions"]'),
-                value = form.querySelector('[name="value"]');
+              var table_name  = form.querySelector('select[name="table_name"]'),
+                  origin_name = form.querySelector('select[name="origin_name"]'),
+                  conditions  = form.querySelector('select[name="conditions"]'),
+                  value       = form.querySelector('[name="value"]');
 
               // на основании того какой спровачник был
               // выбран показываем те или иные значения
@@ -597,7 +597,6 @@ nCore.events = (function(){
               }
               table_name.appendChild(_df);
 
-              // console.log('origin_table', item.source)
               _df = new DocumentFragment();
               var originTable = JSON.parse(nCore.storage.getItem(item.source));
 
@@ -621,77 +620,56 @@ nCore.events = (function(){
               origin_name.appendChild(_df);
 
               _elements_to_update.push({name: 'conditions', val: item.conditions})
-              var criteriaCondition = card.querySelector('select.itemSelectCondition');
-
-              // console.log( '**', criteriaCondition, item );
-
-              // var _options = criteriaCondition.options;
-              // for (var b = 0; b < _options.length; b++) {
-              //   var option = _options[b];
-              //   if ( option.value == item.criteria_condition ) {
-              //     option.selected = 'selected'
-              //     criteriaCondition.selectedIndex = b;
-
-              //     console.log( '*****', criteriaCondition, item, card.getElementsByClassName('criteriaSelectorItemCondition') );
-              //   };
-              // };
-
-              for (var i = criteriaCondition.options.length - 1; i >= 0; i--) {
-                var option = criteriaCondition.options[i];
-                if ( option.value == item.criteria_condition ) {
-                  option.selected = 'selected'
-                  criteriaCondition.selectedIndex = option.index;
-                  card.getElementsByClassName('criteriaSelectorItemCondition')[0].selectedIndex = option.index;
-
-                  console.log( '*****', criteriaCondition, item, card.getElementsByClassName('criteriaSelectorItemCondition') );
-                };
-              };
-
-
+              criteriaCondition = card.querySelector('select.itemSelectCondition');
               list.appendChild(card);
+
+              _elements_to_update.push({element: criteriaCondition, name:'criteria_condition_group', val: item.criteria_condition});
 
               for (var m = 0; m < _elements_to_update.length; m++) {
                 var el = _elements_to_update[m];
                 el.element = card.querySelector('select[name="' + el.name + '"]');
-
-                // console.log('* el', el.element);
               }
-              console.log('* card', card, item);
+              console.log('* card', card, item, 'condition_group', groupConditions);
 
               var _tmp = card.querySelector('[name="value"]');
               _elements_to_update.push({element: _tmp, val: item.value})
 
               __elements_to_update.push(_elements_to_update)
               nCore.modules.table.event.publish('newCellSettingsChange');
-
-
             }
-            ;
 
-            var _group = groupTemplate,
+            var _group = groupTemplate;
               groupSelectCondition = _group.getElementsByTagName('select')[0].selectedIndex = _selectedIindex;
 
             _group.classList.remove('criteriaSelectorGroupTemplate');
             _group.classList.remove('mui--hide');
-
-            // _total_elements_to_update.push(_elements_to_update);
-
-            // _group.querySelector('[name="value"]').value = item.value;
-            document.getElementsByClassName('firstTimeCriteria')[0].classList.add('mui--hide');
             tab.appendChild(_group);
+            _elements_to_update.push({element: _group.querySelector('[name="connectionGroup"]'), name:'connectionGroup', val: groupConditions});
 
-
+            document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
           }
-          ;
         } else {
-          document.getElementsByClassName('firstTimeCriteria')[0].classList.remove('mui--hide');
+          document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
         }
       };
 
       for (var k = 0; k < __elements_to_update.length; k++) {
         var _a = __elements_to_update[k];
-        // console.log('_a', _a);
+        console.log('_a', _a);
         for (var o = 0; o < _a.length; o++) {
+
+          if (_a[o].element.name == 'criteria_condition_group' ) {
+            // console.log('--> value', _a[o].element, activeCell.dataset.name );
+            _a[o].element.dataset.name  = activeCell.dataset.name;
+            _a[o].element.dataset.value = _a[o].val;
+            continue;
+          };
+
+          if (_a[o].element.name == 'connectionGroup' ) {
+            // console.log('--> value', _a[o].element, activeCell.dataset.name );
+            _a[o].element.value = _a[o].val;
+            continue;
+          };
 
           // console.log('root ->', _a[o]);
           if (!_a[o].element.dataset.hasOwnProperty('old')) {
@@ -702,7 +680,10 @@ nCore.events = (function(){
             // console.log('--> value', _a[o].element, activeCell.dataset.name );
             _a[o].element.dataset.name  = activeCell.dataset.name;
             _a[o].element.dataset.value = _a[o].val;
+            continue;
           };
+
+
 
           $(_a[o].element).val(_a[o].val).trigger('change');
           $(_a[o].element).trigger('change');
@@ -745,7 +726,7 @@ nCore.events = (function(){
     nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME) {
 
       // переписать с jQuery на js
-      console.log('active cell', activeCell);
+      // console.log('active cell', activeCell);
 
       var _query = [],
         list = document.querySelector(".criteriaSelector"),

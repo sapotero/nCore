@@ -137,6 +137,12 @@ jQuery(function($) {
     return false;
   })
 
+  // изменение значения полей -> обновляем значения в ячейке
+  $('select[name="connectionGroup"]').live('change', function(){
+    nCore.modules.table.event.publish('newCellSettingsChange' );
+    return false;
+  })
+
   // выбор справочника -> меняем значения в origin_name
   $('select[name="table_name"]').live('change', function(e){
     
