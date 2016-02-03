@@ -621,6 +621,11 @@ jQuery(function($) {
         el.selectedIndex = 1;
         $(el).trigger("change")
       };
+
+      if ( el.name == 'table_name') {
+        el.selectedIndex = 1;
+        $(el).trigger("change")
+      };
     });
     child[0].classList.toggle('hide');
     
