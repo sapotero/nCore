@@ -298,6 +298,7 @@ jQuery(function($) {
                   
                    return {
                       results: $.map(data, function(p) {
+                        console.log('recv', p);
                         var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
                         return {
                           id: p._id,
@@ -531,6 +532,7 @@ jQuery(function($) {
                       
                        return {
                           results: $.map(data, function(p) {
+                            console.log('recv', p);
                             var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
                             return {
                               id: p._id,

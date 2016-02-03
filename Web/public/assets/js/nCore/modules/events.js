@@ -713,6 +713,7 @@ nCore.events = (function(){
                   processResults: function (data, params) {
                     return {
                       results: $.map(data, function(p) {
+                        console.log('recv', p);
                         var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
                         return {
                           id: p._id,
@@ -731,6 +732,7 @@ nCore.events = (function(){
                 //   nCore.modules.table.event.publish( 'newCellSettingsChange',this.options[this.selectedIndex].textContent );
                 // };
                 nCore.modules.table.event.publish('newCellSettingsChange');
+
               });
 
               $(element).append( [ new Option( el.dataset.name , el.dataset.value, true) ] ).val("").trigger("change");
