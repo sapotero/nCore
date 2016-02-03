@@ -168,6 +168,13 @@ jQuery(function($) {
         _df.appendChild(option);
       };
       select.appendChild(_df);
+
+      console.log(select, select.selectedIndex);
+
+      select.selectedIndex = 1;
+
+      $(select).trigger("change");
+      
       return false;
     };
   })
@@ -191,16 +198,13 @@ jQuery(function($) {
   // клик по критерию
   $('.criteriaMenuItem.settings, .criteriaSelectorItemHeader').live('click', function(e){
 
-    // убрать из прода
+    // убрать из прода | каждый раз грузим справочники и критерии
     nCore.preloader.event.publish('loadCriteria');
 
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child = el.children('.criteriaForm');
 
-    // console.log( 'element, child', el, child );
-
     $.each( child.children('select'), function(i, el){
-      console.log( el );
 
       if ( !$(el).hasClass('s2')) {
         if ( el.name === 'table_name' ) {
@@ -217,7 +221,8 @@ jQuery(function($) {
 
         $(el).addClass('s2');
 
-        $(el).select2().on('change', function(){
+
+        $(el).select2({ placeholder: "Выберете поле" }).on('change', function(){
           
           var __url = '';
           
@@ -395,31 +400,13 @@ jQuery(function($) {
               };
               $(_parent).append( _result ).val("").trigger("change");
               $(_parent).select2();
-
-              
-              // var element   = document.createElement('select');
-              // element.type          = 'text';
-              // element.name          = 'value';
-              // element.placeholder   = 'Значение';
-              // element.style.width   = "92%";
-
-              // $('select[name="conditions"]').val('equal').trigger("change");
-
-              // parent.appendChild(element);
-              
-              // $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val("").trigger("change");
-              // $(element).select2();
-
-              // if ( parent.querySelector('input[name="value"]') ) {
-              //   parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-              // };
               
             }
             else {
               // input.parentNode.removeChild( input );
               
               var origin = parent.querySelector('select[name="origin_name"]');
-              console.log('input*', origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
+              // console.log('input*', origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
 
 
               if ( el.value == 'range' && origin.options[origin.selectedIndex].dataset.type === 'DateTime'  ) {
@@ -601,6 +588,11 @@ jQuery(function($) {
           
           nCore.modules.table.event.publish('newCellSettingsChange',  $(".criteriaSelector") )
         });
+      };
+
+      if ( el.name == 'table_name') {
+        el.selectedIndex = 1;
+        $(el).trigger("change")
       };
     });
     child[0].classList.toggle('hide');
