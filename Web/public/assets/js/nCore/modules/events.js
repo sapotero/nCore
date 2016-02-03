@@ -662,13 +662,11 @@ nCore.events = (function(){
             // console.log('--> value', _a[o].element, activeCell.dataset.name );
             _a[o].element.dataset.name  = activeCell.dataset.name;
             _a[o].element.dataset.value = _a[o].val;
-            continue;
           };
 
           if (_a[o].element.name == 'connectionGroup' ) {
             // console.log('--> value', _a[o].element, activeCell.dataset.name );
             _a[o].element.value = _a[o].val;
-            continue;
           };
 
           // console.log('root ->', _a[o]);
@@ -680,7 +678,6 @@ nCore.events = (function(){
             // console.log('--> value', _a[o].element, activeCell.dataset.name );
             _a[o].element.dataset.name  = activeCell.dataset.name;
             _a[o].element.dataset.value = _a[o].val;
-            continue;
           };
 
 
