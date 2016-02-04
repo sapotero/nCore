@@ -157,8 +157,11 @@ nCore.modules.table = (function(){
       };
     }
    },
-  activeCell = function(){
+  active = function(){
     return activeCell;
+   },
+  setActive = function(el){
+    activeCell = el;
    },
   addEventListener = function(){
     table.addEventListener('click', function(e){
@@ -545,7 +548,8 @@ nCore.modules.table = (function(){
     column     : column,
     event      : event,
     fromGroup  : fromGroup,
-    activeCell : activeCell,
+    active     : active,
+    setActive  : setActive,
     tableQuery : generateQueryFromTable
   }
 })();
