@@ -144,15 +144,14 @@ jQuery(function($) {
   })
 
   // выбор справочника -> меняем значения в origin_name
-  $('select[name="table_name"]').live('change', function(e){
+  $('select[name="source"]').live('change', function(e){
     
-    // console.log('select[name="table_name"]', this, );
+    // console.log('select[name="table_name"]', this, this.parentNode.querySelector('[name="origin_name"]') );
 
 
       var select = this.parentNode.querySelector('[name="origin_name"]');
       select.innerHTML = '';
       
-
       var _df = new DocumentFragment();
       var originTable = JSON.parse( nCore.storage.getItem(this.value) );
       
@@ -176,8 +175,74 @@ jQuery(function($) {
       $(select).trigger("change");
       
       return false;
+  });
 
+  // выбор справочника -> меняем значения в origin_name
+  $('select[name="origin_name"]').live('change', function(e){
+    console.log( '----- select[name="origin_name"] ----- ' );
+    console.log( this, this.value );
+
+    var _val = this.value;
+
+    var select = this.parentNode.querySelector('[name="conditions"]');
+    select.innerHTML = '';
+
+    var field_array  = JSON.parse( nCore.storage.getItem( this.parentNode.querySelector('[name="source"]').value ) ),
+        field_type,
+        autocomplete_title,
+        autocomplete_value,
+        autocomplete_url;
+    
+    console.info(' select value ', field_array );
+
+    field_array.forEach(function(obj){
+      if ( obj['_id'] == _val || obj['id'] == _val ) {
+        console.log( '+++++++', obj );
+        autocomplete_title = obj['autocomplete_title'];
+        autocomplete_value = obj['autocomplete_value'];
+        autocomplete_url   = obj['autocomplete_url'];
+        field_type         = obj['data_type'];
+      };
+    });
+    
+    var types   = nCore.types[ field_type ],
+        options = [],
+        df       = new DocumentFragment();
+
+    console.log( 'types', types );
+
+    for (var z = 0; z < types.length; z++) {
+      var option = document.createElement('option');
+      option.value = types[z].value;
+      option.text = types[z].caption;
+      df.appendChild(option);
+    };
+
+    select.appendChild(df);
+    select.value = _val;
+
+    this.parentNode.querySelector('[name="conditions"]').selectedIndex = 0;
+
+    $(this.parentNode.querySelector('[name="conditions"]')).trigger('change');
+    
+    console.log( '----- select[name="origin_name"] ----- ' );
+
+    return false;
+  });
+
+  // выбор справочника -> меняем значения в origin_name
+  $('select[name="conditions"]').live('change', function(e){
+    console.log('select[name="conditions"]', this, this.value );
+
+    var element  = this.parentNode.querySelector('[name="value"]')
+    // element, name, value 
+    nCore.modules.cell.updateBlock(element, 'value', null );
+    
+    return false;
   })
+
+
+
 
   // удаление критерия
   $('.criteriaMenuItem.remove').live('click', function(){
@@ -204,501 +269,11 @@ jQuery(function($) {
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child = el.children('.criteriaForm');
 
-    // console.info('before', child.children('select, input'));
-
-    $.each( child.children('select'), function(i, el){
-
-      if ( !$(el).hasClass('s2')) {
-        // fix for autocomplite
-        if ( el.name == 'hidden_autocomplete_value' ) {
-          console.log('++');
-          return false;
-        } 
-
-        if ( el.name === 'table_name' ) {
-          console.log('table_name++', el);
-          var _df = new DocumentFragment();
-          var criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );
-          for (var q = 0; q < criteriaKeys.length; q++) {
-            var option = document.createElement('option');
-            option.value = criteriaKeys[q].value;
-            option.text  = criteriaKeys[q].name;
-            _df.appendChild(option);
-          };
-          el.appendChild(_df);
-        };
-
-        $(el).addClass('s2');
-
-        // console.log('select2 created', el);
-
-        $(el).select2({ placeholder: "Выберете поле" }).on('change', function(){
-          
-          var __url = '';
-          
-          // приоритет группы вне зависимости от автокомплитеров навешанных на поле
-          if ( this.value === 'group' || this.value === 'not_in_group' ) {
-            __url = 'classifiers/groups/groups.json';
-          };
-
-          var _options = this.options[this.selectedIndex];
-          // console.log('select:', this);
-
-          if ( _options.dataset.hasOwnProperty('auto') && _options.dataset.auto.length || __url !== '' ){
-            console.error('has autocomplete');
-            var parent = this.parentNode,
-                input  = parent.querySelectorAll('[name="value"], [type="date"]');
-            
-            if (__url === '') {
-              __url  = this.options[this.selectedIndex].dataset.auto;
-            };
-
-            $.each(input, function(i, el){
-              // console.log(i,el)
-              $(el).select2({});
-              $(el).select2('destroy');
-              parent.removeChild( el );
-            });
-            
-            // parent.removeChild( input );
-            
-            // $('select[name="conditions"]').val('equal').trigger("change");
-            if ( parent.querySelector('input[name="value"]') ) {
-              parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-            };
-
-            if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
-              console.log('select+');
-              $(parent.querySelector('[name="hidden_autocomplete_value"]')).select2('destroy');
-              parent.querySelector('[name="hidden_autocomplete_value"]').parentNode.removeChild( parent.querySelector('[name="hidden_autocomplete_value"]') );
-            };
- 
-            var element   = document.createElement('select');
-            element.type         = 'text';
-            element.name         = 'value';
-            element.placeholder  = 'Значение';
-            element.style.paddingBottom = '15px';
-            element.style.marginBottom = '20px;';
-            element.style.width   = '92%';
-            element.dataset.name  = 'value';
-
-
-            parent.appendChild(element);
-
-            input = element;
-
-            var field_array  = JSON.parse( nCore.storage.getItem( parent.querySelector('[name="table_name"]').value ) ),
-                origin       = parent.querySelector('[name="origin_name"]'),
-                autocomplete_title,
-                autocomplete_value,
-                autocomplete_url;
-            
-            console.info(' select value ', origin.value );
-
-            field_array.forEach(function(obj){
-              if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
-                // console.log('Fiels', obj);
-                autocomplete_title = obj['autocomplete_title'];
-                autocomplete_value = obj['autocomplete_value'];
-                autocomplete_url   = obj['autocomplete_url'];
-              };
-            })
-
-            var condition    = parent.querySelector('[name="conditions"]');
-            if ( condition.value === 'group' || condition.value === 'not_in_group' ) {
-              autocomplete_url   = 'classifiers/groups/groups.json';
-              autocomplete_title = 'full_title'
-            };
-
-            $( element ).select2({
-              ajax: {
-                url: autocomplete_url,
-                dataType: 'json',
-                delay: 250,
-                data: function (data) {
-                  // console.info('change', data, autocomplete_value, autocomplete_title)
-                  return { id: data[ autocomplete_value ], term: data.term || 'ss' };
-                },
-                processResults: function (data, params) {
-                  return {
-                    results: $.map(data, function(p) {
-                      console.log('recv', p, autocomplete_value, autocomplete_title);
-                      // var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
-                      return {
-                        id:    p[ autocomplete_value ],
-                        text:  p[ autocomplete_title ],
-                        value: p[ autocomplete_title ]
-                      };
-                    })
-                  };
-                },
-                cache: false
-              },
-              minimumInputLength: 1,
-              placeholder: "Начните ввод",
-              tags: true,
-              createSearchChoice:function(term, data) {
-                console.log('createSearchChoice', term, data);
-                // if ( $(data).filter( function() {
-                //   return this.text.localeCompare(term)===0;
-                // }).length===0) {
-                  return {id:term, text:term};
-                // }
-              }
-            }).on('change', function(e){
-
-              console.log('[335]change', this, nCore.modules.table.active(), element.value,'**', element.textContent);
-              nCore.modules.table.active().dataset[element.value+'Name'] = element.options[element.selectedIndex].textContent;
-
-              if (this.nodeName === 'SELECT') {
-                nCore.modules.table.event.publish( 'newCellSettingsChange',this.options[this.selectedIndex].textContent );
-              };
-
-
-
-              nCore.modules.table.event.publish('newCellSettingsChange');
-            });
-          } else {
-            console.log('has not autocomplete');
-
-            var parent = this.parentNode,
-                input  = parent.querySelectorAll('[name="value"], [type="date"]');
-           
-            $.each(input, function(i, el){
-              // console.log(i,el)
-              $(el).select2({});
-              $(el).select2('destroy');
-              parent.removeChild( el );
-            });
-
-
-
-            if ( this.options[this.selectedIndex].dataset.type === 'DateTime' ) {
-              console.error( 'DateTime conditions++', parent,  parent.querySelector('select[name="conditions"]'), nCore.types['DateTime'] );
-
-              // delete parent.querySelector('option[value="range"]').disabled;
-
-              
-              var _parent =  parent.querySelector('select[name="conditions"]');
-
-              // убираем все options и добавляем их туда из nCore.types
-              while (_parent.firstChild) {
-                  _parent.removeChild(_parent.firstChild);
-              }
-
-              var _options = nCore.types['DateTime'],
-                  _result = [];
-              for (var z = 0; z < _options.length; z++) {
-                _result.push( new Option(_options[z].caption, _options[z].value) );
-              };
-              $(_parent).append( _result ).val("range").trigger("change");
-              $(_parent).select2();
-
-              if ( parent.querySelector('input[name="value"]') ) {
-                parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-              };
-
-            }  else if ( this.options[this.selectedIndex].dataset.type === 'Boolean' ) {
-              console.log('Boolean');
-
-              var _parent =  parent.querySelector('select[name="conditions"]');
-
-              // убираем все options и добавляем их туда из nCore.types
-              while (_parent.firstChild) {
-                  _parent.removeChild(_parent.firstChild);
-              }
-
-              var _options = nCore.types['Boolean'],
-                  _result = [];
-              for (var z = 0; z < _options.length; z++) {
-                _result.push( new Option(_options[z].caption, _options[z].value) );
-              };
-              $(_parent).append( _result ).val("").trigger("change");
-              $(_parent).select2();
-
-              if ( parent.querySelector('input[name="value"]') ) {
-                parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-              };
-              if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
-                console.log('select+');
-                $(parent.querySelector('[name="hidden_autocomplete_value"]')).select2('destroy');
-                parent.querySelector('[name="hidden_autocomplete_value"]').parentNode.removeChild( parent.querySelector('[name="hidden_autocomplete_value"]') );
-              };
-              
-            }  else if ( this.options[this.selectedIndex].dataset.type === 'String' ) {
-              console.log('String++');
-
-              var _parent =  parent.querySelector('select[name="conditions"]');
-
-              // убираем все options и добавляем их туда из nCore.types
-              while (_parent.firstChild) {
-                  _parent.removeChild(_parent.firstChild);
-              }
-
-              var _options = nCore.types['String'],
-                  _result = [];
-              for (var z = 0; z < _options.length; z++) {
-                _result.push( new Option(_options[z].caption, _options[z].value) );
-              };
-              $(_parent).append( _result ).val("").trigger("change");
-              $(_parent).select2();
-              
-            }
-            else {
-              // input.parentNode.removeChild( input );
-              
-              var origin = parent.querySelector('select[name="origin_name"]');
-              console.error('input*', el.value, origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
-
-              var _conditions = parent.querySelector('select[name="conditions"]');
-
-              if ( el.value == 'range' && origin.options[origin.selectedIndex].dataset.type === 'DateTime'  ) {
-                var element           = document.createElement('input');
-                element.type          = 'date';
-                element.name          = 'date_start';
-                element.placeholder   = 'Start';
-                element.style.width   = "44%";
-                element.style.marginRight = "2%";
-                element.style.display = "inline-block";
-                element.classList.toggle('muiFieldField');
-                parent.appendChild(element);
-
-                var element           = document.createElement('input');
-                element.type          = 'date';
-                element.name          = 'date_end';
-                element.placeholder   = 'End';
-                element.style.width   = "44%";
-                element.style.display = "inline-block";
-                element.classList.toggle('muiFieldField');
-                parent.appendChild(element);
-
-                console.log('parent', parent);
-              } else if ( el.value === 'equal' && origin.options[origin.selectedIndex].dataset.type === 'DateTime' ){
-                console.log('Date eq');
-                var element           = document.createElement('input');
-                element.type          = 'date';
-                element.name          = 'date_start';
-                element.placeholder   = 'Start';
-                element.style.width   = "92%";
-                element.style.display = "inline-block";
-                element.classList.toggle('muiFieldField');
-                parent.appendChild(element);
-              } else if ( el.value === 'equal' && origin.options[origin.selectedIndex].dataset.type === 'Boolean' ){
-
-                var parent  = this.parentNode,
-                element = document.createElement('select');
-                element.type          = 'text';
-                element.name          = 'value';
-                element.placeholder   = 'Значение';
-                element.style.width   = "92%";
-
-                parent.appendChild(element);
-
-                console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
-                if ( parent.querySelector('input[name="value"]') ) {
-                  parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-                };
-
-
-                $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val("").trigger("change");
-                $(element).select2()
-                .on('change', function(){
-                  nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
-                })
-              } else if ( el.value === 'exist' || _conditions == 'exist' && origin.options[origin.selectedIndex].dataset.type === 'String' ){
-
-                var parent  = this.parentNode,
-                element = document.createElement('select');
-                element.type          = 'text';
-                element.name          = 'value';
-                element.placeholder   = 'Значение';
-                element.style.width   = "92%";
-
-                parent.appendChild(element);
-
-                console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
-                if ( parent.querySelector('input[name="value"]') ) {
-                  parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-                };
-
-
-                $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val("").trigger("change");
-                $(element).select2()
-                .on('change', function(){
-                  nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
-                })
-              } else if ( ( el.value === 'equal' || el.value === 'not_equal' || el.value === 'regexp' || el.value === 'full_text' ) && origin.options[origin.selectedIndex].dataset.type === 'String' && origin.options[origin.selectedIndex].dataset.hasOwnProperty('auto') && origin.options[origin.selectedIndex].dataset.auto.length) {
-                
-                console.warn('****', origin.options[origin.selectedIndex].dataset.auto );
-                
-                var parent = this.parentNode,
-                input  = parent.querySelectorAll('[name="value"], [type="date"], [name="hidden_autocomplete_value"]');
-
-                
-                $.each(input, function(i, el){
-                  // console.log(i,el)
-                  $(el).select2({});
-                  $(el).select2('destroy');
-                  parent.removeChild( el );
-                });
-                
-                // parent.removeChild( input );
-                
-                // $('select[name="conditions"]').val('equal').trigger("change");
-                if ( parent.querySelector('input[name="value"]') ) {
-                  parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-                };
-                if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
-                  console.log('select+');
-                  $(parent.querySelector('[name="hidden_autocomplete_value"]')).select2('destroy');
-                  parent.querySelector('[name="hidden_autocomplete_value"]').parentNode.removeChild( parent.querySelector('[name="hidden_autocomplete_value"]') );
-                };
-
-                var element   = document.createElement('select');
-                element.type         = 'text';
-                element.name         = 'value';
-                element.placeholder  = 'Значение';
-                element.style.paddingBottom = '15px';
-                element.style.marginBottom = '20px;';
-                element.style.width   = '92%';
-                element.dataset.name  = 'value';
-                // console.log('emenet', element)
-
-                parent.appendChild(element);
-
-                input = element;
-
-            var field_array  = JSON.parse( nCore.storage.getItem( parent.querySelector('[name="table_name"]').value ) ),
-                origin       = parent.querySelector('[name="origin_name"]'),
-                autocomplete_title,
-                autocomplete_value,
-                autocomplete_url;
-            
-            console.info(' select value ', el );
-            // var condition    = parent.querySelector('[name="conditions"]');
-            // if ( condition.value === 'group' || condition.value === 'not_in_group' ) {
-            //   autocomplete_url   = 'classifiers/groups/groups.json';
-            //   autocomplete_title = 'full_title'
-            // };
-
-            field_array.forEach(function(obj){
-              if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
-                // console.log('Fiels', obj);
-                autocomplete_title = obj['autocomplete_title'];
-                autocomplete_value = obj['autocomplete_value'];
-                autocomplete_url   = obj['autocomplete_url'];
-              };
-            })
-
-            $( element ).select2({
-              ajax: {
-                url: autocomplete_url,
-                dataType: 'json',
-                delay: 250,
-                data: function (data) {
-                  console.log('change', data)
-                  return { id: data[ autocomplete_value ], term: data.term };
-                },
-                processResults: function (data, params) {
-                  return {
-                    results: $.map(data, function(p) {
-                      console.log('recv', p);
-                      var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
-                      return {
-                        id: p[ autocomplete_value ],
-                        text:  p[ autocomplete_title ] /*val*/,
-                        value: p[ autocomplete_title ] /*val*/
-                      };
-                    })
-                  };
-                },
-                cache: false
-              },
-              minimumInputLength: 1,
-              placeholder: "Начните ввод",
-              tags: true,
-              createSearchChoice:function(term, data) {
-                  console.log('createSearchChoice', term, data);
-                  // if ( $(data).filter( function() {
-                  //   return this.text.localeCompare(term)===0;
-                  // }).length===0) {
-                    return {id:term, text:term};
-                  // }
-                }
-                }).on('change', function(e){
-                  console.log('[586]change', nCore.modules.table.active(), element.value, '++',element.options[element.selectedIndex].textContent);
-
-                  nCore.modules.table.active().dataset[element.value+'Name'] = element.options[element.selectedIndex].textContent;
-
-                  if (this.nodeName === 'SELECT') {
-                    nCore.modules.table.event.publish( 'newCellSettingsChange',this.options[this.selectedIndex].textContent );
-                  };
-
-                  // console.log('change event', this);
-
-                  nCore.modules.table.event.publish('newCellSettingsChange');
-                });
-          } else {
-              if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
-                // parent.removeChild(parent.querySelector('[name="hidden_autocomplete_value"]'));
-              } else {
-                // console.warn( '** default ', parent.querySelector('[name="hidden_autocomplete_value"]') );
-                console.log('input-> create: ', this, _conditions, el);
-
-                var element   = document.createElement('input');
-                element.type          = 'text';
-                element.name          = 'value';
-                element.placeholder   = 'Значение';
-                element.classList.add('muiFieldField');
-                parent.appendChild(element);
-                
-                if ( _conditions.value === 'exist') {
-
-                  var element = document.createElement('select');
-                  element.type          = 'text';
-                  element.name          = 'value';
-                  element.placeholder   = 'Значение';
-                  element.style.width   = "92%";
-
-                  parent.appendChild(element);
-
-                  console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
-                  if ( parent.querySelector('input[name="value"]') ) {
-                    parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-                  };
-
-
-                  $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val( el.value ).trigger("change");
-                  $(element).select2()
-                  .on('change', function(){
-                    nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
-                  })
-                };
-
-              };
-
-
-
-            };
-          };
-
-          }
-
-        
-          nCore.modules.table.event.publish('newCellSettingsChange')
-        });
-      }
-    });
-
-    
-    var _tmp = this.parentNode.querySelector('[name="hidden_autocomplete_value"]');
-    if ( _tmp ) {
-      _tmp.name = 'value';
-    };
+    console.error('BEFORE', child.children('select, input'));
 
     child[0].classList.toggle('hide');
     
-    nCore.modules.table.event.publish('newCellSettingsChange' );
+    // nCore.modules.table.event.publish('newCellSettingsChange' );
     return false;
   })
 

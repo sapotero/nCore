@@ -491,20 +491,8 @@ nCore.events = (function () {
         var rowIndex = (table.rows[data[i].rowIndex].cells[0].rowSpan > 1) ? 0 : -1,
           cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
 
-        // console.log( table.rows[ data[i].rowIndex ].cells[0].rowSpan > 1, table.rows[ data[i].rowIndex ].cells[0] );
 
         cell.textContent = data[i].value;
-        // дописываем значения в ячейку по типу
-        // if (data[i].hasOwnProperty('appg') && data[i].appg === 'true') {
-        //   cell.textContent += ' АППГ'
-        // }
-        // if (data[i].hasOwnProperty('total') && data[i].total === 'true') {
-        //   cell.textContent += ' ВСЕГО'
-        // }
-        //
-        // if (data[i].hasOwnProperty('total') && data[i].total === 'true') {
-        //   cell.textContent += ' ВСЕГО'
-        // }
 
 
       }
@@ -558,6 +546,13 @@ nCore.events = (function () {
               groupTemplate.getElementsByClassName('connectionGroup')[0].classList.remove('mui--hide');
             }
 
+            var _group = groupTemplate;
+            groupSelectCondition = _group.getElementsByTagName('select')[0].selectedIndex = _selectedIindex;
+
+            _group.classList.remove('criteriaSelectorGroupTemplate');
+            _group.classList.remove('mui--hide');
+            tab.appendChild(_group);
+
             for (var b = 0; b < criterias.length; b++) {
               var _elements_to_update = [],
                 item = criterias[b],
@@ -565,7 +560,8 @@ nCore.events = (function () {
                 cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
 
               // проверка на незаполненые поля в критерии
-              // console.log('!! criteria', item);
+              console.warn('!! criteria', item);
+
               if (item.source == null && item.origin_name == null) {
                 activeCell.dataset.query = '[]';
                 continue;
@@ -583,99 +579,26 @@ nCore.events = (function () {
                 conditions = form.querySelector('select[name="conditions"]'),
                 value = form.querySelector('[name="value"]');
 
-              // на основании того какой спровачник был
-              // выбран показываем те или иные значения
-              var _df = new DocumentFragment();
-              var criteriaKeys = JSON.parse(nCore.storage.criteriaKeys);
-              for (var j = 0; j < criteriaKeys.length; j++) {
-                var option = document.createElement('option');
-                option.value = criteriaKeys[j].value;
-                option.text = criteriaKeys[j].name;
-                _df.appendChild(option);
-                if (item.source === criteriaKeys[j].value) {
-                  _elements_to_update.push({
-                    name: 'table_name',
-                    val: item.source
-                  })
-                }
-
-              }
-              table_name.appendChild(_df);
-
-              _df = new DocumentFragment();
-              var originTable = JSON.parse(nCore.storage.getItem(item.source));
-
-              for (var q = 0; q < originTable.length; q++) {
-                var option = document.createElement('option');
-                option.value = originTable[q]._id;
-                option.text = originTable[q].russian_name;
-                option.dataset.auto = originTable[q].autocomplete_url;
-                option.dataset.type = originTable[q].data_type;
-
-                originTable[q].autocomplete_url ? option.dataset.auto = originTable[q].autocomplete_url : false;
-                originTable[q].data_type ? option.dataset.type = originTable[q].data_type : false;
-
-
-                if (item.origin_name === originTable[q]._id) {
-                  _elements_to_update.push({
-                    name: 'origin_name',
-                    val: item.origin_name
-                  })
-                }
-                _df.appendChild(option);
-              }
-              origin_name.appendChild(_df);
-
-
-
-              _elements_to_update.push({
-                  name: 'conditions',
-                  val: item.conditions
-                })
-                // console.error('conditions:', item)
-
 
               criteriaCondition = card.querySelector('select.itemSelectCondition');
               list.appendChild(card);
 
-              _elements_to_update.push({
-                element: criteriaCondition,
-                name: 'criteria_condition_group',
-                val: item.criteria_condition
-              });
+              
+              // nCore.modules.cell.generateBlock( item, form, 'criteria_condition', item.criteria_condition );
+              nCore.modules.cell.generateBlock( item, form, 'source',             item.source );
+              nCore.modules.cell.generateBlock( item, form, 'origin_name',        item.origin_name );
+              nCore.modules.cell.generateBlock( item, form, 'conditions',         item.conditions );
+              nCore.modules.cell.generateBlock( item, form, 'value',              item.value );
 
-              for (var m = 0; m < _elements_to_update.length; m++) {
-                // if ( el.element.name ==  'conditions') {
-                //   continue;
-                // };
+              var cr_c = card.querySelector('[name="criteria_condition_group"]');
+              cr_c.value = item.criteria_condition;
+              cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
 
-                var el = _elements_to_update[m];
-                el.element = card.querySelector('select[name="' + el.name + '"]');
+              console.error( '***', cr_c, cr_c.value, cr_c.selectedIndex )
 
-              }
-              // console.warn('* card', card, item, 'condition_group', groupConditions);
 
-              var _tmp = card.querySelector('[name="value"]');
-
-              _elements_to_update.push({
-                element: _tmp,
-                val: item.value
-              })
-              __elements_to_update.push(_elements_to_update)
-                // nCore.modules.table.event.publish('newCellSettingsChange');
             }
 
-            var _group = groupTemplate;
-            groupSelectCondition = _group.getElementsByTagName('select')[0].selectedIndex = _selectedIindex;
-
-            _group.classList.remove('criteriaSelectorGroupTemplate');
-            _group.classList.remove('mui--hide');
-            tab.appendChild(_group);
-            _elements_to_update.push({
-              element: _group.querySelector('[name="connectionGroup"]'),
-              name: 'connectionGroup',
-              val: groupConditions
-            });
 
             document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
           }
@@ -687,242 +610,7 @@ nCore.events = (function () {
 
       var __condition = '';
 
-      for (var k = 0; k < __elements_to_update.length; k++) {
-        var _a = __elements_to_update[k];
-        // console.log('_a', _a);
-        for (var o = 0; o < _a.length; o++) {
-
-          if (_a[o].element.name == 'criteria_condition_group') {
-            // console.error('DATA --> value', _a[o].element, activeCell.dataset.name );
-            _a[o].element.dataset.name = activeCell.dataset.name;
-            _a[o].element.dataset.value = _a[o].val;
-          };
-
-          if (_a[o].element.name == 'connectionGroup') {
-            // console.log('--> value', _a[o].element, activeCell.dataset.name );
-            _a[o].element.value = _a[o].val;
-          };
-
-          // console.log('root ->', _a[o]);
-          if (!_a[o].element.dataset.hasOwnProperty('old')) {
-            _a[o].element.dataset.old = 1;
-          }
-
-
-          if (_a[o].element.name == 'value') {
-
-            console.error('+++ value +++', _a[o]);
-            // если условие поиска не range и не equal && тип поля не дата
-            if (_a[o].val != null && typeof _a[o].val === 'object' && (_a[o].val.hasOwnProperty('periodStart') || _a[o].val.hasOwnProperty('periodEnd'))) {
-              var item = _a[o].element.parentNode.querySelector('[name="conditions"]').value;
-              console.info('[!] date object', _a[o], item);
-              if (item === 'range') {
-                console.log('_a[o].element', _a[o].val);
-                // _a[o].element.value = 'range'+JSON.stringify( _a[o].val );
-                var element = document.createElement('input');
-                element.type = 'date';
-                element.name = 'date_end';
-                element.style.width = "44%";
-                element.style.marginRight = "2%";
-                element.style.display = "inline-block";
-                element.classList.toggle('muiFieldField');
-                element.value = _a[o].val.periodEnd;
-
-                _a[o].element.parentNode.appendChild(element);
-
-                _a[o].element.type = 'date';
-                _a[o].element.name = 'date_start';
-                _a[o].element.style.display = "inline-block";
-                _a[o].element.style.width = "44%";
-                _a[o].element.style.marginRight = "2%";
-                _a[o].element.value = _a[o].val.periodStart;
-              };
-              if (item === 'equal') {
-                _a[o].element.type = 'date';
-                _a[o].element.name = 'date_start';
-                _a[o].element.value = _a[o].val.periodStart;
-              };
-            }
-            else if (__condition == 'Boolean') {
-              var item = _a[o].element.parentNode.querySelector('[name="conditions"]').value;
-            }
-            else {
-              var el = _a[o].element,
-                parent = el.parentNode,
-                origin = parent.querySelector('select[name="origin_name"]').options[parent.querySelector('select[name="origin_name"]').selectedIndex];
-
-              _a[o].element.dataset.name = activeCell.dataset.name;
-              _a[o].element.dataset.value = _a[o].val;
-
-              if (origin.dataset.hasOwnProperty('auto') && origin.dataset.auto.length && parent.querySelector('[name="conditions"]').value !== 'exist') {
-
-                if (parent.querySelector('input[name="value"]')) {
-                  parent.querySelector('input[name="value"]').parentNode.removeChild(parent.querySelector('input[name="value"]'));
-                };
-
-                var element = document.createElement('select');
-                element.name = 'hidden_autocomplete_value';
-                element.classList.add('s2');
-                element.style.paddingBottom = '15px';
-                element.style.marginBottom = '20px;';
-                element.style.width = '92%';
-                element.dataset.name = 'hidden_autocomplete_value';
-                // console.log('emenet', element)
-
-                parent.appendChild(element);
-
-
-
-                // /classifiers/groups/groups.json
-                console.log('origin.dataset.auto', origin.dataset.auto);
-
-                var field_array = JSON.parse(nCore.storage.getItem(parent.querySelector('[name="table_name"]').value)),
-                  origin_value = parent.querySelector('[name="origin_name"]').value,
-                  autocomplete_title,
-                  autocomplete_value,
-                  autocomplete_url;
-
-
-                field_array.forEach(function (obj) {
-                  if (obj['_id'] == origin.value || obj['id'] == origin.value) {
-                    // console.log('Fiels', obj);
-                    autocomplete_title = obj['autocomplete_title'];
-                    autocomplete_value = obj['autocomplete_value'];
-                    autocomplete_url = obj['autocomplete_url'];
-                  };
-                })
-
-                var condition = parent.querySelector('[name="conditions"]');
-                if (condition.value === 'group' || condition.value === 'not_in_group') {
-                  autocomplete_url = 'classifiers/groups/groups.json';
-                  autocomplete_title = 'full_title'
-                };
-
-                console.info('@times', autocomplete_title, autocomplete_value, autocomplete_url);
-
-                $(element).select2({
-                  ajax: {
-                    url: autocomplete_url,
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (data) {
-                      console.log('change', data)
-                      return {
-                        id: data[autocomplete_value],
-                        term: data.term
-                      };
-                    },
-                    processResults: function (data, params) {
-                      return {
-                        results: $.map(data, function (p) {
-                          console.log('recv', p);
-                          var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
-                          return {
-                            id: p[autocomplete_value],
-                            text: p[autocomplete_title] /*val*/ ,
-                            value: p[autocomplete_title] /*val*/
-                          };
-                        })
-                      };
-                    },
-                    cache: false
-                  },
-                  minimumInputLength: 1,
-                  placeholder: "Начните ввод"
-                }).on('change', function (e) {
-                  console.log('[847]change', activeCell, element.value, element.textContent);
-                  activeCell.dataset[element.value + 'Name'] = element.options[element.selectedIndex].textContent;
-
-                  // if (this.nodeName === 'SELECT') {
-                  //   nCore.modules.table.event.publish( 'newCellSettingsChange',this.options[this.selectedIndex].textContent );
-                  // };
-                  nCore.modules.table.event.publish('newCellSettingsChange');
-
-                });
-
-                $(element).append([new Option(activeCell.dataset[el.dataset.value + 'Name'], el.dataset.value, true)]).val("").trigger("change");
-
-              };
-
-              console.log('--> value', el, origin, origin.dataset.auto, parent.querySelector('[name="conditions"]').value);
-
-              if (parent.querySelector('[name="conditions"]').value == 'exist') {
-                console.warn('+++++ exists', el.value, item);
-
-
-                parent.removeChild(el);
-
-                element = document.createElement('select');
-                // element.type = 'text';
-                element.name = 'value';
-                element.placeholder = 'Значение';
-                element.style.width = "92%";
-
-                parent.appendChild(element);
-
-                $(element).append([new Option('Да', 'true' ), new Option('Нет', 'false')]);
-                $(element).select2()
-                  .on('change', function () {
-                    nCore.modules.table.event.publish('newCellSettingsChange', this.options[this.selectedIndex].textContent);
-                  })
-                $(element).val( item.value ).trigger("change");
-
-              }
-
-
-            };
-            // parent.querySelector('')
-            // (_a[o].element.dataset)
-          };
-
-          if (_a[o].element.name == 'conditions') {
-            var el = _a[o].element,
-              parent = el.parentNode;
-
-            console.warn('conditions', el.name);
-            while (el.firstChild) {
-              el.removeChild(el.firstChild);
-            }
-
-
-            var field_array = JSON.parse(nCore.storage.getItem(parent.querySelector('[name="table_name"]').value)),
-              origin = parent.querySelector('[name="origin_name"]'),
-              type;
-            var condition = parent.querySelector('[name="conditions"]');
-
-            field_array.forEach(function (obj) {
-              if (obj['_id'] == origin.value || obj['id'] == origin.value) {
-                type = obj['data_type'];
-                __condition = obj['data_type'];
-              };
-            })
-
-            var _options = nCore.types[type],
-              _result = [];
-            for (var z = 0; z < _options.length; z++) {
-              _result.push(new Option(_options[z].caption, _options[z].value));
-            };
-            $(el).append(_result).val("").trigger("change");
-          };
-
-          if (!_a[o].val.hasOwnProperty('periodStart')) {
-            $(_a[o].element).val(_a[o].val).trigger('change');
-            $(_a[o].element).trigger('change');
-          };
-
-          // if (_a[o].element.name == 'origin_name' ) {
-
-          //   console.warn( '***', el );
-          //   var el = _a[o].element;
-
-          //   $(el).append( new Option( activeCell.dataset.name, _a[o].val) ).val("").trigger("change");
-          //   $(el).select2();
-          // };
-        }
-      }
-      // console.log('group_array', tab);
-      // console.log('_elements_to_update', __elements_to_update);
-
+    
       // показываем боковое меню по нажатию кнопки
       if (showCellSettings && !document.getElementById('cellSettings').classList.contains('active')) {
         document.getElementById('cellSettings').classList.toggle('active');
@@ -986,14 +674,14 @@ nCore.events = (function () {
           // console.log( '---', _select, form.children('input[type="date"]'), form.children('input[type="date"]') ? ({ start: form.children('input[name="date_start"]').val(), end: form.children('input[name="date_end"]').val() }) : form.children('[name="value"]').val(), form.children('[name="value"]').val() );
 
           data.query.push({
-            criteria_condition: head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
-            source: form.children('select[name="table_name"]').val(),
-            conditions: form.children('select[name="conditions"]').val(),
-            origin_name: form.children('select[name="origin_name"]').val(),
-            value: form.children('input[type="date"]').length ? {
-              periodStart: form.children('input[name="date_start"]').val(),
-              periodEnd: form.children('input[name="date_end"]').val()
-            } : form.children('[name="value"]').val()
+            criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
+            source             : form.children('select[name="source"]').val(),
+            conditions         : form.children('select[name="conditions"]').val(),
+            origin_name        : form.children('select[name="origin_name"]').val(),
+            value              : form.children('input[type="date"]').length ? {
+            periodStart        : form.children('input[name="date_start"]').val(),
+            periodEnd          : form.children('input[name="date_end"]').val()
+            }                  : form.children('[name="value"]').val()
           });
         };
 
