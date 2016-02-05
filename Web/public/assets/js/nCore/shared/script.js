@@ -316,14 +316,14 @@ jQuery(function($) {
                 dataType: 'json',
                 delay: 250,
                 data: function (data) {
-                  console.log('change', data)
-                  return { id: data[ autocomplete_value ], term: data.term };
+                  // console.info('change', data, autocomplete_value, autocomplete_title)
+                  return { id: data[ autocomplete_value ], term: data.term || 'ss' };
                 },
                 processResults: function (data, params) {
                   return {
                     results: $.map(data, function(p) {
-                      // console.log('recv', p);
-                      var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
+                      console.log('recv', p, autocomplete_value, autocomplete_title);
+                      // var val = p.hasOwnProperty('to_s') ? p.to_s : p.full_title;
                       return {
                         id:    p[ autocomplete_value ],
                         text:  p[ autocomplete_title ],
@@ -335,7 +335,16 @@ jQuery(function($) {
                 cache: false
               },
               minimumInputLength: 1,
-              placeholder: "Начните ввод"
+              placeholder: "Начните ввод",
+              tags: true,
+              createSearchChoice:function(term, data) {
+                console.log('createSearchChoice', term, data);
+                // if ( $(data).filter( function() {
+                //   return this.text.localeCompare(term)===0;
+                // }).length===0) {
+                  return {id:term, text:term};
+                // }
+              }
             }).on('change', function(e){
 
               console.log('[335]change', this, nCore.modules.table.active(), element.value,'**', element.textContent);
@@ -441,6 +450,7 @@ jQuery(function($) {
               var origin = parent.querySelector('select[name="origin_name"]');
               console.error('input*', el.value, origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
 
+              var _conditions = parent.querySelector('select[name="conditions"]');
 
               if ( el.value == 'range' && origin.options[origin.selectedIndex].dataset.type === 'DateTime'  ) {
                 var element           = document.createElement('input');
@@ -495,7 +505,29 @@ jQuery(function($) {
                 .on('change', function(){
                   nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
                 })
-              } else if ( ( el.value === 'equal' || el.value === 'not_equal' || el.value === 'regexp' || el.value === 'full_text' ) && origin.options[origin.selectedIndex].dataset.type === 'String' && origin.options[origin.selectedIndex].dataset.hasOwnProperty('auto') && origin.options[origin.selectedIndex].dataset.auto.length){
+              } else if ( el.value === 'exist' || _conditions == 'exist' && origin.options[origin.selectedIndex].dataset.type === 'String' ){
+
+                var parent  = this.parentNode,
+                element = document.createElement('select');
+                element.type          = 'text';
+                element.name          = 'value';
+                element.placeholder   = 'Значение';
+                element.style.width   = "92%";
+
+                parent.appendChild(element);
+
+                console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
+                if ( parent.querySelector('input[name="value"]') ) {
+                  parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
+                };
+
+
+                $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val("").trigger("change");
+                $(element).select2()
+                .on('change', function(){
+                  nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
+                })
+              } else if ( ( el.value === 'equal' || el.value === 'not_equal' || el.value === 'regexp' || el.value === 'full_text' ) && origin.options[origin.selectedIndex].dataset.type === 'String' && origin.options[origin.selectedIndex].dataset.hasOwnProperty('auto') && origin.options[origin.selectedIndex].dataset.auto.length) {
                 
                 console.warn('****', origin.options[origin.selectedIndex].dataset.auto );
                 
@@ -542,12 +574,12 @@ jQuery(function($) {
                 autocomplete_value,
                 autocomplete_url;
             
-            // console.info(' select value ', origin.value );
-            var condition    = parent.querySelector('[name="conditions"]');
-            if ( condition.value === 'group' || condition.value === 'not_in_group' ) {
-              autocomplete_url   = 'classifiers/groups/groups.json';
-              autocomplete_title = 'full_title'
-            };
+            console.info(' select value ', el );
+            // var condition    = parent.querySelector('[name="conditions"]');
+            // if ( condition.value === 'group' || condition.value === 'not_in_group' ) {
+            //   autocomplete_url   = 'classifiers/groups/groups.json';
+            //   autocomplete_title = 'full_title'
+            // };
 
             field_array.forEach(function(obj){
               if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
@@ -583,7 +615,16 @@ jQuery(function($) {
                 cache: false
               },
               minimumInputLength: 1,
-              placeholder: "Начните ввод"
+              placeholder: "Начните ввод",
+              tags: true,
+              createSearchChoice:function(term, data) {
+                  console.log('createSearchChoice', term, data);
+                  // if ( $(data).filter( function() {
+                  //   return this.text.localeCompare(term)===0;
+                  // }).length===0) {
+                    return {id:term, text:term};
+                  // }
+                }
                 }).on('change', function(e){
                   console.log('[586]change', nCore.modules.table.active(), element.value, '++',element.options[element.selectedIndex].textContent);
 
@@ -597,24 +638,50 @@ jQuery(function($) {
 
                   nCore.modules.table.event.publish('newCellSettingsChange');
                 });
+          } else {
+              if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
+                // parent.removeChild(parent.querySelector('[name="hidden_autocomplete_value"]'));
               } else {
-                if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
-                  // parent.removeChild(parent.querySelector('[name="hidden_autocomplete_value"]'));
-                } else {
-                  // console.warn( '** default ', parent.querySelector('[name="hidden_autocomplete_value"]') );
-                  console.log('input-> create: ', this);
+                // console.warn( '** default ', parent.querySelector('[name="hidden_autocomplete_value"]') );
+                console.log('input-> create: ', this, _conditions, el);
 
-                  var element   = document.createElement('input');
+                var element   = document.createElement('input');
+                element.type          = 'text';
+                element.name          = 'value';
+                element.placeholder   = 'Значение';
+                element.classList.add('muiFieldField');
+                parent.appendChild(element);
+                
+                if ( _conditions.value === 'exist') {
+
+                  var element = document.createElement('select');
                   element.type          = 'text';
                   element.name          = 'value';
                   element.placeholder   = 'Значение';
-                  element.classList.add('muiFieldField');
+                  element.style.width   = "92%";
+
                   parent.appendChild(element);
+
+                  console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
+                  if ( parent.querySelector('input[name="value"]') ) {
+                    parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
+                  };
+
+
+                  $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val( el.value ).trigger("change");
+                  $(element).select2()
+                  .on('change', function(){
+                    nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
+                  })
                 };
 
-
               };
+
+
+
             };
+          };
+
           }
 
         

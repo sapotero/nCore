@@ -281,6 +281,10 @@ nCore = (function(){
         {
           value: "not_in_group",
           caption: "Исключая группу"
+        },
+        {
+          value: "exist",
+          caption: "Присутствует"
         }
       ],
       DateTime: [
@@ -327,6 +331,10 @@ nCore = (function(){
         {
           value: "not_in_group",
           caption: "Исключая группу"
+        },
+        {
+          value: "exist",
+          caption: "Присутствует"
         }
       ]
     },
