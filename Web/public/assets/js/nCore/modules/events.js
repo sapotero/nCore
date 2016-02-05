@@ -724,64 +724,26 @@ nCore.events = (function(){
             }
             else if( __condition == 'Boolean' ) {
               var item = _a[o].element.parentNode.querySelector('[name="conditions"]').value;
-              // console.warn( 'boolean', item );
-
-              // var el   = _a[o].element,
-              //   parent = el.parentNode;
-
-              // console.warn('boolean conditions', el );
-              // while (el.firstChild) {
-              //     el.removeChild(el.firstChild);
-              // }
-              // var element  = document.createElement('select');
-              // element.name = 'value';
-              // element.classList.toggle('muiFieldField');
-              // element.value = _a[o].val.periodEnd;
-
-              // parent.replaceChild(element, el);
-              // $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val( item ).trigger("change");
-
-              // console.log('');
-              // $(el).select2({});
-
-              // var field_array  = JSON.parse( nCore.storage.getItem( parent.querySelector('[name="table_name"]').value ) ),
-              //   origin         = parent.querySelector('[name="origin_name"]'),
-              //   type;
-              // var condition    = parent.querySelector('[name="conditions"]');
-
-              // field_array.forEach(function(obj){
-              //   if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
-              //     type = obj['data_type'];
-              //     __condition = obj['data_type'];
-              //   };
-              // })
-
-              // var _options = nCore.types[ type ],
-              //     _result = [];
-              // for (var z = 0; z < _options.length; z++) {
-              //   _result.push( new Option(_options[z].caption, _options[z].value) );
-              // };
-
             }
             else {
               var el     = _a[o].element,
                   parent = el.parentNode,
                   origin = parent.querySelector('select[name="origin_name"]').options[parent.querySelector('select[name="origin_name"]').selectedIndex];
               
-              console.log('--> value', el, origin, origin.dataset.auto );
+              console.log( '--> value', el, origin, origin.dataset.auto );
 
               _a[o].element.dataset.name  = activeCell.dataset.name ;
               _a[o].element.dataset.value = _a[o].val;
 
               if (origin.dataset.hasOwnProperty('auto') && origin.dataset.auto.length) {
 
-                if ( parent.querySelector('input[name="value"]') ) {
-                  parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
+                if ( parent.querySelector( 'input[name="value"]' ) ) {
+                  parent.querySelector( 'input[name="value"]' ).parentNode.removeChild( parent.querySelector( 'input[name="value"]' ) );
                 };
 
-                var element   = document.createElement('select');
+                var element   = document.createElement( 'select' );
                 element.name         = 'hidden_autocomplete_value';
-                element.classList.add('s2');
+                element.classList.add( 's2' );
                 element.style.paddingBottom = '15px';
                 element.style.marginBottom = '20px;';
                 element.style.width   = '92%';

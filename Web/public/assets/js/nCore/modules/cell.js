@@ -79,11 +79,57 @@ nCore.modules.cell = (function(){
   };
 
   var init = function(){
+  },
+  generateFromQuery = function( element, query ){
+    console.log( 'generateFromQuery', query );
+  },
+  changeBlockAtributes = function(element, name, value ){
+    console.log( 'changeBlockAtributes', element, name, value );
+    
+    element.name = name;
+
+    switch(name){
+      case 'table_name':
+        var df           = new DocumentFragment(),
+            criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );
+        
+        for ( var q = 0; q < criteriaKeys.length; q++ ) {
+          df.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
+        };
+        el.appendChild(df);
+
+        break;
+      case 'origin_name':
+        break;
+      case 'conditions':
+        break;
+      case 'value':
+        break;
+      default:
+        console.log(' warn! changeBlockAtributes default ');
+        break;
+    }
+    
+    // если передали value
+    if ( value !== undefined && value !== null && ( typeof(value) == 'object' || value.length )  ) {
+    };
+
+    return element;
+  },
+  generateBlock = function( parent, name, value ){
+    console.log( 'generateBlock', element, name, value, origin );
+
+    var element = document.createElement('select'),
+        element = changeBlockAtributes( element, name, value );
+    parent.appendChild( element );
+
   };
 
   return {
-    newCell: newCell,
-    cells: cells,
-    init: init
+    newCell           : newCell,
+    cells             : cells,
+    generateFromQuery : generateFromQuery,
+    generateBlock     : generateBlock,
+    init              : init
   }
 })();

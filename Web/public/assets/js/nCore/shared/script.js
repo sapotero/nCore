@@ -497,7 +497,7 @@ jQuery(function($) {
                 })
               } else if ( ( el.value === 'equal' || el.value === 'not_equal' || el.value === 'regexp' || el.value === 'full_text' ) && origin.options[origin.selectedIndex].dataset.type === 'String' && origin.options[origin.selectedIndex].dataset.hasOwnProperty('auto') && origin.options[origin.selectedIndex].dataset.auto.length){
                 
-                console.warn('****', origin.options[origin.selectedIndex].dataset.auto);
+                console.warn('****', origin.options[origin.selectedIndex].dataset.auto );
                 
                 var parent = this.parentNode,
                 input  = parent.querySelectorAll('[name="value"], [type="date"], [name="hidden_autocomplete_value"]');
@@ -617,36 +617,9 @@ jQuery(function($) {
             };
           }
 
-          // console.error('!! EL', el);
-          // if( el && el.parentNode.querySelector('[name="conditions"]').value === 'exist' ) {
-          //   var parent  = this.parentNode,
-          //       element = document.createElement('select');
-          //   element.type          = 'text';
-          //   element.name          = 'value';
-          //   element.placeholder   = 'Значение';
-          //   element.style.width   = "92%";
-
-          //   parent.appendChild(element);
-
-          //   console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
-          //   if ( parent.querySelector('input[name="value"]') ) {
-          //     parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-          //   };
-            
-
-          //   $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val("").trigger("change");
-          //   $(element).select2()
-          //     .on('change', function(){
-          //       console.log('update', this);
-          //       nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent );
-          //     })
-          // };
-
-          
+        
           nCore.modules.table.event.publish('newCellSettingsChange')
         });
-
-        // console.log('after_all', this)
       }
     });
 
@@ -681,13 +654,13 @@ jQuery(function($) {
     nCore.modules.table.event.publish('cellFormulaChange' );
   });
 
-  if (!Modernizr.inputtypes.date) {
-    $.each($('input[type=date]'), function(i, el){
-      $(el).pickadate({
-        format: 'yyyy-mm-dd',
-        closeOnSelect: true,
-        closeOnClear: true
-      });
-    });
-  };
+  // if (!Modernizr.inputtypes.date) {
+  //   $.each($('input[type=date]'), function(i, el){
+  //     $(el).pickadate({
+  //       format: 'yyyy-mm-dd',
+  //       closeOnSelect: true,
+  //       closeOnClear: true
+  //     });
+  //   });
+  // };
 });
