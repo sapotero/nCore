@@ -712,7 +712,7 @@ nCore.events = (function () {
 
             console.error('+++ value +++', _a[o]);
             // если условие поиска не range и не equal && тип поля не дата
-            if (typeof _a[o].val === 'object' && (_a[o].val.hasOwnProperty('periodStart') || _a[o].val.hasOwnProperty('periodEnd'))) {
+            if (_a[o].val != null && typeof _a[o].val === 'object' && (_a[o].val.hasOwnProperty('periodStart') || _a[o].val.hasOwnProperty('periodEnd'))) {
               var item = _a[o].element.parentNode.querySelector('[name="conditions"]').value;
               console.info('[!] date object', _a[o], item);
               if (item === 'range') {
