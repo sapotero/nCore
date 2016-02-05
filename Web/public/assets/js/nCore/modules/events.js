@@ -471,7 +471,8 @@ nCore.events = (function () {
         global: {
           periodStart: nCore.document.periodStart(),
           periodEnd: nCore.document.periodEnd(),
-          providerId: document.querySelector('#nCoreDocumentAuthor').dataset.providerId
+          providerId: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
+          reportId:  nCore.document.id()
         }
       }).success(function (data) {
         // console.log('calculateQuery -> post', data);
