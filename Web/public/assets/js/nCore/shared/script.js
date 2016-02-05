@@ -169,7 +169,7 @@ jQuery(function($) {
       };
       select.appendChild(_df);
 
-      console.log('**', select, select.selectedIndex);
+      // console.log('**', select, select.selectedIndex);
 
       select.selectedIndex = 1;
 
@@ -204,7 +204,7 @@ jQuery(function($) {
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child = el.children('.criteriaForm');
 
-    console.info('before', child.children('select, input'));
+    // console.info('before', child.children('select, input'));
 
     $.each( child.children('select'), function(i, el){
 
@@ -230,7 +230,7 @@ jQuery(function($) {
 
         $(el).addClass('s2');
 
-        console.log('select2 created', el);
+        // console.log('select2 created', el);
 
         $(el).select2({ placeholder: "Выберете поле" }).on('change', function(){
           
@@ -297,7 +297,7 @@ jQuery(function($) {
 
             field_array.forEach(function(obj){
               if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
-                console.log('Fiels', obj);
+                // console.log('Fiels', obj);
                 autocomplete_title = obj['autocomplete_title'];
                 autocomplete_value = obj['autocomplete_value'];
                 autocomplete_url   = obj['autocomplete_url'];
@@ -439,7 +439,7 @@ jQuery(function($) {
               // input.parentNode.removeChild( input );
               
               var origin = parent.querySelector('select[name="origin_name"]');
-              console.error('input*', origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
+              console.error('input*', el.value, origin, origin.selectedIndex , origin.options[origin.selectedIndex].dataset.type, el.value );
 
 
               if ( el.value == 'range' && origin.options[origin.selectedIndex].dataset.type === 'DateTime'  ) {
@@ -463,7 +463,7 @@ jQuery(function($) {
                 parent.appendChild(element);
 
                 console.log('parent', parent);
-              } else if ( el.value == 'equal' && origin.options[origin.selectedIndex].dataset.type === 'DateTime' ){
+              } else if ( el.value === 'equal' && origin.options[origin.selectedIndex].dataset.type === 'DateTime' ){
                 console.log('Date eq');
                 var element           = document.createElement('input');
                 element.type          = 'date';
@@ -473,7 +473,7 @@ jQuery(function($) {
                 element.style.display = "inline-block";
                 element.classList.toggle('muiFieldField');
                 parent.appendChild(element);
-              } else if ( el.value == 'equal' && origin.options[origin.selectedIndex].dataset.type === 'Boolean' ){
+              } else if ( el.value === 'equal' && origin.options[origin.selectedIndex].dataset.type === 'Boolean' ){
 
                 var parent  = this.parentNode,
                 element = document.createElement('select');
@@ -495,7 +495,7 @@ jQuery(function($) {
                 .on('change', function(){
                   nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
                 })
-              } else if ( ( el.value == 'equal' || el.value == 'not_equal' || el.value == 'regexp' || el.value == 'full_text' ) && origin.options[origin.selectedIndex].dataset.type === 'String' && origin.options[origin.selectedIndex].dataset.hasOwnProperty('auto') && origin.options[origin.selectedIndex].dataset.auto.length){
+              } else if ( ( el.value === 'equal' || el.value === 'not_equal' || el.value === 'regexp' || el.value === 'full_text' ) && origin.options[origin.selectedIndex].dataset.type === 'String' && origin.options[origin.selectedIndex].dataset.hasOwnProperty('auto') && origin.options[origin.selectedIndex].dataset.auto.length){
                 
                 console.warn('****', origin.options[origin.selectedIndex].dataset.auto);
                 
@@ -551,7 +551,7 @@ jQuery(function($) {
 
             field_array.forEach(function(obj){
               if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
-                console.log('Fiels', obj);
+                // console.log('Fiels', obj);
                 autocomplete_title = obj['autocomplete_title'];
                 autocomplete_value = obj['autocomplete_value'];
                 autocomplete_url   = obj['autocomplete_url'];
@@ -601,7 +601,7 @@ jQuery(function($) {
                 if ( parent.querySelector('[name="hidden_autocomplete_value"]') ) {
                   // parent.removeChild(parent.querySelector('[name="hidden_autocomplete_value"]'));
                 } else {
-                  console.warn( '** default ', parent.querySelector('[name="hidden_autocomplete_value"]') );
+                  // console.warn( '** default ', parent.querySelector('[name="hidden_autocomplete_value"]') );
                   console.log('input-> create: ', this);
 
                   var element   = document.createElement('input');
@@ -617,29 +617,30 @@ jQuery(function($) {
             };
           }
 
-          if( this.value === 'exist' ) {
-            var parent  = this.parentNode,
-                element = document.createElement('select');
-            element.type          = 'text';
-            element.name          = 'value';
-            element.placeholder   = 'Значение';
-            element.style.width   = "92%";
+          // console.error('!! EL', el);
+          // if( el && el.parentNode.querySelector('[name="conditions"]').value === 'exist' ) {
+          //   var parent  = this.parentNode,
+          //       element = document.createElement('select');
+          //   element.type          = 'text';
+          //   element.name          = 'value';
+          //   element.placeholder   = 'Значение';
+          //   element.style.width   = "92%";
 
-            parent.appendChild(element);
+          //   parent.appendChild(element);
 
-            console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
-            if ( parent.querySelector('input[name="value"]') ) {
-              parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
-            };
+          //   console.warn( 'exist', element, parent, parent.querySelector('input[name="value"]')  );
+          //   if ( parent.querySelector('input[name="value"]') ) {
+          //     parent.querySelector('input[name="value"]').parentNode.removeChild( parent.querySelector('input[name="value"]') );
+          //   };
             
 
-            $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val("").trigger("change");
-            $(element).select2()
-              .on('change', function(){
-                console.log('update', this);
-                nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent );
-              })
-          };
+          //   $(element).append( [new Option('Да', 'true', true), new Option('Нет', 'false')] ).val("").trigger("change");
+          //   $(element).select2()
+          //     .on('change', function(){
+          //       console.log('update', this);
+          //       nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent );
+          //     })
+          // };
 
           
           nCore.modules.table.event.publish('newCellSettingsChange')
@@ -679,4 +680,14 @@ jQuery(function($) {
   $('.formula').live('change', function(){
     nCore.modules.table.event.publish('cellFormulaChange' );
   });
+
+  if (!Modernizr.inputtypes.date) {
+    $.each($('input[type=date]'), function(i, el){
+      $(el).pickadate({
+        format: 'yyyy-mm-dd',
+        closeOnSelect: true,
+        closeOnClear: true
+      });
+    });
+  };
 });

@@ -261,10 +261,10 @@ nCore.events = (function(){
       $('div#paper').on('froalaEditor.initialized', function (e, editor) {
         console.log('init');
       });
-
-       if ( document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor' ) {
-         document.querySelector('.fr-wrapper').nextSibling.textContent = '';
-       };
+      // скрываем unregister version
+      if ( document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor' ) {
+        document.querySelector('.fr-wrapper').nextSibling.textContent = '';
+      };
 
     });
 
@@ -565,7 +565,7 @@ nCore.events = (function(){
                   cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
 
               // проверка на незаполненые поля в критерии
-              console.log('!! criteria', item);
+              // console.log('!! criteria', item);
               if ( item.source == null && item.origin_name == null ) {
                 activeCell.dataset.query = '[]';
                 continue;
@@ -623,7 +623,7 @@ nCore.events = (function(){
 
 
               _elements_to_update.push({name: 'conditions', val: item.conditions})
-              console.error('conditions:', item)
+              // console.error('conditions:', item)
 
 
               criteriaCondition = card.querySelector('select.itemSelectCondition');
@@ -640,7 +640,7 @@ nCore.events = (function(){
                 el.element = card.querySelector('select[name="' + el.name + '"]');
 
               }
-              console.warn('* card', card, item, 'condition_group', groupConditions);
+              // console.warn('* card', card, item, 'condition_group', groupConditions);
 
               var _tmp = card.querySelector('[name="value"]');
               
@@ -664,9 +664,11 @@ nCore.events = (function(){
         }
       };
 
+      var __condition = '';
+
       for (var k = 0; k < __elements_to_update.length; k++) {
         var _a = __elements_to_update[k];
-        console.log('_a', _a);
+        // console.log('_a', _a);
         for (var o = 0; o < _a.length; o++) {
 
           if (_a[o].element.name == 'criteria_condition_group' ) {
@@ -685,11 +687,12 @@ nCore.events = (function(){
             _a[o].element.dataset.old = 1;
           }
 
+          
           if ( _a[o].element.name == 'value' ) {
 
-            console.log('++++++', _a[o]);
+            // console.log('++++++', _a[o]);
             // если условие поиска не range и не equal && тип поля не дата
-            if ( _a[o].val.hasOwnProperty('periodStart') || _a[o].val.hasOwnProperty('periodEnd') ) {
+            if ( typeof _a[o].val === 'object' && (_a[o].val.hasOwnProperty('periodStart') || _a[o].val.hasOwnProperty('periodEnd')) ) {
               var item = _a[o].element.parentNode.querySelector('[name="conditions"]').value;
               console.info('[!] date object', _a[o], item);
               if ( item === 'range' ) {
@@ -714,22 +717,53 @@ nCore.events = (function(){
                 _a[o].element.value = _a[o].val.periodStart;
               };
               if ( item === 'equal' ) {
-                // var element  = document.createElement('input');
-                // element.type          = 'date';
-                // element.name          = 'date_start';
-                // element.placeholder   = 'Start';
-                // element.style.width   = "92%";
-                // element.style.display = "inline-block";
-                // element.classList.toggle('muiFieldField');
-                // parent.appendChild(element);
-
-                // _a[o].element.value = 'equal'+JSON.stringify( _a[o].val );
                 _a[o].element.type = 'date';
                 _a[o].element.name = 'date_start';
                 _a[o].element.value = _a[o].val.periodStart;
               };
+            }
+            else if( __condition == 'Boolean' ) {
+              var item = _a[o].element.parentNode.querySelector('[name="conditions"]').value;
+              // console.warn( 'boolean', item );
 
-            } else {
+              // var el   = _a[o].element,
+              //   parent = el.parentNode;
+
+              // console.warn('boolean conditions', el );
+              // while (el.firstChild) {
+              //     el.removeChild(el.firstChild);
+              // }
+              // var element  = document.createElement('select');
+              // element.name = 'value';
+              // element.classList.toggle('muiFieldField');
+              // element.value = _a[o].val.periodEnd;
+
+              // parent.replaceChild(element, el);
+              // $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val( item ).trigger("change");
+
+              // console.log('');
+              // $(el).select2({});
+
+              // var field_array  = JSON.parse( nCore.storage.getItem( parent.querySelector('[name="table_name"]').value ) ),
+              //   origin         = parent.querySelector('[name="origin_name"]'),
+              //   type;
+              // var condition    = parent.querySelector('[name="conditions"]');
+
+              // field_array.forEach(function(obj){
+              //   if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
+              //     type = obj['data_type'];
+              //     __condition = obj['data_type'];
+              //   };
+              // })
+
+              // var _options = nCore.types[ type ],
+              //     _result = [];
+              // for (var z = 0; z < _options.length; z++) {
+              //   _result.push( new Option(_options[z].caption, _options[z].value) );
+              // };
+
+            }
+            else {
               var el     = _a[o].element,
                   parent = el.parentNode,
                   origin = parent.querySelector('select[name="origin_name"]').options[parent.querySelector('select[name="origin_name"]').selectedIndex];
@@ -770,18 +804,20 @@ nCore.events = (function(){
 
                 field_array.forEach(function(obj){
                   if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
-                    console.log('Fiels', obj);
+                    // console.log('Fiels', obj);
                     autocomplete_title = obj['autocomplete_title'];
                     autocomplete_value = obj['autocomplete_value'];
+                    autocomplete_url   = obj['autocomplete_url'];
                   };
                 })
 
-                // console.info(' select value ', origin.value );
                 var condition    = parent.querySelector('[name="conditions"]');
                 if ( condition.value === 'group' || condition.value === 'not_in_group' ) {
                   autocomplete_url   = 'classifiers/groups/groups.json';
                   autocomplete_title = 'full_title'
                 };
+                
+                console.info('@times', autocomplete_title, autocomplete_value, autocomplete_url );
 
                 $( element ).select2({
                   ajax: {
@@ -810,7 +846,7 @@ nCore.events = (function(){
                   minimumInputLength: 1,
                   placeholder: "Начните ввод"
                 }).on('change', function(e){
-                  console.log('[757]change', activeCell, element.value, element.textContent);
+                  console.log('[847]change', activeCell, element.value, element.textContent);
                   activeCell.dataset[element.value+'Name'] = element.options[element.selectedIndex].textContent;
 
                   // if (this.nodeName === 'SELECT') {
@@ -846,6 +882,7 @@ nCore.events = (function(){
             field_array.forEach(function(obj){
               if ( obj['_id'] == origin.value || obj['id'] == origin.value ) {
                 type = obj['data_type'];
+                __condition = obj['data_type'];
               };
             })
 
@@ -854,7 +891,7 @@ nCore.events = (function(){
             for (var z = 0; z < _options.length; z++) {
               _result.push( new Option(_options[z].caption, _options[z].value) );
             };
-            $(el).append( _result ).val("range").trigger("change");
+            $(el).append( _result ).val("").trigger("change");
           };
 
           if ( !_a[o].val.hasOwnProperty('periodStart') ) {
@@ -1030,7 +1067,7 @@ nCore.events = (function(){
       //   return true;
       // } else {
         nCore.query.get('sources.json').success(function (data) {
-            console.warn('loadCriteria -> get', data);
+            // console.warn('loadCriteria -> get', data);
 
             for (var i = 0; i < data.length; i++) {
               var source = data[i];
