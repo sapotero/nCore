@@ -676,7 +676,8 @@ nCore.events = (function () {
           // console.log( '---', _select, form.children('input[type="date"]'), form.children('input[type="date"]') ? ({ start: form.children('input[name="date_start"]').val(), end: form.children('input[name="date_end"]').val() }) : form.children('[name="value"]').val(), form.children('[name="value"]').val() );
 
           data.query.push({
-            criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
+            // criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
+            criteria_condition : criteria[0].querySelector('[name="connectionGroup"]').value,
             source             : form.children('select[name="source"]').val(),
             conditions         : form.children('select[name="conditions"]').val(),
             origin_name        : form.children('select[name="origin_name"]').val(),
