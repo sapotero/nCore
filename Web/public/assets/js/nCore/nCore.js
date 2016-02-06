@@ -307,6 +307,36 @@ nCore = (function(){
           caption: "Присутствует"
         }
       ],
+      Fixnum:  [
+        {
+          value: "equal",
+          caption: "Точное совпадение"
+        },
+        {
+          value: "not_equal",
+          caption: "Не"
+        },
+        {
+          value: "regexp",
+          caption: "Частичное совпадение"
+        },
+        {
+          value: "full_text",
+          caption: "Ключевые слова"
+        },
+        {
+          value: "group",
+          caption: "Группа"
+        },
+        {
+          value: "not_in_group",
+          caption: "Исключая группу"
+        },
+        {
+          value: "exist",
+          caption: "Присутствует"
+        }
+      ],
       Default:  [
         {
           value: "equal",
