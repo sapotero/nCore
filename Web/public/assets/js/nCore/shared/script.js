@@ -47,6 +47,7 @@ jQuery(function($) {
   function hideSidedrawer() {
     $bodyEl.toggleClass('hide-sidedrawer');
     $('#sidedrawer-brand').removeClass('mui--z5');
+
   }
   
   
@@ -273,7 +274,9 @@ jQuery(function($) {
 
   // удаление критерия
   $('.criteriaMenuItem.remove').live('click', function(){
+    console.log('detach criteria');
     $(this).parents('.criteriaSelectorItem').detach();
+    nCore.modules.table.event.publish('newCellSettingsChange' );
   })
   
 

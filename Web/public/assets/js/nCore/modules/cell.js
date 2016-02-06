@@ -237,14 +237,8 @@ nCore.modules.cell = (function(){
           switch(field_type){
             case "String":
               console.log('+exist String');
-              if ( autocomplete_url ) {
-                select_query.url   =  autocomplete_url;
-                select_query.value =  autocomplete_value;
-                select_query.title =  autocomplete_title;
-              } else {
-                select_query.plain = true
+                select_query.bool = true
                 select_query.plain_value = value
-              };
               break
             case 'DateTime':
               console.log('+exist DateTime');
@@ -399,11 +393,22 @@ nCore.modules.cell = (function(){
       el.style.marginBottom = ' 20px';
       el.classList.toggle('muiFieldField');
       el.style.textAlign    = ' left';
-      el.name   = 'values';
+      el.name   = 'value';
       el.value = select2.plain_value;
 
       console.log('plain!', select2, el)
       parent.appendChild( el );
+    } else if ( select2.hasOwnProperty('bool') ) {
+      
+      var e = generateBoolSelect2(element, value, true);
+
+      console.log('bool!', select2, e)
+      parent.appendChild( e );
+
+      $(e).select2()
+      .on('change', function(){
+        nCore.modules.table.event.publish('newCellSettingsChange' );
+      })
     } else {
       parent.appendChild( element );
     };
@@ -552,17 +557,41 @@ nCore.modules.cell = (function(){
     parent.removeChild(element);
     parent.appendChild(el);
   },
-  generateBoolSelect2 = function( element, autocomplete_url, autocomplete_value, autocomplete_title, value){
+  generateBoolSelect2 = function( element, value, r){
+    console.log('generateBoolSelect2 begin', element, value, r);
+    var parent = element.parent;
+
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     };
+    // $(element).select2();
+    // $(element).select2('destroy');
+    // parent.removeChild('[name="value"]');
+
+    var el                = document.createElement('select');
+    el.style.display      = 'block';
+    el.style.width        = ' 92%';
+    el.style.padding      = ' 15px auto';
+    el.style.paddingTop   = ' 15px';
+    el.style.marginBottom = ' 20px';
+    el.style.textAlign    = ' left';
+    el.name               = "value";
+    // el.value = value;
 
 
-    $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val("").trigger("change");
-    $(element).select2()
-    .on('change', function(){
-      nCore.modules.table.event.publish('newCellSettingsChange',this.options[this.selectedIndex].textContent);
-    })
+    // parent.appendChild(element);
+    
+    $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val( value ).trigger("change");
+
+    var usedNames = {};
+    $().each(function () {
+      usedNames[this.text] ? $(this).remove(): usedNames[this.text] = this.value;
+    });
+
+    console.log('generateBoolSelect2 end', element);
+    if (r) {
+      return element
+    };
   },
   updateBlock = function( element, name, value  ){
     console.log( '----- updateBlock ----- ', element );
@@ -645,11 +674,19 @@ nCore.modules.cell = (function(){
         console.log('+range');
         break;
       case 'exist':
-        if ( autocomplete_url ){
-          console.log('auto');
-          generateBoolSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
-        };
-        console.log('+exist');
+        // if ( autocomplete_url ){
+          // console.log('auto');
+          // generateBoolSelect2(element, value);
+          $(element).select2();
+          $(element).select2('destroy');
+
+          element = generateBoolSelect2(element, value, true);
+          $(element).select2()
+          .on('change', function(){
+            nCore.modules.table.event.publish('newCellSettingsChange' );
+          })
+        // };
+        // console.log('+exist');
         break;
       case 'equal':
         console.log('+equal', field_type);
@@ -658,6 +695,7 @@ nCore.modules.cell = (function(){
         switch(field_type){
           case 'Boolean':
             console.log('bool');
+            element = generateBoolSelect2(element, value, true);
             break;
           case 'DateTime':
             console.log('datetime', parent, element);

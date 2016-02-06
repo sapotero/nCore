@@ -643,11 +643,13 @@ nCore.events = (function () {
     nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME, URL) {
 
       // переписать с jQuery на js
-      // console.log('active cell', activeCell);
 
       var _query = [],
         list = document.querySelector(".criteriaSelector"),
         criterias = list.querySelectorAll('div');
+
+      console.log('----- newCellSettingsChange -----');
+      console.log(list, criterias);
 
       for (var i = 0; i < criterias.length; i++) {
         var criteria = $(criterias[i]),
