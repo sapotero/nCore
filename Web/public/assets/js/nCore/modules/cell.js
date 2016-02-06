@@ -141,7 +141,7 @@ nCore.modules.cell = (function(){
             autocomplete_value,
             autocomplete_url;
         
-        console.info(' select value ', criteria.origin_name );
+        // console.info(' select value ', criteria.origin_name );
 
         field_array.forEach(function(obj){
           if ( obj['_id'] == criteria.origin_name || obj['id'] == criteria.origin_name ) {
@@ -234,24 +234,74 @@ nCore.modules.cell = (function(){
         };
 
         if ( criteria.conditions == 'exist' ) {
-          console.log('+exist');
-          select_query.url   =  autocomplete_url;
-          select_query.value =  autocomplete_value;
-          select_query.title =  autocomplete_title;
+          switch(field_type){
+            case "String":
+              console.log('+exist String');
+              if ( autocomplete_url ) {
+                select_query.url   =  autocomplete_url;
+                select_query.value =  autocomplete_value;
+                select_query.title =  autocomplete_title;
+              } else {
+                select_query.plain = true
+                select_query.plain_value = value
+              };
+              break
+            case 'DateTime':
+              console.log('+exist DateTime');
+              var el           = document.createElement('input');
+              el.type          = 'date';
+              el.name          = 'date_start';
+              el.placeholder   = 'Start';
+              el.style.width   = "92%";
+              el.style.display = "inline-block";
+              el.classList.toggle('muiFieldField');
+              el.value = criteria.value.periodStart;
+              element = el;
+              break;
+            case 'Boolean':
+              console.log('+exist Boolean');
+              var el           = document.createElement('input');
+              el.type          = 'date';
+              el.name          = 'date_start';
+              el.placeholder   = 'Start';
+              el.style.width   = "92%";
+              el.style.display = "inline-block";
+              el.classList.toggle('muiFieldField');
+              el.value = criteria.value.periodStart;
+              element = el;
+              break;
+            default:
+              break;
+          };
         };
 
         if ( criteria.conditions == 'equal' ) {
-          console.log('+equal', field_type, criteria.value);
-          if ( field_type == 'DateTime' ) {
-            var el           = document.createElement('input');
-            el.type          = 'date';
-            el.name          = 'date_start';
-            el.placeholder   = 'Start';
-            el.style.width   = "92%";
-            el.style.display = "inline-block";
-            el.classList.toggle('muiFieldField');
-            el.value = criteria.value.periodStart;
-            element = el;
+          console.log('+equal', field_type, criteria.value, autocomplete_url);
+          
+          switch(field_type){
+            case "String":
+              if ( autocomplete_url ) {
+                select_query.url   =  autocomplete_url;
+                select_query.value =  autocomplete_value;
+                select_query.title =  autocomplete_title;
+              } else {
+                select_query.plain = true
+                select_query.plain_value = value
+              };
+              break
+            case 'DateTime':
+              var el           = document.createElement('input');
+              el.type          = 'date';
+              el.name          = 'date_start';
+              el.placeholder   = 'Start';
+              el.style.width   = "92%";
+              el.style.display = "inline-block";
+              el.classList.toggle('muiFieldField');
+              el.value = criteria.value.periodStart;
+              element = el;
+              break;
+            default:
+              break;
           };
           // select_query.url   =  autocomplete_url;
           // select_query.value =  autocomplete_value;
@@ -262,9 +312,21 @@ nCore.modules.cell = (function(){
 
         if ( criteria.conditions == 'not_equal' ) {
           console.log('+not_equal');
-          select_query.url   =  autocomplete_url;
-          select_query.value =  autocomplete_value;
-          select_query.title =  autocomplete_title;
+
+          switch(field_type){
+            case "String":
+              if ( autocomplete_url ) {
+                select_query.url   =  autocomplete_url;
+                select_query.value =  autocomplete_value;
+                select_query.title =  autocomplete_title;
+              } else {
+                select_query.plain = true
+                select_query.plain_value = value
+              };
+              break
+            default:
+              break;
+          };
         };
 
         if ( criteria.conditions == 'regexp' ) {
@@ -307,7 +369,7 @@ nCore.modules.cell = (function(){
     return [ element, select_query ];
   },
   generateBlock = function( criteria, parent, name, value ){
-    console.log( 'generateBlock', criteria, parent, name, value );
+    console.log( '----- generateBlock', criteria, parent, name, value );
     var _criteria = criteria,
         _parent   = parent,
         _name     = name,
@@ -327,14 +389,34 @@ nCore.modules.cell = (function(){
     var select2 = element_properties[1];
         element = element_properties[0];
 
-    parent.appendChild( element );
+    if ( select2.hasOwnProperty('plain') ) {
+      
+      var el = document.createElement('input');
+      el.style.display      = 'block';
+      el.style.width        = ' 92%';
+      el.style.padding      = ' 15px auto';
+      el.style.paddingTop   = ' 15px';
+      el.style.marginBottom = ' 20px';
+      el.classList.toggle('muiFieldField');
+      el.style.textAlign    = ' left';
+      el.name   = 'values';
+      el.value = select2.plain_value;
 
-    if ( select2.hasOwnProperty('id') ) {
-      // console.log( 'ID ', nCore.modules.table.active().dataset[ select2.id+"_name" ], value );
-      $(element).append( [ new Option( nCore.modules.table.active().dataset[ value+"Name" ] , select2.id, true) ] ).val("").trigger("change");
+      console.log('plain!', select2, el)
+      parent.appendChild( el );
+    } else {
+      parent.appendChild( element );
+    };
+
+
+
+    if ( nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
+      // console.log( 'ID ', nCore.modules.table.active().dataset, value );
+      $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] ).val("").trigger("change");
     };
 
     if ( select2.hasOwnProperty('url') ){
+      console.log('has url', select2.url);
       $( element ).select2({
         ajax: {
           url: select2.url,
@@ -363,13 +445,13 @@ nCore.modules.cell = (function(){
         minimumInputLength: 1,
         placeholder: "Начните ввод"
       }).on('change', function(e){
-        nCore.modules.table.active().dataset[ select2.id+"_name" ] = element.options[element.selectedIndex].textContent;
+        nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
         nCore.modules.table.event.publish('newCellSettingsChange');
       });
     };
 
     if ( select2.hasOwnProperty('default') ) {
-      // console.log( 'ID ', nCore.modules.table.active().dataset[ select2.id+"_name" ], value );
+      // console.log( 'ID ', nCore.modules.table.active().dataset[ select2.id ], value );
       $(element).append( [ new Option( select2.default , select2.id, true) ] ).val("").trigger("change");
     };
 
@@ -383,22 +465,30 @@ nCore.modules.cell = (function(){
         nCore.modules.table.event.publish('newCellSettingsChange');
       });
     };
-
-
-    // устанавливаем критерий группы
-    // if ( name == 'criteria_condition' ) {
-
-    //   var cr_c = parent.parentNode.querySelector('[name="criteria_condition_group"]');
-    //   cr_c.value = criteria.criteria_condition;
-    //   cr_c.selectedIndex = (criteria.criteria_condition == 'and') ? 0 : 1;
-      
-    //   // console.log( '++++++++++++++', criteria.criteria_condition, (criteria.criteria_condition == 'and') ? 0 : 1, cr_c );
-    // };
-
   },
   generateSelect2 = function( element, autocomplete_url, autocomplete_value, autocomplete_title, value){
+    console.log('     -------- generateSelect2 ---------', element, autocomplete_url, autocomplete_value, autocomplete_title, value, element.nodeName ); 
+    
+    var parent = element.parentNode;
+
     while (element.firstChild) {
       element.removeChild(element.firstChild);
+    };
+    $(element).select2();
+    $(element).select2('destroy');
+
+    if ( element.nodeName == 'INPUT' ) {
+      parent.removeChild(element);
+      var element = document.createElement('select');
+      element.style.display      = 'block';
+      element.style.width        = ' 92%';
+      element.style.padding      = ' 15px auto';
+      element.style.paddingTop   = ' 15px';
+      element.style.marginBottom = ' 20px';
+      element.style.textAlign    = ' left';
+      element.name               = 'value';
+      parent.appendChild(element)
+
     };
 
     $( element ).select2({
@@ -429,14 +519,44 @@ nCore.modules.cell = (function(){
       minimumInputLength: 1,
       placeholder: "Начните ввод"
     }).on('change', function(e){
-      // nCore.modules.table.active().dataset[ select2.id+"_name" ] = element.options[element.selectedIndex].textContent;
+      console.log('element',element,element.value,element)
+      nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
       nCore.modules.table.event.publish('newCellSettingsChange');
     });
+    console.log('     -------- generateSelect2 ---------'); 
+  },
+  generateInput = function( element, value, r){
+    var parent = element.parentNode;
+
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    };
+    $(element).select2();
+    $(element).select2('destroy');
+
+    var el = document.createElement('input');
+    el.style.display      = 'block';
+    el.style.width        = ' 92%';
+    el.style.padding      = ' 15px auto';
+    el.style.paddingTop   = ' 15px';
+    el.style.marginBottom = ' 20px';
+    el.classList.toggle('muiFieldField');
+    el.style.textAlign    = ' left';
+    el.name   = 'value';
+    el.value = value ? value : '';
+
+    if ( r ) {
+      return el
+    };
+
+    parent.removeChild(element);
+    parent.appendChild(el);
   },
   generateBoolSelect2 = function( element, autocomplete_url, autocomplete_value, autocomplete_title, value){
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     };
+
 
     $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val("").trigger("change");
     $(element).select2()
@@ -445,20 +565,26 @@ nCore.modules.cell = (function(){
     })
   },
   updateBlock = function( element, name, value  ){
-    var element = element,
+    console.log( '----- updateBlock ----- ', element );
+    var element = element;
         parent  = element.parentNode;
 
 
-    console.log( '----- updateBlock ----- ' );
-    console.info( element, parent );
+    // console.info( element );
+    
+    // if ( element.name == 'date_start') {
+    //   parent.removeChild( parent.querySelector('[name="date_end"]') )
+    //   parent.removeChild( parent.querySelector('[name="date_start"]') )
+    //   element.name = 'value';
+    // };
 
     var field_array  = JSON.parse( nCore.storage.getItem( parent.querySelector('[name="source"]').value ) ),
         origin_name  = parent.querySelector('[name="origin_name"]').value,
         conditions   = parent.querySelector('[name="conditions"]').value,
-        field_type,
-        autocomplete_title,
-        autocomplete_value,
-        autocomplete_url;
+        field_type = '',
+        autocomplete_title = '',
+        autocomplete_value = '',
+        autocomplete_url = '';
     
 
     field_array.forEach(function(obj){
@@ -526,7 +652,7 @@ nCore.modules.cell = (function(){
         console.log('+exist');
         break;
       case 'equal':
-        console.log('+equal');
+        console.log('+equal', field_type);
 
         // если есть автокомплитер
         switch(field_type){
@@ -534,7 +660,7 @@ nCore.modules.cell = (function(){
             console.log('bool');
             break;
           case 'DateTime':
-            console.log('datetime');
+            console.log('datetime', parent, element);
             parent.removeChild(element);
 
             var element           = document.createElement('input');
@@ -548,9 +674,12 @@ nCore.modules.cell = (function(){
             break;
           case 'String':
             if ( autocomplete_url ){
-              console.log('auto');
+              console.log('auto', element, autocomplete_url, autocomplete_value, autocomplete_title);
               generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
-            };
+            } else {
+              console.log('not auto', element);
+              generateInput(element, value);
+            }
             break;
           default:
             console.log('---')
@@ -559,8 +688,10 @@ nCore.modules.cell = (function(){
         break;
       case 'not_equal':
         console.log('+not_equal');
-        if ( autocomplete_url ){
+        if ( autocomplete_url.length ){
           generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
+        } else {
+
         };
         break;
       case 'regexp':
@@ -577,10 +708,10 @@ nCore.modules.cell = (function(){
         break;
       case 'group':
         console.error('+group', field_type, autocomplete_title, autocomplete_value, autocomplete_url);
+        
         autocomplete_url = 'classifiers/groups/groups.json';
-        if ( autocomplete_url ){
-          generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
-        };
+        generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
+
         break;
       case 'not_in_group':
         console.log('+not_in_group');

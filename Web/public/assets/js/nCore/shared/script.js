@@ -122,6 +122,32 @@ jQuery(function($) {
     card.removeClass('mui--hide');
 
     list.append( card );
+
+    var form = card[0].querySelector('.criteriaForm');
+
+    // создаем критериии
+    form.innerHTML = '<select name="source" style="width: 92%; padding: 15px auto;padding-top: 15px; margin-bottom: 20px;"> <option disabled="true">Выберете журнал</option> </select> <select name="origin_name" style="width: 92%; padding: 15px auto;padding-top: 15px; margin-bottom: 20px;"> <option disabled="true">Выберете поле</option> </select> <select name="conditions" style="width: 92%; padding: 15px auto;padding-top: 15px; margin-bottom: 20px; text-align: left;"> <option data-available=\'["String", "DateTime"]\' value="equal">Точное совпадение</option> <option data-available=\'["String"]\' value="not_equal" style="display: none">Не</option> <option data-available=\'["String"]\' value="regexp">Частичное совпадение</option> <option data-available=\'["String"]\' value="full_text">Ключевые слова</option> <option data-available=\'["String"]\' value="group">Группа</option> <option data-available=\'["String"]\' value="not_in_group">Исключая группу</option> <option data-available=\'["Boolean"]\' value="exist">Присутствует</option> <option data-available=\'["DateTime"]\' value="range" >За период</option> </select> <select style="width: 92%" class="muiFieldField" type="text" name="value" placeholder="Значение">';
+    
+    
+    var source      = form.querySelector('[name="source"]'),
+        origin_name = form.querySelector('[name="origin_name"]'),
+        conditions  = form.querySelector('[name="conditions"]'),
+        value       = form.querySelector('[name="value"]');
+
+     var df           = new DocumentFragment(),
+        criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );
+    
+    for ( var q = 0; q < criteriaKeys.length; q++ ) {
+      df.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
+    };
+    source.appendChild(df);
+    
+    $(source).select2();
+    $(origin_name).select2();
+    $(conditions).select2();
+    $(value).select2();
+
+    console.log('ADD', form);
     nCore.modules.table.event.publish('newCellSettingsChange' );
   });
 
@@ -232,9 +258,10 @@ jQuery(function($) {
 
   // выбор справочника -> меняем значения в origin_name
   $('select[name="conditions"]').live('change', function(e){
-    console.log('select[name="conditions"]', this, this.value );
 
-    var element  = this.parentNode.querySelector('[name="value"]')
+    var element  = this.parentNode.querySelector('[name="value"], [name="date_start"]')
+    console.log('select[name="conditions"]', this, element );
+
     // element, name, value 
     nCore.modules.cell.updateBlock(element, 'value', null );
     
