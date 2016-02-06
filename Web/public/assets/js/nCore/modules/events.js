@@ -581,6 +581,8 @@ nCore.events = (function () {
 
 
               criteriaCondition = card.querySelector('select.itemSelectCondition');
+              console.error( 'criteriaCondition', criteriaCondition );
+
               list.appendChild(card);
 
               
@@ -673,11 +675,11 @@ nCore.events = (function () {
             form = item.children('.criteriaForm');
 
           var _select = head[0].querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition');
-          // console.log( '---', _select, form.children('input[type="date"]'), form.children('input[type="date"]') ? ({ start: form.children('input[name="date_start"]').val(), end: form.children('input[name="date_end"]').val() }) : form.children('[name="value"]').val(), form.children('[name="value"]').val() );
+          console.error( '---', _select, criteriaItemsRoot[0].parentNode.querySelector('[name="connectionGroup"]').value );
 
           data.query.push({
-            // criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
-            criteria_condition : criteria[0].querySelector('[name="connectionGroup"]').value,
+            criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
+            // criteria_condition : criteriaItemsRoot[0].querySelector('[name="connectionGroup"]').value,
             source             : form.children('select[name="source"]').val(),
             conditions         : form.children('select[name="conditions"]').val(),
             origin_name        : form.children('select[name="origin_name"]').val(),
