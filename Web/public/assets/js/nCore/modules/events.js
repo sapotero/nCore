@@ -675,7 +675,7 @@ nCore.events = (function () {
             form = item.children('.criteriaForm');
 
           var _select = head[0].querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition');
-          console.error( '---', _select, criteriaItemsRoot[0].parentNode.querySelector('[name="connectionGroup"]').value );
+          // console.error( '---', _select, criteriaItemsRoot[0].parentNode.querySelector('[name="connectionGroup"]').value );
 
           data.query.push({
             criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,

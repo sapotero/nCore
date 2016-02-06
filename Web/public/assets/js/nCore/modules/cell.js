@@ -283,6 +283,12 @@ nCore.modules.cell = (function(){
                 select_query.plain_value = value
               };
               break
+            case "Boolean":
+              // select_query.plain = true
+              // select_query.plain_value = value
+              select_query.bool = true
+              select_query.plain_value = value
+              break
             case 'DateTime':
               var el           = document.createElement('input');
               el.type          = 'date';
@@ -559,24 +565,37 @@ nCore.modules.cell = (function(){
   },
   generateBoolSelect2 = function( element, value, r){
     console.log('generateBoolSelect2 begin', element, value, r);
-    var parent = element.parent;
+    var parent = element.parentNode,
+        _new = false,
+        _el;
 
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     };
-    // $(element).select2();
-    // $(element).select2('destroy');
-    // parent.removeChild('[name="value"]');
+    if ( element.nodeName == 'INPUT' ) {
+      console.warn('input!', element, element.parentNode);
+      // parent.removeChild(element);
+      _new = true;
 
-    var el                = document.createElement('select');
-    el.style.display      = 'block';
-    el.style.width        = ' 92%';
-    el.style.padding      = ' 15px auto';
-    el.style.paddingTop   = ' 15px';
-    el.style.marginBottom = ' 20px';
-    el.style.textAlign    = ' left';
-    el.name               = "value";
-    // el.value = value;
+      
+      $(element).select2();
+      $(element).select2('destroy');
+      parent.removeChild( parent.querySelector('[name="value"]') );
+
+      var _el                = document.createElement('select');
+      // _el.style.display      = 'block';
+      _el.style.width        = ' 92%';
+      _el.style.padding      = ' 15px auto';
+      _el.style.paddingTop   = ' 15px';
+      _el.style.marginBottom = ' 20px';
+      _el.style.textAlign    = ' left';
+      _el.name               = "value";
+
+      $(_el).append( [new Option('Да', 'true'), new Option('Нет', 'false')] );
+      parent.appendChild(_el);
+      $(_el).select2().val( value ).trigger('change');;
+    };
+
 
 
     // parent.appendChild(element);
@@ -589,6 +608,9 @@ nCore.modules.cell = (function(){
     });
 
     console.log('generateBoolSelect2 end', element);
+    if ( _new ) {
+      return _el;
+    };
     if (r) {
       return element
     };
