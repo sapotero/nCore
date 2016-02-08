@@ -78,8 +78,8 @@ nCore.events = (function () {
       // set overlay options
       var options = {
         'keyboard': true, // teardown when <esc> key is pressed (default: true)
-        'static': false, // maintain overlay when clicked (default: false)
-        'onclose': function () {}
+        'static':   false, // maintain overlay when clicked (default: false)
+        'onclose':  function () {}
       };
       // initialize with child element
       var m = document.createElement('div');
@@ -287,12 +287,37 @@ nCore.events = (function () {
     nCore.document.root.subscribe('loadDocument',
       function (id, callback) {
         console.log('loadDocument', id);
+        var overlayEl = mui.overlay('on'),
+
+        options = {
+          'keyboard': false, // teardown when <esc> key is pressed (default: true)
+          'static': true, // maintain overlay when clicked (default: false)
+          'onclose': function () {
+            // after callback
+          }
+        };
+        // initialize with child element
+        var m = document.createElement('div');
+        m.style.width = '400px';
+        m.style.height = '100px';
+        m.style.margin = '10% auto';
+        m.style.padding = '10% auto';
+        m.style.backgroundColor = '#fff';
+        m.classList.toggle('mui-panel');
+        m.classList.toggle('mui--z5');
+        m.innerHTML = '<h4>Загрузка документа</h4><div class="loader"></div>';
+
+        mui.overlay('on', options, m);
 
         nCore.query.get('documents/' + id + '.json', {
             id: id
           })
           .success(function (rawDocument) {
             console.log('***raw', rawDocument);
+            
+            setTimeout(function () {
+              mui.overlay('off');
+            }, 1000);
 
             nCore.document.load(rawDocument);
 
@@ -303,6 +328,7 @@ nCore.events = (function () {
 
             callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
           }).error(function (data) {
+            mui.overlay('off');
             console.error('[!] loadDocument -> get', data)
           });
       },
@@ -329,9 +355,11 @@ nCore.events = (function () {
 
       // set overlay options
       var options = {
-        'keyboard': true, // teardown when <esc> key is pressed (default: true)
-        'static': false, // maintain overlay when clicked (default: false)
-        'onclose': function () {}
+        'keyboard': false, // teardown when <esc> key is pressed (default: true)
+        'static': true, // maintain overlay when clicked (default: false)
+        'onclose': function () {
+          // after callback
+        }
       };
       // initialize with child element
       var m = document.createElement('div');
@@ -370,74 +398,121 @@ nCore.events = (function () {
     });
 
     nCore.document.root.subscribe('renderIndexView', function (type) {
-      console.log('renderIndexView -> ', type);
 
+      document.getElementById('thumb').classList.add('mui--hide');
+      var overlayEl = mui.overlay('on'),
+
+      options = {
+        'keyboard': false, // teardown when <esc> key is pressed (default: true)
+        'static': true, // maintain overlay when clicked (default: false)
+        'onclose': function () {
+          // after callback
+        }
+      };
+      // initialize with child element
+      var m = document.createElement('div');
+      m.style.width = '400px';
+      m.style.height = '100px';
+      m.style.margin = '10% auto';
+      m.style.padding = '10% auto';
+      m.style.backgroundColor = '#fff';
+      m.classList.toggle('mui-panel');
+      m.classList.toggle('mui--z5');
+      m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
+
+      mui.overlay('on', options, m);
+      
       // если не был выбран вариант отображения страницы
       if (!nCore.storage.hasOwnProperty('indexViewType')) {
         nCore.storage.setItem('indexViewType', 'thumb');
       };
 
-      var items = JSON.parse(nCore.storage.getItem(type));
-      console.log('storage: ', items);
+      // сколько раз проверяем 
+      var reload_count = 2;
 
-      var helper = {
-        documentTitle: {
-          text: function (params) {
-            return this.name;
+      var _i = setInterval( function(){
+        reload_count--;
+        console.log('renderIndexView -> ', type);
+
+        if ( nCore.storage.hasOwnProperty( type ) && JSON.parse(nCore.storage.getItem(type)).length ) {
+          var items = JSON.parse(nCore.storage.getItem(type));
+          console.log('storage: ', items);
+
+          var helper = {
+            documentTitle: {
+              text: function (params) {
+                return this.name;
+              }
+            },
+            documentDate: {
+              text: function (params) {
+                return this.date || new Date().toLocaleString();
+              }
+            },
+            documentId: {
+              href: function (params) {
+                return "#/report/" + this._id || Math.random();
+              },
+              text: function () {
+                return ''
+              }
+            },
+            downloadDoc: {
+              href: function (params) {
+                return "/" + type + "/" + (this._id || Math.random()) + "/download";
+              },
+              // text: function () {
+              //   return ''
+              // }
+            },
+            downloadPdf: {
+              href: function (params) {
+                return "documents/" + this._id + ".pdf";
+              },
+              // text: function () {
+              //   return ''
+              // }
+            },
+            documentUser: {
+              text: function () {
+                return this.user
+              }
+            }
+          };
+
+          Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
+
+          mui.overlay('off');
+          document.body.classList.add('hide-sidedrawer');
+          nCore.document.root.publish('generateNewDocument');
+          document.getElementById('thumb').classList.remove('mui--hide')
+
+
+          var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
+            _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
+          // когда б
+          // _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
+
+          for (var i = 0; i < _mui_rows.length; i++) {
+            _mui_rows[i].classList.add('mui--hide')
           }
-        },
-        documentDate: {
-          text: function (params) {
-            return this.date || new Date().toLocaleString();
-          }
-        },
-        documentId: {
-          href: function (params) {
-            return "#/report/" + this._id || Math.random();
-          },
-          text: function () {
-            return ''
-          }
-        },
-        downloadDoc: {
-          href: function (params) {
-            return "/" + type + "/" + (this._id || Math.random()) + "/download";
-          },
-          // text: function () {
-          //   return ''
-          // }
-        },
-        downloadPdf: {
-          href: function (params) {
-            return "documents/" + this._id + ".pdf";
-          },
-          // text: function () {
-          //   return ''
-          // }
-        },
-        documentUser: {
-          text: function () {
-            return this.user
-          }
-        }
-      };
 
-      Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
+          // падает firefox
+          if (_active_row) {
+            _active_row.classList.remove('mui--hide');
+          };
 
+          clearInterval(_i);
+        };
+        if (reload_count == 0) {
+          clearInterval(_i);
+          console.log('notFound');
+          mui.overlay('off');
+          Transparency.render(document.getElementById('noDocumentsFound'), {notFoundMessage: 'Пока нет документов'});
+        };
+      }, 1000);
 
-      var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
-        _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
-      // когда б
-      // _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
-
-      for (var i = 0; i < _mui_rows.length; i++) {
-        _mui_rows[i].classList.add('mui--hide')
-      }
-
-      // падает firefox
-      if (_active_row) {
-        _active_row.classList.remove('mui--hide');
-      };
+     // }
     });
 
     nCore.document.root.subscribe('renderNotPermit', function (data) {
