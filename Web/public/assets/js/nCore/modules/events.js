@@ -65,10 +65,10 @@ nCore.events = (function () {
       m.classList.toggle('mui--z5');
 
       var text = Transparency.render(document.querySelector('.nCoreDocumentSettings'), {
-        nCoreName: nCore.document.name(),
-        nCoreDescription: nCore.document.description(),
-        nCorePeriodStart: nCore.document.periodStart(),
-        nCorePeriodEnd: nCore.document.periodEnd()
+        nCoreName        : nCore.document.name(),
+        nCoreDescription : nCore.document.description(),
+        nCorePeriodStart : nCore.document.periodStart(),
+        nCorePeriodEnd   : nCore.document.periodEnd()
       });
       m.innerHTML = text.innerHTML;
       mui.overlay('on', options, m);
@@ -390,6 +390,29 @@ nCore.events = (function () {
     /////////////////////
     // События рендера //
     /////////////////////
+    ///
+    nCore.document.root.subscribe('deleteReport', function(element){
+      var id   = element.type,
+          root = $(element).closest(".eachDocument");
+
+      console.log('deleteReport', id, element, root);
+
+      nCore.query.post('documents/' + id + '/remove', { id: id })
+      .success(function (rawDocument) {
+        console.log('***deleteReport', rawDocument);
+        
+        root.addClass('animatedSlow');
+        root.addClass('fadeOut');
+
+
+        setTimeout(function (){ root.detach(); }, 400);
+
+      }).error(function (data) {
+        mui.overlay('off');
+        console.error('[!] deleteReport -> get', data)
+      });
+
+    });
 
     // изменяем тип отображения
     nCore.document.root.subscribe('changeRenderType', function (type) {
@@ -472,6 +495,14 @@ nCore.events = (function () {
               // text: function () {
               //   return ''
               // }
+            },
+            removeDocument: {
+              href: function (params) {
+                return location.hash;
+              },
+              type: function () {
+                return this._id
+              }
             },
             documentUser: {
               text: function () {

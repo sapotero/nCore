@@ -1,13 +1,13 @@
 class QueriesController < ApplicationController
   before_filter :set_query, only: [:show, :edit, :update, :destroy]
-
-  before_filter :cors_preflight_check
-  after_filter  :cors_set_access_control_headers
+  # before_filter :cors_preflight_check
+  # after_filter  :cors_set_access_control_headers
   protect_from_forgery except: [ :index, :create ]
 
   # GET /queries
   def index
     
+    # for test
     @groups = {
       :ap                               => 'Администрация Президента РФ',
       :government                       => 'Правительство РФ',
@@ -47,17 +47,8 @@ class QueriesController < ApplicationController
     return_array = Core::Reports::ElasConstructor.new( params )
     return_array.count
 
-      
-    # ap return_array
     render :json => return_array.results
-    # redirect_to @query, notice: 'Query was successfully created.'
-    # @query = Query.new(query_params)
 
-    # if @query.save
-    #   redirect_to @query, notice: 'Query was successfully created.'
-    # else
-    #   render :new
-    # end
   end
 
   # PATCH/PUT /queries/1
@@ -86,7 +77,7 @@ class QueriesController < ApplicationController
       params[:data]
     end
 
-
+    # test localhost
     def cors_set_access_control_headers
       headers['Access-Control-Allow-Origin'] = '*'
       headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'

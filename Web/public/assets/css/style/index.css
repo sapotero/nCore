@@ -769,3 +769,19 @@ buttons {
 /* Firefox 18- */
 .muiFieldField:-moz-placeholder {
 }
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    display: block;
+  }
+
+  to {
+    opacity: 0;
+    display: none;
+  }
+}
+
+.fadeOut {
+  animation-name: fadeOut;
+}

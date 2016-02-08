@@ -26,14 +26,6 @@ class FormsController < ApplicationController
 
   # POST /forms
   def create
-  # "id"          => "2185457754439679",
-  # "type"        => "report",
-  # "name"        => "кен",
-  # "description" => "кенн",
-  # "datetime"    => "1450430530928",
-  # "body"
-  # "author"      => "AuthorName",
-
     @form = Form.new({
       :type        => params[ :type ],
       :name        => params[ :name ],

@@ -12,6 +12,7 @@ class Document
   field :query,       type: String
   field :periodStart, type: String
   field :periodEnd,   type: String
+  field :archived,    type: Boolean, default: false
   
   field :body_id
 

@@ -1,11 +1,11 @@
 class DocumentsController < ApplicationController
-  before_filter :set_document, only: [:show, :edit, :update, :destroy]
+  before_filter :set_document, only: [:show, :edit, :update, :destroy, :remove]
 
-  protect_from_forgery except: [ :index, :create, :edit, :update, :destroy ]
+  protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
 
   # GET /documents
   def index
-    render :json => Document.all
+    render :json => Document.where( archived: false )
   end
 
   # GET /documents/1
@@ -21,7 +21,6 @@ class DocumentsController < ApplicationController
                template:         'pdf/document.pdf',
                orientation:      'Landscape',
                show_as_html:      params.key?('debug')
-        # render pdf: "file_name"
       }
       format.json { render json: document }
     end
@@ -39,14 +38,6 @@ class DocumentsController < ApplicationController
 
   # POST /documents
   def create
-  # "id"          => "2185457754439679",
-  # "type"        => "report",
-  # "name"        => "кен",
-  # "description" => "кенн",
-  # "datetime"    => "1450430530928",
-  # "body"
-  # "author"      => "AuthorName",
-
     @document = Document.new({
       :type        => params[ :type ],
       :name        => params[ :name ],
@@ -89,6 +80,20 @@ class DocumentsController < ApplicationController
   def destroy
     @document.destroy
     redirect_to documents_url, notice: 'Document was successfully destroyed.'
+  end
+
+  # POST /documents/1/remove
+  def remove
+    ap @document
+
+    @document.archived = true
+
+    if @document.save
+      render :json => @document
+    else
+      render :json => { error: @document.error }
+    end
+
   end
 
   private

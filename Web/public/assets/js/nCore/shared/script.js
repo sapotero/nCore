@@ -115,6 +115,12 @@ jQuery(function($) {
     nCore.modules.table.event.publish('newCellSettingsChange' );
     return false;
   });
+  $('.removeDocument').live('click', function(e){
+    // e.preventDefault();
+    nCore.document.root.publish('deleteReport', this);
+    return false;
+  });
+  
 
   // добавление критерия в группу
   $('.addCriteriaItemToGroup').live('click', function(){
