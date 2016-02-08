@@ -3,6 +3,8 @@
  * License https://froala.com/wysiwyg-editor/terms
  * Copyright 2014-2016 Froala Labs
  */
+var froala_cell_dataset = '';
+
 ! function (a) {
   "function" == typeof define && define.amd ? define(["jquery"], a) : "object" == typeof module && module.exports ? module.exports = function (b, c) {
     return void 0 === c && (c = "undefined" != typeof window ? require("jquery") : require("jquery")(b)), a(c), c
@@ -6382,3 +6384,25 @@ $.FroalaEditor.RegisterCommand('flask', {
     };
   }
 });
+
+$.FroalaEditor.RegisterCommand('copyDataCell', {
+  title: 'copyDataCell',
+  focus: false,
+  undo:  false,
+  refreshAfterCallback: false,
+  callback: function () {
+    console.log('froala_cell_dataset copy');
+  }
+});
+$.FroalaEditor.RegisterCommand('pasteDataCell', {
+  title: 'pasteDataCell',
+  focus: false,
+  undo:  false,
+  refreshAfterCallback: false,
+  callback: function () {
+    console.log('froala_cell_dataset paste');
+  }
+});
+
+$.FroalaEditor.RegisterShortcut( 67, 'copyDataCell',  null, true ); // SHIFT + C
+$.FroalaEditor.RegisterShortcut( 86, 'pasteDataCell', null, true ); // SHIFT + V

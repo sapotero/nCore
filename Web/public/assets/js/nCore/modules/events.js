@@ -269,7 +269,8 @@ nCore.events = (function () {
         toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo','cog'],
         language: 'ru',
         charCounterCount: false,
-        toolbarSticky: false
+        toolbarSticky: false,
+        shortcutsEnabled: ['copyDataCell', 'pasteDataCell']
       });
 
 
