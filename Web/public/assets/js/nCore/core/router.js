@@ -121,7 +121,8 @@ jQuery(function($) {
   nCore.router.add('', function () {
     var preloadItems = [ 'documents', 'forms' ];
     nCore.preloader.event.publish( 'loadItem', preloadItems );
-    
+    nCore.preloader.event.publish( 'loadCriteria' );
+
     location.hash = '#/report'
     // document.title = 'INDEX';
     // nCore.templates.render('report/index', function(data){ 

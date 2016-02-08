@@ -176,7 +176,7 @@ nCore = (function(){
     // };
     //       dev only         // 
     // nCore.storage.clear(); //
-    bind();
+    // bind();
   }
 
     /**
@@ -237,12 +237,6 @@ nCore = (function(){
     var pars = [], currentNode;
 
     while (currentNode = nodeIterator.nextNode()) {
-      // pars.push({
-      //   el    : currentNode.dataset.bind,
-      //   name  : currentNode.dataset.name,
-      //   action: currentNode.dataset.action
-      // });
-
       if ( document.querySelector('input[name="'+currentNode.dataset.name+'"') ) {
         document.querySelector('input[name="'+currentNode.dataset.name+'"')
         .addEventListener( currentNode.dataset.action , 

@@ -693,11 +693,9 @@ buttons {
   height: 32px;
   width: 90%;
   font-size: 16px;
-  /*padding: 0;*/
   box-shadow: none;
   border-radius: 0;
   background-image: none;
-  /* padding: 24px; */
   margin: 0px auto;
 }
 
@@ -753,4 +751,21 @@ buttons {
   width:  4px;
   z-index: 9999;
   border: 2px solid purple;
+}
+
+
+/* Chrome/Opera/Safari */
+.muiFieldField::-webkit-input-placeholder {
+}
+
+/* Firefox 19+ */
+.muiFieldField::-moz-placeholder {
+}
+
+/* IE 10+ */
+.muiFieldField:-ms-input-placeholder {
+}
+
+/* Firefox 18- */
+.muiFieldField:-moz-placeholder {
 }

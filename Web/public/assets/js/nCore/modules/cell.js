@@ -397,6 +397,7 @@ nCore.modules.cell = (function(){
       el.style.padding      = ' 15px auto';
       el.style.paddingTop   = ' 15px';
       el.style.marginBottom = ' 20px';
+      el.placeholder   = 'Введите текст';
       el.classList.toggle('muiFieldField');
       el.style.textAlign    = ' left';
       el.name   = 'value';
@@ -551,6 +552,7 @@ nCore.modules.cell = (function(){
     el.style.padding      = ' 15px auto';
     el.style.paddingTop   = ' 15px';
     el.style.marginBottom = ' 20px';
+    el.placeholder   = 'Введите текст';
     el.classList.toggle('muiFieldField');
     el.style.textAlign    = ' left';
     el.name   = 'value';
@@ -663,6 +665,7 @@ nCore.modules.cell = (function(){
       el.style.paddingTop   = ' 15px';
       el.style.marginBottom = ' 20px';
       el.style.textAlign    = ' left';
+      el.placeholder   = 'Введите текст';
       el.name   = 'value';
 
       // $(element).select2('destroy');
