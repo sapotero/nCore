@@ -528,8 +528,8 @@ nCore.events = (function () {
               groupConditions = group.conditions,
               criterias = group.query;
 
-            // console.log('criterias',  criterias);
-            // console.log('conditions', groupConditions);
+            console.log('criterias',  criterias);
+            console.log('conditions', groupConditions);
 
             var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
               groupTemplate = _groupTemplate.cloneNode(true),
@@ -576,10 +576,10 @@ nCore.events = (function () {
 
               var form = card.getElementsByClassName('criteriaForm')[0];
 
-              var table_name = form.querySelector('select[name="table_name"]'),
+              var table_name  = form.querySelector('select[name="table_name"]'),
                   origin_name = form.querySelector('select[name="origin_name"]'),
-                  conditions = form.querySelector('select[name="conditions"]'),
-                  value = form.querySelector('[name="value"]');
+                  conditions  = form.querySelector('select[name="conditions"]'),
+                  value       = form.querySelector('[name="value"]');
 
 
               criteriaCondition = card.querySelector('select.itemSelectCondition');
@@ -597,8 +597,7 @@ nCore.events = (function () {
               var cr_c = card.querySelector('[name="criteria_condition_group"]');
               cr_c.value = item.criteria_condition;
               cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
-
-              console.error( '***', cr_c, cr_c.value, cr_c.selectedIndex )
+              // console.error( '***', cr_c, cr_c.value, cr_c.selectedIndex )
 
 
             }
@@ -606,13 +605,13 @@ nCore.events = (function () {
 
             document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
           }
+
+          nCore.modules.table.event.publish('newCellSettingsChange' );
         }
         else {
           document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
         }
       };
-
-      var __condition = '';
 
     
       // показываем боковое меню по нажатию кнопки
