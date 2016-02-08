@@ -500,7 +500,9 @@ nCore.events = (function () {
     });
     // выбор активной ячейки
     nCore.modules.table.event.subscribe('cellSelect', function (cell) {
-      // console.log('cellSelect', cell);
+      
+      console.log('cellSelect', cell);
+      
       var showCellSettings = true,
         tab = document.getElementsByClassName('criteriaSelector')[0],
         cellQuery;
@@ -519,7 +521,7 @@ nCore.events = (function () {
             _selectedIindex = -1;
 
 
-          // console.log('*** queryArray', queryArray)
+          // console.error('*** queryArray', queryArray)
           for (var z = 0; z < queryArray.length; z++) {
 
             var group = queryArray[z],
@@ -650,7 +652,7 @@ nCore.events = (function () {
         list = document.querySelector(".criteriaSelector"),
         criterias = list.querySelectorAll('div');
 
-      console.log('----- newCellSettingsChange -----');
+      console.error('----- newCellSettingsChange -----');
       console.log(list, criterias);
 
       for (var i = 0; i < criterias.length; i++) {
@@ -658,7 +660,7 @@ nCore.events = (function () {
           criteriaItemsRoot = criteria.children('.criteriaSelectorGroup'),
           criteriaItems = criteriaItemsRoot.children('.criteriaSelectorGroupList').children('.criteriaSelectorItem');
 
-        // console.log('newCellSettingsChange -> criteria['+i+']', criteria, criteriaItems );
+        // console.error('!!!!!!  newCellSettingsChange -> criteria['+i+']', criteria, criteriaItems );
 
 
         var data = {

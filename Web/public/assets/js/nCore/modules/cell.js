@@ -264,6 +264,10 @@ nCore.modules.cell = (function(){
               el.value = criteria.value.periodStart;
               element = el;
               break;
+            case 'Fixnum':
+              select_query.bool = true
+              select_query.plain_value = value
+              break;
             default:
               break;
           };
@@ -299,6 +303,10 @@ nCore.modules.cell = (function(){
               el.classList.toggle('muiFieldField');
               el.value = criteria.value.periodStart;
               element = el;
+              break;
+            case 'Fixnum':
+              select_query.plain = true;
+              select_query.plain_value = value;
               break;
             default:
               break;
@@ -359,8 +367,16 @@ nCore.modules.cell = (function(){
 
         select_query.id = value;
 
-
-        break;
+        if ( criteria.conditions == 'gt' || criteria.conditions == 'lt' || criteria.conditions == 'gte' || criteria.conditions == 'lte' ) {
+          select_query.plain = true;
+          select_query.plain_value = value;
+        };
+        // для суммы у Fixnum ставим пустое значение
+        if ( criteria.conditions == 'sum' ) {
+          select_query.plain = true;
+          select_query.plain_value = '';
+        };
+        
       default:
         console.log(' warn! changeBlockAtributes default ');
         break;
@@ -574,6 +590,7 @@ nCore.modules.cell = (function(){
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     };
+
     if ( element.nodeName == 'INPUT' ) {
       console.warn('input!', element, element.parentNode);
       // parent.removeChild(element);
@@ -744,6 +761,10 @@ nCore.modules.cell = (function(){
               generateInput(element, value);
             }
             break;
+          case 'Fixnum':
+            console.log('-- Fixnum --')
+            generateInput(element, value);
+            break;
           default:
             console.log('---')
             break;
@@ -782,6 +803,26 @@ nCore.modules.cell = (function(){
         if ( autocomplete_url ){
           generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
         };
+        break;
+      case 'gt':
+        console.log('+gt');
+        generateInput(element, value);
+        break;
+      case 'gte':
+        console.log('+gte');
+        generateInput(element, value);
+        break;
+      case 'lt':
+        console.log('+lt');
+        generateInput(element, value);
+        break;
+      case 'lte':
+        console.log('+lte');
+        generateInput(element, value);
+        break;
+      case 'sum':
+        console.log('+sum');
+        generateInput(element, value);
         break;
       default:
         console.warn('default');

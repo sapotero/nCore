@@ -303,33 +303,33 @@ nCore = (function(){
       ],
       Fixnum:  [
         {
-          value: "equal",
-          caption: "Точное совпадение"
-        },
-        {
-          value: "not_equal",
-          caption: "Не"
-        },
-        {
-          value: "regexp",
-          caption: "Частичное совпадение"
-        },
-        {
-          value: "full_text",
-          caption: "Ключевые слова"
-        },
-        {
-          value: "group",
-          caption: "Группа"
-        },
-        {
-          value: "not_in_group",
-          caption: "Исключая группу"
-        },
-        {
           value: "exist",
           caption: "Присутствует"
-        }
+        },
+        {
+          value: "equal",
+          caption: "Равно"
+        },
+        {
+          value: "gt",
+          caption: "Больше"
+        },
+        {
+          value: "gte",
+          caption: "Больше или равно"
+        },
+        {
+          value: "lt",
+          caption: "Меньше"
+        },
+        {
+          value: "lte",
+          caption: "Меньше или равно"
+        },
+        {
+          value: "sum",
+          caption: "Сумма"
+        },
       ],
       Default:  [
         {
