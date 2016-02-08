@@ -33,6 +33,10 @@ nCore.document = (function(){
 
     nCoreRoot.textContent += "_" + nCoreDocumentId;
     nCore.attachTo( nCore.document.root );
+    
+    nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
+    nCore.document.root.publish( 'loadCriteria' );
+
   },
   id = function () {
     return nCoreDocumentId;

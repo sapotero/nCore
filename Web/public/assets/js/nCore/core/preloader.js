@@ -22,16 +22,12 @@ nCore.preloader = (function(){
    * @description Выполняется при загрузке модуля
    */
   var init = function(){
-    nCore.attachTo( nCore.preloader.event );
+    // nCore.attachTo( nCore.document.root );
 
     // когда будет пользак, тогда будем получать пермишены и информацию о нем
     // nCore.user.event.publish( 'getUserPermissions',    user );
     // nCore.user.event.publish( 'getAvailableDocuments', user );
-    var preloadItems = [ 'documents', 'forms' ];
-
-    nCore.preloader.event.publish( 'loadItem', preloadItems );
-    nCore.preloader.event.publish( 'loadCriteria' );
-
+    // 
     dropProgress();
 
   },

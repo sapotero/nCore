@@ -300,7 +300,7 @@ jQuery(function($) {
   $('.criteriaMenuItem.settings, .criteriaSelectorItemHeader').live('click', function(e){
 
     // убрать из прода | каждый раз грузим справочники и критерии
-    nCore.preloader.event.publish('loadCriteria');
+    nCore.document.root.publish('loadCriteria');
 
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child = el.children('.criteriaForm');

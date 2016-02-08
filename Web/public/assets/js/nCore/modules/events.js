@@ -246,6 +246,22 @@ nCore.events = (function () {
     nCore.document.root.subscribe('initEditor', function (data) {
       console.log('initEditor');
 
+      // var _i = setInterval(function(){
+      //   if ( nCore.preloader.hasOwnProperty('init') && typeof(nCore.preloader.init) === 'function' ) {
+      //     nCore.preloader.init();
+      //     clearInterval(_i);
+      //   };
+      // }, 500);
+      
+      $('div#paper').on('froalaEditor.initialized', function (e, editor) {
+        console.log('e, editor', e);
+
+        // скрываем unregister version
+        if (document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor') {
+          document.querySelector('.fr-wrapper').nextSibling.textContent = '';
+        };
+      });
+
       $('div#paper').froalaEditor({
         toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
         toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
@@ -256,13 +272,6 @@ nCore.events = (function () {
         toolbarSticky: false
       });
 
-      $('div#paper').on('froalaEditor.initialized', function (e, editor) {
-        console.log('init');
-      });
-      // скрываем unregister version
-      if (document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor') {
-        document.querySelector('.fr-wrapper').nextSibling.textContent = '';
-      };
 
     });
 
@@ -741,7 +750,7 @@ nCore.events = (function () {
 
 
     // загружаем шаблоны
-    nCore.preloader.event.subscribe('loadItem', function (items) {
+    nCore.document.root.subscribe('loadItem', function (items) {
       console.log('loadItem', items);
 
       function load(item) {
@@ -762,7 +771,7 @@ nCore.events = (function () {
       };
     });
 
-    nCore.preloader.event.subscribe('loadCriteria', function (data) {
+    nCore.document.root.subscribe('loadCriteria', function (data) {
       // console.log('loadCriteria', data);
 
       // если уже есть загруженные справочники
