@@ -576,10 +576,10 @@ nCore.events = (function () {
 
               var form = card.getElementsByClassName('criteriaForm')[0];
 
-              var table_name  = form.querySelector('select[name="table_name"]'),
-                  origin_name = form.querySelector('select[name="origin_name"]'),
-                  conditions  = form.querySelector('select[name="conditions"]'),
-                  value       = form.querySelector('[name="value"]');
+              // var table_name  = form.querySelector('select[name="table_name"]'),
+              //     origin_name = form.querySelector('select[name="origin_name"]'),
+              //     conditions  = form.querySelector('select[name="conditions"]'),
+              //     value       = form.querySelector('[name="value"]');
 
 
               criteriaCondition = card.querySelector('select.itemSelectCondition');

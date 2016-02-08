@@ -121,7 +121,7 @@ nCore = (function(){
   function loadModules(){
     var dependencies = {
       shared     : [ "jquery", "mui.min", "transparency.min", "froala_v2", "script", "select2.full", "f", "m"/*, "pikaday.min" /* , "moment.min",  */ ],
-      core       : [ "user", "query", "core", "roles", "templates", "router", "preloader"],
+      core       : [ "preloader", "user", "query", "core", "roles", "templates", "router"],
       background : [ "worker", "workerBack", "shared", "sharedBack", "update" ],
       modules    : [ "document", "table", "cellEditor", "cell", "events", "menu" ]
     };
