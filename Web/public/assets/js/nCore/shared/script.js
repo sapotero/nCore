@@ -85,6 +85,9 @@ jQuery(function($) {
     nCore.document.root.publish('createNewDocument');
   })
 
+  //$('[type="date"]').live('click', function(){
+	//	$(this).fdatepicker({format: 'yyyy-mm-dd'});
+  //})
   // добавление группы критериев
   $('.addCriteriaGroupButton').live('click', function(){
     var list = $(".criteriaSelector"),
@@ -143,10 +146,10 @@ jQuery(function($) {
     };
     source.appendChild(df);
     
-    $(source).select2();
-    $(origin_name).select2();
-    $(conditions).select2();
-    $(value).select2();
+    $(source).select2().val('').trigger('change');
+    $(origin_name).select2().val('').trigger('change');
+    $(conditions).select2()
+    $(value).select2()
 
     console.log('ADD', form);
     nCore.modules.table.event.publish('newCellSettingsChange' );
@@ -212,7 +215,10 @@ jQuery(function($) {
     var _val = this.value;
 
     var select = this.parentNode.querySelector('[name="conditions"]');
+
+    console.error('***', this, select );
     select.innerHTML = '';
+
 
     var field_array  = JSON.parse( nCore.storage.getItem( this.parentNode.querySelector('[name="source"]').value ) ),
         field_type,
@@ -304,6 +310,10 @@ jQuery(function($) {
     child[0].classList.toggle('hide');
     
     // nCore.modules.table.event.publish('newCellSettingsChange' );
+
+    if(!Modernizr.inputtypes.date) {
+      $('[type="date"]').fdatepicker({format: 'yyyy-mm-dd'});
+    }
     return false;
   })
 
