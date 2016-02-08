@@ -120,10 +120,12 @@ jQuery(function($) {
   /////////////////////////////
   nCore.router.add('', function () {
     var preloadItems = [ 'documents', 'forms' ];
-    nCore.document.root.publish( 'loadItem', preloadItems );
+    
+    nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
     nCore.document.root.publish( 'loadCriteria' );
 
     location.hash = '#/report'
+
     // document.title = 'INDEX';
     // nCore.templates.render('report/index', function(data){ 
     //   if ( data ) {
@@ -141,10 +143,14 @@ jQuery(function($) {
   // роуты отчетов //
   ///////////////////
   nCore.router.add('report', function (r) {
+    nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
+    nCore.document.root.publish( 'loadCriteria' );
+          
     // есть ли у юзера право просматривать таблицы
     if ( nCore.roles.check('viewTable') ) {
       nCore.templates.render('report/index', function(data){ 
         if ( data ) {
+
           var wrapper = document.getElementById('content-wrapper');
           wrapper.innerHTML = data;
         };
