@@ -347,6 +347,12 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('percent') ) {
           _cell.dataset.percent = headCell.dataset.percent;
         };
+        if ( headCell.dataset.hasOwnProperty('includeSubthemes') ) {
+          _cell.dataset.includeSubthemes = headCell.dataset.includeSubthemes;
+        };
+        if ( headCell.dataset.hasOwnProperty('includeThemesAp') ) {
+          _cell.dataset.includeThemesAp = headCell.dataset.includeThemesAp;
+        };
         if ( headCell.dataset.hasOwnProperty('group') ) {
           _cell.dataset.group = headCell.dataset.group;
         };
@@ -461,6 +467,12 @@ nCore.modules.table = (function(){
             };
             if ( ___dataCell.dataset.percent ) {
               _cellData.percent = ___dataCell.dataset.percent
+            };
+            if ( ___dataCell.dataset.includeSubthemes ) {
+              _cellData.includeSubthemes = ___dataCell.dataset.includeSubthemes
+            };
+            if ( ___dataCell.dataset.includeThemesAp ) {
+              _cellData.includeThemesAp = ___dataCell.dataset.includeThemesAp
             };
           };
 
