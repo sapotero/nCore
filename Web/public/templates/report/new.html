@@ -151,25 +151,43 @@
   </div>
 </li>
 
+
 <div class="nCoreDocumentSettings mui--hide">
-  <form onsubmit="nCore.document.root.publish('updateDocument', this); return false;">
-    <legend>Свойства документа</legend>
-    <div class="mui-textfield mui-textfield--float-label">
-      <input type="text" class="nCoreName" name="nCoreName">
-      <label>Название</label>
+  <div class="mui-col-lg-6">
+    <h4>Свойства документа</h4>
+    <form onsubmit="nCore.document.root.publish('updateDocument', this); return false;">
+      <legend></legend>
+      <div class="mui-textfield mui-textfield--float-label">
+        <input type="text" class="nCoreName" name="nCoreName">
+        <label>Название</label>
+      </div>
+      <div class="mui-textfield mui-textfield--float-label">
+        <input type="text" class="nCoreDescription" name="nCoreDescription">
+        <label>Описание</label>
+      </div>
+      <div class="mui-textfield mui-textfield--float-label">
+        <input type="date" class="nCorePeriodStart" name="nCorePeriodStart">
+        <label>Начало периода</label>
+      </div>
+      <div class="mui-textfield mui-textfield--float-label">
+        <input type="date" class="nCorePeriodEnd" name="nCorePeriodEnd">
+        <label>Окончание периода</label>
+      </div>
+      <button type="submit" class="mui-btn mui-btn--raised">Сохранить</button>
+    </form>
+  </div>
+  
+  <div class="mui-col-lg-6">
+    <h4>Глобальные условия</h4>
+    <div class="criteriaSelectorGroupGlobal">
+      <li class=" mui-col-md-12 mui-panel mui-panel-group criteriaSelectorGroup mui--z2">
+        <span class="criteriaSelectorGroupName mui--pull-left"> Группа </span>
+        <span class="criteriaSelectorGroupName mui--pull-right">
+          <button class="mui-btn mui-btn--primary mui-btn--small addCriteriaItemToGroup"> Добавить </button>
+        </span>
+        <ul class="criteriaSelectorGroupList mui-row">
+        </ul>
+      </li>
     </div>
-    <div class="mui-textfield mui-textfield--float-label">
-      <input type="text" class="nCoreDescription" name="nCoreDescription">
-      <label>Описание</label>
-    </div>
-    <div class="mui-textfield mui-textfield--float-label">
-      <input type="date" class="nCorePeriodStart" name="nCorePeriodStart">
-      <label>Начало периода</label>
-    </div>
-    <div class="mui-textfield mui-textfield--float-label">
-      <input type="date" class="nCorePeriodEnd" name="nCorePeriodEnd">
-      <label>Окончание периода</label>
-    </div>
-    <button type="submit" class="mui-btn mui-btn--raised">Сохранить</button>
-  </form>
+  </div>
 </div>

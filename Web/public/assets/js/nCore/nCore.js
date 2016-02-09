@@ -46,6 +46,9 @@ nCore = (function(){
     }
   }
 
+  // храним query которую будем копировать через ctrl+c ctrl+v
+  var nCoreCellQuery = '';
+
   /**
    * @function load
    * @memberOf nCore
@@ -157,6 +160,8 @@ nCore = (function(){
    * @description Выполняется при загрузке фреймворка
    */
   function init(){
+    console.groupCollapsed('nCore::Init');
+
     nCore.modules   = {};
     nCore.core      = {};
     nCore.query     = {};
@@ -170,7 +175,9 @@ nCore = (function(){
 
     // раскоментировать для standalone приложения 
     loadModules();
-    
+
+    disableCopyPaste(document);
+    console.groupEnd();
     // if ( !nCore.storage.getItem('indexViewType') ) {
     //   nCore.storage.setItem('indexViewType', 'renderThumbIndexView')
     // };
@@ -196,13 +203,13 @@ nCore = (function(){
     nCore.channels[channel].push({ context: this, callback: fn });
         // before event
     if ( before && typeof(before) === 'function' ) {
-      console.log('**before', channel);
+      // console.log('**before', channel);
       before.call(this, arguments);
     };
 
     // after event
     if ( after && typeof(after) === 'function' ) {
-      console.log('**after', channel);
+      // console.log('**after', channel);
       after.call(this,  arguments);
     };
 
@@ -247,7 +254,50 @@ nCore = (function(){
     };
 
     // console.log(pars);
-   };
+   },
+  
+  disableCopyPaste = function(elm) {
+    elm.onkeydown = interceptKeys;
+    elm.oncontextmenu = function() {
+      return false
+    }
+  },
+  interceptKeys = function(evt) {
+    evt = evt || window.event;
+    var target = evt.target || evt.srcElement;
+
+    var c = evt.keyCode,
+        ctrlDown = evt.ctrlKey || evt.metaKey // Mac support
+
+    if (ctrlDown && evt.altKey){
+      return true
+    }
+
+    else if (ctrlDown && c==67){
+      console.log('ctrl + c event', evt, target );
+      // запрещаем копирование
+      // return false
+    }
+    else if (ctrlDown && c==86){
+      console.log('ctrl + v event', evt, target );
+      // запрещаем копирование
+      // return false
+    }
+    else if (ctrlDown && c==88){
+      console.log('ctrl + x event', evt, target );
+      // запрещаем копирование
+      // return false
+    }
+
+    return true
+  },
+  copyCellQuery = function(query) {
+    nCoreCellQuery = query;
+    console.log( 'copyCellQuery', nCoreCellQuery );
+  },
+  pasteCellQuery = function(query) {
+    console.log( 'pasteCellQuery', query );
+  };
 
   return {
     types : {
@@ -331,42 +381,16 @@ nCore = (function(){
           caption: "Сумма"
         },
       ],
-      Default:  [
-        {
-          value: "equal",
-          caption: "Точное совпадение"
-        },
-        {
-          value: "not_equal",
-          caption: "Не"
-        },
-        {
-          value: "regexp",
-          caption: "Частичное совпадение"
-        },
-        {
-          value: "full_text",
-          caption: "Ключевые слова"
-        },
-        {
-          value: "group",
-          caption: "Группа"
-        },
-        {
-          value: "not_in_group",
-          caption: "Исключая группу"
-        },
-        {
-          value: "exist",
-          caption: "Присутствует"
-        }
-      ]
+      Default:  []
     },
     channels  : {},
     init      : init,
     
     publish   : publish,
     subscribe : subscribe,
+
+    copyCellQuery  : copyCellQuery,
+    pasteCellQuery : pasteCellQuery,
 
     attachTo  : function(obj){
       obj.publish   = publish;

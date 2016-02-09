@@ -450,7 +450,7 @@ buttons {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 99999999;
+    z-index: 99;
     background-color: rgba(0,0,0,.2);
     overflow: hidden;
 }

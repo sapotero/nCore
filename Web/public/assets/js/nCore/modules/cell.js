@@ -80,12 +80,135 @@ nCore.modules.cell = (function(){
 
   var init = function(){
   },
-  generateFromQuery = function( element, query ){
-    console.log( 'generateFromQuery', query );
+  generateBlock = function( criteria, parent, name, value ){
+    console.groupCollapsed("generateBlock");
+    console.info( 'input params: ', criteria, parent, name, value );
+    var _criteria = criteria,
+        _parent   = parent,
+        _name     = name,
+        _value    = value;
+
+    var element = document.createElement('select');
+        element.style.display      = 'block';
+        element.style.width        = ' 92%';
+        element.style.padding      = ' 15px auto';
+        element.style.paddingTop   = ' 15px';
+        element.style.marginBottom = ' 20px';
+        element.style.textAlign    = ' left';
+
+    var element_properties = [];
+    element_properties = changeBlockAtributes( criteria, element, name, value );
+    
+    var select2 = element_properties[1];
+        element = element_properties[0];
+
+    if ( select2.hasOwnProperty('plain') ) {
+      
+      var el = document.createElement('input');
+      el.style.display      = 'block';
+      el.style.width        = '92%';
+      el.style.padding      = '15px auto';
+      el.style.paddingTop   = '15px';
+      el.style.marginBottom = '20px';
+      el.placeholder        = 'Введите текст';
+      el.style.textAlign    = 'left';
+      el.name               = 'value';
+      el.value              = select2.plain_value;
+      el.classList.toggle('muiFieldField');
+
+      console.log('plain!', select2, el)
+      parent.appendChild( el );
+    } else if ( select2.hasOwnProperty('bool') ) {
+      
+      var e = generateBoolSelect2(element, value, true);
+
+      console.log('bool!', select2, e)
+      parent.appendChild( e );
+
+      $(e).select2()
+      .on('change', function(){
+        nCore.modules.table.event.publish('newCellSettingsChange' );
+      })
+    } else {
+      parent.appendChild( element );
+    };
+
+
+
+    if ( nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
+      // console.log( 'ID ', nCore.modules.table.active().dataset, value );
+      $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] ).val("").trigger("change");
+    };
+
+    if ( select2.hasOwnProperty('url') ){
+      console.log('has url', select2.url);
+      $( element ).select2({
+        ajax: {
+          url: select2.url,
+          dataType: 'json',
+          delay: 250,
+          data: function (data) {
+            return { id: data[ select2.value ], term: data.term };
+          },
+          processResults: function (data, params) {
+            return {
+              results: $.map(data, function(p) {
+                // console.log('recv', p, select2);
+                
+                var val = p.hasOwnProperty( select2.title ) ? p[ select2.title ] : p.full_title;
+
+                return {
+                  id:    p[ select2.value ],
+                  text:  val,
+                  value: val
+                };
+              })
+            };
+          },
+          cache: false
+        },
+        minimumInputLength: 1,
+        placeholder: "Начните ввод"
+      }).on('change', function(e){
+        if ( nCore.document.ShowSettings() ) {
+          // апдейтим глобальное условие
+          // 
+        } else {
+          // апдейтим ячейку
+          if ( nCore.document.ShowSettings() ) {
+        // апдейтим глобальное условие
+        // 
+      } else {
+        // апдейтим ячейку
+        nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
+      };
+
+        };
+        nCore.modules.table.event.publish('newCellSettingsChange');
+      });
+    };
+
+    if ( select2.hasOwnProperty('default') ) {
+      
+      $(element).append( [ new Option( select2.default , select2.id, true) ] ).val("").trigger("change");
+    };
+
+    if ( select2.hasOwnProperty('available') ) {
+      $(element).select2({ placeholder: "Выберете поле" }).on('change', function(){
+        
+        if( select2.action ){
+          select2.action.call(this);
+        };
+
+        nCore.modules.table.event.publish('newCellSettingsChange');
+      });
+    };
+    console.groupEnd();
   },
   changeBlockAtributes = function( criteria, element, name, value ){
     // console.log( 'changeBlockAtributes', criteria, element, name, value );
-    
+    console.group("changeBlockAtributes");
+    console.info( 'input params: ', criteria, element, name, value );
     var select_query = {};
     
     element.name = name;
@@ -101,7 +224,6 @@ nCore.modules.cell = (function(){
         element.value = value;
 
         break;
-
       case 'source':
         var df           = new DocumentFragment(),
             criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );
@@ -265,6 +387,9 @@ nCore.modules.cell = (function(){
               element = el;
               break;
             case 'Fixnum':
+              if ( parent.querySelector('[name="date_end"]') ) {
+                parent.removeChild( parent.querySelector('[name="date_end"]') );
+              };
               select_query.bool = true
               select_query.plain_value = value
               break;
@@ -303,17 +428,21 @@ nCore.modules.cell = (function(){
               el.classList.toggle('muiFieldField');
               el.value = criteria.value.periodStart;
               element = el;
+              if(!Modernizr.inputtypes.date && ( element.name == 'date_start' || element.name == 'date_end' ) ) {
+                console.info( element.nodeName, element.type );
+                $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
+              }
               break;
             case 'Fixnum':
+              if ( parent.querySelector('[name="date_end"]') ) {
+                parent.removeChild( parent.querySelector('[name="date_end"]') );
+              };
               select_query.plain = true;
               select_query.plain_value = value;
               break;
             default:
               break;
           };
-          // select_query.url   =  autocomplete_url;
-          // select_query.value =  autocomplete_value;
-          // select_query.title =  autocomplete_title;
 
 
         };
@@ -337,162 +466,80 @@ nCore.modules.cell = (function(){
           };
         };
 
-        if ( criteria.conditions == 'regexp' ) {
-          console.log('+regexp');
-          select_query.url   =  autocomplete_url;
-          select_query.value =  autocomplete_value;
-          select_query.title =  autocomplete_title;
+        switch( criteria.conditions ){
+          case 'regexp':
+            // console.log('+regexp');
+            select_query.url   =  autocomplete_url;
+            select_query.value =  autocomplete_value;
+            select_query.title =  autocomplete_title;
+            break;
+
+          case 'full_text':
+            // console.log('+full_text');
+            break;
+
+          case 'group':
+            // console.error('+group', field_type, autocomplete_title, autocomplete_value, autocomplete_url);
+            select_query.url   =  'classifiers/groups/groups.json';
+            select_query.value =  autocomplete_value;
+            select_query.title =  autocomplete_title;
+            break;
+
+          case 'not_in_group':
+            // console.log('+not_in_group');
+            select_query.url   =  'classifiers/groups/groups.json';
+            select_query.value =  autocomplete_value;
+            select_query.title =  autocomplete_title;
+            break;
+          case 'sum':
+            if ( parent.querySelector('[name="date_end"]') ) {
+              parent.removeChild( parent.querySelector('[name="date_end"]') );
+            };
+            select_query.plain = true;
+            select_query.plain_value = '';
+            break;
+          case 'gt':
+            if ( parent.querySelector('[name="date_end"]') ) {
+                parent.removeChild( parent.querySelector('[name="date_end"]') );
+              };
+            select_query.plain = true;
+            select_query.plain_value = value;
+            break;
+          case 'lt':
+            if ( parent.querySelector('[name="date_end"]') ) {
+                parent.removeChild( parent.querySelector('[name="date_end"]') );
+              };
+            select_query.plain = true;
+            select_query.plain_value = value;
+            break;
+          case 'gte':
+            if ( parent.querySelector('[name="date_end"]') ) {
+                parent.removeChild( parent.querySelector('[name="date_end"]') );
+              };
+            select_query.plain = true;
+            select_query.plain_value = value;
+            break;
+          case 'lte':
+            if ( parent.querySelector('[name="date_end"]') ) {
+                parent.removeChild( parent.querySelector('[name="date_end"]') );
+              };
+            select_query.plain = true;
+            select_query.plain_value = value;
+            break;
+          default:
+            break;
         };
 
-        if ( criteria.conditions == 'full_text' ) {
-          console.log('+full_text');
-        };
 
-        if ( criteria.conditions == 'group' ) {
-          console.error('+group', field_type, autocomplete_title, autocomplete_value, autocomplete_url);
-
-          select_query.url   =  'classifiers/groups/groups.json';
-          select_query.value =  autocomplete_value;
-          select_query.title =  autocomplete_title;
-
-        };
-
-        if ( criteria.conditions == 'not_in_group' ) {
-          select_query.url   =  'classifiers/groups/groups.json';
-          select_query.value =  autocomplete_value;
-          select_query.title =  autocomplete_title;
-
-          console.log('+not_in_group');
-        };
 
         select_query.id = value;
-
-        if ( criteria.conditions == 'gt' || criteria.conditions == 'lt' || criteria.conditions == 'gte' || criteria.conditions == 'lte' ) {
-          select_query.plain = true;
-          select_query.plain_value = value;
-        };
-        // для суммы у Fixnum ставим пустое значение
-        if ( criteria.conditions == 'sum' ) {
-          select_query.plain = true;
-          select_query.plain_value = '';
-        };
-        
       default:
         console.log(' warn! changeBlockAtributes default ');
         break;
     }
 
+    console.groupEnd();
     return [ element, select_query ];
-  },
-  generateBlock = function( criteria, parent, name, value ){
-    console.log( '----- generateBlock', criteria, parent, name, value );
-    var _criteria = criteria,
-        _parent   = parent,
-        _name     = name,
-        _value    = value;
-
-    var element = document.createElement('select');
-        element.style.display      = 'block';
-        element.style.width        = ' 92%';
-        element.style.padding      = ' 15px auto';
-        element.style.paddingTop   = ' 15px';
-        element.style.marginBottom = ' 20px';
-        element.style.textAlign    = ' left';
-
-    var element_properties = [];
-    element_properties = changeBlockAtributes( criteria, element, name, value );
-    
-    var select2 = element_properties[1];
-        element = element_properties[0];
-
-    if ( select2.hasOwnProperty('plain') ) {
-      
-      var el = document.createElement('input');
-      el.style.display      = 'block';
-      el.style.width        = ' 92%';
-      el.style.padding      = ' 15px auto';
-      el.style.paddingTop   = ' 15px';
-      el.style.marginBottom = ' 20px';
-      el.placeholder   = 'Введите текст';
-      el.classList.toggle('muiFieldField');
-      el.style.textAlign    = ' left';
-      el.name   = 'value';
-      el.value = select2.plain_value;
-
-      console.log('plain!', select2, el)
-      parent.appendChild( el );
-    } else if ( select2.hasOwnProperty('bool') ) {
-      
-      var e = generateBoolSelect2(element, value, true);
-
-      console.log('bool!', select2, e)
-      parent.appendChild( e );
-
-      $(e).select2()
-      .on('change', function(){
-        nCore.modules.table.event.publish('newCellSettingsChange' );
-      })
-    } else {
-      parent.appendChild( element );
-    };
-
-
-
-    if ( nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
-      // console.log( 'ID ', nCore.modules.table.active().dataset, value );
-      $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] ).val("").trigger("change");
-    };
-
-    if ( select2.hasOwnProperty('url') ){
-      console.log('has url', select2.url);
-      $( element ).select2({
-        ajax: {
-          url: select2.url,
-          dataType: 'json',
-          delay: 250,
-          data: function (data) {
-            return { id: data[ select2.value ], term: data.term };
-          },
-          processResults: function (data, params) {
-            return {
-              results: $.map(data, function(p) {
-                // console.log('recv', p, select2);
-                
-                var val = p.hasOwnProperty( select2.title ) ? p[ select2.title ] : p.full_title;
-
-                return {
-                  id:    p[ select2.value ],
-                  text:  val,
-                  value: val
-                };
-              })
-            };
-          },
-          cache: false
-        },
-        minimumInputLength: 1,
-        placeholder: "Начните ввод"
-      }).on('change', function(e){
-        nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
-        nCore.modules.table.event.publish('newCellSettingsChange');
-      });
-    };
-
-    if ( select2.hasOwnProperty('default') ) {
-      // console.log( 'ID ', nCore.modules.table.active().dataset[ select2.id ], value );
-      $(element).append( [ new Option( select2.default , select2.id, true) ] ).val("").trigger("change");
-    };
-
-    if ( select2.hasOwnProperty('available') ) {
-      $(element).select2({ placeholder: "Выберете поле" }).on('change', function(){
-        
-        if( select2.action ){
-          select2.action.call(this);
-        };
-
-        nCore.modules.table.event.publish('newCellSettingsChange');
-      });
-    };
   },
   generateSelect2 = function( element, autocomplete_url, autocomplete_value, autocomplete_title, value){
     console.log('     -------- generateSelect2 ---------', element, autocomplete_url, autocomplete_value, autocomplete_title, value, element.nodeName ); 
@@ -547,9 +594,17 @@ nCore.modules.cell = (function(){
       minimumInputLength: 1,
       placeholder: "Начните ввод"
     }).on('change', function(e){
-      console.log('element',element,element.value,element)
-      nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
-      nCore.modules.table.event.publish('newCellSettingsChange');
+      // console.log('element',element,element.value,element)
+      
+      if ( nCore.document.ShowSettings() ) {
+        // апдейтим глобальное условие
+        // 
+      } else {
+        // апдейтим ячейку
+        nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
+        nCore.modules.table.event.publish('newCellSettingsChange');
+      };
+      
     });
     console.log('     -------- generateSelect2 ---------'); 
   },
@@ -582,24 +637,27 @@ nCore.modules.cell = (function(){
     parent.appendChild(el);
   },
   generateBoolSelect2 = function( element, value, r){
-    console.log('generateBoolSelect2 begin', element, value, r);
+    console.groupCollapsed('generateBoolSelect2');
     var parent = element.parentNode,
         _new = false,
         _el;
+    console.log('params', element, value, r, parent);
 
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     };
 
+    // if ( parent.querySelector('[name="value"]') ) {
+    //   $(element).select2();
+    //   $(element).select2('destroy');
+    //   parent.removeChild( parent.querySelector('[name="value"]') );
+    // };
+
     if ( element.nodeName == 'INPUT' ) {
-      console.warn('input!', element, element.parentNode);
+      console.warn('input!', element, parent);
       // parent.removeChild(element);
       _new = true;
 
-      
-      $(element).select2();
-      $(element).select2('destroy');
-      parent.removeChild( parent.querySelector('[name="value"]') );
 
       var _el                = document.createElement('select');
       // _el.style.display      = 'block';
@@ -615,8 +673,9 @@ nCore.modules.cell = (function(){
       $(_el).select2().val( value ).trigger('change');;
     };
 
-
-
+    if ( parent.querySelector('[name="date_start"]') ) {
+      parent.removeChild( parent.querySelector('[name="date_start"]') );
+    };
     // parent.appendChild(element);
     
     $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val( value ).trigger("change");
@@ -627,26 +686,25 @@ nCore.modules.cell = (function(){
     });
 
     console.log('generateBoolSelect2 end', element);
+    
+    if ( parent.querySelector('[name="date_end"]') ) {
+      parent.removeChild( parent.querySelector('[name="date_end"]') );
+    };
+
     if ( _new ) {
       return _el;
     };
     if (r) {
       return element
     };
+    console.groupEnd();
   },
   updateBlock = function( element, name, value  ){
-    console.log( '----- updateBlock ----- ', element );
+    console.groupCollapsed('updateBlock');
+    console.log( 'params ', element );
+
     var element = element;
         parent  = element.parentNode;
-
-
-    // console.info( element );
-    
-    // if ( element.name == 'date_start') {
-    //   parent.removeChild( parent.querySelector('[name="date_end"]') )
-    //   parent.removeChild( parent.querySelector('[name="date_start"]') )
-    //   element.name = 'value';
-    // };
 
     var field_array  = JSON.parse( nCore.storage.getItem( parent.querySelector('[name="source"]').value ) ),
         origin_name  = parent.querySelector('[name="origin_name"]').value,
@@ -670,7 +728,6 @@ nCore.modules.cell = (function(){
     
     // если есть дефолтное значение то обновляем поле
     if ( value ) {
-
       true;
     }
     // если нет то строим заново
@@ -694,6 +751,8 @@ nCore.modules.cell = (function(){
     switch( conditions ){
       case 'range':
         parent.removeChild(element);
+        // parent.removeChild( parent.querySelector('[name="date_end"]') );
+        // parent.removeChild( parent.querySelector('[name="date_start"]') );
 
         var element           = document.createElement('input');
         element.type          = 'date';
@@ -732,27 +791,49 @@ nCore.modules.cell = (function(){
         break;
       case 'equal':
         console.log('+equal', field_type);
-
         // если есть автокомплитер
         switch(field_type){
           case 'Boolean':
+            if ( parent.querySelector('[name="date_end"]') ) {
+              parent.removeChild( parent.querySelector('[name="date_end"]') );
+            };
             console.log('bool');
             element = generateBoolSelect2(element, value, true);
             break;
           case 'DateTime':
             console.log('datetime', parent, element);
-            parent.removeChild(element);
+            
+            // parent.removeChild(element);
+            if ( parent.querySelector('[name="date_end"]') ) {
+              parent.removeChild( parent.querySelector('[name="date_end"]') );
+            };
+            if ( parent.querySelector('[name="date_start"]') ) {
+              parent.removeChild( parent.querySelector('[name="date_start"]') );
+            };
+            if ( parent.querySelector('[name="value"]') ) {
+              $(element).select2();
+              $(element).select2('destroy');
+
+              parent.removeChild( parent.querySelector('[name="value"]') );
+            };
 
             var element           = document.createElement('input');
             element.type          = 'date';
             element.name          = 'date_start';
-            element.placeholder   = 'Start';
+            element.placeholder   = 'Выберете дату';
             element.style.width   = "92%";
             element.style.display = "inline-block";
             element.classList.toggle('muiFieldField');
+            element.onfocus= function(){ if(this.value=='search'){this.value = ''} }
+            element.onblur = function(){ if(this.value.length==0){this.value='search';} }
             parent.appendChild(element);
             break;
           case 'String':
+            
+            if ( parent.querySelector('[name="date_end"]') ) {
+              parent.removeChild( parent.querySelector('[name="date_end"]') );
+            };
+
             if ( autocomplete_url ){
               console.log('auto', element, autocomplete_url, autocomplete_value, autocomplete_title);
               generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
@@ -829,9 +910,23 @@ nCore.modules.cell = (function(){
         break;
     };
 
+    // if(!Modernizr.inputtypes.date) {
+    //   $('[type="date"]').fdatepicker({format: 'yyyy-mm-dd'});
+    // }
+
     // select_query.id = value;
 
-    console.log( '----- updateBlock ----- ' );
+    
+    if(!Modernizr.inputtypes.date && ( element.name == 'date_start' || element.name == 'date_end' ) ) {
+      console.info( element.nodeName, element.type );
+      $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
+    }
+    console.log( element );
+    // console.log( '----- updateBlock ----- ' );
+    console.groupEnd();
+  },
+  generateFromQuery = function( element, query ){
+    console.log( 'generateFromQuery', query );
   };
 
   return {

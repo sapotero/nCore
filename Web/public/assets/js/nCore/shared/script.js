@@ -73,7 +73,7 @@ jQuery(function($) {
   // клик по ячейке в таблице
   $('td.fr-selected-cell').live('click', function(e){
     nCore.modules.table.event.publish('cellSelect', this );
-    nCore.modules.table.event.publish('cellFormulaClear' );
+    // nCore.modules.table.event.publish('cellFormulaClear' );
   });
   
   // $('#cellSettingsForm').change(function(e){
@@ -157,7 +157,7 @@ jQuery(function($) {
     $(conditions).select2()
     $(value).select2()
 
-    console.log('ADD', form);
+    // console.log('ADD', form);
     nCore.modules.table.event.publish('newCellSettingsChange' );
   });
 
@@ -215,8 +215,8 @@ jQuery(function($) {
 
   // выбор справочника -> меняем значения в origin_name
   $('select[name="origin_name"]').live('change', function(e){
-    console.log( '----- select[name="origin_name"] ----- ' );
-    console.log( this, this.value );
+    console.groupCollapsed('select[name="origin_name"] -> change');
+    console.log( 'params ', this, this.value );
 
     var _val = this.value;
 
@@ -261,23 +261,22 @@ jQuery(function($) {
     select.value = _val;
 
     this.parentNode.querySelector('[name="conditions"]').selectedIndex = 0;
-
     $(this.parentNode.querySelector('[name="conditions"]')).trigger('change');
     
-    console.log( '----- select[name="origin_name"] ----- ' );
+    console.groupEnd();
 
     return false;
   });
 
   // выбор справочника -> меняем значения в origin_name
   $('select[name="conditions"]').live('change', function(e){
-
+    console.groupCollapsed('select[name="conditions"] -> change');
     var element  = this.parentNode.querySelector('[name="value"], [name="date_start"]')
-    console.log('select[name="conditions"]', this, element );
+    console.log('params', this, element );
 
     // element, name, value 
     nCore.modules.cell.updateBlock(element, 'value', null );
-    
+    console.groupEnd();
     return false;
   })
 
@@ -286,9 +285,11 @@ jQuery(function($) {
 
   // удаление критерия
   $('.criteriaMenuItem.remove').live('click', function(){
+    console.groupCollapsed('.criteriaMenuItem.remove -> click');
     console.log('detach criteria');
     $(this).parents('.criteriaSelectorItem').detach();
     nCore.modules.table.event.publish('newCellSettingsChange' );
+    console.groupEnd();
   })
   
 
@@ -311,15 +312,9 @@ jQuery(function($) {
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child = el.children('.criteriaForm');
 
-    console.error('BEFORE', child.children('select, input'));
-
+    // console.error('BEFORE', child.children('select, input'));
     child[0].classList.toggle('hide');
-    
-    // nCore.modules.table.event.publish('newCellSettingsChange' );
 
-    if(!Modernizr.inputtypes.date) {
-      $('[type="date"]').fdatepicker({format: 'yyyy-mm-dd'});
-    }
     return false;
   })
 
@@ -342,13 +337,4 @@ jQuery(function($) {
     nCore.modules.table.event.publish('cellFormulaChange' );
   });
 
-  // if (!Modernizr.inputtypes.date) {
-  //   $.each($('input[type=date]'), function(i, el){
-  //     $(el).pickadate({
-  //       format: 'yyyy-mm-dd',
-  //       closeOnSelect: true,
-  //       closeOnClear: true
-  //     });
-  //   });
-  // };
 });

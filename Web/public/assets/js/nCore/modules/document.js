@@ -18,6 +18,7 @@ nCore.document = (function(){
       nCoreIsNew = true,
       nCoreTitle,
       nCoreType = 'report',
+      nCoreShowSettings = false,
       nCoreName = '',
       nCoreDescription = '',
       nCoreDocumentCellQuery = {};
@@ -86,6 +87,12 @@ nCore.document = (function(){
   description = function description(){
     return nCoreDescription;
   },
+  setShowSettings = function setShowSettings(params){
+    nCoreShowSettings = params;
+  },
+  ShowSettings = function ShowSettings(){
+    return nCoreShowSettings;
+  },
   setCellQuery = function setCellQuery(data){
     console.log('setCellQuery', data);
     nCoreDocumentCellQuery = data;
@@ -116,8 +123,6 @@ nCore.document = (function(){
 
   },
   load = function load(config){
-    console.log('+++', config);
-
     nCoreDocumentId        = config._id;
     nCoreTitle             = config.title;
     nCoreType              = config.type;
@@ -125,7 +130,6 @@ nCore.document = (function(){
     nCoreDescription       = config.description;
     nCoreDocumentCellQuery = config.query;
     nCoreIsNew             = false;
-
     $('#paper').froalaEditor('html.set', Base64.decode( config.body ));
   },
   createNew = function createNew(url){
@@ -186,6 +190,8 @@ nCore.document = (function(){
     event           : event,
     load            : load,
     reset           : reset,
+    setShowSettings : setShowSettings,
+    ShowSettings    : ShowSettings,
     isNewDocument   : newDocument,
     cellQuery       : cellQuery,
     setName         : setName,

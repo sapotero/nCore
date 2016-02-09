@@ -23,18 +23,13 @@ nCore.events = (function () {
 
     // новый документ
     nCore.document.root.subscribe('newDocument', function (data) {
-
-      // console.log('new doc');
-      // turn on (returns overlay element)
       var overlayEl = mui.overlay('on');
-
-      // set overlay options
       var options = {
         'keyboard': true, // teardown when <esc> key is pressed (default: true)
         'static': false, // maintain overlay when clicked (default: false)
         'onclose': function () {}
       };
-      // initialize with child element
+
       var m = document.createElement('div');
       m.style.width = '400px';
       m.style.height = '300px';
@@ -52,17 +47,21 @@ nCore.events = (function () {
       var options = {
         'keyboard': true, // teardown when <esc> key is pressed (default: true)
         'static': false, // maintain overlay when clicked (default: false)
-        'onclose': function () {}
+        'onclose': function () {
+          nCore.document.setShowSettings(false)
+        }
       };
-      // initialize with child element
+
       var m = document.createElement('div');
-      m.style.width = '400px';
+      m.style.width = '800px';
       m.style.height = 'auto';
       m.style.margin = '10% auto';
       m.style.padding = '10% auto';
       m.style.backgroundColor = '#fff';
       m.classList.toggle('mui-panel');
       m.classList.toggle('mui--z5');
+
+      nCore.document.setShowSettings(true)
 
       var text = Transparency.render(document.querySelector('.nCoreDocumentSettings'), {
         nCoreName        : nCore.document.name(),
@@ -98,7 +97,6 @@ nCore.events = (function () {
       nCore.modules.table.fromGroup(data);
     });
 
-
     // редактирование настроек документа
     nCore.document.root.subscribe('updateDocument', function (data) {
       mui.overlay('off');
@@ -117,8 +115,6 @@ nCore.events = (function () {
       nCore.document.setPeriodStart(data.elements.nCorePeriodStart.value);
       nCore.document.setTitle(data.elements.nCoreName.value);
 
-      // nCore.document.setAttributes(nCoreDocumentAttributes);
-
       nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
         .success(function (data) {
           console.log('saveDocument', data);
@@ -128,21 +124,18 @@ nCore.events = (function () {
         }).error(function (data) {
           console.error('[!] saveDocument', post, data)
         });
-
     });
-    // сохранение документа
 
+    // сохранение документа
     nCore.document.root.subscribe('saveDocument', function (data) {
       console.log('saveDocument');
 
-      // если новый документ, показываем форму
       if (nCore.document.isNewDocument()) {
         nCore.document.root.publish('newDocument');
       }
       else {
         nCore.document.root.publish('saveDocumentToDb');
       }
-
     });
 
     nCore.document.root.subscribe('saveDocumentToDb', function (data) {
@@ -177,8 +170,6 @@ nCore.events = (function () {
 
 
         nCore.document.setAttributes(nCoreDocumentAttributes);
-        // nCore.document.setTitle( rawDocument.name );
-
         console.log(nCoreDocumentAttributes);
 
         nCore.query.post('documents.json', nCoreDocumentAttributes)
@@ -217,25 +208,11 @@ nCore.events = (function () {
             console.error('[!] saveDocument', post, data)
           });
       }
-
     });
     // изменение свойств документа
     nCore.document.root.subscribe('setDocumentAttributes', function (data) {
       console.log('[main] setDocumentAttributes:', data);
-
-      // обновляем название и шапку
       var author = document.getElementById('nCoreDocumentAuthor');
-
-
-      // headline.textContent = [data.type, data.name].join(' ');
-      // author.textContent = ' ' + data.author;
-
-      // всё ок, пришло подтвереие что можно скрывать оверлай и документ сохряненн (+делаем крутилку что идёт процесс сохранения), или выводим ошибку
-      // if ( data === true ) {
-      //   console.log('setDocumentAttributes true:', data);
-      // } else {
-      //   console.log('setDocumentAttributes false:', data);
-      // }
     });
 
     nCore.document.root.subscribe('generateNewDocument', function () {
@@ -244,15 +221,8 @@ nCore.events = (function () {
 
     // [NEW] изменение свойств документа
     nCore.document.root.subscribe('initEditor', function (data) {
-      console.log('initEditor');
+      console.groupCollapsed('initEditor');
 
-      // var _i = setInterval(function(){
-      //   if ( nCore.preloader.hasOwnProperty('init') && typeof(nCore.preloader.init) === 'function' ) {
-      //     nCore.preloader.init();
-      //     clearInterval(_i);
-      //   };
-      // }, 500);
-      
       $('div#paper').on('froalaEditor.initialized', function (e, editor) {
         console.log('e, editor', e);
 
@@ -273,7 +243,7 @@ nCore.events = (function () {
         shortcutsEnabled: ['copyDataCell', 'pasteDataCell']
       });
 
-
+      console.groupEnd();
     });
 
     // изменение типа документа
@@ -286,8 +256,9 @@ nCore.events = (function () {
     });
 
     nCore.document.root.subscribe('loadDocument',
+      
       function (id, callback) {
-        console.log('loadDocument', id);
+        console.groupCollapsed('Loading document');
         var overlayEl = mui.overlay('on'),
 
         options = {
@@ -315,16 +286,14 @@ nCore.events = (function () {
           })
           .success(function (rawDocument) {
             console.log('***raw', rawDocument);
-            
+            console.groupEnd();
             setTimeout(function () {
               mui.overlay('off');
             }, 1000);
 
             nCore.document.load(rawDocument);
-
             nCore.document.setPeriodEnd(rawDocument.periodEnd);
             nCore.document.setPeriodStart(rawDocument.periodStart);
-
             nCore.document.setTitle(rawDocument.name);
 
             callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
@@ -332,16 +301,13 @@ nCore.events = (function () {
             mui.overlay('off');
             console.error('[!] loadDocument -> get', data)
           });
-      },
 
+      },
       // before callback
       function (data) {
-        // console.log( '** -> **', data );
       },
-
       // after callback
       function (data) {
-        // console.log( '** <- **', data );
       }
     );
 
@@ -401,18 +367,14 @@ nCore.events = (function () {
       nCore.query.post('documents/' + id + '/remove', { id: id })
       .success(function (rawDocument) {
         console.log('***deleteReport', rawDocument);
-        
         root.addClass('animatedSlow');
         root.addClass('fadeOut');
-
-
         setTimeout(function (){ root.detach(); }, 400);
 
       }).error(function (data) {
         mui.overlay('off');
         console.error('[!] deleteReport -> get', data)
       });
-
     });
 
     // изменяем тип отображения
@@ -433,7 +395,7 @@ nCore.events = (function () {
           // after callback
         }
       };
-      // initialize with child element
+
       var m = document.createElement('div');
       m.style.width = '400px';
       m.style.height = '100px';
@@ -484,18 +446,12 @@ nCore.events = (function () {
             downloadDoc: {
               href: function (params) {
                 return "/" + type + "/" + (this._id || Math.random()) + "/download";
-              },
-              // text: function () {
-              //   return ''
-              // }
+              }
             },
             downloadPdf: {
               href: function (params) {
                 return "documents/" + this._id + ".pdf";
-              },
-              // text: function () {
-              //   return ''
-              // }
+              }
             },
             removeDocument: {
               href: function (params) {
@@ -519,17 +475,13 @@ nCore.events = (function () {
           nCore.document.root.publish('generateNewDocument');
           document.getElementById('thumb').classList.remove('mui--hide')
 
-
           var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
             _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
-          // когда б
-          // _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
 
           for (var i = 0; i < _mui_rows.length; i++) {
             _mui_rows[i].classList.add('mui--hide')
           }
 
-          // падает firefox
           if (_active_row) {
             _active_row.classList.remove('mui--hide');
           };
@@ -543,23 +495,17 @@ nCore.events = (function () {
           Transparency.render(document.getElementById('noDocumentsFound'), {notFoundMessage: 'Пока нет документов'});
         };
       }, 1000);
-
-     // }
     });
 
     nCore.document.root.subscribe('renderNotPermit', function (data) {
-      // console.log('renderNotPermit', data);
-      var data = {
-        'textBad': 'Operation not permited'
-      };
-
-      Transparency.render(document.getElementById('content-wrapper'), data);
+      Transparency.render(document.getElementById('content-wrapper'), { 'textBad': 'Operation not permited' });
     });
 
     // проверяем что показывать
     nCore.document.root.subscribe('onRouteChange', function (data) {
-
-      console.log('onRouteChange', data);
+      console.groupCollapsed('onRouteChange');
+      console.log('params: ', data);
+      console.groupEnd();
     });
 
     /////////////////////////
@@ -568,20 +514,15 @@ nCore.events = (function () {
 
     // создание критериев поиска
     nCore.modules.table.event.subscribe('generateQuery', function (data) {
-      // console.log('generateQuery', data);
       var table = data.table,
         headClass = data.headClass,
         sideClass = data.sideClass;
-
       nCore.modules.table.tableQuery(table, headClass, sideClass);
     });
 
     // расчёт критериев поиска и отправление их на сервер
     nCore.modules.table.event.subscribe('calculateQuery', function (cellData) {
-      // console.log('calculateQuery', JSON.stringify(cellData));
       nCore.document.setCellQuery(cellData);
-      // console.log( '****', nCore.document.cellQuery() );
-
       nCore.query.post('queries.json', {
         data: cellData,
         global: {
@@ -591,8 +532,6 @@ nCore.events = (function () {
           reportId:  nCore.document.id()
         }
       }).success(function (data) {
-        // console.log('calculateQuery -> post', data);
-
         nCore.modules.table.event.publish('insertCellData', data)
       }).error(function (data) {
         console.error('[!] calculateQuery -> post', data)
@@ -606,19 +545,16 @@ nCore.events = (function () {
       for (var i = 0; i < data.length; i++) {
         var rowIndex = (table.rows[data[i].rowIndex].cells[0].rowSpan > 1) ? 0 : -1,
           cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
-
-
         cell.textContent = data[i].value;
-
-
       }
-
     });
+    
     // выбор активной ячейки
     nCore.modules.table.event.subscribe('cellSelect', function (cell) {
       
-      console.log('cellSelect', cell);
-      
+      console.groupCollapsed("cellSelect");
+      console.dirxml('params: ', cell);
+
       var showCellSettings = true,
         tab = document.getElementsByClassName('criteriaSelector')[0],
         cellQuery;
@@ -631,21 +567,19 @@ nCore.events = (function () {
         criteriaCondition;
 
       if (activeCell) {
-        // если есть query
         if (activeCell.dataset.hasOwnProperty('query')) {
           var queryArray = JSON.parse(activeCell.dataset.query),
             _selectedIindex = -1;
-
-
-          // console.error('*** queryArray', queryArray)
           for (var z = 0; z < queryArray.length; z++) {
+
 
             var group = queryArray[z],
               groupConditions = group.conditions,
               criterias = group.query;
 
-            console.log('criterias',  criterias);
-            console.log('conditions', groupConditions);
+            console.groupCollapsed("query");
+            console.dir('criterias',  criterias);
+            console.dir('conditions', groupConditions);
 
             var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
               groupTemplate = _groupTemplate.cloneNode(true),
@@ -677,8 +611,7 @@ nCore.events = (function () {
                 list = groupTemplate.getElementsByClassName('criteriaSelectorGroupList')[0],
                 cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
 
-              // проверка на незаполненые поля в критерии
-              console.warn('!! criteria', item);
+              console.dirxml('criteria -> ', item);
 
               if (item.source == null && item.origin_name == null) {
                 activeCell.dataset.query = '[]';
@@ -688,23 +621,12 @@ nCore.events = (function () {
               var card = cardTemplate.cloneNode(true);
               card.classList.remove('criteriaSelectorItemTemplate');
               card.classList.remove('mui--hide');
-              // console.log('ITEM', item, 'CARD', card);
 
               var form = card.getElementsByClassName('criteriaForm')[0];
-
-              // var table_name  = form.querySelector('select[name="table_name"]'),
-              //     origin_name = form.querySelector('select[name="origin_name"]'),
-              //     conditions  = form.querySelector('select[name="conditions"]'),
-              //     value       = form.querySelector('[name="value"]');
-
-
               criteriaCondition = card.querySelector('select.itemSelectCondition');
-              console.error( 'criteriaCondition', criteriaCondition );
 
               list.appendChild(card);
 
-              
-              // nCore.modules.cell.generateBlock( item, form, 'criteria_condition', item.criteria_condition );
               nCore.modules.cell.generateBlock( item, form, 'source',             item.source );
               nCore.modules.cell.generateBlock( item, form, 'origin_name',        item.origin_name );
               nCore.modules.cell.generateBlock( item, form, 'conditions',         item.conditions );
@@ -713,15 +635,10 @@ nCore.events = (function () {
               var cr_c = card.querySelector('[name="criteria_condition_group"]');
               cr_c.value = item.criteria_condition;
               cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
-              // console.error( '***', cr_c, cr_c.value, cr_c.selectedIndex )
-
-
             }
-
-
+            console.groupEnd();
             document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
           }
-
           nCore.modules.table.event.publish('newCellSettingsChange' );
         }
         else {
@@ -729,12 +646,12 @@ nCore.events = (function () {
         }
       };
 
-    
       // показываем боковое меню по нажатию кнопки
       if (showCellSettings && !document.getElementById('cellSettings').classList.contains('active')) {
         document.getElementById('cellSettings').classList.toggle('active');
       }
 
+      console.groupEnd();
     });
 
     nCore.modules.table.event.subscribe('cellFormulaChange', function () {
@@ -751,23 +668,17 @@ nCore.events = (function () {
         formulaSettingsItems = [].slice.call(formulaSettings.querySelectorAll('input'));
       for (var v = 0; v < formulaSettingsItems.length; v++) {
         var checkbox = formulaSettingsItems[v];
-
-        console.log('activeCell.dataset[checkbox.name]', activeCell.dataset[checkbox.name]);
-
         checkbox.checked = activeCell.dataset[checkbox.name] === 'true' ? activeCell.dataset[checkbox.name] : null;
       };
     });
 
-    // изменение критериев поиска активной ячейки
     nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME, URL) {
-
-      // переписать с jQuery на js
+      console.groupCollapsed("newCellSettingsChange");
 
       var _query = [],
         list = document.querySelector(".criteriaSelector"),
         criterias = list.querySelectorAll('div');
 
-      console.error('----- newCellSettingsChange -----');
       console.log(list, criterias);
 
       for (var i = 0; i < criterias.length; i++) {
@@ -775,14 +686,10 @@ nCore.events = (function () {
           criteriaItemsRoot = criteria.children('.criteriaSelectorGroup'),
           criteriaItems = criteriaItemsRoot.children('.criteriaSelectorGroupList').children('.criteriaSelectorItem');
 
-        // console.error('!!!!!!  newCellSettingsChange -> criteria['+i+']', criteria, criteriaItems );
-
-
         var data = {
           query: [],
           conditions: criteria.children('.connectionGroup').children('select').val()
         };
-
 
         var criteriaItemQuery = {};
 
@@ -792,11 +699,9 @@ nCore.events = (function () {
             form = item.children('.criteriaForm');
 
           var _select = head[0].querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition');
-          // console.error( '---', _select, criteriaItemsRoot[0].parentNode.querySelector('[name="connectionGroup"]').value );
 
           data.query.push({
             criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
-            // criteria_condition : criteriaItemsRoot[0].querySelector('[name="connectionGroup"]').value,
             source             : form.children('select[name="source"]').val(),
             conditions         : form.children('select[name="conditions"]').val(),
             origin_name        : form.children('select[name="origin_name"]').val(),
@@ -809,8 +714,6 @@ nCore.events = (function () {
 
         _query.push(data);
       };
-
-      // console.log('_query', _query);
       // очищаем пустые группы перед добавлением в query
       var _result_query = [];
       for (var c = _query.length - 1; c >= 0; c--) {
@@ -833,7 +736,7 @@ nCore.events = (function () {
         activeCell.dataset.url = URL
       };
 
-      // console.log('newCellSettings | activeCell -> ',activeCell,  JSON.stringify(_query) )
+      console.groupEnd();
     });
 
 
@@ -863,7 +766,6 @@ nCore.events = (function () {
       function load(item) {
         nCore.query.get(item + '.json')
           .success(function (data) {
-            console.log('loadItem -> get', item, data);
             nCore.storage.setItem(item + '', JSON.stringify(data));
             nCore.document.root.publish(nCore.storage.getItem('indexViewType'));
           }).error(function (data) {
@@ -873,7 +775,7 @@ nCore.events = (function () {
 
       for (var z = 0; z < items.length; z++) {
         var item = items[z];
-        console.log('ITEM', item);
+        // console.log('ITEM', item);
         load(item);
       };
     });
@@ -888,8 +790,6 @@ nCore.events = (function () {
       //   return true;
       // } else {
       nCore.query.get('sources.json').success(function (data) {
-        // console.warn('loadCriteria -> get', data);
-
         for (var i = 0; i < data.length; i++) {
           var source = data[i];
           nCore.storage.setItem(source.type, JSON.stringify(source.data));
