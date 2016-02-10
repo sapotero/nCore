@@ -6339,49 +6339,26 @@ $.FroalaEditor.RegisterCommand('flask', {
     var el = this.selection.element();
     console.log('90 -> ', this, '++', this.selection.element(), this.el, el.style);
 
-    // как вариант на канвасе поворачивать текст
-    // var element = document.createElement('canvas');
-    // element.id = this.selection.element().parentNode.rowIndex + " - " + this.selection.element().cellIndex
-    // element.width = 20;
-
-    // // this.selection.element().textContent = '';
-    // this.selection.element().appendChild( element );
-
-    // var canvas = document.getElementById( element.id );
-    // var context = canvas.getContext("2d");
-    // context.save();
-    // context.translate( canvas.width / 2, canvas.height / 2 );
-    // context.rotate( -Math.PI / 2 );
-    // context.font = "16px serif";
-    // context.fillStyle = "#00df00";
-    // context.textAlign = "center";
-    // context.fillText( el.textContent, 0, 0 );
-    // context.restore();
-
-    // this.selection.element().textContent = '';
-
-    // this.selection.element()
-    if (this.selection.element()
-      .nodeName == 'TD') {
-      var head_cell = this.selection.element()
-        , height = head_cell.offsetWidth + head_cell.offsetWidth * 0.2;
+    // if (this.selection.element().nodeName == 'TD') {
+      var head_cell = this.selection.element(),
+          height = head_cell.offsetWidth + head_cell.offsetWidth * 0.1,
+          width  = head_cell.offsetHeight;
 
       if (head_cell.classList.contains('cellRotate')) {
         head_cell.classList.remove('cellRotate');
-        head_cell.innerHTML = head_cell.querySelector('._rotated')
-          .innerHTML;
+        head_cell.innerHTML = head_cell.querySelector('._rotated').innerHTML;
         head_cell.style.height = '20px';
       }
       else {
         head_cell.classList.add('cellRotate');
 
-        head_cell.style.whiteSpace = 'nowrap';
+        head_cell.style.whiteSpace = 'normal';
         head_cell.style.height = height + 'px';
-        head_cell.style.width = '2%';
+        head_cell.style.width = width+'px';
 
-        head_cell.innerHTML = "<div class='_rotated' style='padding: 20px 2px; transform: translate(0, " + (height / 20) + "px) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
+        head_cell.innerHTML = "<div class='_rotated' style='transform: translate(0,0) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
       }
-    };
+    // };
   }
 });
 
@@ -6406,3 +6383,42 @@ $.FroalaEditor.RegisterCommand('pasteDataCell', {
 
 $.FroalaEditor.RegisterShortcut( 67, 'copyDataCell',  null, true ); // SHIFT + C
 $.FroalaEditor.RegisterShortcut( 86, 'pasteDataCell', null, true ); // SHIFT + V
+
+// прототип с масштабированием
+// $.FroalaEditor.DefineIcon('zoom-in', {
+//   NAME: 'plus'
+// });
+// $.FroalaEditor.RegisterCommand('zoom-in', {
+//   title                : 'Увеличить масштаб',
+//   focus                : false,
+//   undo                 : false,
+//   // refreshAfterCallback : false,
+//   callback: function () {
+
+//     var el   = this.$original_element[0].querySelector('.fr-wrapper'),
+//         zoom = parseFloat((el.style.zoom ? el.style.zoom : 1));
+//     zoom += 0.1;
+//     el.style.zoom = zoom;
+//     console.log('zoom in -> ', el, zoom );
+//   }
+// });
+// $.FroalaEditor.DefineIcon('zoom-out', {
+//   NAME: 'minus'
+// });
+// $.FroalaEditor.RegisterCommand('zoom-out', {
+//   title                : 'Уменьшить масштаб',
+//   focus                : false,
+//   undo                 : false,
+//   refreshAfterCallback : false,
+//   callback: function () {
+
+//     var el   = this.$original_element[0].querySelector('.fr-wrapper'),
+//         zoom = parseFloat((el.style.zoom ? el.style.zoom : 1));
+//     zoom += -0.1;
+//     if (zoom <= 0.1) {
+//       zoom = 0.1;
+//     };
+//     el.style.zoom = zoom;
+//     console.log('zoom in -> ', el, zoom );
+//   }
+// });

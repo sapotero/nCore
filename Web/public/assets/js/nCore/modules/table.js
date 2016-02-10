@@ -200,6 +200,9 @@ nCore.modules.table = (function(){
     });
    },
   generateQueryFromTable = function (table, headClass, sideClass, total){
+    console.group( 'generateQueryFromTable' );
+    console.log( 'params ', table, headClass, sideClass, total );
+
     var table          = table,
         headClass      = headClass,
         sideClass      = sideClass,
@@ -207,6 +210,7 @@ nCore.modules.table = (function(){
         headRows       = [],
         sideRows       = [],
         headRowsCenter = [],
+        headCellCenter = [],
         sideRowsCenter = [],
         dataRowsCenter = [],
         cellData       = [],
@@ -241,7 +245,7 @@ nCore.modules.table = (function(){
         maxCells = max;
       };
     }
-    // console.log('max:', maxCells);
+    console.info('1) maxCells:', maxCells);
 
     // выбираем все элементы, которые отметил пользователь
     head_elements = table.getElementsByClassName( headClass );
@@ -250,6 +254,8 @@ nCore.modules.table = (function(){
       headRows.push(head_elements[z].parentNode)
     };
     headRows = uniq(headRows);
+
+    console.dirxml('2) headRows', headRows);
 
     // выбираем все элементы, которые отметил пользователь
     side_elements = table.getElementsByClassName( sideClass );
@@ -269,6 +275,7 @@ nCore.modules.table = (function(){
     }
 
     sideRows = uniq(sideRows);
+    console.dirxml('3) sideRows', sideRows);
 
     var _tmp = document.getElementById('dataRowForDelete');
     // console.log('tmp', _tmp);
@@ -283,12 +290,31 @@ nCore.modules.table = (function(){
     dataRow.id               = 'dataRowForDelete';
     dataRow.dataset.cellType = 'data';
     table.querySelector('tbody').appendChild(dataRow);
+    
+    console.info('4) dataRow:', dataRow);
 
     // считаем середины строк шапки
     for (var v = 0; v < headRows.length; v++) {
       var coordinates = headRows[v].getBoundingClientRect();
-      headRowsCenter.push( (coordinates.top+coordinates.bottom)/2 );
+      headRowsCenter.push( {
+        center  : (coordinates.top  + coordinates.bottom)/2,
+        left    : coordinates.left,
+        right   : coordinates.right,
+        element : headRows[v]
+      });
+
+      for (var t = 0; t < headRows[v].cells.length; t++) {
+        var element     = headRows[v].cells[t],
+            coordinates = element.getBoundingClientRect();
+        headCellCenter.push( {
+          left    : coordinates.left,
+          right   : coordinates.right,
+          element : element
+        });
+      };
     };
+    console.info('5.1) headRowsCenter:', headRowsCenter);
+    console.info('5.2) headCellCenter:', headCellCenter);
 
     // считаем середины строк боковины
     for (var v = 0; v < sideRows.length; v++) {
@@ -300,8 +326,12 @@ nCore.modules.table = (function(){
       // point.style.top  = (coordinates.top+coordinates.bottom)/2 + 'px';
       // point.style.left = (coordinates.left+coordinates.right)/2 + 'px';
       // document.body.appendChild(point);
-      sideRowsCenter.push( {center: (coordinates.top+coordinates.bottom)/2, el: sideRows[v] } );
+      sideRowsCenter.push({
+        center: (coordinates.top+coordinates.bottom)/2,
+        el: sideRows[v]
+      });
     };
+    console.info('6) sideRowsCenter:', sideRowsCenter);
 
     for (var i = 0; i < maxCells; i++) {
       var queryArray = [],
@@ -310,24 +340,40 @@ nCore.modules.table = (function(){
       dataCell.style.textOverflow = 'ellipsis';
       dataCell.style.overflow     = 'hidden';
       dataCell.style.maxWidth     = 0;
+      dataCell.style.border       = '1px solid green';
 
       dataRow.appendChild(dataCell);
       coordinates = dataCell.getBoundingClientRect();
 
-      dataRowsCenter.push( (coordinates.top+coordinates.bottom)/2 );
+      dataRowsCenter.push({
+        top     : (coordinates.top  + coordinates.bottom)/2,
+        left    : (coordinates.left + coordinates.right)/2,
+        element : dataCell
+      });
     };
+    console.info('7) dataRowsCenter:', dataRowsCenter);
 
-
+    console.groupCollapsed('dateCell query calculate');
     for (var i = dataRow.cells.length - 1; i >= 0; i--) {
       var _cell = dataRow.cells[i],
           coordinates = _cell.getBoundingClientRect(),
           query = [],
           previousElement;
 
-      for (var z = headRowsCenter.length - 1; z >= 0; z--) {
-        var center = headRowsCenter[z];
+      for (var z = headCellCenter.length - 1; z >= 0; z--) {
+        var headCellIterator         = headCellCenter[z],
+            dataCellHorizontalCenter = (coordinates.left + coordinates.right)/2;
 
-        var headCell = document.elementFromPoint( (coordinates.left + coordinates.right)/2 , center );
+
+        if ( !(dataCellHorizontalCenter > headCellIterator.left && headCellIterator.right > dataCellHorizontalCenter) ) {
+          // console.log(' + false ', _cell, headCellIterator);
+          continue;
+        };
+        // console.log(' true ', _cell, headCellIterator);
+
+        var headCell = headCellIterator.element;
+        // var center = headCellCenter[z].center;
+        // var headCell = document.elementFromPoint( (coordinates.left + coordinates.right)/2 , center );
 
         if ( !previousElement || previousElement == headCell ) {
           previousElement = headCell;
@@ -356,8 +402,10 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('group') ) {
           _cell.dataset.group = headCell.dataset.group;
         };
-
+        console.log(' headcell ', headCell, query);
       };
+
+      console.log(' result ', query);
 
       query = uniq(query);
       if ( query.length ) {
@@ -365,6 +413,7 @@ nCore.modules.table = (function(){
       };
     };
 
+    // console.info('query', query);
     var rowSpan  = 0,
         rowQuery = [],
         cellData = [];
@@ -374,10 +423,13 @@ nCore.modules.table = (function(){
           group = '',
           query = [],
           cellSettings = {};
-      // console.log('row', row);
+      console.group('row');
+      // console.info('row', row);
 
       for (var a = 0; a < row.cells.length; a++) {
         var cell = row.cells[a];
+
+        console.dirxml('cell', cell);
 
         if ( cell.dataset.hasOwnProperty('group') ) {
           group = cell.dataset.group
@@ -406,8 +458,10 @@ nCore.modules.table = (function(){
         else {
 
           var coordinates = cell.getBoundingClientRect(),
-              ___dataCell = document.elementFromPoint( (coordinates.left + coordinates.right)/2 , dataRowsCenter[a] ),
+              ___dataCell = dataRowsCenter[a].element,
               ___query = [];
+          
+          console.log( 'without sideClass', cell, coordinates, ___dataCell, dataRowsCenter[a] );
 
           if (rowQuery.length) {
             ___query = ___query.concat(rowQuery);
@@ -481,12 +535,15 @@ nCore.modules.table = (function(){
         };
       };
 
+      console.groupEnd();
+
       // console.log('row query -> ', query);
       rowSpan  = 0;
       // rowQuery = [];
     };
+    console.groupEnd();
 
-    dataRow.style.display = 'none';
+    // dataRow.style.display = 'none';
     dataRow.parentNode.removeChild(dataRow);
     
     console.log( 'cellData:', cellData );

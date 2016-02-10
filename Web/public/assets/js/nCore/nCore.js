@@ -259,7 +259,7 @@ nCore = (function(){
   disableCopyPaste = function(elm) {
     elm.onkeydown = interceptKeys;
     elm.oncontextmenu = function() {
-      return false
+      // return false
     }
   },
   interceptKeys = function(evt) {
@@ -395,7 +395,10 @@ nCore = (function(){
     attachTo  : function(obj){
       obj.publish   = publish;
       obj.subscribe = subscribe;
-    }
+    },
+    x : 0,
+    y : 0,
+    w : ''
   };
 })();
 

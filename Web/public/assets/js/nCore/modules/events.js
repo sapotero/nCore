@@ -230,18 +230,59 @@ nCore.events = (function () {
         if (document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor') {
           document.querySelector('.fr-wrapper').nextSibling.textContent = '';
         };
+
+        var paper = $.FroalaEditor.INSTANCES[0].$original_element[0].querySelector('.fr-view');
+        nCore.x = paper.getBoundingClientRect().left + 'px';
+        nCore.y = paper.getBoundingClientRect().top + 'px';
       });
 
       $('div#paper').froalaEditor({
-        toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
-        toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog'],
-        toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo','cog'],
-        toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo','cog'],
+        toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo','cog', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo','cog', '|', 'zoom-out', 'zoom-in'],
         language: 'ru',
         charCounterCount: false,
         toolbarSticky: false,
         shortcutsEnabled: ['copyDataCell', 'pasteDataCell']
       });
+      
+      // прототип с масштабированием
+      // $('.paperWrappers').on('mousemove', function(e) { 
+      //   //if( e.which == 2 ) {
+      //   // if(e.which === 1 && !false) e.which = 0;
+      //   var paper = $.FroalaEditor.INSTANCES[0].$original_element[0].querySelector('.fr-view');
+      //   nCore.w = paper;
+
+      //   if( e.which == 2 ) {
+      //     // e.preventDefault();
+      //     console.log('middle button clicked', paper, nCore.x, nCore.y);
+          
+      //     // var dx = e.clientX - nCore.x;
+      //     // var dy = e.clientY - nCore.y;
+          
+      //     var dx = e.clientX - nCore.x;
+      //     var dy = e.clientY - nCore.y;
+          
+      //     nCore.x = e.clientX
+      //     nCore.y = e.clientY
+
+      //     console.log('**', dx, dy, e.clientX, e.clientY)
+
+      //     // если nCore.x, nCore.y == 0 то пропускаем шаг
+      //     paper.style.left  = (parseInt(paper.style.left, 10)  || 0) + dx + 'px';
+      //     paper.style.top = (parseInt(paper.style.top, 10) || 0) + dy + 'px';
+          
+          
+      //     // console.log('mouse', e.clientX, e.clientY, dx, dy);
+      //   }
+      // })
+      // .on('mouseup', function(e) {
+      //     var paper = $.FroalaEditor.INSTANCES[0].$original_element[0].querySelector('.fr-view');
+      //     nCore.x = ( parseInt( paper.style.left,  10 ) || 0 ) + 'px';
+      //     nCore.y = ( parseInt( paper.style.top, 10 ) || 0 ) + 'px';
+      //     console.log('mouse up', e.clientX, e.clientY, nCore.x, nCore.y );
+      // });
 
       console.groupEnd();
     });

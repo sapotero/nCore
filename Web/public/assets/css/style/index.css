@@ -256,10 +256,14 @@ buttons {
   margin:0px auto;
 }
 #paper {
-  /*margin-top: 50px auto;*/
+  /*overflow: scroll;*/
   min-height: 210mm;
   width: 297mm;
   margin: 5mm auto;
+}
+
+.paperWrapper {
+  /*overflow: scroll;*/
 }
 
 #paper.book {

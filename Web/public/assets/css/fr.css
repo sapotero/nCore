@@ -18,6 +18,7 @@
   color: #000000;
   position: relative;
   z-index: 2;
+  /*overflow: hidden;*/
   text-align: initial;
   -webkit-user-select: auto;
 }
@@ -54,9 +55,16 @@ iframe.fr-iframe {
   box-sizing: border-box;
 }
 .fr-wrapper {
-  position: relative;
+  /* прототип с масштабированием */
+  /*
+  margin: 15px 0 0 -15px;
+  height: 210mm;
+  width : 297mm;
+  position: absolute;
   overflow: auto;
   z-index: 1;
+  */
+  position: relative;
 }
 .fr-wrapper .fr-placeholder {
   position: absolute;
@@ -1006,6 +1014,9 @@ iframe.fr-iframe {
   content: "";
 }
 .fr-view {
+  /* прототип с масштабированием */
+  /*overflow: visible;*/
+
   /**
    * Image style.
    */
