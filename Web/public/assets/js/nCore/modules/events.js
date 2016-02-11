@@ -687,15 +687,17 @@ nCore.events = (function () {
         }
 
         var monthSelector = document.querySelector('[name="month"]');
-        if ( parseInt(activeCell.dataset.queryMonth,10) ) {
+        if ( monthSelector && parseInt(activeCell.dataset.queryMonth,10) ) {
           console.log('++++', activeCell.dataset.queryMonth)
           monthSelector.value = activeCell.dataset.queryMonth;
           monthSelector.disabled = false;
         } else {
-          console.log('----', activeCell.dataset)
-          monthSelector.selectedIndex = 0;
-          monthSelector.value = 1;
-          monthSelector.disabled = true;
+          if ( monthSelector ) {
+            console.log('----', activeCell.dataset)
+            monthSelector.selectedIndex = 0;
+            monthSelector.value = 1;
+            monthSelector.disabled = true;
+          };
         }
       };
 
