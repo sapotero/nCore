@@ -12,11 +12,11 @@ jQuery(function($) {
   //   document.querySelector('.fr-wrapper').nextSibling.textContent += 'test';
   // });
 
-  var $bodyEl              = $('body'),
-  $sidedrawerEl            = $('#sidedrawer'),
-  $cellSettings            = $('#cellSettings'),
-  $rotatePage              = $('#rotatePage'),
-  $paper                   = $('#paper');
+  var $bodyEl   = $('body'),
+  $sidedrawerEl = $('#sidedrawer'),
+  $cellSettings = $('#cellSettings'),
+  $rotatePage   = $('#rotatePage'),
+  $paper        = $('#paper');
   
   
   // ==========================================================================
@@ -42,15 +42,12 @@ jQuery(function($) {
       $sidedrawerEl.addClass('active');
     }, 20);
   }
-  
-  
+
   function hideSidedrawer() {
     $bodyEl.toggleClass('hide-sidedrawer');
     $('#sidedrawer-brand').removeClass('mui--z5');
-
   }
-  
-  
+
   $('.js-show-sidedrawer').on('click', showSidedrawer);
   $('.js-hide-sidedrawer').on('click', hideSidedrawer);
   
@@ -61,33 +58,28 @@ jQuery(function($) {
   var $titleEls = $('strong', $sidedrawerEl);
   
   $titleEls.next().hide();
-  
   $titleEls.on('click', function() {
+
     $(this).next().slideToggle(200);
   });
 
+  // поворот страницы
   $rotatePage.click(function(){
+
     $paper.toggleClass('book');
   });
 
   // клик по ячейке в таблице
   $('td.fr-selected-cell').live('click', function(e){
     nCore.modules.table.event.publish('cellSelect', this );
-    // nCore.modules.table.event.publish('cellFormulaClear' );
+    nCore.modules.table.event.publish('cellFormulaClear' );
   });
-  
-  // $('#cellSettingsForm').change(function(e){
-  //   nCore.modules.table.event.publish('cellSettingsChange', e );
-  // })
 
   // добвление нового документа
   $('.AddDocument').live('click', function(){
     nCore.document.root.publish('createNewDocument');
   })
 
-  //$('[type="date"]').live('click', function(){
-	//	$(this).fdatepicker({format: 'yyyy-mm-dd'});
-  //})
   // добавление группы критериев
   $('.addCriteriaGroupButton').live('click', function(){
     var list = $(".criteriaSelector"),
@@ -115,12 +107,13 @@ jQuery(function($) {
     nCore.modules.table.event.publish('newCellSettingsChange' );
     return false;
   });
+  
+  // удаление документа
   $('.removeDocument').live('click', function(e){
     // e.preventDefault();
     nCore.document.root.publish('deleteReport', this);
     return false;
   });
-  
 
   // добавление критерия в группу
   $('.addCriteriaItemToGroup').live('click', function(){
@@ -171,8 +164,8 @@ jQuery(function($) {
   $('input[type="date"]').live('change', function(){
     nCore.modules.table.event.publish('newCellSettingsChange' );
     return false;
-  })
-
+  });
+  
   // изменение значения полей -> обновляем значения в ячейке
   $('select[name="connectionGroup"]').live('change', function(){
     nCore.modules.table.event.publish('newCellSettingsChange' );
@@ -280,9 +273,6 @@ jQuery(function($) {
     return false;
   })
 
-
-
-
   // удаление критерия
   $('.criteriaMenuItem.remove').live('click', function(){
     console.groupCollapsed('.criteriaMenuItem.remove -> click');
@@ -291,17 +281,6 @@ jQuery(function($) {
     nCore.modules.table.event.publish('newCellSettingsChange' );
     console.groupEnd();
   })
-  
-
-
-  function formatRepoSelection (data) {
-    return data.full_name || data.text;
-  }
-  function formatRepo (data) {
-    if (data.loading) return data.text;
-
-    return data;
-  };
 
   // клик по критерию
   $('.criteriaMenuItem.settings, .criteriaSelectorItemHeader').live('click', function(e){
@@ -333,8 +312,21 @@ jQuery(function($) {
     };
   });
 
+
+  // обновление свойств аппг, всего итд
   $('.formula').live('change', function(){
     nCore.modules.table.event.publish('cellFormulaChange' );
+  });
+
+  // обновлдение конкретно галки с месяцами
+  // activeCell -> update dataset -> use_month = true && month = 1..12
+  $('[name="useMonth"]').live('change', function(){
+    console.log('month change');
+    document.getElementsByName('month')[0].disabled = this.checked ? false : true;
+    nCore.modules.table.event.publish('cellFormulaChange');
+  });
+  $('[name="month"]').live('change', function(){
+    nCore.modules.table.event.publish('cellFormulaChange');
   });
 
 });

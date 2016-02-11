@@ -252,25 +252,25 @@ buttons {
 
 #paperBar {
   /*margin-top: 50px auto;*/
-  width: calc(297*1.5)mm;
+  width: 297mm;
   margin:0px auto;
 }
 #paper {
   /*overflow: scroll;*/
   min-height: 210mm;
-  width: calc(297*1.5)mm;
+  width: 297mm;
   margin: 5mm auto;
 }
 
 .paperWrapper {
-  /*overflow: scroll;*/
+  overflow-x: scroll;
 }
 
 #paper.book {
   /*margin-top: 50px auto;*/
   transition: 0.1s;
   /*transform: rotate(90deg);*/
-  height: calc(297*1.5)mm;
+  height: 297mm;
   width:  210mm;
   /*margin-left: 29%;*/
 }
@@ -1004,4 +1004,8 @@ buttons {
 }
 .fr-insert-helper a.fr-floating-btn {
   position: absolute;
+}
+
+select[name='month_selector']:disabled {
+  color: light-grey;
 }

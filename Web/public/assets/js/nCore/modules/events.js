@@ -685,6 +685,18 @@ nCore.events = (function () {
         else {
           document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
         }
+
+        var monthSelector = document.querySelector('[name="month"]');
+        if ( parseInt(activeCell.dataset.queryMonth,10) ) {
+          console.log('++++', activeCell.dataset.queryMonth)
+          monthSelector.value = activeCell.dataset.queryMonth;
+          monthSelector.disabled = false;
+        } else {
+          console.log('----', activeCell.dataset)
+          monthSelector.selectedIndex = 0;
+          monthSelector.value = 1;
+          monthSelector.disabled = true;
+        }
       };
 
       // показываем боковое меню по нажатию кнопки
@@ -693,15 +705,77 @@ nCore.events = (function () {
       }
 
       console.groupEnd();
+      console.groupEnd();
     });
 
     nCore.modules.table.event.subscribe('cellFormulaChange', function () {
-      var formulaSettings = document.querySelector('.formulaSettings'),
-        formulaSettingsItems = [].slice.call(formulaSettings.querySelectorAll('input'));
+      var formulaSettings      = document.querySelector('.formulaSettings'),
+          formulaSettingsItems = [].slice.call(formulaSettings.querySelectorAll('input'));
+      
       for (var v = 0; v < formulaSettingsItems.length; v++) {
         var checkbox = formulaSettingsItems[v];
         activeCell.dataset[checkbox.name] = checkbox.checked;
       };
+
+      // обновляем галку с месяцами
+      var monthSelector = formulaSettings.querySelector('[name="month"]');
+      
+      // если уже были значения в ячейке
+      if ( activeCell.dataset.useMonth === 'true' ) {
+        console.log('activeCell.dataset.useMonth ++', activeCell.dataset);
+        activeCell.dataset.queryMonth = monthSelector.value;
+        // if ( activeCell.dataset.month ) {
+        //   monthSelector.selectedIndex = parseInt( activeCell.dataset.month, 10 ) - 1;
+        //   monthSelector.value = activeCell.dataset.month;
+        //   console.log('activeCell.dataset.month ++', monthSelector.value, activeCell.dataset);
+        // } else {
+        //   console.log('activeCell.dataset.month --', activeCell.dataset);
+        //   activeCell.dataset.month = monthSelector.value;
+        // };
+      } else {
+        console.log('activeCell.dataset.useMonth --', activeCell.dataset);
+        delete activeCell.dataset.queryMonth
+        monthSelector.selectedIndex = 0;
+        monthSelector.disabled = true;
+
+      }
+      // if ( activeCell.dataset.hasOwnProperty('useMonth') && activeCell.dataset.hasOwnProperty('month') ) {
+      //   useMonth.checked   = activeCell.dataset.useMonth;
+      //   month_select.value = activeCell.dataset.month;
+      // } else {
+      //   // если нет
+      //   if ( useMonth.checked ) {
+      //     activeCell.dataset.useMonth = useMonth.checked;
+      //     activeCell.dataset.month    = month_select.value;
+      //   } else {
+      //     month_select.disabled      = true;
+      //     month_select.selectedIndex = 0;
+      //   }
+      // };
+
+    });
+
+    nCore.modules.table.event.subscribe('setMonth', function(){
+      console.groupEnd();
+      console.groupEnd();
+      console.groupEnd();
+      console.groupEnd();
+      console.groupEnd();
+
+      var monthSelector = document.querySelector('[name="month"]');
+      console.log('set month', monthSelector.value);
+
+      if ( activeCell.dataset.queryMonth ) {
+        monthSelector.value = activeCell.dataset.queryMonth;
+        monthSelector.disabled = false;
+      } else {
+        monthSelector.disabled = true;
+        monthSelector.selectedIndex = 0;
+        // monthSelector.dispatchEvent( new Event('click') )
+        // monthSelector.dispatchEvent( new Event('change') );
+
+        $('[name="useMonth"]').trigger('change')
+      }
     });
 
     nCore.modules.table.event.subscribe('cellFormulaClear', function () {
@@ -715,7 +789,7 @@ nCore.events = (function () {
 
     nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME, URL) {
       console.groupCollapsed("newCellSettingsChange");
-
+      
       var _query = [],
         list = document.querySelector(".criteriaSelector"),
         criterias = list.querySelectorAll('div');

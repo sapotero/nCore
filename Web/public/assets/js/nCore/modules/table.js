@@ -369,12 +369,8 @@ nCore.modules.table = (function(){
           // console.log(' + false ', _cell, headCellIterator);
           continue;
         };
-        // console.log(' true ', _cell, headCellIterator);
-
         var headCell = headCellIterator.element;
-        // var center = headCellCenter[z].center;
-        // var headCell = document.elementFromPoint( (coordinates.left + coordinates.right)/2 , center );
-
+        
         if ( !previousElement || previousElement == headCell ) {
           previousElement = headCell;
           // console.log( previousElement, headCell );
@@ -402,6 +398,10 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('group') ) {
           _cell.dataset.group = headCell.dataset.group;
         };
+        if ( headCell.dataset.hasOwnProperty('queryMonth') ) {
+          _cell.dataset.queryMonth = headCell.dataset.queryMonth;
+        };
+
         console.log(' headcell ', headCell, query);
       };
 
@@ -527,6 +527,11 @@ nCore.modules.table = (function(){
             };
             if ( ___dataCell.dataset.includeThemesAp ) {
               _cellData.includeThemesAp = ___dataCell.dataset.includeThemesAp
+            };
+
+            if ( ___dataCell.dataset.queryMonth ) {
+              _cellData.queryMonth = ___dataCell.dataset.queryMonth
+              // обновить в форме месяц
             };
           };
 

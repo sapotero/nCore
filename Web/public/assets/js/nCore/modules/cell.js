@@ -331,6 +331,7 @@ nCore.modules.cell = (function(){
           // select_query.value =  autocomplete_value;
           // select_query.title =  autocomplete_title;
           // parent.removeChild(element);
+          
           var df                = new DocumentFragment();
           var element           = document.createElement('input');
           element.type          = 'date';
@@ -526,6 +527,13 @@ nCore.modules.cell = (function(){
             select_query.plain = true;
             select_query.plain_value = value;
             break;
+          case 'month':
+            // if ( parent.querySelector('[name="date_end"]') ) {
+            //     parent.removeChild( parent.querySelector('[name="date_end"]') );
+            //   };
+              select_query.bool = true
+              select_query.plain_value = value
+            break;
           default:
             break;
         };
@@ -534,7 +542,7 @@ nCore.modules.cell = (function(){
 
         select_query.id = value;
       default:
-        console.log(' warn! changeBlockAtributes default ');
+        console.log(' warn! changeBlockAtributes name=', name);
         break;
     }
 
@@ -655,7 +663,8 @@ nCore.modules.cell = (function(){
 
     if ( element.nodeName == 'INPUT' ) {
       console.warn('input!', element, parent);
-      // parent.removeChild(element);
+      
+      parent.removeChild(element);
       _new = true;
 
 
@@ -673,7 +682,7 @@ nCore.modules.cell = (function(){
       $(_el).select2().val( value ).trigger('change');;
     };
 
-    if ( parent.querySelector('[name="date_start"]') ) {
+    if ( parent && parent.querySelector('[name="date_start"]') ) {
       parent.removeChild( parent.querySelector('[name="date_start"]') );
     };
     // parent.appendChild(element);
@@ -687,7 +696,7 @@ nCore.modules.cell = (function(){
 
     console.log('generateBoolSelect2 end', element);
     
-    if ( parent.querySelector('[name="date_end"]') ) {
+    if ( parent && parent.querySelector('[name="date_end"]') ) {
       parent.removeChild( parent.querySelector('[name="date_end"]') );
     };
 
@@ -753,6 +762,11 @@ nCore.modules.cell = (function(){
         parent.removeChild(element);
         // parent.removeChild( parent.querySelector('[name="date_end"]') );
         // parent.removeChild( parent.querySelector('[name="date_start"]') );
+        if ( parent.querySelector('[name="value"]') ) {
+          $(element).select2();
+          $(element).select2('destroy');
+          parent.removeChild( parent.querySelector('[name="value"]') );
+        };
 
         var element           = document.createElement('input');
         element.type          = 'date';
@@ -905,7 +919,26 @@ nCore.modules.cell = (function(){
         console.log('+sum');
         generateInput(element, value);
         break;
+      case 'month':
+        console.log('+month');
+        
+        if ( parent.querySelector('[name="value"]') ) {
+          $(element).select2();
+          $(element).select2('destroy');
+
+          parent.removeChild( parent.querySelector('[name="value"]') );
+        };
+
+        if ( parent.querySelector('[name="date_end"]') ) {
+          parent.removeChild( parent.querySelector('[name="date_end"]') );
+        };
+        // if ( parent.querySelector('[name="date_start"]') ) {
+        //   parent.removeChild( parent.querySelector('[name="date_start"]') );
+        // };
+        element = generateBoolSelect2(element, value, true);
+        break;
       default:
+        element = generateBoolSelect2(element, value, true);
         console.warn('default');
         break;
     };

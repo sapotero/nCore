@@ -1048,11 +1048,13 @@ iframe.fr-iframe {
 .fr-view table td.fr-highlighted,
 .fr-view table th.fr-highlighted {
   /*border: 1px solid rgba(0,125,0,0.29);*/
-  padding: 10px 0;
+  font-weight: bold;
+  padding: 5px;
 }
 .fr-view table td.fr-thick,
 .fr-view table th.fr-thick {
   /*border: 1px solid rgba(0,0,125,0.29);*/
+
   padding: 5px;
 }
 .fr-view table th {

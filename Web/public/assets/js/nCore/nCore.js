@@ -339,6 +339,10 @@ nCore = (function(){
         {
           value: "range",
           caption: "За период"
+        },
+        {
+          value: "month",
+          caption: "Месяц"
         }
       ],
       Boolean:  [
