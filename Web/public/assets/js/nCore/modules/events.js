@@ -102,6 +102,9 @@ nCore.events = (function () {
       mui.overlay('off');
       console.log('update:', data, data.elements);
 
+      // считаем глобальную query
+      nCore.document.root.publish('globalCriteriaCalculate', data);
+
       var nCoreDocumentAttributes = {
         name: data.elements.nCoreName.value,
         description: data.elements.nCoreDescription.value,
@@ -165,7 +168,8 @@ nCore.events = (function () {
           body: Base64.encode($('#paper').froalaEditor('html.get')),
           query: nCore.document.cellQuery() || '',
           periodStart: nCore.document.periodStart(),
-          periodEnd: nCore.document.periodEnd()
+          periodEnd: nCore.document.periodEnd(),
+          globalQuery: nCore.document.globalQuery()
         };
 
 
@@ -193,7 +197,8 @@ nCore.events = (function () {
           body: Base64.encode($('#paper').froalaEditor('html.get')),
           query: nCore.document.cellQuery() || '',
           periodStart: nCore.document.periodStart(),
-          periodEnd: nCore.document.periodEnd()
+          periodEnd: nCore.document.periodEnd(),
+          globalQuery: nCore.document.globalQuery()
         };
 
         nCore.document.setAttributes(nCoreDocumentAttributes);
@@ -246,43 +251,6 @@ nCore.events = (function () {
         toolbarSticky: false,
         shortcutsEnabled: ['copyDataCell', 'pasteDataCell']
       });
-      
-      // прототип с масштабированием
-      // $('.paperWrappers').on('mousemove', function(e) { 
-      //   //if( e.which == 2 ) {
-      //   // if(e.which === 1 && !false) e.which = 0;
-      //   var paper = $.FroalaEditor.INSTANCES[0].$original_element[0].querySelector('.fr-view');
-      //   nCore.w = paper;
-
-      //   if( e.which == 2 ) {
-      //     // e.preventDefault();
-      //     console.log('middle button clicked', paper, nCore.x, nCore.y);
-          
-      //     // var dx = e.clientX - nCore.x;
-      //     // var dy = e.clientY - nCore.y;
-          
-      //     var dx = e.clientX - nCore.x;
-      //     var dy = e.clientY - nCore.y;
-          
-      //     nCore.x = e.clientX
-      //     nCore.y = e.clientY
-
-      //     console.log('**', dx, dy, e.clientX, e.clientY)
-
-      //     // если nCore.x, nCore.y == 0 то пропускаем шаг
-      //     paper.style.left  = (parseInt(paper.style.left, 10)  || 0) + dx + 'px';
-      //     paper.style.top = (parseInt(paper.style.top, 10) || 0) + dy + 'px';
-          
-          
-      //     // console.log('mouse', e.clientX, e.clientY, dx, dy);
-      //   }
-      // })
-      // .on('mouseup', function(e) {
-      //     var paper = $.FroalaEditor.INSTANCES[0].$original_element[0].querySelector('.fr-view');
-      //     nCore.x = ( parseInt( paper.style.left,  10 ) || 0 ) + 'px';
-      //     nCore.y = ( parseInt( paper.style.top, 10 ) || 0 ) + 'px';
-      //     console.log('mouse up', e.clientX, e.clientY, nCore.x, nCore.y );
-      // });
 
       console.groupEnd();
     });
@@ -336,11 +304,13 @@ nCore.events = (function () {
             nCore.document.load(rawDocument);
             nCore.document.setPeriodEnd(rawDocument.periodEnd);
             nCore.document.setPeriodStart(rawDocument.periodStart);
+            nCore.document.setGlobalQuery(rawDocument.globalQuery);
             nCore.document.setTitle(rawDocument.name);
 
             callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
           }).error(function (data) {
             mui.overlay('off');
+            nCore.document.root.publish('nCoreDocumentFailedToLogin');
             console.error('[!] loadDocument -> get', data)
           });
 
@@ -432,6 +402,36 @@ nCore.events = (function () {
       for ( var q = 0; q < criteriaKeys.length; q++ ) {
         chosenOrigin.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
       };
+      
+    });
+    
+    nCore.document.root.subscribe('nCoreDocumentFailedToLogin', function (type) {
+
+      var overlayEl = mui.overlay('on'),
+          options   = {
+            'keyboard': false, // teardown when <esc> key is pressed (default: true)
+            'static': true, // maintain overlay when clicked (default: false)
+            'onclose': function () {
+              // after callback
+            }
+          };
+      var render = Transparency.render(document.getElementById('nCoreDocumentFailedToLogin'), {
+        errorMessage: 'Произошла ошибка во время загрузки документа',
+        back: "Назад",
+        reload: "Обновить"
+      });
+
+      var m = document.createElement('div');
+      m.style.width = '800px';
+      m.style.height = '200px';
+      m.style.margin = '10% auto';
+      m.style.padding = '10% auto';
+      m.style.backgroundColor = '#fff';
+      m.classList.toggle('mui-panel');
+      m.classList.toggle('mui--z5');
+      m.innerHTML = render.innerHTML;
+
+      mui.overlay('on', options, m );
       
     });
 
@@ -752,6 +752,10 @@ nCore.events = (function () {
 
       console.groupEnd();
       console.groupEnd();
+    });
+
+    nCore.modules.table.event.subscribe('globalCriteriaCalculate', function(body){
+      console.log( 'globalCriteriaCalculate', body );
     });
 
     nCore.modules.table.event.subscribe('cellFormulaChange', function () {

@@ -47,7 +47,8 @@ class DocumentsController < ApplicationController
       :author      => params[ :author ],
       :query       => params[ :query ],
       :periodStart => params[ :periodStart ],
-      :periodEnd   => params[ :periodEnd ]
+      :periodEnd   => params[ :periodEnd ],
+      :globalQuery => params[ :globalQuery ]
     })
 
     if @document.save
@@ -63,6 +64,7 @@ class DocumentsController < ApplicationController
     @document.body        = params[ :body ]
     @document.periodStart = params[ :periodStart ]
     @document.periodEnd   = params[ :periodEnd ]
+    @document.globalQuery = params[ :globalQuery ]
     @document.name        = params[ :name ]
     @document.description = params[ :description ]
     @document.query       = params[ :query ]

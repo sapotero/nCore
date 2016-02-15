@@ -10,7 +10,7 @@ nCore.document = (function(){
       nCorePeriodEnd   = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
       nCoreDocumentUserId       = null,
       nCoreDocumentDepartmentId = null,
-
+      nCoreGlobalQuery,
       nCoreDocumentId = '',
       nCoreRoot = {},
       nCoreDocumentSave,
@@ -177,6 +177,12 @@ nCore.document = (function(){
   setTitle = function setTitle(t){
     nCoreTitle = t ? t : nCoreTitle;
     document.querySelector('#nCoreDocumentHeadLine').textContent = nCoreTitle;
+  },
+  globalQuery = function globalQuery (){
+    return nCoreGlobalQuery
+  },
+  setGlobalQuery = function setGlobalQuery (query){
+    nCoreGlobalQuery = query
   };
 
   
@@ -209,6 +215,8 @@ nCore.document = (function(){
     setPeriodStart  : setPeriodStart,
     periodEnd       : periodEnd,
     setPeriodEnd    : setPeriodEnd,
+    globalQuery     : globalQuery,
+    setGlobalQuery  : setGlobalQuery,
     generateNew     : generateNew
   };
 })();

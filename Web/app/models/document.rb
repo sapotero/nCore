@@ -3,16 +3,19 @@ class Document
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  # belongs_to User
+  field :author,      type: String
+  
   field :type,        type: String
   field :name,        type: String
   field :description, type: String
   field :type,        type: String
   field :datetime,    type: String
-  field :author,      type: String
   field :query,       type: String
   field :periodStart, type: String
   field :periodEnd,   type: String
   field :archived,    type: Boolean, default: false
+  field :globalQuery, type: String
   
   field :body_id
 
