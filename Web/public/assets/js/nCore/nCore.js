@@ -385,6 +385,12 @@ nCore = (function(){
           caption: "Сумма"
         },
       ],
+      Formula:  [
+        {
+          value: "equal",
+          caption: "Точное совпадение"
+        }
+      ],
       Default:  []
     },
     channels  : {},

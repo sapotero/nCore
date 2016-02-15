@@ -389,6 +389,12 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('percent') ) {
           _cell.dataset.percent = headCell.dataset.percent;
         };
+        if ( headCell.dataset.hasOwnProperty('includeSubordinates') ) {
+          _cell.dataset.includeSubordinates = headCell.dataset.includeSubordinates;
+        };
+        if ( headCell.dataset.hasOwnProperty('chosenOrigin') ) {
+          _cell.dataset.chosenOrigin = headCell.dataset.chosenOrigin;
+        };        
         if ( headCell.dataset.hasOwnProperty('includeSubthemes') ) {
           _cell.dataset.includeSubthemes = headCell.dataset.includeSubthemes;
         };
@@ -421,6 +427,7 @@ nCore.modules.table = (function(){
       
       var row   = sideRows[d],
           group = '',
+          cellDatasetChosenOrigin,
           query = [],
           cellSettings = {};
       console.group('row');
@@ -433,6 +440,10 @@ nCore.modules.table = (function(){
 
         if ( cell.dataset.hasOwnProperty('group') ) {
           group = cell.dataset.group
+        };
+
+        if ( cell.dataset.hasOwnProperty('chosenOrigin') ) {
+          cellDatasetChosenOrigin = cell.dataset.chosenOrigin
         };
 
         if ( cell.rowSpan > 1 ) {
@@ -461,7 +472,7 @@ nCore.modules.table = (function(){
               ___dataCell = dataRowsCenter[a].element,
               ___query = [];
           
-          console.log( 'without sideClass', cell, coordinates, ___dataCell, dataRowsCenter[a] );
+          console.log( 'without sideClass', cell.dataset , ___dataCell, ___dataCell.dataset, dataRowsCenter[a] );
 
           if (rowQuery.length) {
             ___query = ___query.concat(rowQuery);
@@ -492,23 +503,9 @@ nCore.modules.table = (function(){
           if ( group ) {
             _cellData.group = group;
           };
-
-          //////////
-          // test //
-          //////////
-          
-          // var div        = document.createElement('div');
-          // div.style.position = 'absolute';
-          // div.style.border = '2px solid red';
-          // div.style.width = '2px';
-          // div.style.height = '2px';
-          // div.style.top  = dataRowsCenter[a]+'px';
-          // div.style.left = ((coordinates.left + coordinates.right)/2)+'px';
-          // div.classList.add('POINT');
-          // document.body.appendChild(div);
-          // console.log('**row', ___dataCell, document.elementFromPoint( (coordinates.left + coordinates.right)/2 , dataRowsCenter[a] ) );
           
           if ( ___dataCell ) {
+            // console.log( 'datacell', ___dataCell.dataset );
             if ( ___dataCell.dataset.query ) {
               _cellData.query.head.push(___dataCell.dataset.query);
             };
@@ -522,6 +519,9 @@ nCore.modules.table = (function(){
             if ( ___dataCell.dataset.percent ) {
               _cellData.percent = ___dataCell.dataset.percent
             };
+            if ( ___dataCell.dataset.includeSubordinates ) {
+              _cellData.includeSubordinates = ___dataCell.dataset.includeSubordinates
+            };
             if ( ___dataCell.dataset.includeSubthemes ) {
               _cellData.includeSubthemes = ___dataCell.dataset.includeSubthemes
             };
@@ -533,6 +533,16 @@ nCore.modules.table = (function(){
               _cellData.queryMonth = ___dataCell.dataset.queryMonth
               // обновить в форме месяц
             };
+
+            if ( ___dataCell.dataset.chosenOrigin ) {
+              _cellData.origin      = _cellData.hasOwnProperty('origin') ?  _cellData.origin : {};
+              _cellData.origin.head = ___dataCell.dataset.chosenOrigin;
+            };
+          };
+
+          if ( cellDatasetChosenOrigin ) {
+            _cellData.origin      = _cellData.hasOwnProperty('origin') ?  _cellData.origin : {};
+            _cellData.origin.side = cellDatasetChosenOrigin;
           };
 
 

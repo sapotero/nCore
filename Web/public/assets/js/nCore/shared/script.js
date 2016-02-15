@@ -186,6 +186,7 @@ jQuery(function($) {
       
       // console.log('**originTable', originTable);
 
+
       for (var q = 0; q < originTable.length; q++) {
         var option = document.createElement('option');
         option.value = originTable[q]._id;
@@ -195,6 +196,13 @@ jQuery(function($) {
         originTable[q].data_type        ? option.dataset.type = originTable[q].data_type : false;
         _df.appendChild(option);
       };
+
+      // добавляем формулу для того чтобы считать сложные запросы
+      var option = document.createElement('option');
+      option.value = 'formula';
+      option.text  = 'Формула';
+      _df.appendChild(option);
+      
       select.appendChild(_df);
 
       // console.log('**', select, select.selectedIndex);
@@ -236,12 +244,16 @@ jQuery(function($) {
         field_type         = obj['data_type'];
       };
     });
-    
+
+    // формула
+    field_type = field_type ? field_type : 'Formula';
+
     var types   = nCore.types[ field_type ],
         options = [],
         df       = new DocumentFragment();
 
     console.log( 'types', types );
+    
 
     for (var z = 0; z < types.length; z++) {
       var option = document.createElement('option');
@@ -270,6 +282,7 @@ jQuery(function($) {
     // element, name, value 
     nCore.modules.cell.updateBlock(element, 'value', null );
     console.groupEnd();
+    nCore.modules.table.event.publish('newCellSettingsChange' );
     return false;
   })
 
@@ -326,6 +339,17 @@ jQuery(function($) {
     nCore.modules.table.event.publish('cellFormulaChange');
   });
   $('[name="month"]').live('change', function(){
+    nCore.modules.table.event.publish('cellFormulaChange');
+  });
+
+  // обновлдение конкретно галки с месяцами
+  // activeCell -> update dataset -> use_month = true && month = 1..12
+  $('[name="useChosenOrigin"]').live('change', function(){
+    console.log('chosenOrigin change');
+    document.getElementsByName('chosenOrigin')[0].disabled = this.checked ? false : true;
+    nCore.modules.table.event.publish('cellFormulaChange');
+  });
+  $('[name="chosenOrigin"]').live('change', function(){
     nCore.modules.table.event.publish('cellFormulaChange');
   });
 

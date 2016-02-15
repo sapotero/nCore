@@ -297,9 +297,10 @@ nCore.events = (function () {
     });
 
     nCore.document.root.subscribe('loadDocument',
-      
       function (id, callback) {
         console.groupCollapsed('Loading document');
+        nCore.document.root.publish('populateChosenOrigin');
+
         var overlayEl = mui.overlay('on'),
 
         options = {
@@ -422,6 +423,16 @@ nCore.events = (function () {
     nCore.document.root.subscribe('changeRenderType', function (type) {
       nCore.storage.setItem('indexViewType', type);
       nCore.document.root.publish('renderIndexView', type);
+    });
+
+    nCore.document.root.subscribe('populateChosenOrigin', function(){
+      var chosenOrigin = document.querySelector('[name="chosenOrigin"]'),
+          criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );;
+
+      for ( var q = 0; q < criteriaKeys.length; q++ ) {
+        chosenOrigin.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
+      };
+      
     });
 
     nCore.document.root.subscribe('renderIndexView', function (type) {
@@ -699,6 +710,39 @@ nCore.events = (function () {
             monthSelector.disabled = true;
           };
         }
+
+        var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
+        if ( activeCell.dataset.chosenOrigin ) {
+          chosenOrigin.selectedIndex = -1;
+          
+          var array  = JSON.parse(activeCell.dataset.chosenOrigin),
+              values = [];
+
+          for (var r = 0; r < array.length; r++) {
+            values.push( array[r].value );
+          };
+          console.log('values', values);
+
+          for ( var i = 0, l = chosenOrigin.options.length, o; i < l; i++ ){
+            var o = chosenOrigin.options[i];
+
+            console.log( o.value, values.indexOf( o.value ) );
+            if ( values.indexOf( o.value ) != -1 ) {
+              o.selected = true;
+            }
+          }
+
+          // chosenOrigin.value = values;
+          chosenOrigin.disabled = false;
+        } else {
+          if ( chosenOrigin ) {
+            console.log('----', activeCell.dataset)
+            chosenOrigin.selectedIndex = 0;
+            chosenOrigin.value = 0;
+            chosenOrigin.disabled = true;
+          };
+        }
+
       };
 
       // показываем боковое меню по нажатию кнопки
@@ -721,49 +765,45 @@ nCore.events = (function () {
 
       // обновляем галку с месяцами
       var monthSelector = formulaSettings.querySelector('[name="month"]');
+
+      // обновляем источники
+      var chosenOrigin = formulaSettings.querySelector('[name="chosenOrigin"]');
       
       // если уже были значения в ячейке
       if ( activeCell.dataset.useMonth === 'true' ) {
         console.log('activeCell.dataset.useMonth ++', activeCell.dataset);
         activeCell.dataset.queryMonth = monthSelector.value;
-        // if ( activeCell.dataset.month ) {
-        //   monthSelector.selectedIndex = parseInt( activeCell.dataset.month, 10 ) - 1;
-        //   monthSelector.value = activeCell.dataset.month;
-        //   console.log('activeCell.dataset.month ++', monthSelector.value, activeCell.dataset);
-        // } else {
-        //   console.log('activeCell.dataset.month --', activeCell.dataset);
-        //   activeCell.dataset.month = monthSelector.value;
-        // };
       } else {
         console.log('activeCell.dataset.useMonth --', activeCell.dataset);
         delete activeCell.dataset.queryMonth
         monthSelector.selectedIndex = 0;
         monthSelector.disabled = true;
-
       }
-      // if ( activeCell.dataset.hasOwnProperty('useMonth') && activeCell.dataset.hasOwnProperty('month') ) {
-      //   useMonth.checked   = activeCell.dataset.useMonth;
-      //   month_select.value = activeCell.dataset.month;
-      // } else {
-      //   // если нет
-      //   if ( useMonth.checked ) {
-      //     activeCell.dataset.useMonth = useMonth.checked;
-      //     activeCell.dataset.month    = month_select.value;
-      //   } else {
-      //     month_select.disabled      = true;
-      //     month_select.selectedIndex = 0;
-      //   }
-      // };
+
+      if ( activeCell.dataset.useChosenOrigin === 'true' ) {
+        var tmp_array = [];
+        var origins = chosenOrigin.selectedOptions;
+        for (var i = 0; i < origins.length; i++) {
+          
+          tmp_array.push({
+            value: origins[i].value,
+            name:  origins[i].name
+          })
+        };
+
+        console.log('activeCell.dataset.useChosenOrigin ++', chosenOrigin.selectedOptions);
+        activeCell.dataset.useChosenOrigin = true;
+        activeCell.dataset.chosenOrigin = JSON.stringify( tmp_array );
+      } else {
+        console.log('activeCell.dataset.useChosenOrigin --', activeCell.dataset);
+        delete activeCell.dataset.useChosenOrigin
+        chosenOrigin.selectedIndex = 0;
+        chosenOrigin.disabled = true;
+      }
 
     });
 
     nCore.modules.table.event.subscribe('setMonth', function(){
-      console.groupEnd();
-      console.groupEnd();
-      console.groupEnd();
-      console.groupEnd();
-      console.groupEnd();
-
       var monthSelector = document.querySelector('[name="month"]');
       console.log('set month', monthSelector.value);
 
@@ -777,6 +817,24 @@ nCore.events = (function () {
         // monthSelector.dispatchEvent( new Event('change') );
 
         $('[name="useMonth"]').trigger('change')
+      }
+    });
+
+    nCore.modules.table.event.subscribe('setChosenOrigin', function(){
+
+      var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
+      console.log('set month', chosenOrigin.value);
+
+      if ( activeCell.dataset.chosenOrigin ) {
+        chosenOrigin.value = activeCell.dataset.chosenOrigin;
+        chosenOrigin.disabled = false;
+      } else {
+        chosenOrigin.disabled = true;
+        chosenOrigin.selectedIndex = 0;
+        // monthSelector.dispatchEvent( new Event('click') )
+        // monthSelector.dispatchEvent( new Event('change') );
+
+        $('[name="useChosenOrigin"]').trigger('change')
       }
     });
 

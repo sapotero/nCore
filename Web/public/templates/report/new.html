@@ -38,8 +38,9 @@
           </div>
 
         </div>
-        <div class="mui-tabs__pane" id="formulaGroupTab">
-          <div class="panelSelectorGroup formulaSettings">
+        <div class="mui-tabs__pane formulaSettings" id="formulaGroupTab">
+          <div class="panelSelectorGroup   mui--z1">
+            <!-- <label> Глобальные модификаторы</label> -->
             <div class="mui-checkbox">
               <label>
                 <input type="checkbox" class="formula" name="appg" value="">
@@ -58,6 +59,9 @@
                 Процент
               </label>
             </div>
+          </div>
+          
+          <div class="panelSelectorGroup  mui--z1">
             <div class="mui-checkbox">
               <label>
                 <input type="checkbox" class="formula" name="includeSubthemes" value="">
@@ -70,6 +74,15 @@
                 Включая уточненния подтем
               </label>
             </div>
+            <div class="mui-checkbox">
+              <label>
+                <input type="checkbox" class="formula" name="includeSubordinates" value="">
+                Учитывать подчинённые организации
+              </label>
+            </div>
+          </div>
+
+          <div class="panelSelectorGroup  mui--z1">
             <div class="mui-form--inline">
               <div class="mui-checkbox">
                 <label>
@@ -77,7 +90,7 @@
                   Месяц?
                 </label>
               </div>
-              <div class="mui-select">
+              <div class="mui-select" style="width: 100%;">
                 <select name="month" >
                   <option value="1">  Январь </option>
                   <option value="2">  Февраль </option>
@@ -96,7 +109,22 @@
             </div>
           </div>
 
-          <div class="formulaSelectorGroupTemplate panelSelectorGroup">
+          <div class="panelSelectorGroup  mui--z1">
+            <div class="mui-form--inline">
+              <div class="mui-checkbox">
+                <label>
+                  <input type="checkbox" name='useChosenOrigin' value="">
+                  Указать источник
+                </label>
+              </div>
+              <div class="mui-selects">
+                <select name="chosenOrigin" multiple="multiple" style="width: 100%">
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="formulaSelectorGroupTemplate panelSelectorGroup ">
             <li class=" mui-col-md-12 mui-panel mui-panel-group formulaSelectorGroup mui--z2">
               <span class="formulaSelectorGroupName mui--pull-left"> Формула </span>
               <span class="formulaSelectorGroupName mui--pull-right">
