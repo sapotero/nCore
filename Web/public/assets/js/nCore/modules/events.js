@@ -628,13 +628,15 @@ nCore.events = (function () {
                 // root.style.border = '1px solid red';
             for (var s = 0; s < test.length; s++) {
               var el = document.createElement('div');
-              el.style.borderTop  = '1px solid grey';
               el.style.display = 'block';
               el.style.width   = '100%';
+              el.classList.add('tableBlock')
               el.textContent = test[s];
               df.appendChild( el );
             };
             root.appendChild( df );
+
+            cell.textContent = '';
             cell.appendChild( root );
             break;
           case 'number':
