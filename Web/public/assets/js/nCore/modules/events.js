@@ -597,9 +597,55 @@ nCore.events = (function () {
       var table = document.querySelector('.fr-element.fr-view > table');
 
       for (var i = 0; i < data.length; i++) {
-        var rowIndex = (table.rows[data[i].rowIndex].cells[0].rowSpan > 1) ? 0 : -1,
-          cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
-        cell.textContent = data[i].value;
+        var cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
+        
+        switch( typeof( data[i].value ) ){
+          case 'object':
+            console.log('value type: Object')
+            
+            // проверяем что за объект
+            switch( data[i].value.constructor ){
+              case Array:
+                cell.textContent = data[i].value.join(', ');
+                break;
+              case Object:
+                cell.textContent = JSON.stringify( data[i].value );
+                break;
+              case Date:
+                cell.textContent = data[i].value;
+                break;
+              default:
+                cell.textContent = data[i].value;
+                break;
+            };
+
+            break;
+          case 'string':
+            console.log('value type: String')
+            var test = Array(10).fill( data[i].value );
+            var df = new DocumentFragment(),
+                root = document.createElement('div');
+                // root.style.border = '1px solid red';
+            for (var s = 0; s < test.length; s++) {
+              var el = document.createElement('div');
+              el.style.borderTop  = '1px solid grey';
+              el.style.display = 'block';
+              el.style.width   = '100%';
+              el.textContent = test[s];
+              df.appendChild( el );
+            };
+            root.appendChild( df );
+            cell.appendChild( root );
+            break;
+          case 'number':
+            console.log('value type: Number')
+            cell.textContent = data[i].value;
+            break;
+          default:
+            console.error('value type: DEFAULT', data[i].value, typeof( data[i].value ) )
+            cell.textContent = data[i].value;
+            break;
+        };
       }
     });
     
