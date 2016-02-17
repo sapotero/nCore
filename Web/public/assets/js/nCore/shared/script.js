@@ -342,6 +342,15 @@ jQuery(function($) {
     nCore.modules.table.event.publish('cellFormulaChange');
   });
 
+  $('[name="useDefault"]').live('change', function(){
+    console.log('default change');
+    document.getElementsByName('default')[0].disabled = this.checked ? false : true;
+    nCore.modules.table.event.publish('cellFormulaChange');
+  });
+  $('[name="default"]').live('change', function(){
+    nCore.modules.table.event.publish('cellFormulaChange');
+  });
+
   // обновлдение конкретно галки с месяцами
   // activeCell -> update dataset -> use_month = true && month = 1..12
   $('[name="useChosenOrigin"]').live('change', function(){

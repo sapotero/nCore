@@ -407,6 +407,9 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('queryMonth') ) {
           _cell.dataset.queryMonth = headCell.dataset.queryMonth;
         };
+        if ( headCell.dataset.hasOwnProperty('queryDefault') ) {
+          _cell.dataset.queryDefault = headCell.dataset.queryDefault;
+        };
 
         console.log(' headcell ', headCell, query);
       };
@@ -531,20 +534,28 @@ nCore.modules.table = (function(){
 
             if ( ___dataCell.dataset.queryMonth ) {
               _cellData.queryMonth = ___dataCell.dataset.queryMonth
-              // обновить в форме месяц
+            };
+
+            if ( ___dataCell.dataset.queryDefault ) {
+              _cellData.queryDefault = ___dataCell.dataset.queryDefault
             };
 
             if ( ___dataCell.dataset.chosenOrigin ) {
-              _cellData.origin      = _cellData.hasOwnProperty('origin') ?  _cellData.origin : {};
+              _cellData.origin      = _cellData.hasOwnProperty('origin') ? _cellData.origin : {};
               _cellData.origin.head = ___dataCell.dataset.chosenOrigin;
             };
           };
 
+          // выбраные элементы "Указать источник" из боковины
           if ( cellDatasetChosenOrigin ) {
-            _cellData.origin      = _cellData.hasOwnProperty('origin') ?  _cellData.origin : {};
+            _cellData.origin      = _cellData.hasOwnProperty('origin') ? _cellData.origin : {};
             _cellData.origin.side = cellDatasetChosenOrigin;
           };
 
+          // глобальная query
+          if ( nCore.document.globalQuery() ) {
+            _cellData.globalQuery = nCore.document.globalQuery()
+          };
 
           cellData.push( _cellData );
         };
@@ -622,6 +633,9 @@ nCore.modules.table = (function(){
       };
       table.appendChild(clone);
     };
+  },
+  random = function() {
+    return ( window.performance.now().toString(36).slice(6,-1) + Math.random().toString(36).slice(2,-1) ).toString(36);
   };
 
   return {
@@ -634,6 +648,7 @@ nCore.modules.table = (function(){
     fromGroup  : fromGroup,
     active     : active,
     setActive  : setActive,
-    tableQuery : generateQueryFromTable
+    tableQuery : generateQueryFromTable,
+    generateId : random
   }
 })();

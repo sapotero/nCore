@@ -98,12 +98,11 @@ nCore.events = (function () {
     });
 
     // редактирование настроек документа
-    nCore.document.root.subscribe('updateDocument', function (data) {
+    nCore.document.root.subscribe('updateDocument', function (data, parent) {
       mui.overlay('off');
       console.log('update:', data, data.elements);
 
-      // считаем глобальную query
-      nCore.document.root.publish('globalCriteriaCalculate', data);
+      nCore.document.root.publish('globalCriteriaCalculate', parent);
 
       var nCoreDocumentAttributes = {
         name: data.elements.nCoreName.value,
@@ -143,8 +142,11 @@ nCore.events = (function () {
 
     nCore.document.root.subscribe('saveDocumentToDb', function (data) {
       console.log('data: ', data);
+      // nCore.modules.table.event.publish('globalCriteriaCalculate');
+
       // если передеали значения из формы
       if (data && data.nodeName === 'FORM') {
+
         nCore.document.setName(data.elements.nCoreDocumnetName.value);
         nCore.document.setDescription(data.elements.nCoreDocumnetDescription.value);
       };
@@ -242,10 +244,10 @@ nCore.events = (function () {
       });
 
       $('div#paper').froalaEditor({
-        toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo','cog', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo','cog', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', '|', 'zoom-out', 'zoom-in'],
         language: 'ru',
         charCounterCount: false,
         toolbarSticky: false,
@@ -697,7 +699,7 @@ nCore.events = (function () {
           document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
         }
 
-        var monthSelector = document.querySelector('[name="month"]');
+        var monthSelector = document.querySelector('select[name="month"]');
         if ( monthSelector && parseInt(activeCell.dataset.queryMonth,10) ) {
           console.log('++++', activeCell.dataset.queryMonth)
           monthSelector.value = activeCell.dataset.queryMonth;
@@ -708,6 +710,20 @@ nCore.events = (function () {
             monthSelector.selectedIndex = 0;
             monthSelector.value = 1;
             monthSelector.disabled = true;
+          };
+        }
+
+        var defaultSelector = document.querySelector('select[name="default"]');
+        if ( defaultSelector && activeCell.dataset.queryDefault ) {
+          console.log('++++', activeCell.dataset.queryDefault)
+          defaultSelector.value = activeCell.dataset.queryDefault;
+          defaultSelector.disabled = false;
+        } else {
+          if ( defaultSelector ) {
+            console.log('----', activeCell.dataset)
+            defaultSelector.selectedIndex = 0;
+            defaultSelector.value = 'empty';
+            defaultSelector.disabled = true;
           };
         }
 
@@ -754,8 +770,45 @@ nCore.events = (function () {
       console.groupEnd();
     });
 
-    nCore.modules.table.event.subscribe('globalCriteriaCalculate', function(body){
+    nCore.document.root.subscribe('globalCriteriaCalculate', function(body){
       console.log( 'globalCriteriaCalculate', body );
+      
+      var _query       = [],
+          result_query = [],
+          criterias    = body.querySelectorAll('.criteriaSelectorItem');
+      
+      for (var i = 0; i < criterias.length; i++) {
+        var criteria = criterias[i],
+            head     = criteria.querySelector('.criteriaSelectorItemHeader'),
+            form     = criteria.querySelector('.criteriaForm');
+        var data = {
+          query: []
+        };
+        
+        data.query.push({
+          criteria_condition : head.querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition').value,
+          source             : form.querySelector('select[name="source"]').value,
+          conditions         : form.querySelector('select[name="conditions"]').value,
+          origin_name        : form.querySelector('select[name="origin_name"]').value,
+          value              : form.querySelector('input[type="date"]') ?
+          {
+            periodStart : form.querySelector('input[name="date_start"]').value,
+            periodEnd : form.querySelector('input[name="date_end"]').value
+          } : form.querySelector('[name="value"]').value
+        });
+
+        _query.push(data);
+      };
+
+      for (var c = _query.length - 1; c >= 0; c--) {
+        if (_query[c].query.length) {
+          result_query.push(_query[c]);
+        };
+      };
+
+      console.log('GLOBAL QUERY:', result_query);
+
+      nCore.document.setGlobalQuery( result_query )
     });
 
     nCore.modules.table.event.subscribe('cellFormulaChange', function () {
@@ -770,6 +823,9 @@ nCore.events = (function () {
       // обновляем галку с месяцами
       var monthSelector = formulaSettings.querySelector('[name="month"]');
 
+      // обновляем галку с дефолтным значением
+      var defaultSelector = formulaSettings.querySelector('[name="default"]');
+
       // обновляем источники
       var chosenOrigin = formulaSettings.querySelector('[name="chosenOrigin"]');
       
@@ -782,6 +838,16 @@ nCore.events = (function () {
         delete activeCell.dataset.queryMonth
         monthSelector.selectedIndex = 0;
         monthSelector.disabled = true;
+      }
+
+      if ( activeCell.dataset.useDefault === 'true' ) {
+        console.log('activeCell.dataset.useDefault ++', activeCell.dataset);
+        activeCell.dataset.queryDefault = defaultSelector.value;
+      } else {
+        console.log('activeCell.dataset.useDefault --', activeCell.dataset);
+        delete activeCell.dataset.queryDefault
+        defaultSelector.selectedIndex = 0;
+        defaultSelector.disabled = true;
       }
 
       if ( activeCell.dataset.useChosenOrigin === 'true' ) {
@@ -817,15 +883,25 @@ nCore.events = (function () {
       } else {
         monthSelector.disabled = true;
         monthSelector.selectedIndex = 0;
-        // monthSelector.dispatchEvent( new Event('click') )
-        // monthSelector.dispatchEvent( new Event('change') );
-
         $('[name="useMonth"]').trigger('change')
       }
     });
 
-    nCore.modules.table.event.subscribe('setChosenOrigin', function(){
+    nCore.modules.table.event.subscribe('setDefault', function(){
+      var defaultSelector = document.querySelector('[name="default"]');
+      console.log('set default', defaultSelector.value);
 
+      if ( activeCell.dataset.queryDefault ) {
+        defaultSelector.value = activeCell.dataset.queryDefault;
+        defaultSelector.disabled = false;
+      } else {
+        defaultSelector.disabled = true;
+        defaultSelector.selectedIndex = 0;
+        $('[name="useDefault"]').trigger('change')
+      }
+    });
+
+    nCore.modules.table.event.subscribe('setChosenOrigin', function(){
       var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
       console.log('set month', chosenOrigin.value);
 
@@ -835,9 +911,6 @@ nCore.events = (function () {
       } else {
         chosenOrigin.disabled = true;
         chosenOrigin.selectedIndex = 0;
-        // monthSelector.dispatchEvent( new Event('click') )
-        // monthSelector.dispatchEvent( new Event('change') );
-
         $('[name="useChosenOrigin"]').trigger('change')
       }
     });

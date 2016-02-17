@@ -268,12 +268,18 @@ buttons {
 
 #paper.book {
   /*margin-top: 50px auto;*/
-  transition: 0.1s;
+  /*transition: 0.1s;*/
   /*transform: rotate(90deg);*/
-  height: 297mm;
+  min-height: 297mm;
   width:  210mm;
   /*margin-left: 29%;*/
 }
+
+.fr-toolbar.book{
+  width: 1100px;
+  left: -165px;
+}
+
 .mui-panel.bb {
   margin-top: 10px;
 }

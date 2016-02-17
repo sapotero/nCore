@@ -6252,18 +6252,6 @@ $.FroalaEditor.RegisterCommand('floppy-o', {
   }
 });
 
-
-// $.FroalaEditor.DefineIcon('file-o', {NAME: 'file-o'});
-// $.FroalaEditor.RegisterCommand('file-o', {
-//   title: 'file-o',
-//   focus: false,
-//   undo: false,
-//   refreshAfterCallback: false,
-//   callback: function () {
-//     nCore.document.root.publish('newDocument', data );
-//   }
-// });
-
 $.FroalaEditor.DefineIcon('calculator', {
   NAME: 'calculator'
 });
@@ -6292,20 +6280,6 @@ $.FroalaEditor.RegisterCommand('phone', {
   , undo: false
   , refreshAfterCallback: false
   , callback: function () {
-
-    ///////////////////////////////////
-    // поворот ячейки на 90 шрадусов //
-    ///////////////////////////////////
-
-    // var el = this.selection.element();
-    // // console.log('phone', this,this.selection.element(), this.$el);
-
-    // if ( el.classList.contains('cellRotate') ) {
-    //     el.classList.remove('cellRotate');
-    // } else{
-    //     el.classList.add('cellRotate');
-    //     // el.style.height = el.offsetWidth + 'px';
-    // }
     nCore.document.root.publish('showDocumentSettings')
   }
 });
@@ -6380,6 +6354,21 @@ $.FroalaEditor.RegisterCommand('pasteDataCell', {
 
 $.FroalaEditor.RegisterShortcut( 67, 'copyDataCell',  null, true ); // SHIFT + C
 $.FroalaEditor.RegisterShortcut( 86, 'pasteDataCell', null, true ); // SHIFT + V
+
+$.FroalaEditor.DefineIcon('rotateDocument', {
+  NAME: 'flash'
+});
+$.FroalaEditor.RegisterCommand('rotateDocument', {
+  title: 'Изменение формата'
+  , focus: false
+  , undo: false
+  , refreshAfterCallback: false
+  , callback: function () {
+    console.log('90* -> ', this);
+    this.$box.toggleClass('book')
+    this.$tb.toggleClass( 'book');
+  }
+});
 
 // прототип с масштабированием
 // $.FroalaEditor.DefineIcon('zoom-in', {

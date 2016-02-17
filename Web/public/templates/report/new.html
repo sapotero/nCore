@@ -59,6 +59,22 @@
                 Процент
               </label>
             </div>
+            <div class="mui-form--inline">
+              <div class="mui-checkbox">
+                <label>
+                  <input type="checkbox" name='useDefault' value="">
+                  Значение по умолчанию
+                </label>
+              </div>
+              <div class="mui-select" style="width: 100%;">
+                <select name="default" >
+                  <option value="empty"> Пустая строка </option>
+                  <option value="dash"> - </option>
+                  <option value="zero"> 0 </option>
+                  <option value="cold"> -100 </option>
+                </select>
+              </div>
+            </div>
           </div>
           
           <div class="panelSelectorGroup  mui--z1">
@@ -207,7 +223,7 @@
 <div class="nCoreDocumentSettings mui--hide">
   <div class="mui-col-lg-6">
     <h4>Свойства документа</h4>
-    <form onsubmit="nCore.document.root.publish('updateDocument', this); return false;">
+    <form onsubmit="nCore.document.root.publish('updateDocument', this, this.parentNode.parentNode.querySelector('.criteriaSelectorGroupGlobal')); return false;">
       <legend></legend>
       <div class="mui-textfield mui-textfield--float-label">
         <input type="text" class="nCoreName" name="nCoreName">
@@ -232,12 +248,12 @@
   <div class="mui-col-lg-6">
     <h4>Глобальные условия</h4>
     <div class="criteriaSelectorGroupGlobal">
-      <li class=" mui-col-md-12 mui-panel mui-panel-group criteriaSelectorGroup mui--z0" style="width: 100%">
+      <li class=" mui-col-md-12 mui-panel mui-panel-group criteriaSelectorGroup mui--z0" style="width: 100%;">
         <span class="criteriaSelectorGroupName mui--pull-left"> Группа </span>
         <span class="criteriaSelectorGroupName mui--pull-right">
           <button class="mui-btn mui-btn--primary mui-btn--small addCriteriaItemToGroup"> Добавить </button>
         </span>
-        <ul class="criteriaSelectorGroupList mui-container" style="overflow-y: scroll; max-height: 230px; width: 100%;">
+        <ul class="criteriaSelectorGroupList mui-container" style="overflow-y: auto; max-height: 230px; width: 100%;">
         </ul>
       </li>
     </div>
@@ -246,7 +262,7 @@
 
 
 
-<div id="nCoreDocumentFailedToLogin">
+<div id="nCoreDocumentFailedToLogin" class="mui--hide">
   <div class="mui-row mui--text-center">
     <div class="mui--text-dark mui--text-headline errorMessage mui--align-top" style="height: 120px;"></div>
     <div class="mui-form--inline mui--align-bottom">
