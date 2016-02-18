@@ -71,8 +71,16 @@ jQuery(function($) {
 
   // клик по ячейке в таблице
   $('td.fr-selected-cell').live('click', function(e){
+    e.preventDefault();
+
     nCore.modules.table.event.publish('cellSelect', this );
     nCore.modules.table.event.publish('cellFormulaClear' );
+    
+    return false;
+  });
+
+  $('#content-wrapper').live('click', function(e){
+    nCore.modules.table.event.publish('hideSideMenu');
   });
 
   // добвление нового документа

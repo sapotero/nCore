@@ -706,8 +706,7 @@ nCore.events = (function () {
       nCore.modules.table.setActive(activeCell);
 
       tab.textContent = '';
-      var __elements_to_update = [],
-        criteriaCondition;
+      var __elements_to_update = [], criteriaCondition;
 
       if (activeCell) {
         if (activeCell.dataset.hasOwnProperty('query')) {
@@ -847,16 +846,23 @@ nCore.events = (function () {
             chosenOrigin.disabled = true;
           };
         }
-
       };
 
-      // показываем боковое меню по нажатию кнопки
-      if (showCellSettings && !document.getElementById('cellSettings').classList.contains('active')) {
-        document.getElementById('cellSettings').classList.toggle('active');
-      }
+      nCore.document.root.publish('showSideMenu', showCellSettings);
 
       console.groupEnd();
-      console.groupEnd();
+    });
+
+    nCore.document.root.subscribe('showSideMenu', function(showCellSettings){
+      // показываем боковое меню по нажатию кнопки
+      if (showCellSettings && !document.getElementById('cellSettings').classList.contains('active')) {
+        document.getElementById('cellSettings').classList.add('active');
+      }
+    });
+
+    nCore.document.root.subscribe('hideSideMenu', function(showCellSettings){
+      // скрываем боковое меню по нажатию кнопки
+      document.getElementById('cellSettings').classList.remove('active');
     });
 
     nCore.document.root.subscribe('globalCriteriaCalculate', function(body){
