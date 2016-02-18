@@ -56,6 +56,7 @@ html,
 body {
   height: 100%;
   background-color: #eee;
+  overflow: overlay;
 }
 
 html,
@@ -88,8 +89,8 @@ buttons {
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 300px;
-  left: -300px;
+  width: 316px;
+  left: -316px;
   overflow: auto;
   z-index: 4;
   background-color: #FAFAFA;
@@ -100,8 +101,8 @@ buttons {
   position: fixed;
   top: 64px;
   bottom: 0;
-  width: 360px;
-  right: -360px;
+  width: 316px;
+  right: -316px;
   overflow: auto;
   z-index: 2;
   background-color: #FAFAFA;
@@ -129,15 +130,15 @@ buttons {
 
 @media (min-width: 768px) {
   #header {
-    left: 300px;
-    transition: left 0.2s;
+    /*left: 316px;*/
+    /*transition: left 0.2s;*/
     z-index: 3;
   }
   
   #sidedrawer {
     left: 0;
     transition: left 0.2s;
-    z-index: 4;
+    z-index: 100;
   }
   
   #content-wrapper {
@@ -146,7 +147,7 @@ buttons {
   }
   
   #footer {
-    margin-left: 300px;
+    margin-left: 316px;
     transition: margin-left 0.2s;
   }
   
@@ -156,7 +157,7 @@ buttons {
   }
   
   body.hide-sidedrawer #sidedrawer {
-    left: -300px;
+    left: -316px;
     margin: 0px;
   }
   
@@ -252,13 +253,13 @@ buttons {
 
 #paperBar {
   /*margin-top: 50px auto;*/
-  width: 297mm;
+  width: 100%;
   margin:0px auto;
 }
 #paper {
   /*overflow: scroll;*/
   min-height: 210mm;
-  width: 297mm;
+  width: 100%;
   margin: 5mm auto;
 }
 
@@ -270,7 +271,7 @@ buttons {
   /*margin-top: 50px auto;*/
   /*transition: 0.1s;*/
   /*transform: rotate(90deg);*/
-  min-height: 297mm;
+  min-height: 100%;
   width:  210mm;
   /*margin-left: 29%;*/
 }
@@ -289,8 +290,14 @@ buttons {
   background-color: #FAFAFA;
 }
 .mui-table.no-margin-bottom {
+  margin-top: 20px;
   margin-bottom: 0px;
 }
+.mui-table.margin-top {
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
 .mui-table.no-margin-bottom>tbody>tr>td.bar {
   padding: 0px 10px;
 }
@@ -491,8 +498,8 @@ buttons {
       margin: 5px 45%;
 }
 .criteriaSelectorItem {
-    width: 95%;
-    margin: 5px 0 0 10px;
+    width: 96%;
+    margin: 5px 0 0 5px;
     line-height: normal;
     padding: 0px;
     list-style: none;
@@ -508,7 +515,7 @@ buttons {
   background: rgba(0,0,0,0.02);
   width: 95%;
   margin: 10px 0 0 10px;
-  padding: 14px;
+  padding: 10px 0px;
   list-style: none;
 }
 .criteriaSelectorGroupTemplate{
@@ -520,11 +527,11 @@ buttons {
 }
 
 .criteriaSelectorGroupName{
-  margin-top: 0px;
+  margin: 0 0 0 10px;
 }
 
 .addCriteriaItemToGroup{
-     margin: 0px -7px 2px 0px;
+  margin: 0px 10px 5px 0px;
 }
 .criteriaMenuItem{
   padding: 5px;
@@ -737,7 +744,7 @@ buttons {
 }
 
 .rotatedCell {
-  height:300px;
+  height:316px;
   vertical-align:bottom
 }
 
@@ -1021,10 +1028,15 @@ select[name='month_selector']:disabled {
 }
 
 .documentModalHeight{
-  height: 300px
+  height: 316px
 }
 
 .criteriaSelectorGroupList {
+  width: 100%;
+  margin: 0px;
+}
+
+.criteriaSelectorGroupGlobal > .criteriaSelectorGroup > .criteriaSelectorGroupList {
   overflow-y: auto;
   max-height: 210px;
   width: 100%;
@@ -1032,4 +1044,8 @@ select[name='month_selector']:disabled {
 
 .criteriaSelectorGroupGlobal > .criteriaSelectorGroup {
   margin: 10px 0 0 0;
+}
+
+.calculationCell {
+  border-bottom: 2px dotted #1e88e5;
 }

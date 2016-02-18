@@ -572,9 +572,20 @@ nCore.modules.table = (function(){
     // dataRow.style.display = 'none';
     dataRow.parentNode.removeChild(dataRow);
     
-    console.log( 'cellData:', cellData );
     // console.log( 'str', JSON.stringify(cellData) );
-    nCore.modules.table.event.publish('calculateQuery', cellData);
+    
+
+    var customCells,
+        customCellsQuery = [];
+    customCells = document.querySelectorAll('.calculationCell');
+
+    for (var q = 0; q < customCells.length; q++) {
+      customCellsQuery.push( { id: customCells[q].id, data: customCells[q].dataset } )
+    };
+    console.log( 'cellData:', cellData );
+    console.log( 'customCellsQuery:', customCellsQuery );
+
+    nCore.modules.table.event.publish('calculateQuery', cellData, customCellsQuery);
    },
   event = function event(){
     return nCoreTableEvent;

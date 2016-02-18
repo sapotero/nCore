@@ -26,29 +26,25 @@ jQuery(function($) {
     // show overlay
     var options = {
       onclose: function() {
-        $sidedrawerEl
-          .addClass('active')
-          .appendTo(document.body);
+        // $sidedrawerEl.removeClass('active');
+        hideSidedrawer()
       }
     };
-    $('#sidedrawer-brand').toggleClass('mui--z5');
-    
-    var $overlayEl = $(mui.overlay('on', options));
-    
-    // show element
-    $sidedrawerEl.appendTo($overlayEl);
-
+    // $('#sidedrawer-brand').toggleClass('mui--z5');
+    var $overlayEl = $( mui.overlay('on', options)) ;
+    // $sidedrawerEl.appendTo($overlayEl);
     setTimeout(function() {
       $sidedrawerEl.addClass('active');
-    }, 20);
+    }, 200);
   }
 
   function hideSidedrawer() {
     $bodyEl.toggleClass('hide-sidedrawer');
     $('#sidedrawer-brand').removeClass('mui--z5');
+    // $sidedrawerEl.removeClass('active'); 
   }
 
-  $('.js-show-sidedrawer').on('click', showSidedrawer);
+  $('.js-hide-sidedrawer').on('click', showSidedrawer);
   $('.js-hide-sidedrawer').on('click', hideSidedrawer);
   
   
@@ -58,9 +54,14 @@ jQuery(function($) {
   var $titleEls = $('strong', $sidedrawerEl);
   
   $titleEls.next().hide();
+
   $titleEls.on('click', function() {
 
+    console.log('click');
     $(this).next().slideToggle(200);
+    $sidedrawerEl.removeClass('active');
+    mui.overlay('off');
+
   });
 
   // поворот страницы
@@ -72,14 +73,23 @@ jQuery(function($) {
   // клик по ячейке в таблице
   $('td.fr-selected-cell').live('click', function(e){
     e.preventDefault();
-
     nCore.modules.table.event.publish('cellSelect', this );
     nCore.modules.table.event.publish('cellFormulaClear' );
-    
     return false;
   });
 
+  $('.calculationCell').live('click', function(e){
+    e.preventDefault();
+    nCore.modules.table.event.publish('cellSelect', this );
+    return false;
+  });
+
+  $cellSettings.live('click', function(e){
+    e.stopPropagation();
+  });
+
   $('#content-wrapper').live('click', function(e){
+    nCore.document.setShowCellSettings(false)
     nCore.modules.table.event.publish('hideSideMenu');
   });
 
@@ -89,7 +99,7 @@ jQuery(function($) {
   })
 
   // добавление группы критериев
-  $('.addCriteriaGroupButton').live('click', function(){
+  $('.addCriteriaGroupButton').live('click', function(e){
     var list = $(".criteriaSelector"),
         groupTemplate  = $('.criteriaSelectorGroupTemplate').first();
 
@@ -108,6 +118,7 @@ jQuery(function($) {
     // черновой вариант как мы обходим ноды для 
     // того чтобы собрать критерии в один запрос
     nCore.modules.table.event.publish('newCellSettingsChange' );
+    e.stopPropagation();
   });
 
   // изменения типа связи у критерия в группе

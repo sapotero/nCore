@@ -6379,45 +6379,76 @@ $.FroalaEditor.RegisterCommand('customCalculationCell', {
   , undo: false
   , refreshAfterCallback: false
   , callback: function () {
-    console.log( 'customCell', this );
+    var format = this.selection.get();
+
+    // проверяем что есть выделение текста || мы поставили курсор внутри редактора
+
+    var calculationCell = document.createElement('div');
+    calculationCell.classList.add('calculationCell');
+    calculationCell.textContent = '......';
+    calculationCell.style.display = 'inline';
+    calculationCell.style.marginLeft = '10px';
+    calculationCell.id = nCore.modules.table.generateId();
+    
+    var infoCell = document.createElement('div');
+    infoCell.style.display = 'block';
+    
+    if ( format.type == "Range" ) {
+      console.log('format +', format)
+      infoCell.textContent = format.focusNode.data;
+      infoCell.appendChild(calculationCell)
+
+      format.baseNode.parentNode.insertBefore( infoCell, format.baseNode.nextSibling );
+      format.baseNode.parentNode.textContent += '+++';
+    }
+    else {
+      console.log('format -', format)
+      var text = document.createElement('div');
+      text.style.display = 'inline';
+      text.textContent = 'Значение';
+      infoCell.appendChild(text)
+      infoCell.appendChild(calculationCell)
+      format.baseNode.parentNode.insertBefore( infoCell, format.baseNode.nextSibling );
+    }
+
   }
 });
 
 // прототип с масштабированием
-// $.FroalaEditor.DefineIcon('zoom-in', {
-//   NAME: 'plus'
-// });
-// $.FroalaEditor.RegisterCommand('zoom-in', {
-//   title                : 'Увеличить масштаб',
-//   focus                : false,
-//   undo                 : false,
-//   // refreshAfterCallback : false,
-//   callback: function () {
+  // $.FroalaEditor.DefineIcon('zoom-in', {
+  //   NAME: 'plus'
+  // });
+  // $.FroalaEditor.RegisterCommand('zoom-in', {
+  //   title                : 'Увеличить масштаб',
+  //   focus                : false,
+  //   undo                 : false,
+  //   // refreshAfterCallback : false,
+  //   callback: function () {
 
-//     var el   = this.$original_element[0].querySelector('.fr-wrapper'),
-//         zoom = parseFloat((el.style.zoom ? el.style.zoom : 1));
-//     zoom += 0.1;
-//     el.style.zoom = zoom;
-//     console.log('zoom in -> ', el, zoom );
-//   }
-// });
-// $.FroalaEditor.DefineIcon('zoom-out', {
-//   NAME: 'minus'
-// });
-// $.FroalaEditor.RegisterCommand('zoom-out', {
-//   title                : 'Уменьшить масштаб',
-//   focus                : false,
-//   undo                 : false,
-//   refreshAfterCallback : false,
-//   callback: function () {
+  //     var el   = this.$original_element[0].querySelector('.fr-wrapper'),
+  //         zoom = parseFloat((el.style.zoom ? el.style.zoom : 1));
+  //     zoom += 0.1;
+  //     el.style.zoom = zoom;
+  //     console.log('zoom in -> ', el, zoom );
+  //   }
+  // });
+  // $.FroalaEditor.DefineIcon('zoom-out', {
+  //   NAME: 'minus'
+  // });
+  // $.FroalaEditor.RegisterCommand('zoom-out', {
+  //   title                : 'Уменьшить масштаб',
+  //   focus                : false,
+  //   undo                 : false,
+  //   refreshAfterCallback : false,
+  //   callback: function () {
 
-//     var el   = this.$original_element[0].querySelector('.fr-wrapper'),
-//         zoom = parseFloat((el.style.zoom ? el.style.zoom : 1));
-//     zoom += -0.1;
-//     if (zoom <= 0.1) {
-//       zoom = 0.1;
-//     };
-//     el.style.zoom = zoom;
-//     console.log('zoom in -> ', el, zoom );
-//   }
-// });
+  //     var el   = this.$original_element[0].querySelector('.fr-wrapper'),
+  //         zoom = parseFloat((el.style.zoom ? el.style.zoom : 1));
+  //     zoom += -0.1;
+  //     if (zoom <= 0.1) {
+  //       zoom = 0.1;
+  //     };
+  //     el.style.zoom = zoom;
+  //     console.log('zoom in -> ', el, zoom );
+  //   }
+  // });

@@ -13,8 +13,9 @@ nCore.document = (function(){
       nCoreGlobalQuery,
       nCoreDocumentSettingTab = 'documentQueryPane',
       nCoreDocumentId = '',
-      nCoreRoot = {},
-      nCoreDocumentSave,
+      nCoreRoot,
+      // nCoreDocumentSave,
+      nCoreShowCellSettings,
       nCoreDocumentEvent = {},
       nCoreIsNew = true,
       nCoreTitle,
@@ -25,20 +26,12 @@ nCore.document = (function(){
       nCoreDocumentCellQuery = {};
 
   var init = function (config){
-    var config = {
-      nCoreDocumentId   : 'nCoreDocumentId',
-      nCoreDocumentSave : 'nCoreDocumentSave'
-    };
 
-    nCoreRoot         = document.getElementById( config.nCoreDocumentId );
-    nCoreDocumentSave = document.getElementById( config.nCoreDocumentSave );
-
-    nCoreRoot.textContent += "_" + nCoreDocumentId;
+    nCoreRoot = document.getElementById('nCoreDocumentId');
     nCore.attachTo( nCore.document.root );
     
     nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
     nCore.document.root.publish( 'loadCriteria' );
-
   },
   id = function () {
     return nCoreDocumentId;
@@ -132,6 +125,7 @@ nCore.document = (function(){
     nCoreDocumentCellQuery = config.query;
     nCoreIsNew             = false;
     $('#paper').froalaEditor('html.set', Base64.decode( config.body ));
+    // nCoreRoot.textContent = config.title;
   },
   createNew = function createNew(url){
     var overlayEl = mui.overlay('on');
@@ -188,9 +182,17 @@ nCore.document = (function(){
   documentSettingTab = function documentSettingTab (){
     return nCoreDocumentSettingTab
   },
-  setDocumentSettingTab = function setDocumentSettingTab (query){
-    nCoreDocumentSettingTab = query
+  setDocumentSettingTab = function setDocumentSettingTab (tab){
+    nCoreDocumentSettingTab = tab
+  },
+  showCellSettings = function showCellSettings (){
+    return nCoreShowCellSettings
+  },
+  setShowCellSettings = function setShowCellSettings (bool){
+    nCoreShowCellSettings = bool
   };
+
+  
 
   
   return {
@@ -224,8 +226,11 @@ nCore.document = (function(){
     setPeriodEnd    : setPeriodEnd,
     globalQuery     : globalQuery,
     setGlobalQuery  : setGlobalQuery,
+    
     documentSettingTab     : documentSettingTab,
     setDocumentSettingTab  : setDocumentSettingTab,
+    showCellSettings       : showCellSettings,
+    setShowCellSettings    : setShowCellSettings,
     
     generateNew     : generateNew
   };

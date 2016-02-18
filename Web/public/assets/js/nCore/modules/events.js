@@ -616,16 +616,17 @@ nCore.events = (function () {
     });
 
     // расчёт критериев поиска и отправление их на сервер
-    nCore.modules.table.event.subscribe('calculateQuery', function (cellData) {
+    nCore.modules.table.event.subscribe('calculateQuery', function (cellData, customCells) {
       nCore.document.setCellQuery(cellData);
       nCore.query.post('queries.json', {
-        data: cellData,
-        global: {
-          periodStart: nCore.document.periodStart(),
-          periodEnd: nCore.document.periodEnd(),
-          providerId: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
-          reportId:  nCore.document.id()
-        }
+        data : cellData,
+        global : {
+          periodStart : nCore.document.periodStart(),
+          periodEnd   : nCore.document.periodEnd(),
+          providerId  : document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
+          reportId    : nCore.document.id()
+        },
+        customCells : customCells
       }).success(function (data) {
         nCore.modules.table.event.publish('insertCellData', data)
       }).error(function (data) {
@@ -636,6 +637,9 @@ nCore.events = (function () {
     nCore.modules.table.event.subscribe('insertCellData', function (data) {
       console.log('insertCellData', data);
       var table = document.querySelector('.fr-element.fr-view > table');
+
+      var customCells = data.customCells,
+          data        = data.table;
 
       for (var i = 0; i < data.length; i++) {
         var cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
@@ -663,7 +667,7 @@ nCore.events = (function () {
             break;
           case 'string':
             console.log('value type: String')
-            var test = Array(10).fill( data[i].value );
+            var test = Array(2).fill( data[i].value );
             var df = new DocumentFragment(),
                 root = document.createElement('div');
                 // root.style.border = '1px solid red';
@@ -690,17 +694,23 @@ nCore.events = (function () {
             break;
         };
       }
+
+      for (var c = 0; c < customCells.length; c++) {
+        var id    = customCells[c].id,
+            value = customCells[c].value;
+        document.getElementById(id).textContent = value;
+      };
+      
     });
     
     // выбор активной ячейки
     nCore.modules.table.event.subscribe('cellSelect', function (cell) {
-      
+
       console.groupCollapsed("cellSelect");
       console.dirxml('params: ', cell);
 
-      var showCellSettings = true,
-        tab = document.getElementsByClassName('criteriaSelector')[0],
-        cellQuery;
+      nCore.document.setShowCellSettings( true )
+      var  tab = document.getElementsByClassName('criteriaSelector')[0], cellQuery;
 
       activeCell = cell;
       nCore.modules.table.setActive(activeCell);
@@ -848,21 +858,22 @@ nCore.events = (function () {
         }
       };
 
-      nCore.document.root.publish('showSideMenu', showCellSettings);
+      nCore.document.root.publish('showSideMenu', nCore.document.showCellSettings() );
+      // nCore.modules.table.active().classList.add('active-selected-cell');
 
       console.groupEnd();
     });
 
+    // показываем боковое меню по нажатию кнопки
     nCore.document.root.subscribe('showSideMenu', function(showCellSettings){
-      // показываем боковое меню по нажатию кнопки
-      if (showCellSettings && !document.getElementById('cellSettings').classList.contains('active')) {
-        document.getElementById('cellSettings').classList.add('active');
-      }
+      document.getElementById('cellSettings').classList.add('active');
     });
 
+    // скрываем боковое меню по нажатию кнопки
     nCore.document.root.subscribe('hideSideMenu', function(showCellSettings){
-      // скрываем боковое меню по нажатию кнопки
-      document.getElementById('cellSettings').classList.remove('active');
+      if ( !nCore.document.showCellSettings() ) {
+        document.getElementById('cellSettings').classList.remove('active');
+      }
     });
 
     nCore.document.root.subscribe('globalCriteriaCalculate', function(body){

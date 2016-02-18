@@ -43,11 +43,12 @@ class QueriesController < ApplicationController
   # POST /queries
   def create
     ap params[:data]
+    ap params[:customCells]
 
     return_array = Core::Reports::ElasConstructor.new( params )
     return_array.count
 
-    render :json => return_array.results
+    render :json => { table: return_array.results, customCells: [] }
 
   end
 
