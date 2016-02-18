@@ -1019,3 +1019,17 @@ select[name='month_selector']:disabled {
 .tableBlock+.tableBlock{
   border-top: 1px solid #ddd;
 }
+
+.documentModalHeight{
+  height: 300px
+}
+
+.criteriaSelectorGroupList {
+  overflow-y: auto;
+  max-height: 210px;
+  width: 100%;
+}
+
+.criteriaSelectorGroupGlobal > .criteriaSelectorGroup {
+  margin: 10px 0 0 0;
+}

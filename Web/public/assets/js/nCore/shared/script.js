@@ -362,4 +362,8 @@ jQuery(function($) {
     nCore.modules.table.event.publish('cellFormulaChange');
   });
 
+  $('[name="documentGlobalSettings"]').live('click', function(){
+    nCore.document.root.publish( 'updateDocument', this );
+  });
+
 });

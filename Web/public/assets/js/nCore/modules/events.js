@@ -60,6 +60,7 @@ nCore.events = (function () {
       m.style.backgroundColor = '#fff';
       m.classList.toggle('mui-panel');
       m.classList.toggle('mui--z5');
+      m.classList.add('_nCoreDocumentSettings');
 
       nCore.document.setShowSettings(true)
 
@@ -71,6 +72,30 @@ nCore.events = (function () {
       });
       m.innerHTML = text.innerHTML;
       mui.overlay('on', options, m);
+
+      var toggleEls = document.querySelectorAll('[data-mui-controls^="document"]');
+
+      function show(ev) {
+        for (var z = 0; z < toggleEls.length; z++) {
+          toggleEls[z].parentNode.classList.remove('mui--is-active');
+          m.querySelector( '#'+toggleEls[z].dataset.muiControls ).classList.remove('mui--is-active');
+        };
+
+        m.querySelector( '#'+ev.paneId ).classList.add('mui--is-active');
+        m.querySelector('[data-mui-controls="'+ev.paneId+'"]').parentNode.classList.add('mui--is-active');
+
+        nCore.document.setDocumentSettingTab( ev.paneId );
+      }
+
+      // attach event handlers
+      for (var z = 0; z < toggleEls.length; z++) {
+        toggleEls[z].addEventListener('mui.tabs.showstart', show);
+      };
+
+      // documentQueryPane по дефолту
+      m.querySelector( '#'+nCore.document.documentSettingTab() ).classList.add('mui--is-active');
+      m.querySelector('[data-mui-controls="'+nCore.document.documentSettingTab()+'"]').parentNode.classList.add('mui--is-active');
+      
     });
 
     nCore.document.root.subscribe('showGroupModal', function (data) {
@@ -98,9 +123,24 @@ nCore.events = (function () {
     });
 
     // редактирование настроек документа
-    nCore.document.root.subscribe('updateDocument', function (data, parent) {
+    nCore.document.root.subscribe('updateDocument', function (root) {
+      function findUp(el, selector) {
+        while (el.parentNode) {
+          el = el.parentNode;
+          if ( el.classList.contains(selector) ){
+            return el;
+          }
+        }
+        return null;
+      }
+
       mui.overlay('off');
-      console.log('update:', data, data.elements);
+
+      var modalRoot = findUp(root, '_nCoreDocumentSettings'),
+          data      = modalRoot.querySelector('[name="documentQueryPane"]'),
+          parent    = modalRoot.querySelector('.criteriaSelectorGroupGlobal');
+
+      console.log('update:', data);
 
       nCore.document.root.publish('globalCriteriaCalculate', parent);
 
@@ -244,10 +284,10 @@ nCore.events = (function () {
       });
 
       $('div#paper').froalaEditor({
-        toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
+        toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
         language: 'ru',
         charCounterCount: false,
         toolbarSticky: false,
@@ -431,6 +471,7 @@ nCore.events = (function () {
       m.style.backgroundColor = '#fff';
       m.classList.toggle('mui-panel');
       m.classList.toggle('mui--z5');
+      
       m.innerHTML = render.innerHTML;
 
       mui.overlay('on', options, m );

@@ -11,6 +11,7 @@ nCore.document = (function(){
       nCoreDocumentUserId       = null,
       nCoreDocumentDepartmentId = null,
       nCoreGlobalQuery,
+      nCoreDocumentSettingTab = 'documentQueryPane',
       nCoreDocumentId = '',
       nCoreRoot = {},
       nCoreDocumentSave,
@@ -183,6 +184,12 @@ nCore.document = (function(){
   },
   setGlobalQuery = function setGlobalQuery (query){
     nCoreGlobalQuery = query
+  },
+  documentSettingTab = function documentSettingTab (){
+    return nCoreDocumentSettingTab
+  },
+  setDocumentSettingTab = function setDocumentSettingTab (query){
+    nCoreDocumentSettingTab = query
   };
 
   
@@ -217,6 +224,9 @@ nCore.document = (function(){
     setPeriodEnd    : setPeriodEnd,
     globalQuery     : globalQuery,
     setGlobalQuery  : setGlobalQuery,
+    documentSettingTab     : documentSettingTab,
+    setDocumentSettingTab  : setDocumentSettingTab,
+    
     generateNew     : generateNew
   };
 })();

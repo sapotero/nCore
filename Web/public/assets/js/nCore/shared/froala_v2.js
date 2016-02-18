@@ -6354,7 +6354,7 @@ $.FroalaEditor.RegisterCommand('pasteDataCell', {
 
 $.FroalaEditor.RegisterShortcut( 67, 'copyDataCell',  null, true ); // SHIFT + C
 $.FroalaEditor.RegisterShortcut( 86, 'pasteDataCell', null, true ); // SHIFT + V
-
+// для быстрого переворота документа в тестовом режиме
 $.FroalaEditor.DefineIcon('rotateDocument', {
   NAME: 'flash'
 });
@@ -6367,6 +6367,19 @@ $.FroalaEditor.RegisterCommand('rotateDocument', {
     console.log('90* -> ', this);
     this.$box.toggleClass('book')
     this.$tb.toggleClass( 'book');
+  }
+});
+
+$.FroalaEditor.DefineIcon('customCalculationCell', {
+  NAME: 'asterisk'
+});
+$.FroalaEditor.RegisterCommand('customCalculationCell', {
+  title: 'Изменение формата'
+  , focus: false
+  , undo: false
+  , refreshAfterCallback: false
+  , callback: function () {
+    console.log( 'customCell', this );
   }
 });
 
