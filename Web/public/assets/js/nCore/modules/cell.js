@@ -642,59 +642,69 @@ nCore.modules.cell = (function(){
     $(element).select2('destroy');
 
     parent.removeChild(element);
-    var element = document.createElement('select');
-      element.style.display      = 'block';
-      element.style.width        = ' 92%';
-      element.style.padding      = ' 15px auto';
-      // element.style.paddingTop   = ' 15px';
-      // element.style.marginBottom = ' 20px';
-      // element.style.textAlign    = ' left';
-      // element.style.height       = '300px';
-      element.name               = 'value';
-      // element.id                 = 'testSelect';
+    var element             = document.createElement('textarea');
+      element.style.display = 'block';
+      element.style.width   = ' 92%';
+      element.style.margin = ' 15px auto';
+      element.rows          = 10;
+      element.cols          = 70;
+      element.name          = 'value';
+      element.placeholder   = 'Формула...';
       
-      element.multiple = "multiple"
+    // если нужно select2
+    // var element = document.createElement('select');
+    //   element.style.display      = 'block';
+    //   element.style.width        = ' 92%';
+    //   element.style.padding      = ' 15px auto';
+    //   // element.style.paddingTop   = ' 15px';
+    //   // element.style.marginBottom = ' 20px';
+    //   // element.style.textAlign    = ' left';
+    //   // element.style.height       = '300px';
+    //   element.name               = 'value';
+    //   // element.id                 = 'testSelect';
+      
+    //   element.multiple = "multiple"
 
     parent.appendChild(element);
 
-    var formula_fields = JSON.parse( nCore.storage.getItem( element.parentNode.querySelector('[name="source"]').value ) ),
-    df = new DocumentFragment();
+    // var formula_fields = JSON.parse( nCore.storage.getItem( element.parentNode.querySelector('[name="source"]').value ) ),
+    // df = new DocumentFragment();
 
-    for (var q = 0; q < formula_fields.length; q++) {
-      var option = document.createElement('option');
-      option.value = formula_fields[q]._id;
-      option.text  = formula_fields[q].russian_name;
-      df.appendChild(option);
-    }
+    // for (var q = 0; q < formula_fields.length; q++) {
+    //   var option = document.createElement('option');
+    //   option.value = formula_fields[q]._id;
+    //   option.text  = formula_fields[q].russian_name;
+    //   df.appendChild(option);
+    // }
 
-    var conditions = [
-      {
-        text: 'больше',
-        value : 'gt'
-      },
-      {
-        text: 'меньше',
-        value : 'lt'
-      },
-      {
-        text: 'равно',
-        value : 'eq'
-      },
-      {
-        text: 'не равно',
-        value : 'ne'
-      }
-    ];
+    // var conditions = [
+    //   {
+    //     text: 'больше',
+    //     value : 'gt'
+    //   },
+    //   {
+    //     text: 'меньше',
+    //     value : 'lt'
+    //   },
+    //   {
+    //     text: 'равно',
+    //     value : 'eq'
+    //   },
+    //   {
+    //     text: 'не равно',
+    //     value : 'ne'
+    //   }
+    // ];
     
-    for (var q = 0; q < conditions.length; q++) {
-      var option   = document.createElement('option');
-      option.value = conditions[q].value;
-      option.text  = conditions[q].text;
-      df.appendChild(option);
-    }
-    element.appendChild(df);
+    // for (var q = 0; q < conditions.length; q++) {
+    //   var option   = document.createElement('option');
+    //   option.value = conditions[q].value;
+    //   option.text  = conditions[q].text;
+    //   df.appendChild(option);
+    // }
+    // element.appendChild(df);
 
-    console.log( 'formula_fields', formula_fields, element );
+    // console.log( 'formula_fields', formula_fields, element );
     
     // $(element).select2({
     //     tags: true
@@ -704,7 +714,7 @@ nCore.modules.cell = (function(){
       return element;
     }
 
-    console.log('     -------- generateSelect2Formula ---------'); 
+    console.log('     -------- generate2Formula ---------'); 
   },
   generateInput = function( element, value, r){
     var parent = element.parentNode;
@@ -775,6 +785,27 @@ nCore.modules.cell = (function(){
     if ( parent && parent.querySelector('[name="date_start"]') ) {
       parent.removeChild( parent.querySelector('[name="date_start"]') );
     };
+
+    if ( element.nodeName == 'TEXTAREA' ) {
+      console.warn('textarea!', element, parent);
+      
+      parent.removeChild(element);
+      _new = true;
+
+
+      var _el                = document.createElement('select');
+      // _el.style.display      = 'block';
+      _el.style.width        = ' 92%';
+      _el.style.padding      = ' 15px auto';
+      _el.style.paddingTop   = ' 15px';
+      _el.style.marginBottom = ' 20px';
+      _el.style.textAlign    = ' left';
+      _el.name               = "value";
+
+      $(_el).append( [new Option('Да', 'true'), new Option('Нет', 'false')] );
+      parent.appendChild(_el);
+      $(_el).select2().val( value ).trigger('change');;
+    }
     // parent.appendChild(element);
     
     $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val( value ).trigger("change");
@@ -1037,23 +1068,23 @@ nCore.modules.cell = (function(){
       console.log('formula');
       element = generateSelect2Formula(element, value, true);
 
-      $(element).select2({
-        tags: true
-      });
-      $( element ).on("select2:select", function (evt) {
-        var element = evt.params.data.element;
-        var $element = $(element);
+      // $(element).select2({
+      //   tags: true
+      // });
+      // $( element ).on("select2:select", function (evt) {
+      //   var element = evt.params.data.element;
+      //   var $element = $(element);
         
-        $element.detach();
-        $(this).append($element);
-        $(this).trigger("change");
-      });
+      //   $element.detach();
+      //   $(this).append($element);
+      //   $(this).trigger("change");
+      // });
       
-      $(element).val( value ).trigger('change');
+      // $(element).val( value ).trigger('change');
 
-      // if ( value ) {
-      //   element.value = value;
-      // }
+      if ( value ) {
+        element.value = value;
+      }
     };
 
     // if(!Modernizr.inputtypes.date) {
