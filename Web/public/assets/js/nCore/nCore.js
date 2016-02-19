@@ -406,9 +406,7 @@ nCore = (function(){
       obj.publish   = publish;
       obj.subscribe = subscribe;
     },
-    x : 0,
-    y : 0,
-    w : ''
+    debug : true
   };
 })();
 

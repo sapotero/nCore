@@ -109,7 +109,7 @@ buttons {
   transition: right 0.2s;
 }
 #cellSettings.active {
-  overflow-y: overlay;
+  overflow-y: scroll;
   overflow-x: hidden;
   right: 0;
   transition: right 0.2s;
@@ -1050,4 +1050,10 @@ select[name='month_selector']:disabled {
 
 .calculationCell {
   border-bottom: 2px dotted #1e88e5;
+}
+.mui-tabs__bar.mui-tabs__bar--justified {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  background: #F5F5F5;
 }

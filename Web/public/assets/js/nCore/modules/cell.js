@@ -81,8 +81,8 @@ nCore.modules.cell = (function(){
   var init = function(){
   },
   generateBlock = function( criteria, parent, name, value ){
-    console.groupCollapsed("generateBlock");
-    console.info( 'input params: ', criteria, parent, name, value );
+    //console.groupCollapsed("generateBlock");
+    //console.info( 'input params: ', criteria, parent, name, value );
     var _criteria = criteria,
         _parent   = parent,
         _name     = name,
@@ -116,13 +116,13 @@ nCore.modules.cell = (function(){
       el.value              = select2.plain_value;
       el.classList.toggle('muiFieldField');
 
-      console.log('plain!', select2, el)
+      //console.log('plain!', select2, el)
       parent.appendChild( el );
     } else if ( select2.hasOwnProperty('bool') ) {
       
       var e = generateBoolSelect2(element, value, true);
 
-      console.log('bool!', select2, e)
+      //console.log('bool!', select2, e)
       parent.appendChild( e );
 
       $(e).select2()
@@ -136,12 +136,12 @@ nCore.modules.cell = (function(){
 
 
     if ( nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
-      // console.log( 'ID ', nCore.modules.table.active().dataset, value );
+      // //console.log( 'ID ', nCore.modules.table.active().dataset, value );
       $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] ).val("").trigger("change");
     };
 
     if ( select2.hasOwnProperty('url') ){
-      console.log('has url', select2.url);
+      //console.log('has url', select2.url);
       $( element ).select2({
         ajax: {
           url: select2.url,
@@ -153,7 +153,7 @@ nCore.modules.cell = (function(){
           processResults: function (data, params) {
             return {
               results: $.map(data, function(p) {
-                // console.log('recv', p, select2);
+                // //console.log('recv', p, select2);
                 
                 var val = p.hasOwnProperty( select2.title ) ? p[ select2.title ] : p.full_title;
 
@@ -218,15 +218,15 @@ nCore.modules.cell = (function(){
       element.value         = value;
       parent.appendChild( element );
 
-      console.log( 'select2', select2 );
+      //console.log( 'select2', select2 );
     };
 
-    console.groupEnd();
+    //console.groupEnd();
   },
   changeBlockAtributes = function( criteria, element, name, value ){
-    // console.log( 'changeBlockAtributes', criteria, element, name, value );
-    console.group("changeBlockAtributes");
-    console.info( 'input params: ', criteria, element, name, value );
+    // //console.log( 'changeBlockAtributes', criteria, element, name, value );
+    //console.group("changeBlockAtributes");
+    //console.info( 'input params: ', criteria, element, name, value );
     var select_query = {};
     
     element.name = name;
@@ -289,7 +289,7 @@ nCore.modules.cell = (function(){
             autocomplete_value,
             autocomplete_url;
         
-        // console.info(' select value ', criteria.origin_name );
+        // //console.info(' select value ', criteria.origin_name );
 
         field_array.forEach(function(obj){
           if ( obj['_id'] == criteria.origin_name || obj['id'] == criteria.origin_name ) {
@@ -341,7 +341,7 @@ nCore.modules.cell = (function(){
             autocomplete_value,
             autocomplete_url;
         
-        console.info(' select value ', criteria.origin_name );
+        //console.info(' select value ', criteria.origin_name );
 
         field_array.forEach(function(obj){
           if ( obj['_id'] == criteria.origin_name || obj['id'] == criteria.origin_name ) {
@@ -353,7 +353,7 @@ nCore.modules.cell = (function(){
         });
 
         if ( criteria.conditions == 'range' ) {
-          console.log('+range');
+          //console.log('+range');
           // select_query.url   =  autocomplete_url;
           // select_query.value =  autocomplete_value;
           // select_query.title =  autocomplete_title;
@@ -386,12 +386,12 @@ nCore.modules.cell = (function(){
         if ( criteria.conditions == 'exist' ) {
           switch(field_type){
             case "String":
-              console.log('+exist String');
+              //console.log('+exist String');
                 select_query.bool = true
                 select_query.plain_value = value
               break
             case 'DateTime':
-              console.log('+exist DateTime');
+              //console.log('+exist DateTime');
               var el           = document.createElement('input');
               el.type          = 'date';
               el.name          = 'date_start';
@@ -403,7 +403,7 @@ nCore.modules.cell = (function(){
               element = el;
               break;
             case 'Boolean':
-              console.log('+exist Boolean');
+              //console.log('+exist Boolean');
               var el           = document.createElement('input');
               el.type          = 'date';
               el.name          = 'date_start';
@@ -427,7 +427,7 @@ nCore.modules.cell = (function(){
         };
 
         if ( criteria.conditions == 'equal' ) {
-          console.log('+equal', field_type, criteria.value, autocomplete_url);
+          //console.log('+equal', field_type, criteria.value, autocomplete_url);
           
           switch(field_type){
             case "String":
@@ -457,7 +457,7 @@ nCore.modules.cell = (function(){
               el.value = criteria.value.periodStart;
               element = el;
               if(!Modernizr.inputtypes.date && ( element.name == 'date_start' || element.name == 'date_end' ) ) {
-                console.info( element.nodeName, element.type );
+                //console.info( element.nodeName, element.type );
                 $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
               }
               break;
@@ -479,7 +479,7 @@ nCore.modules.cell = (function(){
         };
 
         if ( criteria.conditions == 'not_equal' ) {
-          console.log('+not_equal');
+          //console.log('+not_equal');
 
           switch(field_type){
             case "String":
@@ -499,25 +499,25 @@ nCore.modules.cell = (function(){
 
         switch( criteria.conditions ){
           case 'regexp':
-            // console.log('+regexp');
+            // //console.log('+regexp');
             select_query.url   =  autocomplete_url;
             select_query.value =  autocomplete_value;
             select_query.title =  autocomplete_title;
             break;
 
           case 'full_text':
-            // console.log('+full_text');
+            // //console.log('+full_text');
             break;
 
           case 'group':
-            // console.error('+group', field_type, autocomplete_title, autocomplete_value, autocomplete_url);
+            // //console.error('+group', field_type, autocomplete_title, autocomplete_value, autocomplete_url);
             select_query.url   =  'classifiers/groups/groups.json';
             select_query.value =  autocomplete_value;
             select_query.title =  autocomplete_title;
             break;
 
           case 'not_in_group':
-            // console.log('+not_in_group');
+            // //console.log('+not_in_group');
             select_query.url   =  'classifiers/groups/groups.json';
             select_query.value =  autocomplete_value;
             select_query.title =  autocomplete_title;
@@ -572,20 +572,20 @@ nCore.modules.cell = (function(){
 
         select_query.id = value;
       // case 'Formula':
-      //   console.log('Formula+');
+      //   //console.log('Formula+');
       //   select_query.formula = true;
       //   select_query.plain_value = value;
       //   break;
       default:
-        console.log(' warn! changeBlockAtributes', criteria, element, name, value);
+        //console.log(' warn! changeBlockAtributes', criteria, element, name, value);
         break;
     }
 
-    console.groupEnd();
+    //console.groupEnd();
     return [ element, select_query ];
   },
   generateSelect2 = function( element, autocomplete_url, autocomplete_value, autocomplete_title, value){
-    console.log('     -------- generateSelect2 ---------', element, autocomplete_url, autocomplete_value, autocomplete_title, value, element.nodeName ); 
+    //console.log('     -------- generateSelect2 ---------', element, autocomplete_url, autocomplete_value, autocomplete_title, value, element.nodeName ); 
     
     var parent = element.parentNode;
 
@@ -620,7 +620,7 @@ nCore.modules.cell = (function(){
         processResults: function (data, params) {
           return {
             results: $.map(data, function(p) {
-              // console.log('recv', p, select2);
+              // //console.log('recv', p, select2);
               
               var val = p.hasOwnProperty( autocomplete_title ) ? p[ autocomplete_title ] : p.full_title;
 
@@ -637,7 +637,7 @@ nCore.modules.cell = (function(){
       minimumInputLength: 1,
       placeholder: "Начните ввод"
     }).on('change', function(e){
-      // console.log('element',element,element.value,element)
+      // //console.log('element',element,element.value,element)
       
       if ( nCore.document.ShowSettings() ) {
         // апдейтим глобальное условие
@@ -650,10 +650,10 @@ nCore.modules.cell = (function(){
       nCore.modules.table.event.publish('newCellSettingsChange');
       
     });
-    console.log('     -------- generateSelect2 ---------'); 
+    //console.log('     -------- generateSelect2 ---------'); 
   },
   generateSelect2Formula = function( element, value, r ){
-    console.log('     -------- generateSelect2Formula ---------', element, value ); 
+    //console.log('     -------- generateSelect2Formula ---------', element, value ); 
     
     var parent = element.parentNode;
 
@@ -726,7 +726,7 @@ nCore.modules.cell = (function(){
     // }
     // element.appendChild(df);
 
-    // console.log( 'formula_fields', formula_fields, element );
+    // //console.log( 'formula_fields', formula_fields, element );
     
     // $(element).select2({
     //     tags: true
@@ -736,7 +736,7 @@ nCore.modules.cell = (function(){
       return element;
     }
 
-    console.log('     -------- generate2Formula ---------'); 
+    //console.log('     -------- generate2Formula ---------'); 
   },
   generateInput = function( element, value, r){
     var parent = element.parentNode;
@@ -767,11 +767,11 @@ nCore.modules.cell = (function(){
     parent.appendChild(el);
   },
   generateBoolSelect2 = function( element, value, r){
-    console.groupCollapsed('generateBoolSelect2');
+    //console.groupCollapsed('generateBoolSelect2');
     var parent = element.parentNode,
         _new = false,
         _el;
-    console.log('params', element, value, r, parent);
+    //console.log('params', element, value, r, parent);
 
     while (element.firstChild) {
       element.removeChild(element.firstChild);
@@ -784,7 +784,7 @@ nCore.modules.cell = (function(){
     // };
 
     if ( element.nodeName == 'INPUT' ) {
-      console.warn('input!', element, parent);
+      //console.warn('input!', element, parent);
       
       parent.removeChild(element);
       _new = true;
@@ -809,7 +809,7 @@ nCore.modules.cell = (function(){
     };
 
     if ( element.nodeName == 'TEXTAREA' ) {
-      console.warn('textarea!', element, parent);
+      //console.warn('textarea!', element, parent);
       
       parent.removeChild(element);
       _new = true;
@@ -837,7 +837,7 @@ nCore.modules.cell = (function(){
       usedNames[this.text] ? $(this).remove(): usedNames[this.text] = this.value;
     });
 
-    console.log('generateBoolSelect2 end', element);
+    //console.log('generateBoolSelect2 end', element);
     
     if ( parent && parent.querySelector('[name="date_end"]') ) {
       parent.removeChild( parent.querySelector('[name="date_end"]') );
@@ -849,11 +849,11 @@ nCore.modules.cell = (function(){
     if (r) {
       return element
     };
-    console.groupEnd();
+    //console.groupEnd();
   },
   updateBlock = function( element, name, value  ){
-    console.groupCollapsed('updateBlock');
-    console.log( 'params ', element );
+    //console.groupCollapsed('updateBlock');
+    //console.log( 'params ', element );
 
     var element = element;
         parent  = element.parentNode;
@@ -869,14 +869,14 @@ nCore.modules.cell = (function(){
 
     field_array.forEach(function(obj){
       if ( obj['_id'] == origin_name || obj['id'] == origin_name ) {
-        console.log( '+++++++', obj );
+        //console.log( '+++++++', obj );
         autocomplete_title = obj['autocomplete_title'];
         autocomplete_value = obj['autocomplete_value'];
         autocomplete_url   = obj['autocomplete_url'];
         field_type         = obj['data_type'];
       };
     });
-    console.error(' ---- conditions', conditions );
+    //console.error(' ---- conditions', conditions );
     
     // если есть дефолтное значение то обновляем поле
     if ( value ) {
@@ -929,11 +929,11 @@ nCore.modules.cell = (function(){
         element.style.display = "inline-block";
         element.classList.toggle('muiFieldField');
         parent.appendChild(element);
-        console.log('+range');
+        //console.log('+range');
         break;
       case 'exist':
         // if ( autocomplete_url ){
-          // console.log('auto');
+          // //console.log('auto');
           // generateBoolSelect2(element, value);
           $(element).select2();
           $(element).select2('destroy');
@@ -944,21 +944,21 @@ nCore.modules.cell = (function(){
             nCore.modules.table.event.publish('newCellSettingsChange' );
           })
         // };
-        // console.log('+exist');
+        // //console.log('+exist');
         break;
       case 'equal':
-        console.log('+equal', field_type);
+        //console.log('+equal', field_type);
         // если есть автокомплитер
         switch(field_type){
           case 'Boolean':
             if ( parent.querySelector('[name="date_end"]') ) {
               parent.removeChild( parent.querySelector('[name="date_end"]') );
             };
-            console.log('bool');
+            //console.log('bool');
             element = generateBoolSelect2(element, value, true);
             break;
           case 'DateTime':
-            console.log('datetime', parent, element);
+            //console.log('datetime', parent, element);
             
             // parent.removeChild(element);
             if ( parent.querySelector('[name="date_end"]') ) {
@@ -992,24 +992,24 @@ nCore.modules.cell = (function(){
             };
 
             if ( autocomplete_url ){
-              console.log('auto', element, autocomplete_url, autocomplete_value, autocomplete_title);
+              //console.log('auto', element, autocomplete_url, autocomplete_value, autocomplete_title);
               generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
             } else {
-              console.log('not auto', element);
+              //console.log('not auto', element);
               generateInput(element, value);
             }
             break;
           case 'Fixnum':
-            console.log('-- Fixnum --')
+            //console.log('-- Fixnum --')
             generateInput(element, value);
             break;
           default:
-            console.log('---')
+            //console.log('---')
             break;
         };
         break;
       case 'not_equal':
-        console.log('+not_equal');
+        //console.log('+not_equal');
         if ( autocomplete_url.length ){
           generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
         } else {
@@ -1017,53 +1017,53 @@ nCore.modules.cell = (function(){
         };
         break;
       case 'regexp':
-        console.log('+regexp');
+        //console.log('+regexp');
         if ( autocomplete_url ){
           generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
         };
         break;
       case 'full_text':
-        console.log('+full_text');
+        //console.log('+full_text');
         if ( autocomplete_url ){
           generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
         };
         break;
       case 'group':
-        console.error('+group', field_type, autocomplete_title, autocomplete_value, autocomplete_url);
+        //console.error('+group', field_type, autocomplete_title, autocomplete_value, autocomplete_url);
         
         autocomplete_url = 'classifiers/groups/groups.json';
         generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
 
         break;
       case 'not_in_group':
-        console.log('+not_in_group');
+        //console.log('+not_in_group');
         autocomplete_url = 'classifiers/groups/groups.json';
         if ( autocomplete_url ){
           generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
         };
         break;
       case 'gt':
-        console.log('+gt');
+        //console.log('+gt');
         generateInput(element, value);
         break;
       case 'gte':
-        console.log('+gte');
+        //console.log('+gte');
         generateInput(element, value);
         break;
       case 'lt':
-        console.log('+lt');
+        //console.log('+lt');
         generateInput(element, value);
         break;
       case 'lte':
-        console.log('+lte');
+        //console.log('+lte');
         generateInput(element, value);
         break;
       case 'sum':
-        console.log('+sum');
+        //console.log('+sum');
         generateInput(element, value);
         break;
       case 'month':
-        console.log('+month');
+        //console.log('+month');
         
         if ( parent.querySelector('[name="value"]') ) {
           $(element).select2();
@@ -1082,12 +1082,12 @@ nCore.modules.cell = (function(){
         break;
       default:
         element = generateBoolSelect2(element, value, true);
-        console.warn('default');
+        //console.warn('default');
         break;
     };
 
     if( origin_name == 'formula' ){
-      console.log('formula');
+      //console.log('formula');
       element = generateSelect2Formula(element, value, true);
 
       // $(element).select2({
@@ -1117,15 +1117,15 @@ nCore.modules.cell = (function(){
 
     
     if(!Modernizr.inputtypes.date && ( element.name == 'date_start' || element.name == 'date_end' ) ) {
-      console.info( element.nodeName, element.type );
+      //console.info( element.nodeName, element.type );
       $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
     }
-    console.log( element );
-    // console.log( '----- updateBlock ----- ' );
-    console.groupEnd();
+    //console.log( element );
+    // //console.log( '----- updateBlock ----- ' );
+    //console.groupEnd();
   },
   generateFromQuery = function( element, query ){
-    console.log( 'generateFromQuery', query );
+    //console.log( 'generateFromQuery', query );
   };
 
   return {

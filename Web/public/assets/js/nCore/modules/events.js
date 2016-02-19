@@ -763,146 +763,183 @@ nCore.events = (function () {
 
       tab.textContent = '';
       var __elements_to_update = [], criteriaCondition;
+      var overlay;
 
-      if (activeCell) {
-        if (activeCell.dataset.hasOwnProperty('query')) {
-          var queryArray = JSON.parse(activeCell.dataset.query),
-            _selectedIindex = -1;
-          for (var z = 0; z < queryArray.length; z++) {
+      function addOverlay() {
+        setTimeout( function(){
+          overlay = document.createElement('div');
+          overlay.style.top        = '50px';
+          overlay.style.height     = '100%';
+          overlay.style.width      = '100%';
+          overlay.style.position   = 'absolute';
+          overlay.style.background = 'rgba(255,255,255, .8)';
+          overlay.style.zIndex    = '2';
+
+          overlay.innerHTML = '<div style="margin-top: 50%;text-align: center;height: 100%;text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
+          tab.appendChild( overlay );
+        }, 100);
+      };
+      function removeOverlay() {
+        setTimeout( function(){
+          tab.removeChild( overlay );
+        },100)
+      };
+
+      var render = new Promise(function(resolve, reject) {
+        addOverlay();
+        setTimeout(function(){
+          if (activeCell) {
+          
+            if (activeCell.dataset.hasOwnProperty('query')) {
+              var queryArray = JSON.parse(activeCell.dataset.query),
+                _selectedIindex = -1;
+              for (var z = 0; z < queryArray.length; z++) {
 
 
-            var group = queryArray[z],
-              groupConditions = group.conditions,
-              criterias = group.query;
+                var group = queryArray[z],
+                  groupConditions = group.conditions,
+                  criterias = group.query;
 
-            console.groupCollapsed("query");
-            console.dir('criterias',  criterias);
-            console.dir('conditions', groupConditions);
+                console.groupCollapsed("query");
+                console.dir('criterias',  criterias);
+                console.dir('conditions', groupConditions);
 
-            var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
-              groupTemplate = _groupTemplate.cloneNode(true),
-              groupSelectCondition = groupTemplate.getElementsByTagName('select')[0];
+                var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
+                  groupTemplate = _groupTemplate.cloneNode(true),
+                  groupSelectCondition = groupTemplate.getElementsByTagName('select')[0];
 
-            if (groupConditions) {
-              for (var v = 0; v < groupSelectCondition.options.length; v++) {
-                console.log('groupSelectCondition', groupSelectCondition);
-                if (groupSelectCondition[v].value === groupConditions) {
-                  _selectedIindex = v;
-                  break;
+                if (groupConditions) {
+                  for (var v = 0; v < groupSelectCondition.options.length; v++) {
+                    console.log('groupSelectCondition', groupSelectCondition);
+                    if (groupSelectCondition[v].value === groupConditions) {
+                      _selectedIindex = v;
+                      break;
+                    }
+
+                  }
+
+                  groupTemplate.getElementsByClassName('connectionGroup')[0].classList.remove('mui--hide');
                 }
 
+                var _group = groupTemplate;
+                groupSelectCondition = _group.getElementsByTagName('select')[0].selectedIndex = _selectedIindex;
+
+                _group.classList.remove('criteriaSelectorGroupTemplate');
+                _group.classList.remove('mui--hide');
+                tab.appendChild(_group);
+
+                for (var b = 0; b < criterias.length; b++) {
+                  var _elements_to_update = [],
+                    item = criterias[b],
+                    list = groupTemplate.getElementsByClassName('criteriaSelectorGroupList')[0],
+                    cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
+
+                  console.dirxml('criteria -> ', item);
+
+                  if (item.source == null && item.origin_name == null) {
+                    activeCell.dataset.query = '[]';
+                    continue;
+                  }
+
+                  var card = cardTemplate.cloneNode(true);
+                  card.classList.remove('criteriaSelectorItemTemplate');
+                  card.classList.remove('mui--hide');
+
+                  var form = card.getElementsByClassName('criteriaForm')[0];
+                  criteriaCondition = card.querySelector('select.itemSelectCondition');
+
+                  list.appendChild(card);
+
+                  nCore.modules.cell.generateBlock( item, form, 'source',             item.source );
+                  nCore.modules.cell.generateBlock( item, form, 'origin_name',        item.origin_name );
+                  nCore.modules.cell.generateBlock( item, form, 'conditions',         item.conditions );
+                  nCore.modules.cell.generateBlock( item, form, 'value',              item.value );
+
+                  var cr_c = card.querySelector('[name="criteria_condition_group"]');
+                  cr_c.value = item.criteria_condition;
+                  cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
+                }
+                console.groupEnd();
+                document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
+              }
+              // nCore.modules.table.event.publish('newCellSettingsChange' );
+            }
+            else {
+              document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
+            }
+
+            var monthSelector = document.querySelector('select[name="month"]');
+            if ( monthSelector && parseInt(activeCell.dataset.queryMonth,10) ) {
+              console.log('++++', activeCell.dataset.queryMonth)
+              monthSelector.value = activeCell.dataset.queryMonth;
+              monthSelector.disabled = false;
+            } else {
+              if ( monthSelector ) {
+                console.log('----', activeCell.dataset)
+                monthSelector.selectedIndex = 0;
+                monthSelector.value = 1;
+                monthSelector.disabled = true;
+              };
+            }
+
+            var defaultSelector = document.querySelector('select[name="default"]');
+            if ( defaultSelector && activeCell.dataset.queryDefault ) {
+              console.log('++++', activeCell.dataset.queryDefault)
+              defaultSelector.value = activeCell.dataset.queryDefault;
+              defaultSelector.disabled = false;
+            } else {
+              if ( defaultSelector ) {
+                console.log('----', activeCell.dataset)
+                defaultSelector.selectedIndex = 0;
+                defaultSelector.value = 'empty';
+                defaultSelector.disabled = true;
+              };
+            }
+
+            var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
+            if ( activeCell.dataset.chosenOrigin ) {
+              chosenOrigin.selectedIndex = -1;
+              
+              var array  = JSON.parse(activeCell.dataset.chosenOrigin),
+                  values = [];
+
+              for (var r = 0; r < array.length; r++) {
+                values.push( array[r].value );
+              };
+              console.log('values', values);
+
+              for ( var i = 0, l = chosenOrigin.options.length, o; i < l; i++ ){
+                var o = chosenOrigin.options[i];
+
+                console.log( o.value, values.indexOf( o.value ) );
+                if ( values.indexOf( o.value ) != -1 ) {
+                  o.selected = true;
+                }
               }
 
-              groupTemplate.getElementsByClassName('connectionGroup')[0].classList.remove('mui--hide');
+              // chosenOrigin.value = values;
+              chosenOrigin.disabled = false;
+            } else {
+              if ( chosenOrigin ) {
+                console.log('----', activeCell.dataset)
+                chosenOrigin.selectedIndex = 0;
+                chosenOrigin.value = 0;
+                chosenOrigin.disabled = true;
+              };
             }
-
-            var _group = groupTemplate;
-            groupSelectCondition = _group.getElementsByTagName('select')[0].selectedIndex = _selectedIindex;
-
-            _group.classList.remove('criteriaSelectorGroupTemplate');
-            _group.classList.remove('mui--hide');
-            tab.appendChild(_group);
-
-            for (var b = 0; b < criterias.length; b++) {
-              var _elements_to_update = [],
-                item = criterias[b],
-                list = groupTemplate.getElementsByClassName('criteriaSelectorGroupList')[0],
-                cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
-
-              console.dirxml('criteria -> ', item);
-
-              if (item.source == null && item.origin_name == null) {
-                activeCell.dataset.query = '[]';
-                continue;
-              }
-
-              var card = cardTemplate.cloneNode(true);
-              card.classList.remove('criteriaSelectorItemTemplate');
-              card.classList.remove('mui--hide');
-
-              var form = card.getElementsByClassName('criteriaForm')[0];
-              criteriaCondition = card.querySelector('select.itemSelectCondition');
-
-              list.appendChild(card);
-
-              nCore.modules.cell.generateBlock( item, form, 'source',             item.source );
-              nCore.modules.cell.generateBlock( item, form, 'origin_name',        item.origin_name );
-              nCore.modules.cell.generateBlock( item, form, 'conditions',         item.conditions );
-              nCore.modules.cell.generateBlock( item, form, 'value',              item.value );
-
-              var cr_c = card.querySelector('[name="criteria_condition_group"]');
-              cr_c.value = item.criteria_condition;
-              cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
-            }
-            console.groupEnd();
-            document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
-          }
-          nCore.modules.table.event.publish('newCellSettingsChange' );
-        }
-        else {
-          document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
-        }
-
-        var monthSelector = document.querySelector('select[name="month"]');
-        if ( monthSelector && parseInt(activeCell.dataset.queryMonth,10) ) {
-          console.log('++++', activeCell.dataset.queryMonth)
-          monthSelector.value = activeCell.dataset.queryMonth;
-          monthSelector.disabled = false;
-        } else {
-          if ( monthSelector ) {
-            console.log('----', activeCell.dataset)
-            monthSelector.selectedIndex = 0;
-            monthSelector.value = 1;
-            monthSelector.disabled = true;
           };
-        }
+          resolve(true)
+        }, 200);
+      });
 
-        var defaultSelector = document.querySelector('select[name="default"]');
-        if ( defaultSelector && activeCell.dataset.queryDefault ) {
-          console.log('++++', activeCell.dataset.queryDefault)
-          defaultSelector.value = activeCell.dataset.queryDefault;
-          defaultSelector.disabled = false;
-        } else {
-          if ( defaultSelector ) {
-            console.log('----', activeCell.dataset)
-            defaultSelector.selectedIndex = 0;
-            defaultSelector.value = 'empty';
-            defaultSelector.disabled = true;
-          };
-        }
+      render.then(function(data) {
+        removeOverlay()
+      }).catch(function(result) {
+        console.log("ERROR renderCellSettings!", result);
+      });
 
-        var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
-        if ( activeCell.dataset.chosenOrigin ) {
-          chosenOrigin.selectedIndex = -1;
-          
-          var array  = JSON.parse(activeCell.dataset.chosenOrigin),
-              values = [];
 
-          for (var r = 0; r < array.length; r++) {
-            values.push( array[r].value );
-          };
-          console.log('values', values);
-
-          for ( var i = 0, l = chosenOrigin.options.length, o; i < l; i++ ){
-            var o = chosenOrigin.options[i];
-
-            console.log( o.value, values.indexOf( o.value ) );
-            if ( values.indexOf( o.value ) != -1 ) {
-              o.selected = true;
-            }
-          }
-
-          // chosenOrigin.value = values;
-          chosenOrigin.disabled = false;
-        } else {
-          if ( chosenOrigin ) {
-            console.log('----', activeCell.dataset)
-            chosenOrigin.selectedIndex = 0;
-            chosenOrigin.value = 0;
-            chosenOrigin.disabled = true;
-          };
-        }
-      };
+        
 
       nCore.document.root.publish('showSideMenu', nCore.document.showCellSettings() );
       // nCore.modules.table.active().classList.add('active-selected-cell');
