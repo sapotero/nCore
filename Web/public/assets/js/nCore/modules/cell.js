@@ -471,6 +471,11 @@ nCore.modules.cell = (function(){
             default:
               break;
           };
+
+          if ( criteria.origin_name == 'formula' ) {
+            select_query.formula = true;
+            select_query.plain_value = criteria.value;
+          };
         };
 
         if ( criteria.conditions == 'not_equal' ) {
@@ -566,13 +571,13 @@ nCore.modules.cell = (function(){
 
 
         select_query.id = value;
-      case 'Formula':
-        console.log('Formula+');
-        select_query.formula = true;
-        select_query.plain_value = value;
-        break;
+      // case 'Formula':
+      //   console.log('Formula+');
+      //   select_query.formula = true;
+      //   select_query.plain_value = value;
+      //   break;
       default:
-        console.log(' warn! changeBlockAtributes name=', name);
+        console.log(' warn! changeBlockAtributes', criteria, element, name, value);
         break;
     }
 
