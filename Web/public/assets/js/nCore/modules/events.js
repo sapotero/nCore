@@ -769,20 +769,23 @@ nCore.events = (function () {
         setTimeout( function(){
           overlay = document.createElement('div');
           overlay.style.top        = '50px';
-          overlay.style.height     = '100%';
+          overlay.style.height     = '90%';
           overlay.style.width      = '100%';
+          overlay.style.overflow   = 'hidden';
           overlay.style.position   = 'absolute';
           overlay.style.background = 'rgba(255,255,255, .8)';
           overlay.style.zIndex    = '2';
 
-          overlay.innerHTML = '<div style="margin-top: 50%;text-align: center;height: 100%;text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
+          overlay.innerHTML = '<div style="top: 50%; left: 50%;text-align: center; position: absolute;height: 100%;text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
           tab.appendChild( overlay );
         }, 100);
       };
       function removeOverlay() {
+        overlay.classList.add('animatedSlow');
+        overlay.classList.add('fadeOut');
         setTimeout( function(){
           tab.removeChild( overlay );
-        },100)
+        },300)
       };
 
       var render = new Promise(function(resolve, reject) {
