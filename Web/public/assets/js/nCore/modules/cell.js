@@ -204,6 +204,23 @@ nCore.modules.cell = (function(){
         nCore.modules.table.event.publish('newCellSettingsChange');
       });
     };
+
+    if ( select2.hasOwnProperty('formula') ) {
+      parent.removeChild( element );
+      element = document.createElement('textarea');
+      element.style.display = 'block';
+      element.style.width   = ' 92%';
+      element.style.margin = ' 15px auto';
+      element.rows          = 10;
+      element.cols          = 70;
+      element.name          = 'value';
+      element.placeholder   = 'Формула...';
+      element.value         = value;
+      parent.appendChild( element );
+
+      console.log( 'select2', select2 );
+    };
+
     console.groupEnd();
   },
   changeBlockAtributes = function( criteria, element, name, value ){
