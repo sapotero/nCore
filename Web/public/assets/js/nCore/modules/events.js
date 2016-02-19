@@ -858,6 +858,8 @@ nCore.events = (function () {
                   nCore.modules.cell.generateBlock( item, form, 'conditions',         item.conditions );
                   nCore.modules.cell.generateBlock( item, form, 'value',              item.value );
 
+                  card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+
                   var cr_c = card.querySelector('[name="criteria_condition_group"]');
                   cr_c.value = item.criteria_condition;
                   cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
@@ -932,7 +934,7 @@ nCore.events = (function () {
             }
           };
           resolve(true)
-        }, 200);
+        }, 200); 
       });
 
       render.then(function(data) {

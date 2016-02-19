@@ -508,6 +508,12 @@ buttons {
 }
 .criteriaSelectorItemName {
   margin-top: 7px;
+  white-space: nowrap;
+  width: 150px;
+  text-align: left;
+  overflow: hidden;
+
+  text-overflow: ellipsis;
 }
 .criteriaSelectorItemTemplate {
   display: none;
