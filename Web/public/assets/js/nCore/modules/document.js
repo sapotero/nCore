@@ -124,7 +124,11 @@ nCore.document = (function(){
     nCoreDescription       = config.description;
     nCoreDocumentCellQuery = config.query;
     nCoreIsNew             = false;
-    $('#paper').froalaEditor('html.set', Base64.decode( config.body ));
+
+    if ( config.body ) {
+      nCore.document.root.publish('initEditor', Base64.decode( config.body ));
+    };
+    
     // nCoreRoot.textContent = config.title;
   },
   createNew = function createNew(url){

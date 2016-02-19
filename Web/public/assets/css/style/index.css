@@ -109,6 +109,8 @@ buttons {
   transition: right 0.2s;
 }
 #cellSettings.active {
+  overflow-y: overlay;
+  overflow-x: hidden;
   right: 0;
   transition: right 0.2s;
 }

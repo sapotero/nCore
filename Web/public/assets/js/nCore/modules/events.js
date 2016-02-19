@@ -267,31 +267,54 @@ nCore.events = (function () {
     });
 
     // [NEW] изменение свойств документа
-    nCore.document.root.subscribe('initEditor', function (data) {
-      console.groupCollapsed('initEditor');
+    nCore.document.root.subscribe('initEditor', function (body) {
+      console.groupCollapsed('initEditor', !!body);
+      var BODY = body;
 
-      $('div#paper').on('froalaEditor.initialized', function (e, editor) {
-        console.log('e, editor', e);
-
-        // скрываем unregister version
-        if (document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor') {
-          document.querySelector('.fr-wrapper').nextSibling.textContent = '';
+      var initialize = new Promise(function(resolve, reject) {
+        // выполняем асинхронный код
+        var editor = $('div#paper').froalaEditor({
+          toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
+          toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
+          toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
+          toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
+          language: 'ru',
+          charCounterCount: false,
+          toolbarSticky: false,
+          shortcutsEnabled: ['copyDataCell', 'pasteDataCell']
+        });
+        
+        if ( editor ) {
+          resolve( editor );
+        } else {
+          reject('init error: data', data);
         };
-
-        var paper = $.FroalaEditor.INSTANCES[0].$original_element[0].querySelector('.fr-view');
-        nCore.x = paper.getBoundingClientRect().left + 'px';
-        nCore.y = paper.getBoundingClientRect().top + 'px';
       });
 
-      $('div#paper').froalaEditor({
-        toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
-        toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
-        language: 'ru',
-        charCounterCount: false,
-        toolbarSticky: false,
-        shortcutsEnabled: ['copyDataCell', 'pasteDataCell']
+      initialize.then(function(editor) {
+        console.log('document loaded');
+
+        editor.on('froalaEditor.initialized', function (e, editor) {
+          console.log('e, editor', e);
+
+          // скрываем unregister version
+          if (document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor') {
+            document.querySelector('.fr-wrapper').nextSibling.textContent = '';
+          };
+
+          var paper = $.FroalaEditor.INSTANCES[0].$original_element[0].querySelector('.fr-view');
+          nCore.x = paper.getBoundingClientRect().left + 'px';
+          nCore.y = paper.getBoundingClientRect().top + 'px';
+        });
+       
+        if ( BODY ) {
+          return BODY
+        };
+      }).then(function(html) {
+        // console.log('LOADED', html)
+        $('div#paper').froalaEditor('html.set', html);
+      }).catch(function(result) {
+        console.log("ERROR!", result);
       });
 
       console.groupEnd();
@@ -333,28 +356,39 @@ nCore.events = (function () {
 
         mui.overlay('on', options, m);
 
-        nCore.query.get('documents/' + id + '.json', {
-            id: id
-          })
-          .success(function (rawDocument) {
+        var load = new Promise(function(resolve, reject) {
+          // выполняем асинхронный код
+          nCore.query.get('documents/' + id + '.json', { id: id }).success(function (rawDocument) {
             console.log('***raw', rawDocument);
             console.groupEnd();
             setTimeout(function () {
               mui.overlay('off');
             }, 1000);
 
-            nCore.document.load(rawDocument);
-            nCore.document.setPeriodEnd(rawDocument.periodEnd);
-            nCore.document.setPeriodStart(rawDocument.periodStart);
-            nCore.document.setGlobalQuery(rawDocument.globalQuery);
-            nCore.document.setTitle(rawDocument.name);
-
-            callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
+            resolve( rawDocument ) 
           }).error(function (data) {
             mui.overlay('off');
-            nCore.document.root.publish('nCoreDocumentFailedToLogin');
+            nCore.document.root.publish('nCoreDocumentFailedToLoad');
             console.error('[!] loadDocument -> get', data)
+            reject(data);
           });
+        });
+
+        load.then(function(rawDocument) {
+          nCore.document.load(rawDocument);
+          nCore.document.setPeriodEnd(rawDocument.periodEnd);
+          nCore.document.setPeriodStart(rawDocument.periodStart);
+          nCore.document.setGlobalQuery(rawDocument.globalQuery);
+          nCore.document.setTitle(rawDocument.name);
+
+          callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
+          return rawDocument
+        }).then(function(result) {
+          // var editor = nCore.document.root.publish('initEditor');
+          console.log("allDone!", result);
+        }).catch(function(result) {
+          console.log("ERROR!", result);
+        });
 
       },
       // before callback
@@ -394,16 +428,29 @@ nCore.events = (function () {
       m.innerHTML = '<h4>Создание нового документа</h4><div class="loader"></div>';
 
       mui.overlay('on', options, m);
-      setTimeout(function () {
-        mui.overlay('off');
-        document.body.classList.add('hide-sidedrawer');
-        nCore.document.root.publish('generateNewDocument');;
-        location.hash = "#" + documentType + "/new";
-      }, 1000);
+      
+      var render = new Promise(function(resolve, reject) {
+        // выполняем асинхронный код
+        setTimeout(function () {
+          mui.overlay('off');
+          document.body.classList.add('hide-sidedrawer');
+          nCore.document.root.publish('generateNewDocument');;
+          location.hash = "#" + documentType + "/new";
+        }, 1000);
+        var error = false;
+
+        error == false ? resolve('rendered!') :reject('error');
+      });
+
+      render.then(function(data) {
+        return data;
+      }).then(function(result) {
+        console.log("allDone!", result);
+      });
+    
     });
 
     nCore.document.root.subscribe('attachListMenu', function (type) {
-      // console.log('attachListMenu', type);
       nCore.menu.attach('.mui-panel.indexListView', '.menu'); // new Menu().add();
     });
 
@@ -444,10 +491,9 @@ nCore.events = (function () {
       for ( var q = 0; q < criteriaKeys.length; q++ ) {
         chosenOrigin.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
       };
-      
     });
     
-    nCore.document.root.subscribe('nCoreDocumentFailedToLogin', function (type) {
+    nCore.document.root.subscribe('nCoreDocumentFailedToLoad', function (type) {
 
       var overlayEl = mui.overlay('on'),
           options   = {
@@ -457,7 +503,7 @@ nCore.events = (function () {
               // after callback
             }
           };
-      var render = Transparency.render(document.getElementById('nCoreDocumentFailedToLogin'), {
+      var render = Transparency.render(document.getElementById('nCoreDocumentFailedToLoad'), {
         errorMessage: 'Произошла ошибка во время загрузки документа',
         back: "Назад",
         reload: "Обновить"
@@ -475,7 +521,6 @@ nCore.events = (function () {
       m.innerHTML = render.innerHTML;
 
       mui.overlay('on', options, m );
-      
     });
 
     nCore.document.root.subscribe('renderIndexView', function (type) {
@@ -633,6 +678,7 @@ nCore.events = (function () {
         console.error('[!] calculateQuery -> post', data)
       });
     });
+    
     // вставка данных в таблицу
     nCore.modules.table.event.subscribe('insertCellData', function (data) {
       console.log('insertCellData', data);
@@ -700,7 +746,7 @@ nCore.events = (function () {
             value = customCells[c].value;
         document.getElementById(id).textContent = value;
       };
-      
+
     });
     
     // выбор активной ячейки
@@ -921,6 +967,7 @@ nCore.events = (function () {
       var formulaSettings      = document.querySelector('.formulaSettings'),
           formulaSettingsItems = [].slice.call(formulaSettings.querySelectorAll('input'));
       
+      // Обновляем все галки
       for (var v = 0; v < formulaSettingsItems.length; v++) {
         var checkbox = formulaSettingsItems[v];
         activeCell.dataset[checkbox.name] = checkbox.checked;
@@ -929,13 +976,6 @@ nCore.events = (function () {
       // обновляем галку с месяцами
       var monthSelector = formulaSettings.querySelector('[name="month"]');
 
-      // обновляем галку с дефолтным значением
-      var defaultSelector = formulaSettings.querySelector('[name="default"]');
-
-      // обновляем источники
-      var chosenOrigin = formulaSettings.querySelector('[name="chosenOrigin"]');
-      
-      // если уже были значения в ячейке
       if ( activeCell.dataset.useMonth === 'true' ) {
         console.log('activeCell.dataset.useMonth ++', activeCell.dataset);
         activeCell.dataset.queryMonth = monthSelector.value;
@@ -946,6 +986,9 @@ nCore.events = (function () {
         monthSelector.disabled = true;
       }
 
+      // обновляем галку с дефолтным значением
+      var defaultSelector = formulaSettings.querySelector('[name="default"]');
+
       if ( activeCell.dataset.useDefault === 'true' ) {
         console.log('activeCell.dataset.useDefault ++', activeCell.dataset);
         activeCell.dataset.queryDefault = defaultSelector.value;
@@ -955,6 +998,9 @@ nCore.events = (function () {
         defaultSelector.selectedIndex = 0;
         defaultSelector.disabled = true;
       }
+
+      // обновляем источники
+      var chosenOrigin = formulaSettings.querySelector('[name="chosenOrigin"]');
 
       if ( activeCell.dataset.useChosenOrigin === 'true' ) {
         var tmp_array = [];

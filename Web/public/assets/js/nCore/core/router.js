@@ -184,8 +184,8 @@ jQuery(function($) {
         var wrapper = document.getElementById('content-wrapper');
         wrapper.innerHTML = data;
         
-        nCore.document.root.publish('initEditor');
         nCore.document.root.publish('loadDocument', r.params.id );
+        // nCore.document.root.publish('initEditor');
       };
     });
   });

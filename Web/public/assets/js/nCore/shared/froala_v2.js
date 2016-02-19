@@ -6374,13 +6374,12 @@ $.FroalaEditor.DefineIcon('customCalculationCell', {
   NAME: 'asterisk'
 });
 $.FroalaEditor.RegisterCommand('customCalculationCell', {
-  title: 'Изменение формата'
-  , focus: false
-  , undo: false
-  , refreshAfterCallback: false
-  , callback: function () {
+  title: 'Изменение формата',
+  focus: false,
+  undo: false,
+  refreshAfterCallback: false,
+  callback: function () {
     var format = this.selection.get();
-
     // проверяем что есть выделение текста || мы поставили курсор внутри редактора
 
     var calculationCell = document.createElement('div');
@@ -6410,7 +6409,6 @@ $.FroalaEditor.RegisterCommand('customCalculationCell', {
       infoCell.appendChild(calculationCell)
       format.baseNode.parentNode.insertBefore( infoCell, format.baseNode.nextSibling );
     }
-
   }
 });
 
