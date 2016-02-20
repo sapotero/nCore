@@ -56,7 +56,7 @@ html,
 body {
   height: 100%;
   background-color: #eee;
-  overflow: overlay;
+  overflow: visible;
 }
 
 html,
@@ -507,7 +507,7 @@ buttons {
     list-style: none;
 }
 .criteriaSelectorItemName {
-  margin-top: 7px;
+  margin-top: 6px;
   white-space: nowrap;
   width: 150px;
   text-align: left;
@@ -1062,4 +1062,28 @@ select[name='month_selector']:disabled {
   width: 100%;
   table-layout: fixed;
   background: #F5F5F5;
+}
+
+.formulaSelectorGroup {
+  padding: 5px;
+}
+
+.formulaSelectorGroupTemplate{
+  margin: 2px;
+  padding: 8px;
+  width: 100%;
+}
+
+.formulaSelectorGroupButton {
+  margin: 0px;
+  padding: 0 5px 0 0;
+}
+
+.formulaSelectorGroupName {
+  padding: 10px 0 0 10px;
+}
+
+.formulaSelectorGroupList{
+  margin: 0px;
+  padding: 0px;
 }

@@ -407,6 +407,9 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('queryMonth') ) {
           _cell.dataset.queryMonth = headCell.dataset.queryMonth;
         };
+        if ( headCell.dataset.hasOwnProperty('formula') ) {
+          _cell.dataset.formula = headCell.dataset.formula;
+        };
         if ( headCell.dataset.hasOwnProperty('queryDefault') ) {
           _cell.dataset.queryDefault = headCell.dataset.queryDefault;
         };
@@ -534,6 +537,9 @@ nCore.modules.table = (function(){
 
             if ( ___dataCell.dataset.queryMonth ) {
               _cellData.queryMonth = ___dataCell.dataset.queryMonth
+            };
+            if ( ___dataCell.dataset.formula ) {
+              _cellData.formula = ___dataCell.dataset.formula
             };
 
             if ( ___dataCell.dataset.queryDefault ) {

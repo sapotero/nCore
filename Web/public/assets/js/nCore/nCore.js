@@ -123,10 +123,10 @@ nCore = (function(){
    */
   function loadModules(){
     var dependencies = {
-      shared     : [ "jquery", "mui.min", "transparency.min", "froala_v2", "script", "select2.full", "f", "m"/*, "pikaday.min" /* , "moment.min",  */ ],
+      shared     : [ "jquery", "mui.min", "transparency.min", "froala_v2", "script", "select2.full", "f", "m" ],
       core       : [ "preloader", "user", "query", "core", "roles", "templates", "router"],
       background : [ "worker", "workerBack", "shared", "sharedBack", "update" ],
-      modules    : [ "document", "table", "cellEditor", "cell", "events", "menu" ]
+      modules    : [ "document", "table", "cellEditor", "cell", "events", "menu", "formula" ]
     };
     var _init = [];
     
@@ -230,6 +230,7 @@ nCore = (function(){
 
     return this;
    },
+  
   bind = function(){
 
     var nodeIterator = document.createNodeIterator(
@@ -254,8 +255,7 @@ nCore = (function(){
     };
 
     // console.log(pars);
-   },
-  
+  },
   disableCopyPaste = function(elm) {
     elm.onkeydown = interceptKeys;
     elm.oncontextmenu = function() {
@@ -299,8 +299,7 @@ nCore = (function(){
     console.log( 'pasteCellQuery', query );
   };
 
-  return {
-    types : {
+  var types = {
       String: [
         {
           value: "equal",
@@ -392,7 +391,10 @@ nCore = (function(){
         }
       ],
       Default:  []
-    },
+    };
+
+  return {
+    types : types,
     channels  : {},
     init      : init,
     

@@ -143,10 +143,16 @@
           <div class="formulaSelectorGroupTemplate panelSelectorGroup ">
             <li class=" mui-col-md-12 mui-panel mui-panel-group formulaSelectorGroup mui--z2">
               <span class="formulaSelectorGroupName mui--pull-left"> Формула </span>
-              <span class="formulaSelectorGroupName mui--pull-right">
-                <button class="mui-btn mui-btn--primary mui-btn--small addCriteriaItemToGroup"> Добавить </button>
+              <span class="formulaSelectorGroupButton mui--pull-right">
+                <div class="mui-checkbox">
+                  <label>
+                    <input type="checkbox" class="formula" name="useFormula" value="">
+                    Использовать
+                  </label>
+                </div>
               </span>
               <ul class="formulaSelectorGroupList mui-row">
+                <textarea name="formula" placeholder="..." disabled="true"></textarea>
               </ul>
             </li>
             <div class="mui-select mui-col-md-12 connectionGroup mui--hide">
@@ -285,4 +291,20 @@
       <button class="mui-btn mui-btn--raised mui-btn--primary reload"  onclick="nCore.document.root.publish('loadDocument', nCore.document.id())"></button>
     </div>
   </div>
+</div>
+
+<div class="nCoreDocumentFormulaField mui--hide">
+  <form>
+    <legend>Title</legend>
+    <div class="mui-textfield">
+      <input type="text" placeholder="Input 1">
+    </div>
+    <div class="mui-textfield">
+      <input type="text" placeholder="Input 2">
+    </div>
+    <div class="mui-textfield">
+      <textarea placeholder="Textarea"></textarea>
+    </div>
+    <button type="submit" class="mui-btn mui-btn--raised">Submit</button>
+  </form>
 </div>

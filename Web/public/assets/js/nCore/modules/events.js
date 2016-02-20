@@ -853,10 +853,10 @@ nCore.events = (function () {
 
                   list.appendChild(card);
 
-                  nCore.modules.cell.generateBlock( item, form, 'source',             item.source );
-                  nCore.modules.cell.generateBlock( item, form, 'origin_name',        item.origin_name );
-                  nCore.modules.cell.generateBlock( item, form, 'conditions',         item.conditions );
-                  nCore.modules.cell.generateBlock( item, form, 'value',              item.value );
+                  nCore.modules.cell.generateBlock( item, form, 'source',      item.source );
+                  nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name );
+                  nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions );
+                  nCore.modules.cell.generateBlock( item, form, 'value',       item.value );
 
                   card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
 
@@ -887,6 +887,19 @@ nCore.events = (function () {
               };
             }
 
+            var formulaSelector = document.querySelector('[name="formula"]');
+            if ( formulaSelector && activeCell.dataset.formula ) {
+              console.log('++++', activeCell.dataset.formula)
+              formulaSelector.value = activeCell.dataset.formula;
+              formulaSelector.disabled = false;
+            } else {
+              if ( formulaSelector ) {
+                console.log('----', activeCell.dataset)
+                formulaSelector.value = '';
+                formulaSelector.disabled = true;
+              };
+            }
+
             var defaultSelector = document.querySelector('select[name="default"]');
             if ( defaultSelector && activeCell.dataset.queryDefault ) {
               console.log('++++', activeCell.dataset.queryDefault)
@@ -903,7 +916,7 @@ nCore.events = (function () {
 
             var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
             if ( activeCell.dataset.chosenOrigin ) {
-              chosenOrigin.selectedIndex = -1;
+              // chosenOrigin.selectedIndex = -1;
               
               var array  = JSON.parse(activeCell.dataset.chosenOrigin),
                   values = [];
@@ -927,8 +940,8 @@ nCore.events = (function () {
             } else {
               if ( chosenOrigin ) {
                 console.log('----', activeCell.dataset)
-                chosenOrigin.selectedIndex = 0;
-                chosenOrigin.value = 0;
+                // chosenOrigin.selectedIndex = null;
+                chosenOrigin.value = null;
                 chosenOrigin.disabled = true;
               };
             }
@@ -1002,7 +1015,7 @@ nCore.events = (function () {
 
       console.log('GLOBAL QUERY:', result_query);
 
-      nCore.document.setGlobalQuery( result_query )
+      nCore.document.setGlobalQuery( JSON.stringify(result_query) )
     });
 
     nCore.modules.table.event.subscribe('cellFormulaChange', function () {
@@ -1026,6 +1039,19 @@ nCore.events = (function () {
         delete activeCell.dataset.queryMonth
         monthSelector.selectedIndex = 0;
         monthSelector.disabled = true;
+      }
+
+      // обновляем галку с формулой
+      var formulaSelector = document.querySelector('[name="formula"]');
+
+      if ( activeCell.dataset.useFormula === 'true' ) {
+        console.log('activeCell.dataset.useFormula ++', activeCell.dataset);
+        activeCell.dataset.formula = formulaSelector.value;
+      } else {
+        console.log('activeCell.dataset.useFormula --', activeCell.dataset);
+        delete activeCell.dataset.formula
+        formulaSelector.value = '';
+        formulaSelector.disabled = true;
       }
 
       // обновляем галку с дефолтным значением
@@ -1255,6 +1281,21 @@ nCore.events = (function () {
         console.error('[!] loadCriteria -> get', data)
       });
       // }
+    });
+
+    /////////////
+    // Формула //
+    /////////////
+    
+    nCore.document.root.subscribe('addFormulaField', function ( value) {
+      
+      var tab     = document.querySelector('.formulaSelectorGroupList'),
+          formula = Transparency.render( document.querySelector('.nCoreDocumentFormulaField'), {});
+
+      formula.classList.remove('mui--hide');
+
+      console.log( 'tab, formula', tab, formula );
+      tab.appendChild( formula );
     });
   };
 
