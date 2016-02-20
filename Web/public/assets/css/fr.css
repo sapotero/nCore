@@ -3541,10 +3541,10 @@ table th {
   border: none;
 }
 .fr-box a.fr-floating-btn svg {
-  -webkit-transition: transform 0.2s ease 0s;
-  -moz-transition: transform 0.2s ease 0s;
-  -ms-transition: transform 0.2s ease 0s;
-  -o-transition: transform 0.2s ease 0s;
+  -webkit-transition: transform 0.5s ease 0s;
+  -moz-transition: transform 0.5s ease 0s;
+  -ms-transition: transform 0.5s ease 0s;
+  -o-transition: transform 0.5s ease 0s;
   fill: #1e88e5;
 }
 .fr-box a.fr-floating-btn.fr-btn + .fr-btn {

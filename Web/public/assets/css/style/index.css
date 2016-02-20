@@ -1087,3 +1087,7 @@ select[name='month_selector']:disabled {
   margin: 0px;
   padding: 0px;
 }
+
+.fr-wrapper + div {
+  background: red;
+}

@@ -560,6 +560,7 @@ nCore.modules.table = (function(){
 
           // глобальная query
           if ( nCore.document.globalQuery() ) {
+            console.log( 'globalQuery', nCore.document.globalQuery() );
             _cellData.globalQuery = nCore.document.globalQuery()
           };
 
@@ -587,7 +588,8 @@ nCore.modules.table = (function(){
 
     for (var q = 0; q < customCells.length; q++) {
       var completeData = customCells[q].dataset;
-          completeData.globalQuery = nCore.document.globalQuery();
+          completeData.globalQuery = nCore.document.globalQuery() ? nCore.document.globalQuery() : '';
+
       customCellsQuery.push( { id: customCells[q].id, data: completeData } )
     };
     console.log( 'cellData:', cellData );

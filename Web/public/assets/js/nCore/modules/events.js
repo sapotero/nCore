@@ -302,21 +302,19 @@ nCore.events = (function () {
             document.querySelector('.fr-wrapper').nextSibling.textContent = '';
           };
 
-          var paper = $.FroalaEditor.INSTANCES[0].$original_element[0].querySelector('.fr-view');
-          nCore.x = paper.getBoundingClientRect().left + 'px';
-          nCore.y = paper.getBoundingClientRect().top + 'px';
         });
-       
-        if ( BODY ) {
-          return BODY
-        };
+        return BODY ? BODY : '<p>'
+
       }).then(function(html) {
         // console.log('LOADED', html)
         $('div#paper').froalaEditor('html.set', html);
+
+        var parent = document.querySelector('.fr-wrapper').parentNode
+        parent.removeChild( document.querySelector('.fr-wrapper').nextSibling ) ;
+
       }).catch(function(result) {
         console.log("ERROR!", result);
       });
-
       console.groupEnd();
     });
 
@@ -361,6 +359,7 @@ nCore.events = (function () {
           nCore.query.get('documents/' + id + '.json', { id: id }).success(function (rawDocument) {
             console.log('***raw', rawDocument);
             console.groupEnd();
+            
             setTimeout(function () {
               mui.overlay('off');
             }, 1000);
@@ -688,6 +687,7 @@ nCore.events = (function () {
           data        = data.table;
 
       for (var i = 0; i < data.length; i++) {
+        console.log( 'data[i] ',data[i] );
         var cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
         
         switch( typeof( data[i].value ) ){
@@ -713,22 +713,24 @@ nCore.events = (function () {
             break;
           case 'string':
             console.log('value type: String')
-            var test = Array(2).fill( data[i].value );
-            var df = new DocumentFragment(),
-                root = document.createElement('div');
-                // root.style.border = '1px solid red';
-            for (var s = 0; s < test.length; s++) {
-              var el = document.createElement('div');
-              el.style.display = 'block';
-              el.style.width   = '100%';
-              el.classList.add('tableBlock')
-              el.textContent = test[s];
-              df.appendChild( el );
-            };
-            root.appendChild( df );
+            // для массива
+            // var test = Array(2).fill( data[i].value );
+            // var df = new DocumentFragment(),
+            //     root = document.createElement('div');
+            //     // root.style.border = '1px solid red';
+            // for (var s = 0; s < test.length; s++) {
+            //   var el = document.createElement('div');
+            //   el.style.display = 'block';
+            //   el.style.width   = '100%';
+            //   el.classList.add('tableBlock')
+            //   el.textContent = test[s];
+            //   df.appendChild( el );
+            // };
+            // root.appendChild( df );
+            // cell.textContent = '';
+            // cell.appendChild( root );
+            cell.textContent = data[i].value;
 
-            cell.textContent = '';
-            cell.appendChild( root );
             break;
           case 'number':
             console.log('value type: Number')
@@ -776,11 +778,11 @@ nCore.events = (function () {
         setTimeout( function(){
           overlayTab = document.createElement('div');
           overlayTab.style.top        = '50px';
-          overlayTab.style.height     = '90%';
+          overlayTab.style.height     = '94%';
           overlayTab.style.width      = '100%';
           overlayTab.style.overflow   = 'hidden';
           overlayTab.style.position   = 'absolute';
-          overlayTab.style.background = 'rgba(255,255,255, .8)';
+          overlayTab.style.background = 'rgba(255,255,255, .9)';
           overlayTab.style.zIndex    = '2';
 
           overlayTab.innerHTML = '<div style="top: 50%; left: 50%;text-align: center; position: absolute;height: 100%;text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
@@ -791,12 +793,13 @@ nCore.events = (function () {
         }, 100);
       };
       function removeOverlay() {
+
         overlayTab.classList.add('animatedSlow');
         overlayTab.classList.add('fadeOut');
 
+        setTimeout( function(){
         overlayFormula.classList.add('animatedSlow');
         overlayFormula.classList.add('fadeOut');
-        setTimeout( function(){
           tab.removeChild( overlayTab );
           formula.removeChild( overlayFormula );
         },300)

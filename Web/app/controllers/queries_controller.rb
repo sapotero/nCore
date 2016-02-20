@@ -48,7 +48,7 @@ class QueriesController < ApplicationController
     return_array = Core::Reports::ElasConstructor.new( params )
     return_array.count
 
-    render :json => { table: return_array.results, customCells: [] }
+    render :json => return_array.results
 
   end
 

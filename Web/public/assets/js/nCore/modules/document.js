@@ -10,7 +10,7 @@ nCore.document = (function(){
       nCorePeriodEnd   = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
       nCoreDocumentUserId       = null,
       nCoreDocumentDepartmentId = null,
-      nCoreGlobalQuery,
+      nCoreGlobalQuery = '++',
       nCoreDocumentSettingTab = 'documentQueryPane',
       nCoreDocumentId = '',
       nCoreRoot,
