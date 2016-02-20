@@ -747,8 +747,14 @@ nCore.events = (function () {
         document.getElementById(id).textContent = value;
       };
 
+      nCore.modules.table.event.publish('calculateFormula');
+
     });
-    
+
+    nCore.modules.table.event.subscribe('calculateFormula', function () {
+      nCore.modules.formula.calculate();
+    });
+
     // выбор активной ячейки
     nCore.modules.table.event.subscribe('cellSelect', function (cell) {
 
@@ -756,35 +762,43 @@ nCore.events = (function () {
       console.dirxml('params: ', cell);
 
       nCore.document.setShowCellSettings( true )
-      var  tab = document.getElementsByClassName('criteriaSelector')[0], cellQuery;
+      var  tab     = document.getElementsByClassName('criteriaSelector')[0], cellQuery;
+      var  formula = document.getElementById('formulaGroupTab');
 
       activeCell = cell;
       nCore.modules.table.setActive(activeCell);
 
       tab.textContent = '';
       var __elements_to_update = [], criteriaCondition;
-      var overlay;
+      var overlayTab, overlayFormula;
 
       function addOverlay() {
         setTimeout( function(){
-          overlay = document.createElement('div');
-          overlay.style.top        = '50px';
-          overlay.style.height     = '90%';
-          overlay.style.width      = '100%';
-          overlay.style.overflow   = 'hidden';
-          overlay.style.position   = 'absolute';
-          overlay.style.background = 'rgba(255,255,255, .8)';
-          overlay.style.zIndex    = '2';
+          overlayTab = document.createElement('div');
+          overlayTab.style.top        = '50px';
+          overlayTab.style.height     = '90%';
+          overlayTab.style.width      = '100%';
+          overlayTab.style.overflow   = 'hidden';
+          overlayTab.style.position   = 'absolute';
+          overlayTab.style.background = 'rgba(255,255,255, .8)';
+          overlayTab.style.zIndex    = '2';
 
-          overlay.innerHTML = '<div style="top: 50%; left: 50%;text-align: center; position: absolute;height: 100%;text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
-          tab.appendChild( overlay );
+          overlayTab.innerHTML = '<div style="top: 50%; left: 50%;text-align: center; position: absolute;height: 100%;text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
+          overlayFormula = overlayTab.cloneNode(true);
+          
+          tab.appendChild( overlayTab );
+          formula.appendChild( overlayFormula );
         }, 100);
       };
       function removeOverlay() {
-        overlay.classList.add('animatedSlow');
-        overlay.classList.add('fadeOut');
+        overlayTab.classList.add('animatedSlow');
+        overlayTab.classList.add('fadeOut');
+
+        overlayFormula.classList.add('animatedSlow');
+        overlayFormula.classList.add('fadeOut');
         setTimeout( function(){
-          tab.removeChild( overlay );
+          tab.removeChild( overlayTab );
+          formula.removeChild( overlayFormula );
         },300)
       };
 
@@ -875,12 +889,12 @@ nCore.events = (function () {
 
             var monthSelector = document.querySelector('select[name="month"]');
             if ( monthSelector && parseInt(activeCell.dataset.queryMonth,10) ) {
-              console.log('++++', activeCell.dataset.queryMonth)
+              // console.log('++++', activeCell.dataset.queryMonth)
               monthSelector.value = activeCell.dataset.queryMonth;
               monthSelector.disabled = false;
             } else {
               if ( monthSelector ) {
-                console.log('----', activeCell.dataset)
+                // console.log('----', activeCell.dataset)
                 monthSelector.selectedIndex = 0;
                 monthSelector.value = 1;
                 monthSelector.disabled = true;
@@ -889,12 +903,12 @@ nCore.events = (function () {
 
             var formulaSelector = document.querySelector('[name="formula"]');
             if ( formulaSelector && activeCell.dataset.formula ) {
-              console.log('++++', activeCell.dataset.formula)
+              // console.log('++++', activeCell.dataset.formula)
               formulaSelector.value = activeCell.dataset.formula;
               formulaSelector.disabled = false;
             } else {
               if ( formulaSelector ) {
-                console.log('----', activeCell.dataset)
+                // console.log('----', activeCell.dataset)
                 formulaSelector.value = '';
                 formulaSelector.disabled = true;
               };
@@ -902,12 +916,12 @@ nCore.events = (function () {
 
             var defaultSelector = document.querySelector('select[name="default"]');
             if ( defaultSelector && activeCell.dataset.queryDefault ) {
-              console.log('++++', activeCell.dataset.queryDefault)
+              // console.log('++++', activeCell.dataset.queryDefault)
               defaultSelector.value = activeCell.dataset.queryDefault;
               defaultSelector.disabled = false;
             } else {
               if ( defaultSelector ) {
-                console.log('----', activeCell.dataset)
+                // console.log('----', activeCell.dataset)
                 defaultSelector.selectedIndex = 0;
                 defaultSelector.value = 'empty';
                 defaultSelector.disabled = true;
@@ -924,7 +938,7 @@ nCore.events = (function () {
               for (var r = 0; r < array.length; r++) {
                 values.push( array[r].value );
               };
-              console.log('values', values);
+              // console.log('values', values);
 
               for ( var i = 0, l = chosenOrigin.options.length, o; i < l; i++ ){
                 var o = chosenOrigin.options[i];
@@ -939,7 +953,7 @@ nCore.events = (function () {
               chosenOrigin.disabled = false;
             } else {
               if ( chosenOrigin ) {
-                console.log('----', activeCell.dataset)
+                // console.log('----', activeCell.dataset)
                 // chosenOrigin.selectedIndex = null;
                 chosenOrigin.value = null;
                 chosenOrigin.disabled = true;
@@ -1087,6 +1101,7 @@ nCore.events = (function () {
       } else {
         console.log('activeCell.dataset.useChosenOrigin --', activeCell.dataset);
         delete activeCell.dataset.useChosenOrigin
+        delete activeCell.dataset.chosenOrigin
         chosenOrigin.selectedIndex = 0;
         chosenOrigin.disabled = true;
       }
@@ -1288,7 +1303,6 @@ nCore.events = (function () {
     /////////////
     
     nCore.document.root.subscribe('addFormulaField', function ( value) {
-      
       var tab     = document.querySelector('.formulaSelectorGroupList'),
           formula = Transparency.render( document.querySelector('.nCoreDocumentFormulaField'), {});
 
@@ -1297,6 +1311,14 @@ nCore.events = (function () {
       console.log( 'tab, formula', tab, formula );
       tab.appendChild( formula );
     });
+
+    nCore.document.root.subscribe('addToFormula', function ( cell ) {
+      console.log('activeCell, cell', activeCell, cell);
+
+      document.querySelector('[name="formula"]').value = activeCell.dataset.formula + ' #' + cell.id
+      nCore.modules.table.event.publish('cellFormulaChange');
+    });
+
   };
 
   return {

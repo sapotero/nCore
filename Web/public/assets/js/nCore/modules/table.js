@@ -586,7 +586,9 @@ nCore.modules.table = (function(){
     customCells = document.querySelectorAll('.calculationCell');
 
     for (var q = 0; q < customCells.length; q++) {
-      customCellsQuery.push( { id: customCells[q].id, data: customCells[q].dataset } )
+      var completeData = customCells[q].dataset;
+          completeData.globalQuery = nCore.document.globalQuery();
+      customCellsQuery.push( { id: customCells[q].id, data: completeData } )
     };
     console.log( 'cellData:', cellData );
     console.log( 'customCellsQuery:', customCellsQuery );

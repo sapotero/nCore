@@ -73,8 +73,23 @@ jQuery(function($) {
   // клик по ячейке в таблице
   $('td.fr-selected-cell').live('click', function(e){
     e.preventDefault();
-    nCore.modules.table.event.publish('cellSelect', this );
-    nCore.modules.table.event.publish('cellFormulaClear' );
+
+    // если произошел клик по клетке с данными с нажатым ctrl
+    if ( e.ctrlKey ) {
+      console.log( 'clicked', e.target.dataset )
+      // если есть формула но нет айдишника
+      // if ( e.target.dataset.useFormula == 'true' ) {
+      if ( !e.target.id ) {
+        var id = nCore.modules.table.generateId();
+        e.target.id = id;
+        console.log( 'generate id', id );
+      };
+      nCore.document.root.publish('addToFormula', e.target );
+      // };
+    } else {
+      nCore.modules.table.event.publish('cellSelect', this );
+      nCore.modules.table.event.publish('cellFormulaClear' );
+    }
     return false;
   });
 
