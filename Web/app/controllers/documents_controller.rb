@@ -3,12 +3,10 @@ class DocumentsController < ApplicationController
 
   protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
 
-  # GET /documents
   def index
-    render :json => Document.where( archived: false )
+    render :json => Document.active
   end
 
-  # GET /documents/1
   def show
     document = @document.as_json
     document[:body] = @document.body
@@ -27,16 +25,13 @@ class DocumentsController < ApplicationController
     
   end
 
-  # GET /documents/new
   def new
     @document = Document.new
   end
 
-  # GET /documents/1/edit
   def edit
   end
 
-  # POST /documents
   def create
     @document = Document.new({
       :type        => params[ :type ],
@@ -44,6 +39,7 @@ class DocumentsController < ApplicationController
       :description => params[ :description ],
       :datetime    => params[ :datetime ],
       :body        => params[ :body ],
+      :image       => params[ :image ],
       :author      => params[ :author ],
       :query       => params[ :query ],
       :periodStart => params[ :periodStart ],
@@ -58,10 +54,10 @@ class DocumentsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /documents/1
   def update
     ap params
     @document.body        = params[ :body ]
+    @document.image       = params[ :image ]
     @document.periodStart = params[ :periodStart ]
     @document.periodEnd   = params[ :periodEnd ]
     @document.globalQuery = params[ :globalQuery ]
@@ -78,13 +74,11 @@ class DocumentsController < ApplicationController
     end
   end
 
-  # DELETE /documents/1
   def destroy
     @document.destroy
     redirect_to documents_url, notice: 'Document was successfully destroyed.'
   end
 
-  # POST /documents/1/remove
   def remove
     ap @document
 
@@ -99,12 +93,11 @@ class DocumentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_document
       @document = Document.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
     def document_params
       params[:document]
     end

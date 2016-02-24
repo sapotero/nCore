@@ -3586,3 +3586,8 @@ table th {
   left: calc(50% - (32px / 2));
   top: -16px;
 }
+
+.fr-toolbar.fr-top {
+  margin: 0px auto;
+  width: 980px;
+}

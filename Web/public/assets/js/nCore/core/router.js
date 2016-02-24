@@ -126,7 +126,7 @@ jQuery(function($) {
 
     location.hash = '#/report'
 
-    // document.title = 'INDEX';
+    // // document.title = 'INDEX';
     // nCore.templates.render('report/index', function(data){ 
     //   if ( data ) {
     //     var wrapper = document.getElementById('content-wrapper');
@@ -145,7 +145,9 @@ jQuery(function($) {
   nCore.router.add('report', function (r) {
     nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
     nCore.document.root.publish( 'loadCriteria' );
-          
+    
+    // nCore.document.setTitle('Главная');
+
     // есть ли у юзера право просматривать таблицы
     if ( nCore.roles.check('viewTable') ) {
       nCore.templates.render('report/index', function(data){ 
@@ -164,7 +166,7 @@ jQuery(function($) {
   });
   
   nCore.router.add('report/new', function (r) {
-    document.title = 'report new';
+    nCore.document.setTitle('Новый документ'); // document.title = 'report new';
 
     nCore.templates.render('report/new', function(data){ 
       if ( data ) {
@@ -177,7 +179,7 @@ jQuery(function($) {
   });
 
   nCore.router.add('report/:id', function (r) {
-    document.title = 'reports/:id '+ r.params.id;
+    // document.title = 'reports/:id '+ r.params.id;
 
     nCore.templates.render('report/new', function(data){ 
       if ( data ) {
@@ -210,7 +212,7 @@ jQuery(function($) {
   });
   
   nCore.router.add('buiseness/new', function (r) {
-    document.title = 'buiseness new';
+    // document.title = 'buiseness new';
 
     nCore.templates.render('table/new', function(data){ 
       if ( data ) {
@@ -222,7 +224,7 @@ jQuery(function($) {
   });
 
   nCore.router.add('buiseness/:name', function (r) {
-    document.title = 'buiseness/:name '+ r.params.name;
+    // document.title = 'buiseness/:name '+ r.params.name;
 
     nCore.templates.render('table/table', function(data){ 
       if ( data ) {
@@ -253,7 +255,7 @@ jQuery(function($) {
   });
   
   nCore.router.add('print/new', function (r) {
-    document.title = 'print new';
+    // document.title = 'print new';
 
     nCore.templates.render('table/new', function(data){ 
       if ( data ) {
@@ -265,7 +267,7 @@ jQuery(function($) {
   });
 
   nCore.router.add('print/:name', function (r) {
-    document.title = 'print/:name '+ r.params.name;
+    // document.title = 'print/:name '+ r.params.name;
 
     nCore.templates.render('table/table', function(data){ 
       if ( data ) {
@@ -297,7 +299,7 @@ jQuery(function($) {
   });
   
   nCore.router.add('form/new', function (r) {
-    document.title = 'form new';
+    // document.title = 'form new';
 
     nCore.templates.render('form/new', function(data){ 
       if ( data ) {
@@ -308,7 +310,7 @@ jQuery(function($) {
   });
 
   nCore.router.add('form/:name', function (r) {
-    document.title = 'form/:name '+ r.params.name;
+    // document.title = 'form/:name '+ r.params.name;
 
     nCore.templates.render('form/form', function(data){ 
       if ( data ) {

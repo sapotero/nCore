@@ -1794,7 +1794,7 @@ initFroalaEditor.then(function(data) {
     NAME: 'asterisk'
   });
   $.FroalaEditor.RegisterCommand('customCalculationCell', {
-    title: 'Изменение формата',
+    title: 'Вставить ячейку',
     focus: false,
     undo: false,
     refreshAfterCallback: false,

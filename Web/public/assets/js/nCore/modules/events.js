@@ -31,12 +31,9 @@ nCore.events = (function () {
       };
 
       var m = document.createElement('div');
-      m.style.width = '400px';
-      m.style.height = '300px';
-      m.style.margin = '10% auto';
-      m.style.backgroundColor = '#fff';
       m.classList.toggle('mui-panel');
       m.classList.toggle('mui--z5');
+      m.classList.toggle('_newDocument');
       m.innerHTML = '<form onsubmit="nCore.document.root.publish(\'saveDocumentToDb\', this); return false;"><legend>Документ</legend><br><br><div class="mui-textfield mui-textfield--float-label"><input required name="nCoreDocumnetName"><label>Название</label></div><div class="mui-textfield mui-textfield--float-label"><input type=text required name="nCoreDocumnetDescription"><label>Описание</label></div><div class="mui--text-right"><button type=button onclick="mui.overlay(\'off\');" class="mui-btn mui-btn--raised mui-btn--danger">отмена</button><button type=submit class="mui-btn mui-btn--raised mui-btn--primary">сохранить</button></div></form>';
 
       mui.overlay('on', options, m);
@@ -53,11 +50,6 @@ nCore.events = (function () {
       };
 
       var m = document.createElement('div');
-      m.style.width = '800px';
-      m.style.height = 'auto';
-      m.style.margin = '10% auto';
-      m.style.padding = '10% auto';
-      m.style.backgroundColor = '#fff';
       m.classList.toggle('mui-panel');
       m.classList.toggle('mui--z5');
       m.classList.add('_nCoreDocumentSettings');
@@ -193,67 +185,85 @@ nCore.events = (function () {
 
       // если документ новый - показываем модальное окошко с вводом имени
       if (data && data.nodeName == 'FORM') {
-        console.log('saveDocument', data);
-        nCore.document.root.publish('newDocument', true);
-
-        if (document.getElementById('mui-overlay')) {
-          mui.overlay('off');
-        };
-
-        // считаем табличку перед сохранением
-        // $.FroalaEditor.COMMANDS.calculator.callback()
-        var nCoreDocumentAttributes = {
-          type: nCore.document.type(),
-          name: nCore.document.name(),
-          description: nCore.document.description(),
-          datetime: new Date().getTime(),
-          body: Base64.encode($('#paper').froalaEditor('html.get')),
-          query: nCore.document.cellQuery() || '',
-          periodStart: nCore.document.periodStart(),
-          periodEnd: nCore.document.periodEnd(),
-          globalQuery: nCore.document.globalQuery()
-        };
 
 
-        nCore.document.setAttributes(nCoreDocumentAttributes);
-        console.log(nCoreDocumentAttributes);
+        html2canvas( document.querySelector('div#paper') , {
+          onrendered: function(canvas) {
 
-        nCore.query.post('documents.json', nCoreDocumentAttributes)
-          .success(function (data) {
-            console.log('newDocument', data);
+            console.log('saveDocument', data);
+            nCore.document.root.publish('newDocument', true);
 
-            if (location.hash.match(/new/) !== null) {
-              location.hash = location.hash.replace(/new/, data._id);
+            if (document.getElementById('mui-overlay')) {
+              mui.overlay('off');
             };
 
-          }).error(function (data) {
-            console.error('[!] newDocument', post, data)
-          });
+            // считаем табличку перед сохранением
+            // $.FroalaEditor.COMMANDS.calculator.callback()
+            var nCoreDocumentAttributes = {
+              type: nCore.document.type(),
+              name: nCore.document.name(),
+              description: nCore.document.description(),
+              datetime: new Date().getTime(),
+              body: Base64.encode($('#paper').froalaEditor('html.get')),
+              query: nCore.document.cellQuery() || '',
+              periodStart: nCore.document.periodStart(),
+              periodEnd: nCore.document.periodEnd(),
+              globalQuery: nCore.document.globalQuery(),
+              image: canvas.toDataURL()
+            };
+
+
+            nCore.document.setAttributes(nCoreDocumentAttributes);
+            console.log(nCoreDocumentAttributes);
+
+            nCore.query.post('documents.json', nCoreDocumentAttributes)
+              .success(function (data) {
+                console.log('newDocument', data);
+
+                if (location.hash.match(/new/) !== null) {
+                  location.hash = location.hash.replace(/new/, data._id);
+                };
+
+              }).error(function (data) {
+                console.error('[!] newDocument', post, data)
+              });
+
+          }
+        });
+
       }
       else {
-        var nCoreDocumentAttributes = {
-          type: nCore.document.type(),
-          name: nCore.document.name(),
-          description: nCore.document.description(),
-          datetime: new Date().getTime(),
-          body: Base64.encode($('#paper').froalaEditor('html.get')),
-          query: nCore.document.cellQuery() || '',
-          periodStart: nCore.document.periodStart(),
-          periodEnd: nCore.document.periodEnd(),
-          globalQuery: nCore.document.globalQuery()
-        };
+        html2canvas( document.querySelector('div#paper') , {
+          onrendered: function(canvas) {
 
-        nCore.document.setAttributes(nCoreDocumentAttributes);
-
-        nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
-          .success(function (data) {
-            console.log('saveDocument', data);
-            if (location.hash.match(/new/) !== null) {
-              location.hash = location.hash.replace(/new/, data._id);
+            var nCoreDocumentAttributes = {
+              type: nCore.document.type(),
+              name: nCore.document.name(),
+              description: nCore.document.description(),
+              datetime: new Date().getTime(),
+              body: Base64.encode($('#paper').froalaEditor('html.get')),
+              query: nCore.document.cellQuery() || '',
+              periodStart: nCore.document.periodStart(),
+              periodEnd: nCore.document.periodEnd(),
+              globalQuery: nCore.document.globalQuery(),
+              image: canvas.toDataURL()
             };
-          }).error(function (data) {
-            console.error('[!] saveDocument', post, data)
-          });
+
+            nCore.document.setAttributes(nCoreDocumentAttributes);
+
+            nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
+              .success(function (data) {
+                console.log('saveDocument', data);
+                if (location.hash.match(/new/) !== null) {
+                  location.hash = location.hash.replace(/new/, data._id);
+                };
+              }).error(function (data) {
+                console.error('[!] saveDocument', post, data)
+              });
+          }
+        });
+
+        
       }
     });
     // изменение свойств документа
@@ -274,13 +284,14 @@ nCore.events = (function () {
       var initialize = new Promise(function(resolve, reject) {
         // выполняем асинхронный код
         var editor = $('div#paper').froalaEditor({
-          toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
-          toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
-          toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
-          toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone', 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', 'formatOL', 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument', 'customCalculationCell', '|', 'zoom-out', 'zoom-in'],
+          toolbarButtons:   ['file-o', 'floppy-o', 'adjust', /*'phone',*/ 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', /*'phone',*/ 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', /*'phone',*/ 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', /*'phone',*/ 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
           language: 'ru',
           charCounterCount: false,
           toolbarSticky: false,
+          // toolbarInline: true,
           shortcutsEnabled: ['copyDataCell', 'pasteDataCell']
         });
         
@@ -311,6 +322,16 @@ nCore.events = (function () {
 
         var parent = document.querySelector('.fr-wrapper').parentNode
         parent.removeChild( document.querySelector('.fr-wrapper').nextSibling ) ;
+
+        // var menu = document.querySelector('.fr-toolbar'),
+            // menu_clone = menu.cloneNode(true);
+        
+        // удаляем старое меню
+        // menu.parentNode.removeChild(menu);
+        
+        // var newMenu = document.getElementById('newMenu');
+        // newMenu.appendChild(menu_clone);
+
 
       }).catch(function(result) {
         console.log("ERROR!", result);
@@ -566,17 +587,17 @@ nCore.events = (function () {
           var helper = {
             documentTitle: {
               text: function (params) {
-                return this.name;
+                return this.params.name;
               }
             },
             documentDate: {
               text: function (params) {
-                return this.date || new Date().toLocaleString();
+                return this.params.date || new Date().toLocaleString();
               }
             },
             documentId: {
               href: function (params) {
-                return "#/report/" + this._id || Math.random();
+                return "#/report/" + this.params._id || Math.random();
               },
               text: function () {
                 return ''
@@ -584,12 +605,12 @@ nCore.events = (function () {
             },
             downloadDoc: {
               href: function (params) {
-                return "/" + type + "/" + (this._id || Math.random()) + "/download";
+                return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
               }
             },
             downloadPdf: {
               href: function (params) {
-                return "documents/" + this._id + ".pdf";
+                return "documents/" + this.params._id + ".pdf";
               }
             },
             removeDocument: {
@@ -597,12 +618,17 @@ nCore.events = (function () {
                 return location.hash;
               },
               type: function () {
-                return this._id
+                return this.params._id
               }
             },
             documentUser: {
               text: function () {
-                return this.user
+                return this.params.user
+              }
+            },
+            documentImage: {
+              src: function(params){
+                return ( this.image !== '' ? this.image : 'assets/img/doc.png' )
               }
             }
           };
@@ -710,7 +736,6 @@ nCore.events = (function () {
                   cell.textContent = data[i].value;
                   break;
               };
-
               break;
             case 'string':
               console.log('value type: String')
@@ -991,7 +1016,7 @@ nCore.events = (function () {
 
     // скрываем боковое меню по нажатию кнопки
     nCore.document.root.subscribe('hideSideMenu', function(showCellSettings){
-      if ( !nCore.document.showCellSettings() ) {
+      if ( !nCore.document.showCellSettings() && document.getElementById('cellSettings') ) {
         document.getElementById('cellSettings').classList.remove('active');
       }
     });

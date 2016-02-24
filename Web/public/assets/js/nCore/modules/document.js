@@ -102,6 +102,7 @@ nCore.document = (function(){
   },
   reset = function reset() {
     nCoreIsNew = true;
+    nCore.document.setTitle('Главная');
   },
   setAttributes = function setAttributes(data){
     // nCoreIsNew = false;
@@ -176,6 +177,7 @@ nCore.document = (function(){
   setTitle = function setTitle(t){
     nCoreTitle = t ? t : nCoreTitle;
     document.querySelector('#nCoreDocumentHeadLine').textContent = nCoreTitle;
+    document.title = nCoreType + " | " + nCoreTitle;
   },
   globalQuery = function globalQuery (){
     return nCoreGlobalQuery

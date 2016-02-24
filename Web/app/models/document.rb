@@ -18,6 +18,7 @@ class Document
   field :globalQuery, type: String
   
   field :body_id
+  field :image_id
 
 
   def body=(base64)
@@ -29,5 +30,19 @@ class Document
     Mongoid::GridFs.get(body_id).data
   end
 
+  def image=(canvas)
+    file = StringIO.new(canvas)
+    self.image_id = Mongoid::GridFs.put(file).id
+  end
 
+  def image
+    Mongoid::GridFs.get(image_id).data
+  end
+
+   def self.active()
+    new_docs = []
+    Document.where( archived: false ).each { |doc| new_docs.push ({ params: doc, image: ( doc.image_id.nil? ? '' : doc.image) }) }
+    # Document.where( archived: false ).each { |doc| new_docs.push ( doc ) }
+    new_docs
+  end
 end
