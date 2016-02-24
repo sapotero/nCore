@@ -388,6 +388,10 @@ nCore = (function(){
         {
           value: "equal",
           caption: "Точное совпадение"
+        },
+        {
+          value: "sum",
+          caption: "Сумма"
         }
       ],
       Default:  []

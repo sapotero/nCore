@@ -523,6 +523,11 @@ nCore.modules.cell = (function(){
             select_query.title =  autocomplete_title;
             break;
           case 'sum':
+            if ( criteria.origin_name == 'formula' ) {
+              select_query.formula = true;
+              select_query.plain_value = criteria.value;
+              break;
+            };
             if ( parent.querySelector('[name="date_end"]') ) {
               parent.removeChild( parent.querySelector('[name="date_end"]') );
             };
@@ -653,9 +658,9 @@ nCore.modules.cell = (function(){
     //console.log('     -------- generateSelect2 ---------'); 
   },
   generateSelect2Formula = function( element, value, r ){
-    //console.log('     -------- generateSelect2Formula ---------', element, value ); 
     
     var parent = element.parentNode;
+    console.log('     -------- generateSelect2Formula ---------', element, element.nodeName, parent, value ); 
 
     while (element.firstChild) {
       element.removeChild(element.firstChild);
@@ -664,6 +669,7 @@ nCore.modules.cell = (function(){
     $(element).select2('destroy');
 
     parent.removeChild(element);
+
     var element             = document.createElement('textarea');
       element.style.display = 'block';
       element.style.width   = ' 92%';
@@ -1060,7 +1066,17 @@ nCore.modules.cell = (function(){
         break;
       case 'sum':
         //console.log('+sum');
-        generateInput(element, value);
+        
+        
+        if( origin_name == 'formula' ){
+          element = generateSelect2Formula(element, value, true);
+
+          if ( value ) {
+            element.value = value;
+          }
+        } else {
+          generateInput(element, value);
+        }
         break;
       case 'month':
         //console.log('+month');
@@ -1089,20 +1105,6 @@ nCore.modules.cell = (function(){
     if( origin_name == 'formula' ){
       //console.log('formula');
       element = generateSelect2Formula(element, value, true);
-
-      // $(element).select2({
-      //   tags: true
-      // });
-      // $( element ).on("select2:select", function (evt) {
-      //   var element = evt.params.data.element;
-      //   var $element = $(element);
-        
-      //   $element.detach();
-      //   $(this).append($element);
-      //   $(this).trigger("change");
-      // });
-      
-      // $(element).val( value ).trigger('change');
 
       if ( value ) {
         element.value = value;
