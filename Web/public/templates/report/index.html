@@ -1,4 +1,29 @@
-<div class=".mui--appbar-height">&nbsp;</div>
+
+<table class="mui-table no-margin-bottom ">
+  <tr>
+    <td class="mui--row bar">
+      <div class="mui-panel mui--z1 reportIndexSubMenu mui--text-right">
+        <button class="mui-btn mui-btn--flat button indexViewChange">
+          <i class="fa fa-th"></i>
+        </button>
+
+        <div class="mui-dropdown">
+          <button class="mui-btn mui-btn--flat button" data-mui-toggle="dropdown">
+             Сортировка
+            <!-- <i class="fa fa-sort-alpha-asc"></i> -->
+            <span class="mui-caret"></span>
+          </button>
+          <ul class="mui-dropdown__menu">
+            <li><a href="#"> По дате просмотра </a></li>
+            <li><a href="#"> По дате моих изменений </a></li>
+            <li><a href="#"> По дате изменения </a></li>
+            <li><a href="#"> По названию </a></li>
+          </ul>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
 
 <!-- шаблон для превьюх -->
 <div class="mui-row _indexView thumb  mui--hide">
@@ -42,20 +67,44 @@
   </div>
 </div>
 
+<div class="pagination-container mui--hide">
+  <div class="pagination">
+    <
+    <span class="active">1</span>
+    <span>2</span>
+    <span>3</span>
+    <span>4</span>
+    <span>5</span>
+    <span>6</span>
+    <span>7</span>
+    <span>8</span>
+    <span>9</span>
+    >
+  </div>
+</div>
+
 <div id="noDocumentsFound">
   <div id="thumb" class="mui-col-md-8 mui-col-md-offset-2">
     <h3 class="notFoundMessage"></h3>
   </div>
 </div>
+
+<div id="appbar-search-template" class="mui--hide">
+  <div class="mui-col-lg-12 mui-panel autocomplete-suggestion autocomplete-suggestion-panel">
+    <div class="mui-col-lg-6 id"></div>
+    <div class="mui-col-lg-6 name"></div>
+  </div>
+</div>
+
 <!-- шаблон для списка -->
-<!-- раскоментить при для изменения вида
-<div class="mui-row _indexView list ">
+<!-- раскоментить при для изменения вида -->
+<div class="mui-row _indexView list mui--hide">
   <div class="mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12">
 
     <div class="indexListViewGroup">
       <div class="indexListViewSort">
         <div class="mui-col-lg-1">
-          <i class="fa fa-file" style="color: #2196F3"></i>
+          <!-- <i class="fa fa-file" style="color: #2196F3"></i> -->
         </div>
         <div class="mui-col-lg-7 mui--text-black-54 mui--text-subhead">Сегодня</div>
         <div class="mui-col-lg-2 mui--text-black-87 mui--text-subhead">Пользователь</div>
@@ -77,8 +126,9 @@
               <span class="mui--pull-left">
               <input type="checkbox">
               </span>
+              
               <span class="mui--pull-right">
-                <i class="fa fa-ellipsis-v" data-mui-toggle="dropdown" ></i>
+                <i class="fa fa-ellipsis-v" data-mui-toggle="dropdowns" ></i>
               </span>
               <div class="mui--clearfix"></div>
             </div>
@@ -87,4 +137,4 @@
       </div>
     </div>
   </div>
-</div> -->
+</div>

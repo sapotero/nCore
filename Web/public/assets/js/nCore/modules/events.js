@@ -284,10 +284,10 @@ nCore.events = (function () {
       var initialize = new Promise(function(resolve, reject) {
         // выполняем асинхронный код
         var editor = $('div#paper').froalaEditor({
-          toolbarButtons:   ['file-o', 'floppy-o', 'adjust', /*'phone',*/ 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
-          toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', /*'phone',*/ 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
-          toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', /*'phone',*/ 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
-          toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', /*'phone',*/ 'flask', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone',/* 'flask',*/ 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone',/* 'flask',*/ 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone',/* 'flask',*/ 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone',/* 'flask',*/ 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
           language: 'ru',
           charCounterCount: false,
           toolbarSticky: false,
@@ -544,122 +544,144 @@ nCore.events = (function () {
     });
 
     nCore.document.root.subscribe('renderIndexView', function (type) {
+      function addOverlay() {
+        setTimeout( function(){
+          var overlayEl = mui.overlay('on'),
 
-      document.getElementById('thumb').classList.add('mui--hide');
-      var overlayEl = mui.overlay('on'),
-
-      options = {
-        'keyboard': false, // teardown when <esc> key is pressed (default: true)
-        'static': true, // maintain overlay when clicked (default: false)
-        'onclose': function () {
-          // after callback
-        }
-      };
-
-      var m = document.createElement('div');
-      m.style.width = '400px';
-      m.style.height = '100px';
-      m.style.margin = '10% auto';
-      m.style.padding = '10% auto';
-      m.style.backgroundColor = '#fff';
-      m.classList.toggle('mui-panel');
-      m.classList.toggle('mui--z5');
-      m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
-
-      mui.overlay('on', options, m);
-      
-      // если не был выбран вариант отображения страницы
-      if (!nCore.storage.hasOwnProperty('indexViewType')) {
-        nCore.storage.setItem('indexViewType', 'thumb');
-      };
-
-      // сколько раз проверяем 
-      var reload_count = 2;
-
-      var _i = setInterval( function(){
-        reload_count--;
-        console.log('renderIndexView -> ', type);
-
-        if ( nCore.storage.hasOwnProperty( type ) && JSON.parse(nCore.storage.getItem(type)).length ) {
-          var items = JSON.parse(nCore.storage.getItem(type));
-          console.log('storage: ', items);
-
-          var helper = {
-            documentTitle: {
-              text: function (params) {
-                return this.params.name;
-              }
-            },
-            documentDate: {
-              text: function (params) {
-                return this.params.date || new Date().toLocaleString();
-              }
-            },
-            documentId: {
-              href: function (params) {
-                return "#/report/" + this.params._id || Math.random();
-              },
-              text: function () {
-                return ''
-              }
-            },
-            downloadDoc: {
-              href: function (params) {
-                return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
-              }
-            },
-            downloadPdf: {
-              href: function (params) {
-                return "documents/" + this.params._id + ".pdf";
-              }
-            },
-            removeDocument: {
-              href: function (params) {
-                return location.hash;
-              },
-              type: function () {
-                return this.params._id
-              }
-            },
-            documentUser: {
-              text: function () {
-                return this.params.user
-              }
-            },
-            documentImage: {
-              src: function(params){
-                return ( this.image !== '' ? this.image : 'assets/img/doc.png' )
-              }
+          options = {
+            'keyboard': false, // teardown when <esc> key is pressed (default: true)
+            'static': true, // maintain overlay when clicked (default: false)
+            'onclose': function () {
+              // after callback
             }
           };
 
-          Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
+          var m = document.createElement('div');
+          m.style.width = '400px';
+          m.style.height = '100px';
+          m.style.margin = '10% auto';
+          m.style.padding = '10% auto';
+          m.style.backgroundColor = '#fff';
+          m.classList.toggle('mui-panel');
+          m.classList.toggle('mui--z5');
+          m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
 
+          mui.overlay('on', options, m);
+        }, 300);
+      };
+      function removeOverlay() {
+        setTimeout( function(){
           mui.overlay('off');
-          document.body.classList.add('hide-sidedrawer');
-          nCore.document.root.publish('generateNewDocument');
-          document.getElementById('thumb').classList.remove('mui--hide')
+        },300)
+      };
+      var render = new Promise(function(resolve, reject) {
+        addOverlay();
+        setTimeout(function(){
+          document.getElementById('thumb').classList.add('mui--hide');
 
-          var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
-            _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
-
-          for (var i = 0; i < _mui_rows.length; i++) {
-            _mui_rows[i].classList.add('mui--hide')
-          }
-
-          if (_active_row) {
-            _active_row.classList.remove('mui--hide');
+          // если не был выбран вариант отображения страницы
+          if (!nCore.storage.hasOwnProperty('indexViewType')) {
+            nCore.storage.setItem('indexViewType', 'thumb');
           };
 
-          clearInterval(_i);
-        };
-        if (reload_count == 0) {
-          clearInterval(_i);
-          console.log('notFound');
-          mui.overlay('off');
-          Transparency.render(document.getElementById('noDocumentsFound'), {notFoundMessage: 'Пока нет документов'});
-        };
-      }, 1000);
+          // сколько раз проверяем 
+          // var reload_count = 2;
+
+          if ( nCore.storage.hasOwnProperty( type ) && JSON.parse(nCore.storage.getItem(type)).length ) {
+            var items = JSON.parse(nCore.storage.getItem(type));
+            console.log('storage: ', items);
+
+            var helper = {
+              documentTitle: {
+                text: function (params) {
+                  return this.params.name;
+                }
+              },
+              documentDate: {
+                text: function (params) {
+                  console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
+                  return this.params.date || new Date().toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
+                    year  : 'numeric',
+                    month : 'numeric',
+                    day   : 'numeric'
+                  } : {
+                    year   : 'numeric',
+                    month  : 'numeric',
+                    day    : 'numeric',
+                    hour   : 'numeric',
+                    minute : 'numeric'
+
+                  });
+                }
+              },
+              documentId: {
+                href: function (params) {
+                  return "#/report/" + this.params._id || Math.random();
+                },
+                text: function () {
+                  return ''
+                }
+              },
+              downloadDoc: {
+                href: function (params) {
+                  return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
+                }
+              },
+              downloadPdf: {
+                href: function (params) {
+                  return "documents/" + this.params._id + ".pdf";
+                }
+              },
+              removeDocument: {
+                href: function (params) {
+                  return location.hash;
+                },
+                type: function () {
+                  return this.params._id
+                }
+              },
+              documentUser: {
+                text: function () {
+                  return this.params.user
+                }
+              },
+              documentImage: {
+                src: function(params){
+                  return ( this.image.length ? this.image : 'assets/img/doc.png' )
+                }
+              }
+            };
+
+            Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
+
+            document.body.classList.add('hide-sidedrawer');
+            // nCore.document.root.publish('generateNewDocument');
+            document.getElementById('thumb').classList.remove('mui--hide')
+
+            var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
+              _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
+
+            for (var i = 0; i < _mui_rows.length; i++) {
+              _mui_rows[i].classList.add('mui--hide')
+            }
+
+            if (_active_row) {
+              _active_row.classList.remove('mui--hide');
+            };
+
+            // clearInterval(_i);
+          };
+
+          
+          resolve(true)
+        }, 500); 
+      });
+
+      render.then(function(data) {
+        removeOverlay()
+      }).catch(function(result) {
+        console.log("ERROR renderCellSettings!", result);
+      });
     });
 
     nCore.document.root.subscribe('renderNotPermit', function (data) {
@@ -827,7 +849,7 @@ nCore.events = (function () {
         setTimeout( function(){
         overlayFormula.classList.add('animatedSlow');
         overlayFormula.classList.add('fadeOut');
-          tab.removeChild( overlayTab );
+          if ( overlayTab ) { tab.removeChild( overlayTab ); }
           formula.removeChild( overlayFormula );
         },300)
       };

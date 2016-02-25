@@ -346,10 +346,29 @@ jQuery(function($) {
 
   // изменение отображение элементов на странице
   $('.indexViewChange').live('click', function(){
-    var type = this.dataset.viewType;
-    nCore.document.root.publish('attachListMenu');
-    nCore.document.root.publish('changeRenderType', type)
+    var type = nCore.storage.getItem('indexViewType'),
+        icon = this.querySelector('i.fa');
+
+    switch(type){
+      case 'thumb':
+        nCore.storage.setItem('indexViewType', 'list');
+        break;
+      case 'list':
+        nCore.storage.setItem('indexViewType', 'thumb');
+        break;
+      default:
+        nCore.storage.setItem('indexViewType', 'thumb');
+        break;
+    };
+
+    console.log(' icon ', icon.classList );
+
+    icon.classList.toggle('fa-th-large');
+    icon.classList.toggle('fa-list');
+
+    nCore.document.root.publish('renderIndexView', 'documents');
   })
+  
 
   $('.layoutSideMenuItem').live('click', function(){
     if ( this.dataset.hasOwnProperty('type') ) {

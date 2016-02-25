@@ -20,6 +20,12 @@ class Document
   field :body_id
   field :image_id
 
+  # шаблон, редактировать нельзя, только создавать новые на его основе
+  field :template,    type: Boolean, default: false
+
+  # досутпные всем
+  field :global,      type: Boolean, default: false
+
 
   def body=(base64)
     file = StringIO.new(base64)

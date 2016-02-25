@@ -151,7 +151,7 @@ nCore = (function(){
         nCore.preloader.init();
         clearInterval(_i);
       };
-    }, 500);
+    }, 100);
   };
 
   /**
