@@ -413,7 +413,7 @@ nCore.events = (function () {
           callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
           return rawDocument
         }).then(function(result) {
-          // var editor = nCore.document.root.publish('initEditor');
+          var editor = nCore.document.root.publish('initEditor');
           console.log("allDone!", result);
         }).catch(function(result) {
           console.log("ERROR!", result);
