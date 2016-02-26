@@ -150,7 +150,7 @@ nCore.events = (function () {
         periodEnd: data.elements.nCorePeriodEnd.value,
         datetime: new Date().getTime(),
         query: nCore.document.cellQuery() || '',
-        body: Base64.encode($('#paper').froalaEditor('html.get')),
+        body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
       };
       nCore.document.setPeriodEnd(data.elements.nCorePeriodEnd.value);
       nCore.document.setPeriodStart(data.elements.nCorePeriodStart.value);
@@ -211,7 +211,7 @@ nCore.events = (function () {
               name: nCore.document.name(),
               description: nCore.document.description(),
               datetime: new Date().getTime(),
-              body: Base64.encode($('#paper').froalaEditor('html.get')),
+              body: Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
               query: nCore.document.cellQuery() || '',
               periodStart: nCore.document.periodStart(),
               periodEnd: nCore.document.periodEnd(),
@@ -248,7 +248,7 @@ nCore.events = (function () {
               name: nCore.document.name(),
               description: nCore.document.description(),
               datetime: new Date().getTime(),
-              body: Base64.encode($('#paper').froalaEditor('html.get')),
+              body: Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
               query: nCore.document.cellQuery() || '',
               periodStart: nCore.document.periodStart(),
               periodEnd: nCore.document.periodEnd(),
@@ -324,8 +324,8 @@ nCore.events = (function () {
         return BODY ? BODY : '<p>'
 
       }).then(function(html) {
-        // console.log('LOADED', html)
-        $('div#paper').froalaEditor('html.set', html);
+        console.log('LOADED', html)
+        $('div#paper').froalaEditor('html.set', html+'<p>');
 
         var parent = document.querySelector('.fr-wrapper').parentNode
         parent.removeChild( document.querySelector('.fr-wrapper').nextSibling ) ;
@@ -413,7 +413,7 @@ nCore.events = (function () {
           callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
           return rawDocument
         }).then(function(result) {
-          var editor = nCore.document.root.publish('initEditor');
+          // var editor = nCore.document.root.publish('initEditor');
           console.log("allDone!", result);
         }).catch(function(result) {
           console.log("ERROR!", result);
