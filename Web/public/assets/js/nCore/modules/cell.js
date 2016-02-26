@@ -228,7 +228,7 @@ nCore.modules.cell = (function(){
     //console.group("changeBlockAtributes");
     //console.info( 'input params: ', criteria, element, name, value );
     var select_query = {};
-    
+    var _element = element;
     element.name = name;
 
     switch(name){
@@ -523,14 +523,19 @@ nCore.modules.cell = (function(){
             select_query.title =  autocomplete_title;
             break;
           case 'sum':
+            console.log( 'sum+', _element, _element.parentNode );
+            
             if ( criteria.origin_name == 'formula' ) {
               select_query.formula = true;
               select_query.plain_value = criteria.value;
               break;
             };
-            if ( parent.querySelector('[name="date_end"]') ) {
-              parent.removeChild( parent.querySelector('[name="date_end"]') );
-            };
+
+            // hotfix #1
+            // if ( parent.querySelector('[name="date_end"]') ) {
+            //   parent.removeChild( parent.querySelector('[name="date_end"]') );
+            // };
+
             select_query.plain = true;
             select_query.plain_value = '';
             break;
