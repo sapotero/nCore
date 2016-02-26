@@ -8,6 +8,11 @@ nCore.document = (function(){
       nCoreCurrentYear = _current_date.getFullYear(),
       nCorePeriodStart = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
       nCorePeriodEnd   = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
+
+      nCoreYearReport = false,
+      nCoreMain    = _current_date.getFullYear(),
+      nCoreCompare = _current_date.getFullYear()-1,
+
       nCoreDocumentUserId       = null,
       nCoreDocumentDepartmentId = null,
       nCoreGlobalQuery = '++',
@@ -196,10 +201,25 @@ nCore.document = (function(){
   },
   setShowCellSettings = function setShowCellSettings (bool){
     nCoreShowCellSettings = bool
+  },
+  yearReport = function () {
+    return nCoreYearReport;
+  },
+  setYearReport = function (value) {
+    nCoreYearReport = value;
+  },
+  main = function () {
+    return nCoreMain;
+  },
+  setMain = function (value) {
+    nCoreMain = value;
+  },
+  compare = function () {
+    return nCoreCompare;
+  },
+  setCompare = function (value) {
+    nCoreCompare = value;
   };
-
-  
-
   
   return {
     init            : init,
@@ -233,6 +253,13 @@ nCore.document = (function(){
     globalQuery     : globalQuery,
     setGlobalQuery  : setGlobalQuery,
     
+    yearReport      : yearReport,
+    setYearReport   : setYearReport,
+    main            : main,
+    setMain         : setMain,
+    compare         : compare,
+    setCompare      : setCompare,
+
     documentSettingTab     : documentSettingTab,
     setDocumentSettingTab  : setDocumentSettingTab,
     showCellSettings       : showCellSettings,

@@ -63,9 +63,27 @@ nCore.events = (function () {
         nCoreName        : nCore.document.name(),
         nCoreDescription : nCore.document.description(),
         nCorePeriodStart : nCore.document.periodStart(),
-        nCorePeriodEnd   : nCore.document.periodEnd()
+        nCorePeriodEnd   : nCore.document.periodEnd(),
+        nCoreYearReport  : nCore.document.yearReport(),
+        nCoreMain        : nCore.document.main(),
+        nCoreCompare     : nCore.document.compare(),
       });
       m.innerHTML = text.innerHTML;
+
+      var main       = m.querySelector('[name="main"]'),
+          compare    = m.querySelector('[name="compare"]'),
+          yearReport = m.querySelector('[name="yearReport"]');
+      
+      if ( !nCore.document.yearReport() ) {
+        yearReport.checked = false;
+        main.disabled    = true;
+        compare.disabled = true;
+      } else {
+        yearReport.checked = true;
+        main.disabled    = false;
+        compare.disabled = false;
+      }
+
       var overlay = mui.overlay('on', options, m);
       overlay.classList.toggle('animated');
       overlay.classList.toggle('fadeIn');
@@ -123,6 +141,7 @@ nCore.events = (function () {
 
     // редактирование настроек документа
     nCore.document.root.subscribe('updateDocument', function (root) {
+      console.log(' updateDocument', root);
       function findUp(el, selector) {
         while (el.parentNode) {
           el = el.parentNode;
@@ -141,7 +160,7 @@ nCore.events = (function () {
 
       console.log('update:', data);
 
-      nCore.document.root.publish('globalCriteriaCalculate', parent);
+      nCore.document.root.publish('globalCriteriaCalculate', modalRoot);
 
       var nCoreDocumentAttributes = {
         name: data.elements.nCoreName.value,
@@ -152,10 +171,20 @@ nCore.events = (function () {
         query: nCore.document.cellQuery() || '',
         body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
       };
+
       nCore.document.setPeriodEnd(data.elements.nCorePeriodEnd.value);
       nCore.document.setPeriodStart(data.elements.nCorePeriodStart.value);
       nCore.document.setTitle(data.elements.nCoreName.value);
 
+      nCore.document.setYearReport( data.elements.yearReport.checked );
+      nCore.document.setMain(       data.elements.main.value );
+      nCore.document.setCompare(    data.elements.compare.value );
+
+      nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
+      nCoreDocumentAttributes.main       = nCore.document.main();
+      nCoreDocumentAttributes.compare    = nCore.document.compare();
+
+      
       nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
         .success(function (data) {
           console.log('saveDocument', data);
@@ -181,7 +210,7 @@ nCore.events = (function () {
 
     nCore.document.root.subscribe('saveDocumentToDb', function (data) {
       console.log('data: ', data);
-      // nCore.modules.table.event.publish('globalCriteriaCalculate');
+      nCore.modules.table.event.publish('globalCriteriaCalculate');
 
       // если передеали значения из формы
       if (data && data.nodeName === 'FORM') {
@@ -219,6 +248,11 @@ nCore.events = (function () {
               image: canvas.toDataURL()
             };
 
+            if ( nCore.document.yearReport() ) {
+              nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
+              nCoreDocumentAttributes.main       = nCore.document.main();
+              nCoreDocumentAttributes.compare    = nCore.document.compare();
+            }
 
             nCore.document.setAttributes(nCoreDocumentAttributes);
             console.log(nCoreDocumentAttributes);
@@ -255,6 +289,12 @@ nCore.events = (function () {
               globalQuery: nCore.document.globalQuery(),
               image: canvas.toDataURL()
             };
+
+            if ( nCore.document.yearReport() ) {
+              nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
+              nCoreDocumentAttributes.main       = nCore.document.main();
+              nCoreDocumentAttributes.compare    = nCore.document.compare();
+            }
 
             nCore.document.setAttributes(nCoreDocumentAttributes);
 
@@ -324,7 +364,7 @@ nCore.events = (function () {
         return BODY ? BODY : '<p>'
 
       }).then(function(html) {
-        console.log('LOADED', html)
+        // console.log('LOADED', html)
         $('div#paper').froalaEditor('html.set', html+'<p>');
 
         var parent = document.querySelector('.fr-wrapper').parentNode
@@ -409,6 +449,9 @@ nCore.events = (function () {
           nCore.document.setPeriodStart(rawDocument.periodStart);
           nCore.document.setGlobalQuery(rawDocument.globalQuery);
           nCore.document.setTitle(rawDocument.name);
+          nCore.document.setYearReport(rawDocument.yearReport );
+          nCore.document.setMain(rawDocument.main );
+          nCore.document.setCompare(rawDocument.compare );
 
           callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
           return rawDocument
@@ -727,8 +770,10 @@ nCore.events = (function () {
 
     // расчёт критериев поиска и отправление их на сервер
     nCore.modules.table.event.subscribe('calculateQuery', function (cellData, customCells) {
+      console.log('calculate query', cellData, customCells)
       nCore.document.setCellQuery(cellData);
-      nCore.query.post('queries.json', {
+
+      var data = {
         data : cellData,
         global : {
           periodStart : nCore.document.periodStart(),
@@ -737,7 +782,16 @@ nCore.events = (function () {
           reportId    : nCore.document.id()
         },
         customCells : customCells
-      }).success(function (data) {
+      };
+
+      if ( nCore.document.yearReport() ) {
+        data.global.yearReport = {
+          main    : nCore.document.main(),
+          compare : nCore.document.compare()
+        }
+      }
+
+      nCore.query.post('queries.json', data).success(function (data) {
         nCore.modules.table.event.publish('insertCellData', data)
       }).error(function (data) {
         console.error('[!] calculateQuery -> post', data)
@@ -753,13 +807,13 @@ nCore.events = (function () {
           data        = data.table;
 
       for (var i = 0; i < data.length; i++) {
-        console.log( 'data[i] ',data[i] );
+        // console.log( 'data[i] ',data[i] );
         // если есть cellIndex, rowIndex, value
         if ( data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') ) {
           var cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
           switch( typeof( data[i].value ) ){
             case 'object':
-              console.log('value type: Object')
+              // console.log('value type: Object')
               
               // проверяем что за объект
               switch( data[i].value.constructor ){
@@ -1062,8 +1116,10 @@ nCore.events = (function () {
     });
 
     nCore.document.root.subscribe('globalCriteriaCalculate', function(body){
-      console.log( 'globalCriteriaCalculate', body );
       
+      body = body || document.querySelector('._nCoreDocumentSettings');
+      console.log( 'globalCriteriaCalculate', body );
+
       var _query       = [],
           result_query = [],
           criterias    = body.querySelectorAll('.criteriaSelectorItem');
@@ -1075,8 +1131,7 @@ nCore.events = (function () {
         var data = {
           query: []
         };
-        
-        data.query.push({
+        var _dataQueryHash = {
           criteria_condition : head.querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition').value,
           source             : form.querySelector('select[name="source"]').value,
           conditions         : form.querySelector('select[name="conditions"]').value,
@@ -1086,7 +1141,18 @@ nCore.events = (function () {
             periodStart : form.querySelector('input[name="date_start"]').value,
             periodEnd : form.querySelector('input[name="date_end"]').value
           } : form.querySelector('[name="value"]').value
-        });
+        }
+
+        // if ( nCore.document.yearReport() ) {
+        //   _dataQueryHash.yearReport = {
+        //     main: nCore.document.main(),
+        //     compare: nCore.document.compare()
+        //   }
+        // }
+
+        console.log('+++++', _dataQueryHash);
+
+        data.query.push(_dataQueryHash);
 
         _query.push(data);
       };
@@ -1097,7 +1163,7 @@ nCore.events = (function () {
         };
       };
 
-      console.log('GLOBAL QUERY:', result_query);
+      console.log('GLOBAL QUERY:', result_query, _query);
 
       nCore.document.setGlobalQuery( JSON.stringify(result_query) )
     });

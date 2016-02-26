@@ -73,6 +73,12 @@
                 <span class="checkbox-title">Процент</span>
               </label>
             </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" class="formula" name="compare" value="">
+                <span class="checkbox-title">Сравнение</span>
+              </label>
+            </div>
             <div class="mui-form--inline">
               <div class="checkbox">
                 <label>
@@ -89,6 +95,7 @@
                 </select>
               </div>
             </div>
+
           </div>
           
           <div class="panelSelectorGroup  mui--z1">
@@ -228,27 +235,50 @@
     <li><a data-mui-toggle="tab" data-mui-controls="documentGlobalQueryPane">Глобальные условия</a></li>
   </ul>
   <div class="mui-tabs__pane mui--is-active" id="documentQueryPane">
-    <div class="mui-col-lg-12 documentModalHeight">
-      <form onsubmit="return false;" name="documentQueryPane">
-        <legend></legend>
-        <div class="mui-textfield mui-textfield--float-label">
-          <input type="text" class="nCoreName" name="nCoreName">
-          <label>Название</label>
-        </div>
-        <div class="mui-textfield mui-textfield--float-label">
-          <input type="text" class="nCoreDescription" name="nCoreDescription">
-          <label>Описание</label>
-        </div>
-        <div class="mui-textfield mui-textfield--float-label">
-          <input type="date" class="nCorePeriodStart" name="nCorePeriodStart">
-          <label>Начало периода</label>
-        </div>
-        <div class="mui-textfield mui-textfield--float-label">
-          <input type="date" class="nCorePeriodEnd" name="nCorePeriodEnd">
-          <label>Окончание периода</label>
-        </div>
-      </form>
-    </div>
+    <form onsubmit="return false;" name="documentQueryPane">
+      <div class="mui-col-lg-6 documentModalHeight">
+          <!-- <legend style="padding: 10px 0px;"> Общие настройки </legend> -->
+          <legend class="mui--text-subhead mui--text-dark-secondary" style="height: 20px; margin-top: 10px;"> Общие настройки </legend>
+          <div class="mui-textfield mui-textfield--float-label">
+            <input type="text" class="nCoreName" name="nCoreName">
+            <label>Название</label>
+          </div>
+          <div class="mui-textfield mui-textfield--float-label">
+            <input type="text" class="nCoreDescription" name="nCoreDescription">
+            <label>Описание</label>
+          </div>
+          <div class="mui-textfield mui-textfield--float-label">
+            <input type="date" class="nCorePeriodStart" name="nCorePeriodStart">
+            <label>Начало периода</label>
+          </div>
+          <div class="mui-textfield mui-textfield--float-label">
+            <input type="date" class="nCorePeriodEnd" name="nCorePeriodEnd">
+            <label>Окончание периода</label>
+          </div>
+
+      </div>
+      <div class="mui-col-lg-6 ">
+        
+          <!-- <legend style="padding: 10px 0px;"> Годовой отчёт? </legend> -->
+          <legend></legend>
+          <div class="mui-checkbox">
+            <label>
+              <input type="checkbox" name="yearReport" class="nCoreYearReport">
+              Годовой отчёт
+            </label>
+          </div>
+
+          
+          <div class="mui-textfield mui-textfield--float-label mui-col-lg-6">
+            <input type="number" name="main" class="nCoreMain" min="1990" max="2100" step="1" value="2015" >
+            <label>Отчётный год</label>
+          </div>
+          <div class="mui-textfield mui-textfield--float-label mui-col-lg-6">
+            <input type="number" name="compare" class="nCoreCompare" min="1990" max="2100" step="1" value="2015" >
+            <label>Сравнить с</label>
+          </div>
+      </div>
+    </form>
   </div>
   <div class="mui-tabs__pane" id="documentSizePane">
     <div class="mui-col-lg-12 documentModalHeight">

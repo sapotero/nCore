@@ -46,7 +46,10 @@ class DocumentsController < ApplicationController
       :query       => params[ :query ],
       :periodStart => params[ :periodStart ],
       :periodEnd   => params[ :periodEnd ],
-      :globalQuery => params[ :globalQuery ]
+      :globalQuery => params[ :globalQuery ],
+      :main        => params[ :main ],
+      :compare     => params[ :compare ],
+      :yearReport  => params[ :yearReport ]
     })
 
     if @document.save
@@ -59,14 +62,16 @@ class DocumentsController < ApplicationController
   def update
     ap params
     @document.body        = params[ :body ]
-    @document.image       = params[ :image ]
+    # @document.image       = params[ :image ]
     @document.periodStart = params[ :periodStart ]
     @document.periodEnd   = params[ :periodEnd ]
     @document.globalQuery = params[ :globalQuery ]
     @document.name        = params[ :name ]
     @document.description = params[ :description ]
     @document.query       = params[ :query ]
-
+    @document.main        = params[ :main ]
+    @document.compare     = params[ :compare ]
+    @document.yearReport  = params[ :yearReport ]
     if @document.update({
       :datetime    => params[ :datetime ]
     })

@@ -16,6 +16,11 @@ class Document
   field :periodEnd,   type: String
   field :archived,    type: Boolean, default: false
   field :globalQuery, type: String
+
+  # годовой отчет: год по которому считать/ год с каким сравнивать
+  field :yearReport,  type: Boolean, default: false
+  field :main,        type: Integer, default: Date.current.year
+  field :compare,     type: Integer, default: 1.year.ago.year
   
   field :body_id
   field :image_id

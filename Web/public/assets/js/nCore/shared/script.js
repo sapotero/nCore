@@ -419,4 +419,17 @@ jQuery(function($) {
     nCore.document.root.publish( 'updateDocument', this );
   });
 
+  $('[name="yearReport"]').live('change', function(){
+    var main    = this.parentNode.parentNode.parentNode.querySelector('[name="main"]');
+    var compare = this.parentNode.parentNode.parentNode.querySelector('[name="compare"]');
+
+    if ( !this.checked ) {
+      main.disabled    = true;
+      compare.disabled = true;
+    } else {
+      main.disabled    = false;
+      compare.disabled = false;
+    }
+  });
+
 });

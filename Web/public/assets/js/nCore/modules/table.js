@@ -383,6 +383,9 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('appg') ) {
           _cell.dataset.appg = headCell.dataset.appg;
         };
+        if ( headCell.dataset.hasOwnProperty('compare') ) {
+          _cell.dataset.compare = headCell.dataset.compare;
+        };
         if ( headCell.dataset.hasOwnProperty('total') ) {
           _cell.dataset.total = headCell.dataset.total;
         };
@@ -414,10 +417,10 @@ nCore.modules.table = (function(){
           _cell.dataset.queryDefault = headCell.dataset.queryDefault;
         };
 
-        console.log(' headcell ', headCell, query);
+        // console.log(' headcell ', headCell, query);
       };
 
-      console.log(' result ', query);
+      // console.log(' result ', query);
 
       query = uniq(query);
       if ( query.length ) {
@@ -478,7 +481,7 @@ nCore.modules.table = (function(){
               ___dataCell = dataRowsCenter[a].element,
               ___query = [];
           
-          console.log( 'without sideClass', cell.dataset , ___dataCell, ___dataCell.dataset, dataRowsCenter[a] );
+          // console.log( 'without sideClass', cell.dataset , ___dataCell, ___dataCell.dataset, dataRowsCenter[a] );
 
           if (rowQuery.length) {
             ___query = ___query.concat(rowQuery);
@@ -518,6 +521,9 @@ nCore.modules.table = (function(){
 
             if ( ___dataCell.dataset.appg ) {
               _cellData.appg = ___dataCell.dataset.appg
+            };
+            if ( ___dataCell.dataset.compare ) {
+              _cellData.compare = ___dataCell.dataset.compare
             };
             if ( ___dataCell.dataset.total ) {
               _cellData.total = ___dataCell.dataset.total
@@ -562,6 +568,13 @@ nCore.modules.table = (function(){
           if ( nCore.document.globalQuery() ) {
             console.log( 'globalQuery', nCore.document.globalQuery() );
             _cellData.globalQuery = nCore.document.globalQuery()
+          };
+
+          if ( nCore.document.yearReport() ) {
+            _cellData.yearReport = {
+              main    : nCore.document.main(),
+              compare : nCore.document.compare()
+            }
           };
 
           cellData.push( _cellData );
