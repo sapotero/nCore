@@ -185,7 +185,8 @@ nCore.events = (function () {
       nCoreDocumentAttributes.compare    = nCore.document.compare();
 
       
-      nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
+      if ( !nCore.document.isNewDocument() ) {
+        nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
         .success(function (data) {
           console.log('saveDocument', data);
           if (location.hash.match(/new/) !== null) {
@@ -194,6 +195,7 @@ nCore.events = (function () {
         }).error(function (data) {
           console.error('[!] saveDocument', post, data)
         });
+      }
     });
 
     // сохранение документа
@@ -210,7 +212,7 @@ nCore.events = (function () {
 
     nCore.document.root.subscribe('saveDocumentToDb', function (data) {
       console.log('data: ', data);
-      nCore.modules.table.event.publish('globalCriteriaCalculate');
+      // nCore.modules.table.event.publish('globalCriteriaCalculate');
 
       // если передеали значения из формы
       if (data && data.nodeName === 'FORM') {
@@ -1117,7 +1119,7 @@ nCore.events = (function () {
 
     nCore.document.root.subscribe('globalCriteriaCalculate', function(body){
       
-      body = body || document.querySelector('._nCoreDocumentSettings');
+      // body = body || document.querySelector('._nCoreDocumentSettings');
       console.log( 'globalCriteriaCalculate', body );
 
       var _query       = [],
