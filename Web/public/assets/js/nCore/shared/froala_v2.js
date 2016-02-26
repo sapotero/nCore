@@ -1800,6 +1800,16 @@ initFroalaEditor.then(function(data) {
     refreshAfterCallback: false,
     callback: function () {
       var format = this.selection.get();
+
+      function findUp(el, selector) {
+        while (el.parentNode) {
+          el = el.parentNode;
+          if ( el.id == selector ){
+            return el;
+          }
+        }
+        return null;
+      }
       // проверяем что есть выделение текста || мы поставили курсор внутри редактора
 
       var calculationCell = document.createElement('div');
@@ -1826,56 +1836,15 @@ initFroalaEditor.then(function(data) {
         text.style.display = 'inline';
         text.textContent = 'Значение';
         infoCell.appendChild(text)
-        infoCell.appendChild(calculationCell)
-        format.baseNode.parentNode.insertBefore( infoCell, format.baseNode.nextSibling );
+        infoCell.appendChild(calculationCell);
+
+        var exist = findUp(format.baseNode.parentNode, 'paper');
+        if ( exist ) {
+          format.baseNode.parentNode.insertBefore( infoCell, format.baseNode.nextSibling );
+        } else {
+          return false
+        }
       }
     }
   });
 });
-
-
-/* P FORMAT */
-
-/* IMAGE */
-
-
-
-
-// прототип с масштабированием
-  // $.FroalaEditor.DefineIcon('zoom-in', {
-  //   NAME: 'plus'
-  // });
-  // $.FroalaEditor.RegisterCommand('zoom-in', {
-  //   title                : 'Увеличить масштаб',
-  //   focus                : false,
-  //   undo                 : false,
-  //   // refreshAfterCallback : false,
-  //   callback: function () {
-
-  //     var el   = this.$original_element[0].querySelector('.fr-wrapper'),
-  //         zoom = parseFloat((el.style.zoom ? el.style.zoom : 1));
-  //     zoom += 0.1;
-  //     el.style.zoom = zoom;
-  //     console.log('zoom in -> ', el, zoom );
-  //   }
-  // });
-  // $.FroalaEditor.DefineIcon('zoom-out', {
-  //   NAME: 'minus'
-  // });
-  // $.FroalaEditor.RegisterCommand('zoom-out', {
-  //   title                : 'Уменьшить масштаб',
-  //   focus                : false,
-  //   undo                 : false,
-  //   refreshAfterCallback : false,
-  //   callback: function () {
-
-  //     var el   = this.$original_element[0].querySelector('.fr-wrapper'),
-  //         zoom = parseFloat((el.style.zoom ? el.style.zoom : 1));
-  //     zoom += -0.1;
-  //     if (zoom <= 0.1) {
-  //       zoom = 0.1;
-  //     };
-  //     el.style.zoom = zoom;
-  //     console.log('zoom in -> ', el, zoom );
-  //   }
-  // });

@@ -36,7 +36,9 @@ nCore.events = (function () {
       m.classList.toggle('_newDocument');
       m.innerHTML = '<form onsubmit="nCore.document.root.publish(\'saveDocumentToDb\', this); return false;"><legend>Документ</legend><br><br><div class="mui-textfield mui-textfield--float-label"><input required name="nCoreDocumnetName"><label>Название</label></div><div class="mui-textfield mui-textfield--float-label"><input type=text required name="nCoreDocumnetDescription"><label>Описание</label></div><div class="mui--text-right"><button type=button onclick="mui.overlay(\'off\');" class="mui-btn mui-btn--raised mui-btn--danger">отмена</button><button type=submit class="mui-btn mui-btn--raised mui-btn--primary">сохранить</button></div></form>';
 
-      mui.overlay('on', options, m);
+      var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
     });
 
     nCore.document.root.subscribe('showDocumentSettings', function (data) {
@@ -52,6 +54,7 @@ nCore.events = (function () {
       var m = document.createElement('div');
       m.classList.toggle('mui-panel');
       m.classList.toggle('mui--z5');
+            
       m.classList.add('_nCoreDocumentSettings');
 
       nCore.document.setShowSettings(true)
@@ -63,7 +66,9 @@ nCore.events = (function () {
         nCorePeriodEnd   : nCore.document.periodEnd()
       });
       m.innerHTML = text.innerHTML;
-      mui.overlay('on', options, m);
+      var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
 
       var toggleEls = document.querySelectorAll('[data-mui-controls^="document"]');
 
@@ -106,7 +111,9 @@ nCore.events = (function () {
       m.classList.toggle('mui--z5');
       m.innerHTML = '<core-modal limit="20" offset="0" total="100" selected="" from="" source="" caption="Выбор элементов группы"></core-modal>';
 
-      mui.overlay('on', options, m);
+      var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
     });
 
     nCore.document.root.subscribe('addGroupData', function (data) {
@@ -373,7 +380,9 @@ nCore.events = (function () {
         m.classList.toggle('mui--z5');
         m.innerHTML = '<h4>Загрузка документа</h4><div class="loader"></div>';
 
-        mui.overlay('on', options, m);
+        var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
 
         var load = new Promise(function(resolve, reject) {
           // выполняем асинхронный код
@@ -447,7 +456,9 @@ nCore.events = (function () {
       m.classList.toggle('mui--z5');
       m.innerHTML = '<h4>Создание нового документа</h4><div class="loader"></div>';
 
-      mui.overlay('on', options, m);
+      var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
       
       var render = new Promise(function(resolve, reject) {
         // выполняем асинхронный код
@@ -566,7 +577,9 @@ nCore.events = (function () {
           m.classList.toggle('mui--z5');
           m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
 
-          mui.overlay('on', options, m);
+          var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
         }, 300);
       };
       function removeOverlay() {
@@ -594,13 +607,13 @@ nCore.events = (function () {
             var helper = {
               documentTitle: {
                 text: function (params) {
-                  return this.params.name;
+                  return this.params.name || '---';
                 }
               },
               documentDate: {
                 text: function (params) {
                   console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-                  return this.params.date || new Date().toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
+                  return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
                     year  : 'numeric',
                     month : 'numeric',
                     day   : 'numeric'
@@ -648,6 +661,11 @@ nCore.events = (function () {
               documentImage: {
                 src: function(params){
                   return ( this.image.length ? this.image : 'assets/img/doc.png' )
+                }
+              },
+              groupTitle: {
+                text: function () {
+                  return 'Шаблоны'
                 }
               }
             };

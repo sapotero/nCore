@@ -4,7 +4,9 @@ class DocumentsController < ApplicationController
   protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
 
   def index
-    render :json => Document.active
+    @query = Document.active
+    # @query.page(params[:page]).per(params[:show_count] || 10)
+    render :json => @query
   end
 
   def show

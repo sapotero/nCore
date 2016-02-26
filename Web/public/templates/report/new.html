@@ -55,29 +55,29 @@
         <div class="mui-tabs__pane formulaSettings" id="formulaGroupTab">
           <div class="panelSelectorGroup   mui--z1">
             <!-- <label> Глобальные модификаторы</label> -->
-            <div class="mui-checkbox">
+            <div class="checkbox">
               <label>
                 <input type="checkbox" class="formula" name="appg" value="">
-                АППГ
+                <span class="checkbox-title">АППГ</span>
               </label>
             </div>
-            <div class="mui-checkbox">
+            <div class="checkbox">
               <label>
                 <input type="checkbox" class="formula" name="total" value="">
-                Всего
+                <span class="checkbox-title">Всего</span>
               </label>
             </div>
-            <div class="mui-checkbox">
+            <div class="checkbox">
               <label>
                 <input type="checkbox" class="formula" name="percent" value="">
-                Процент
+                <span class="checkbox-title">Процент</span>
               </label>
             </div>
             <div class="mui-form--inline">
-              <div class="mui-checkbox">
+              <div class="checkbox">
                 <label>
                   <input type="checkbox" name='useDefault' value="">
-                  Значение по умолчанию
+                  <span class="checkbox-title">Значение по умолчанию</span>
                 </label>
               </div>
               <div class="mui-select" style="width: 100%;">
@@ -92,32 +92,32 @@
           </div>
           
           <div class="panelSelectorGroup  mui--z1">
-            <div class="mui-checkbox">
+            <div class="checkbox">
               <label>
                 <input type="checkbox" class="formula" name="includeSubthemes" value="">
-                Включая подтемы
+                <span class="checkbox-title">Включая подтемы</span>
               </label>
             </div>
-            <div class="mui-checkbox">
+            <div class="checkbox">
               <label>
                 <input type="checkbox" class="formula" name="includeThemesAp" value="">
-                Включая уточненния подтем
+                <span class="checkbox-title">Включая уточненния подтем</span>
               </label>
             </div>
-            <div class="mui-checkbox">
+            <div class="checkbox">
               <label>
                 <input type="checkbox" class="formula" name="includeSubordinates" value="">
-                Учитывать подчинённые организации
+                <span class="checkbox-title">Учитывать подчинённые организации</span>
               </label>
             </div>
           </div>
 
           <div class="panelSelectorGroup  mui--z1">
             <div class="mui-form--inline">
-              <div class="mui-checkbox">
+              <div class="checkbox">
                 <label>
                   <input type="checkbox" name='useMonth' value="">
-                  Месяц?
+                  <span class="checkbox-title">Месяц?</span>
                 </label>
               </div>
               <div class="mui-select" style="width: 100%;">
@@ -141,10 +141,10 @@
 
           <div class="panelSelectorGroup  mui--z1">
             <div class="mui-form--inline">
-              <div class="mui-checkbox">
+              <div class="checkbox">
                 <label>
                   <input type="checkbox" name='useChosenOrigin' value="">
-                  Указать источник
+                  <span class="checkbox-title">Указать источник</span>
                 </label>
               </div>
               <div class="mui-selects">
@@ -155,18 +155,15 @@
           </div>
 
           <div class="formulaSelectorGroupTemplate panelSelectorGroup ">
-            <li class=" mui-col-md-12 mui-panel mui-panel-group formulaSelectorGroup mui--z2">
-              <span class="formulaSelectorGroupName mui--pull-left"> Формула </span>
-              <span class="formulaSelectorGroupButton mui--pull-right">
-                <div class="mui-checkbox">
-                  <label>
-                    <input type="checkbox" class="formula" name="useFormula" value="">
-                    Использовать
-                  </label>
-                </div>
-              </span>
+            <li class=" mui-col-md-12 mui-panel-group formulaSelectorGroup mui--z2" style="padding-top: 5px;">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" class="formula" name="useFormula" value="">
+                  <span class="checkbox-title">Формула</span>
+                </label>
+              </div>
               <ul class="formulaSelectorGroupList mui-row">
-                <textarea name="formula" placeholder="..." disabled="true" rows="9" cols="30" ></textarea>
+                <textarea name="formula" placeholder="..." disabled="true" rows="9" cols="30" style="max-width: 260px;"></textarea>
               </ul>
             </li>
             <div class="mui-select mui-col-md-12 connectionGroup mui--hide">
