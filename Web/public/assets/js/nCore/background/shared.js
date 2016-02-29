@@ -11,6 +11,7 @@ nCore.shared = (function(){
   };
 
   var init = function(){
+    // nCore.shared.post('testShared')
     return shared
   },
   post = function(data){

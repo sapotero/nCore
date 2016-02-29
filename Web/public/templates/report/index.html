@@ -26,13 +26,14 @@
 
 <!-- шаблон для превьюх -->
 <div class="mui-row _indexView thumb  mui--hide">
-  
-  <div class="mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12">
-    <div class="mui--text-dark-secondary mui--text-title groupTitle"></div>
-  </div>
 
   <div id="thumb" class="mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12 indexThumbView">
-    <div class="eachDocument mui-col-md-3 mui-col-ms-offset-0 mui-col-sm-3 mui-col-sm-offset-0 mui-col-xs-6 mui-col-xs-offset-5" style="width: 20%">
+    
+   <!--  <div class="mui-col-md-12 mui-col-xs-12">
+      <div class="mui--text-dark-secondary mui--text-title date"></div>
+    </div> -->
+    <!-- <div class="documents"> -->
+    <div class="document mui-col-md-3 mui-col-ms-offset-0 mui-col-sm-3 mui-col-sm-offset-0 mui-col-xs-6 mui-col-xs-offset-5" style="width: 20%">
       <div class="mui-panel mui--z2 document-thumb-view">
         
         <div class="document-thumb-view-image-wrapper">
@@ -69,7 +70,61 @@
         </div>
       </div>
     </div>
+    <!-- </div>  -->
+
   </div>
+</div>
+
+<!-- шаблон для списка -->
+<!-- раскоментить при для изменения вида -->
+<div class="mui-row _indexView list mui--hide" style="padding-bottom: 40px">
+  <!-- <div class="mui-col-md-12 mui-col-xs-12">
+    <div class="mui--text-dark-secondary mui--text-title date"></div>
+  </div> -->
+  <!-- <div class="documents"> -->
+    <div class="document mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12">
+
+      <div class="indexListViewSort">
+        <div class="mui-col-lg-1">
+          <!-- <i class="fa fa-file" style="color: #2196F3"></i> -->
+        </div>
+        <div class="mui-col-lg-8 mui--text-black-54 mui--text-subhead">Название</div>
+        <!-- <div class="mui-col-lg-2 mui--text-black-87 mui--text-subhead"></div> -->
+        <div class="mui-col-lg-1 mui--text-black-87 mui--text-subhead">Дата</div>
+        <div class="mui-col-lg-2"></div>
+      </div>
+      <div class="indexListViewGroup  mui--z2">
+        <div id="list">
+          <div class="mui-panel indexListView">
+            <div class="mui-col-lg-1">
+              <i class="fa fa-file" style="color: #2196F3"></i>
+            </div>
+
+            <a class="documentId">
+              <div class="mui-col-lg-8 mui--text-black-54 documentTitle"></div>
+            </a>
+
+            <div class="mui-col-lg-1 mui--text-black-87 documentDate"></div>
+            <div class="mui-col-lg-1 mui--text-right">
+
+              <input type="checkbox">
+            </div>
+            <div class="mui-col-lg-1 mui--text-right">
+              <div class="mui-dropdown document-list-view-dropdown">
+                <button class="mui-btn mui-btn--flat ellipsList mui--text-dark-secondary" data-mui-toggle="dropdown">
+                  <i class="fa fa-ellipsis-v "></i>
+                </button>
+                <ul class="mui-dropdown__menu mui-dropdown__menu--right mui--z3">
+                  <li><a class="downloadPdf" href="#">Скачать PDF</a></li>
+                  <li><a class="removeDocument" data-href="#">Удалить отчёт</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
 </div>
 
 <div class="pagination-container mui--hide">
@@ -94,49 +149,3 @@
   </div>
 </div>
 
-<!-- шаблон для списка -->
-<!-- раскоментить при для изменения вида -->
-<div class="mui-row _indexView list mui--hide" style="padding-bottom: 40px">
-  <div class="mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12">
-
-    <div class="indexListViewSort">
-      <div class="mui-col-lg-1">
-        <!-- <i class="fa fa-file" style="color: #2196F3"></i> -->
-      </div>
-      <div class="mui-col-lg-8 mui--text-black-54 mui--text-subhead">Название</div>
-      <!-- <div class="mui-col-lg-2 mui--text-black-87 mui--text-subhead"></div> -->
-      <div class="mui-col-lg-1 mui--text-black-87 mui--text-subhead">Дата</div>
-      <div class="mui-col-lg-2"></div>
-    </div>
-    <div class="indexListViewGroup  mui--z2">
-      <div id="list">
-        <div class="mui-panel indexListView">
-          <div class="mui-col-lg-1">
-            <i class="fa fa-file" style="color: #2196F3"></i>
-          </div>
-
-          <a class="documentId">
-            <div class="mui-col-lg-8 mui--text-black-54 documentTitle"></div>
-          </a>
-
-          <div class="mui-col-lg-1 mui--text-black-87 documentDate"></div>
-          <div class="mui-col-lg-1 mui--text-right">
-
-            <input type="checkbox">
-          </div>
-          <div class="mui-col-lg-1 mui--text-right">
-            <div class="mui-dropdown document-list-view-dropdown">
-              <button class="mui-btn mui-btn--flat ellipsList mui--text-dark-secondary" data-mui-toggle="dropdown">
-                <i class="fa fa-ellipsis-v "></i>
-              </button>
-              <ul class="mui-dropdown__menu mui-dropdown__menu--right mui--z3">
-                <li><a class="downloadPdf" href="#">Скачать PDF</a></li>
-                <li><a class="removeDocument" data-href="#">Удалить отчёт</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

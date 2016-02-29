@@ -172,13 +172,13 @@ nCore.events = (function () {
         body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
       };
 
-      nCore.document.setPeriodEnd(data.elements.nCorePeriodEnd.value);
-      nCore.document.setPeriodStart(data.elements.nCorePeriodStart.value);
-      nCore.document.setTitle(data.elements.nCoreName.value);
+      nCore.document.setTitle(       data.elements.nCoreName.value );
+      nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value );
+      nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
 
-      nCore.document.setYearReport( data.elements.yearReport.checked );
-      nCore.document.setMain(       data.elements.main.value );
-      nCore.document.setCompare(    data.elements.compare.value );
+      nCore.document.setYearReport(  data.elements.yearReport.checked );
+      nCore.document.setCompare(     data.elements.compare.value );
+      nCore.document.setMain(        data.elements.main.value );
 
       nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
       nCoreDocumentAttributes.main       = nCore.document.main();
@@ -600,7 +600,8 @@ nCore.events = (function () {
     });
 
     nCore.document.root.subscribe('renderIndexView', function (type) {
-      function addOverlay() {
+     
+     function addOverlay() {
         setTimeout( function(){
           var overlayEl = mui.overlay('on'),
 
@@ -627,13 +628,16 @@ nCore.events = (function () {
       overlay.classList.toggle('fadeIn');
         }, 300);
       };
+      
       function removeOverlay() {
         setTimeout( function(){
           mui.overlay('off');
         },300)
       };
+
       var render = new Promise(function(resolve, reject) {
         addOverlay();
+        
         setTimeout(function(){
           document.getElementById('thumb').classList.add('mui--hide');
 
@@ -649,6 +653,127 @@ nCore.events = (function () {
             var items = JSON.parse(nCore.storage.getItem(type));
             console.log('storage: ', items);
 
+
+
+            ///////////////////////////////
+            // РАЗБИВКА ПО ДАТАМ ГОТОВАЯ //
+            ///////////////////////////////
+            ///
+            // var new_items = items.sort(function(a,b) {
+            //     return new Date(a.params.created_at) - new Date(b.params.created_at);
+            // });
+            // сортируем по датам и выводим по дням
+            // var document_date = '',
+            //     document_date_raw,
+            //     document_array = [],
+            //     __result = [];
+
+            // var helper = {
+            //   documents: {
+            //     documentTitle: {
+            //       text: function (params) {
+            //         console.log('params:',this, params);
+            //         return this.params.name || '---';
+            //       }
+            //     },
+            //     documentDate: {
+            //       text: function (params) {
+            //         console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
+            //         return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
+            //           year  : 'numeric',
+            //           month : 'numeric',
+            //           day   : 'numeric'
+            //         } : {
+            //           year   : 'numeric',
+            //           month  : 'numeric',
+            //           day    : 'numeric',
+            //           hour   : 'numeric',
+            //           minute : 'numeric'
+
+            //         });
+            //       }
+            //     },
+            //     documentId: {
+            //       href: function (params) {
+            //         return "#/report/" + this.params._id || Math.random();
+            //       },
+            //       text: function () {
+            //         return ''
+            //       }
+            //     },
+            //     downloadDoc: {
+            //       href: function (params) {
+            //         return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
+            //       }
+            //     },
+            //     downloadPdf: {
+            //       href: function (params) {
+            //         return "documents/" + this.params._id + ".pdf";
+            //       }
+            //     },
+            //     removeDocument: {
+            //       href: function (params) {
+            //         return location.hash;
+            //       },
+            //       type: function () {
+            //         return this.params._id
+            //       }
+            //     },
+            //     documentUser: {
+            //       text: function () {
+            //         return this.params.user
+            //       }
+            //     },
+            //     documentImage: {
+            //       src: function(params){
+            //         return ( this.image.length ? this.image : 'assets/img/doc.png' )
+            //       }
+            //     },
+            //     groupTitle: {
+            //       text: function () {
+            //         return 'Шаблоны'
+            //       }
+            //     }
+            //   }
+            // };
+
+            // for (var q = 0; q < new_items.length; q++) {
+            //   var doc = new_items[q];
+            //   if ( document_date != new Date( doc.params.created_at ).getDate() ) {
+                
+            //     if ( document_array.length ) {
+                  
+            //       console.log('RENDER:',document_array );
+
+            //       // рендерим за день 
+            //       var render = Transparency.render( document.getElementById( nCore.storage.getItem('indexViewType') ), {
+            //         date: document_date_raw.toLocaleString().split(',')[0],
+            //         documents: document_array
+            //       },
+            //       helper ).innerHTML;
+
+            //       console.log('-', render);
+
+            //       __result.push ( render );
+            //       // }, helper);
+
+            //       document_array = [];
+            //     }
+            //     document_date     = new Date( doc.params.created_at ).getDate()
+            //     document_date_raw = new Date( doc.params.created_at )
+            //     document_array.push( doc )
+                
+            //     console.log( 'New Day: ', document_date_raw.toLocaleString() );
+                
+            //   } else {
+            //     document_array.push( doc )
+            //   }
+              
+            //   // console.log('document_date', document_date.toLocaleString(), document_date.getDate(), document_date.getMonth() );
+            // }
+            // document.getElementById(nCore.storage.getItem('indexViewType')).innerHTML = '';
+            // document.getElementById(nCore.storage.getItem('indexViewType')).innerHTML = __result.join('');
+            // 
             var helper = {
               documentTitle: {
                 text: function (params) {
@@ -718,7 +843,6 @@ nCore.events = (function () {
             Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
 
             document.body.classList.add('hide-sidedrawer');
-            // nCore.document.root.publish('generateNewDocument');
             document.getElementById('thumb').classList.remove('mui--hide')
 
             var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
@@ -732,11 +856,14 @@ nCore.events = (function () {
               _active_row.classList.remove('mui--hide');
             };
 
+            resolve(true)
             // clearInterval(_i);
+          } else {
+            reject(false)
           };
 
           
-          resolve(true)
+          
         }, 500); 
       });
 
@@ -1410,7 +1537,7 @@ nCore.events = (function () {
 
       for (var z = 0; z < items.length; z++) {
         var item = items[z];
-        // console.log('ITEM', item);
+        console.log('ITEM', item);
         load(item);
       };
     });

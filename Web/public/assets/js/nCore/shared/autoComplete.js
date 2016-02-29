@@ -440,6 +440,7 @@ jQuery(function($) {
       
       autoComplete({
         selector: 'input[name="mainSearch"]',
+        minChars: 2,
         source: function(term, response){
           $.getJSON( url, { term: input_search_selector.value },
             function(data){

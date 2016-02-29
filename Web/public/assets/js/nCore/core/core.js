@@ -10,7 +10,7 @@ nCore.core = (function(){
    * @description Выполняется при загрузке модуля
    */
   function init(){
-    // console.log( this );
+    console.log( this );
   };
 
   return {
