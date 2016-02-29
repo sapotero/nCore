@@ -591,7 +591,7 @@ nCore.modules.table = (function(){
     console.groupEnd();
 
     // dataRow.style.display = 'none';
-    dataRow.parentNode.removeChild(dataRow);
+    dataRow.parentNode.removeChild(dataRow); 
     
     // console.log( 'str', JSON.stringify(cellData) );
     
