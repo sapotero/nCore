@@ -9,11 +9,148 @@ nCore.core = (function(){
    * @function init
    * @description Выполняется при загрузке модуля
    */
-  function init(){
+  var init = function(){
     console.log( this );
+  },
+  globalQueryPopulate = function(){
+    console.groupCollapsed("globalQueryPopulate");
+
+    console.log( 'globalQuery', JSON.parse( nCore.document.globalQuery() ) );
+
+    var tab = document.querySelector('.criteriaSelectorGroupGlobal');
+    tab.innerHTML = '';
+
+    var __elements_to_update = [], criteriaCondition;
+    var overlayTab;
+
+    function addOverlay() {
+      setTimeout( function(){
+        overlayTab = document.createElement('div');
+        overlayTab.style.top        = '50px';
+        overlayTab.style.height     = '94%';
+        overlayTab.style.width      = '100%';
+        overlayTab.style.overflow   = 'hidden';
+        overlayTab.style.position   = 'absolute';
+        overlayTab.style.background = 'rgba(255,255,255, .9)';
+        overlayTab.style.zIndex    = '2';
+
+        overlayTab.innerHTML = '<div style="top: 50%; left: 50%;text-align: center; position: absolute;height: 100%;text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
+        
+        tab.appendChild( overlayTab );
+      }, 100);
+    };
+    function removeOverlay() {
+
+      overlayTab.classList.add('animatedSlow');
+      overlayTab.classList.add('fadeOut');
+
+      setTimeout( function(){
+        if ( overlayTab ) {
+          console.log('overlayTab',overlayTab, tab );
+          tab.removeChild( overlayTab );
+        }
+      },300)
+    };
+
+    var render = new Promise(function(resolve, reject) {
+      addOverlay();
+      setTimeout(function(){
+        if ( nCore.document.globalQuery() != '' && JSON.parse( nCore.document.globalQuery() ) ) {
+        
+          
+            var queryArray = JSON.parse( nCore.document.globalQuery() ),
+              _selectedIindex = -1;
+            for (var z = 0; z < queryArray.length; z++) {
+
+
+              var group     = queryArray[z],
+                  criterias = group.query,
+                  groupConditions = group.conditions;
+
+              console.groupCollapsed("query");
+              console.dir('criterias',  criterias);
+              console.dir('conditions', groupConditions);
+
+              var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
+                groupTemplate = _groupTemplate.cloneNode(true),
+                groupSelectCondition = groupTemplate.getElementsByTagName('select')[0];
+
+              if (groupConditions) {
+                for (var v = 0; v < groupSelectCondition.options.length; v++) {
+                  console.log('groupSelectCondition', groupSelectCondition);
+                  if (groupSelectCondition[v].value === groupConditions) {
+                    _selectedIindex = v;
+                    break;
+                  }
+
+                }
+
+                groupTemplate.querySelector('.connectionGroup').classList.remove('mui--hide');
+              }
+
+              var _group = groupTemplate;
+              groupSelectCondition = _group.getElementsByTagName('select')[0].selectedIndex = _selectedIindex;
+
+              _group.classList.remove('criteriaSelectorGroupTemplate');
+              _group.classList.remove('mui--hide');
+              tab.appendChild(_group);
+
+              for (var b = 0; b < criterias.length; b++) {
+                var _elements_to_update = [],
+                  item = criterias[b],
+                  list = groupTemplate.querySelector('.criteriaSelectorGroupList'),
+                  cardTemplate = document.querySelector('.criteriaSelectorItemTemplate');
+
+                console.dirxml('criteria -> ', item);
+
+                if (item.source == null && item.origin_name == null) {
+                  activeCell.dataset.query = '[]';
+                  continue;
+                }
+
+                var card = cardTemplate.cloneNode(true);
+                card.classList.remove('criteriaSelectorItemTemplate');
+                card.classList.remove('mui--hide');
+
+                var form = card.querySelector('.criteriaForm');
+                criteriaCondition = card.querySelector('select.itemSelectCondition');
+
+                list.appendChild(card);
+
+                console.log('list card form',list, card, form);
+
+                nCore.modules.cell.generateBlock( item, form, 'source',      item.source, true );
+                nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name, true );
+                nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions, true );
+                nCore.modules.cell.generateBlock( item, form, 'value',       item.value, true );
+
+                card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+
+                var cr_c = card.querySelector('[name="criteria_condition_group"]');
+                cr_c.value = item.criteria_condition;
+                cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
+              }
+              console.groupEnd();
+              document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
+            }
+            // nCore.modules.table.event.publish('newCellSettingsChange' );
+
+        }
+        resolve(true)
+      }, 200); 
+    });
+
+    render.then(function(data) {
+      removeOverlay()
+    }).catch(function(result) {
+      console.log("ERROR renderCellSettings!", result);
+    });
+
+    console.groupEnd();
   };
 
   return {
-    init: init
+    init: init,
+    globalQueryPopulate: globalQueryPopulate
   };
 })();

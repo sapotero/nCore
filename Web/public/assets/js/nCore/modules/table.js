@@ -354,6 +354,7 @@ nCore.modules.table = (function(){
     console.info('7) dataRowsCenter:', dataRowsCenter);
 
     console.groupCollapsed('dateCell query calculate');
+    // for
     for (var i = dataRow.cells.length - 1; i >= 0; i--) {
       var _cell = dataRow.cells[i],
           coordinates = _cell.getBoundingClientRect(),
@@ -380,40 +381,40 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('query') ) {
           query.push( headCell.dataset.query );
         };
-        if ( headCell.dataset.hasOwnProperty('appg') ) {
+        if ( headCell.dataset.hasOwnProperty('appg') && headCell.dataset.appg == 'true' ) {
           _cell.dataset.appg = headCell.dataset.appg;
         };
-        if ( headCell.dataset.hasOwnProperty('compare') ) {
+        if ( headCell.dataset.hasOwnProperty('compare') && headCell.dataset.compare == 'true' ) {
           _cell.dataset.compare = headCell.dataset.compare;
         };
-        if ( headCell.dataset.hasOwnProperty('total') ) {
+        if ( headCell.dataset.hasOwnProperty('total') && headCell.dataset.total == 'true' ) {
           _cell.dataset.total = headCell.dataset.total;
         };
-        if ( headCell.dataset.hasOwnProperty('percent') ) {
+        if ( headCell.dataset.hasOwnProperty('percent') && headCell.dataset.percent == 'true' ) {
           _cell.dataset.percent = headCell.dataset.percent;
         };
-        if ( headCell.dataset.hasOwnProperty('includeSubordinates') ) {
+        if ( headCell.dataset.hasOwnProperty('includeSubordinates') && headCell.dataset.includeSubordinates == 'true' ) {
           _cell.dataset.includeSubordinates = headCell.dataset.includeSubordinates;
         };
-        if ( headCell.dataset.hasOwnProperty('chosenOrigin') ) {
+        if ( headCell.dataset.hasOwnProperty('chosenOrigin') && headCell.dataset.chosenOrigin == 'true' ) {
           _cell.dataset.chosenOrigin = headCell.dataset.chosenOrigin;
         };        
-        if ( headCell.dataset.hasOwnProperty('includeSubthemes') ) {
+        if ( headCell.dataset.hasOwnProperty('includeSubthemes') && headCell.dataset.includeSubthemes == 'true' ) {
           _cell.dataset.includeSubthemes = headCell.dataset.includeSubthemes;
         };
-        if ( headCell.dataset.hasOwnProperty('includeThemesAp') ) {
+        if ( headCell.dataset.hasOwnProperty('includeThemesAp') && headCell.dataset.includeThemesAp == 'true' ) {
           _cell.dataset.includeThemesAp = headCell.dataset.includeThemesAp;
         };
-        if ( headCell.dataset.hasOwnProperty('group') ) {
+        if ( headCell.dataset.hasOwnProperty('group') && headCell.dataset.group == 'true' ) {
           _cell.dataset.group = headCell.dataset.group;
         };
-        if ( headCell.dataset.hasOwnProperty('queryMonth') ) {
+        if ( headCell.dataset.hasOwnProperty('queryMonth') && headCell.dataset.queryMonth == 'true' ) {
           _cell.dataset.queryMonth = headCell.dataset.queryMonth;
         };
-        if ( headCell.dataset.hasOwnProperty('formula') ) {
+        if ( headCell.dataset.hasOwnProperty('formula') && headCell.dataset.formula == 'true' ) {
           _cell.dataset.formula = headCell.dataset.formula;
         };
-        if ( headCell.dataset.hasOwnProperty('queryDefault') ) {
+        if ( headCell.dataset.hasOwnProperty('queryDefault') && headCell.dataset.queryDefault == 'true' ) {
           _cell.dataset.queryDefault = headCell.dataset.queryDefault;
         };
 
@@ -519,40 +520,40 @@ nCore.modules.table = (function(){
               _cellData.query.head.push(___dataCell.dataset.query);
             };
 
-            if ( ___dataCell.dataset.appg ) {
+            if ( ___dataCell.dataset.appg && ___dataCell.dataset.appg == 'true' ) {
               _cellData.appg = ___dataCell.dataset.appg
             };
-            if ( ___dataCell.dataset.compare ) {
+            if ( ___dataCell.dataset.compare && ___dataCell.dataset.compare == 'true' ) {
               _cellData.compare = ___dataCell.dataset.compare
             };
-            if ( ___dataCell.dataset.total ) {
+            if ( ___dataCell.dataset.total && ___dataCell.dataset.total == 'true' ) {
               _cellData.total = ___dataCell.dataset.total
             };
-            if ( ___dataCell.dataset.percent ) {
+            if ( ___dataCell.dataset.percent && ___dataCell.dataset.percent == 'true' ) {
               _cellData.percent = ___dataCell.dataset.percent
             };
-            if ( ___dataCell.dataset.includeSubordinates ) {
+            if ( ___dataCell.dataset.includeSubordinates && ___dataCell.dataset.includeSubordinates == 'true' ) {
               _cellData.includeSubordinates = ___dataCell.dataset.includeSubordinates
             };
-            if ( ___dataCell.dataset.includeSubthemes ) {
+            if ( ___dataCell.dataset.includeSubthemes && ___dataCell.dataset.includeSubthemes == 'true' ) {
               _cellData.includeSubthemes = ___dataCell.dataset.includeSubthemes
             };
-            if ( ___dataCell.dataset.includeThemesAp ) {
+            if ( ___dataCell.dataset.includeThemesAp && ___dataCell.dataset.includeThemesAp == 'true' ) {
               _cellData.includeThemesAp = ___dataCell.dataset.includeThemesAp
             };
 
-            if ( ___dataCell.dataset.queryMonth ) {
+            if ( ___dataCell.dataset.queryMonth && ___dataCell.dataset.queryMonth == 'true' ) {
               _cellData.queryMonth = ___dataCell.dataset.queryMonth
             };
-            if ( ___dataCell.dataset.formula ) {
+            if ( ___dataCell.dataset.formula && ___dataCell.dataset.formula == 'true' ) {
               _cellData.formula = ___dataCell.dataset.formula
             };
 
-            if ( ___dataCell.dataset.queryDefault ) {
+            if ( ___dataCell.dataset.queryDefault && ___dataCell.dataset.queryDefault == 'true' ) {
               _cellData.queryDefault = ___dataCell.dataset.queryDefault
             };
 
-            if ( ___dataCell.dataset.chosenOrigin ) {
+            if ( ___dataCell.dataset.chosenOrigin && ___dataCell.dataset.chosenOrigin == 'true' ) {
               _cellData.origin      = _cellData.hasOwnProperty('origin') ? _cellData.origin : {};
               _cellData.origin.head = ___dataCell.dataset.chosenOrigin;
             };

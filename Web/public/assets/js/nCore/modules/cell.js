@@ -80,9 +80,11 @@ nCore.modules.cell = (function(){
 
   var init = function(){
   },
-  generateBlock = function( criteria, parent, name, value ){
+  generateBlock = function( criteria, parent, name, value, globalQuery ){
     //console.groupCollapsed("generateBlock");
     //console.info( 'input params: ', criteria, parent, name, value );
+    globalQuery = globalQuery || false;
+
     var _criteria = criteria,
         _parent   = parent,
         _name     = name,
@@ -129,15 +131,18 @@ nCore.modules.cell = (function(){
       .on('change', function(){
         nCore.modules.table.event.publish('newCellSettingsChange' );
       })
-    }  else {
+    } else {
       parent.appendChild( element );
     };
 
 
 
-    if ( nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
-      // //console.log( 'ID ', nCore.modules.table.active().dataset, value );
+    console.log( 'ID ', value );
+    if ( !globalQuery && nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
       $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] ).val("").trigger("change");
+    } else {
+      console.log('element', element);
+      // $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] ).val("").trigger("change");
     };
 
     if ( select2.hasOwnProperty('url') ){

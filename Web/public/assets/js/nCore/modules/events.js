@@ -110,6 +110,8 @@ nCore.events = (function () {
       // documentQueryPane по дефолту
       m.querySelector( '#'+nCore.document.documentSettingTab() ).classList.add('mui--is-active');
       m.querySelector('[data-mui-controls="'+nCore.document.documentSettingTab()+'"]').parentNode.classList.add('mui--is-active');
+
+      nCore.core.globalQueryPopulate();
       
     });
 
@@ -170,6 +172,7 @@ nCore.events = (function () {
         datetime: new Date().getTime(),
         query: nCore.document.cellQuery() || '',
         body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
+        globalQuery: nCore.document.globalQuery()
       };
 
       nCore.document.setTitle(       data.elements.nCoreName.value );
