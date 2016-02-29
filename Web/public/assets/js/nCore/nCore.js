@@ -131,18 +131,35 @@ nCore = (function(){
     var _init = [];
     
     for (var type in dependencies){
-      dependencies.hasOwnProperty(type) ? load( type, dependencies[type], function(type, array){
-        for(var index in array ){
-          var module = array[ index ];
 
-          if ( nCore.hasOwnProperty(module) && nCore[ module ].hasOwnProperty('init') ) {
-            nCore[module].init();
-          }
-          else if( nCore.modules.hasOwnProperty( module ) ){
-            nCore.modules[module].init()
+      var loading = new Promise(function(resolve, reject){
+        load( type, dependencies[type], function(type, array){
+          for(var index in array ){
+            
+            var module = array[ index ];
+
+            if ( nCore.hasOwnProperty(module) && nCore[ module ].hasOwnProperty('init') ) {
+              nCore[module].init();
+              resolve(true)
+            }
+            else if( nCore.modules.hasOwnProperty( module ) ){
+              nCore.modules[module].init()
+              resolve(true)
+            } 
+            else {
+              reject(false)
+            }
+            
           };
-        };
-      }) : false;
+        });
+      });
+
+      loading.then(function( data ){
+        console.log( 'load', data )
+      }).catch(function(error){
+        console.error( 'load error', error )
+      });
+      
     };
 
     // хак для медленного соединения
@@ -176,7 +193,7 @@ nCore = (function(){
     // раскоментировать для standalone приложения 
     loadModules();
 
-    disableCopyPaste(document);
+    // disableCopyPaste(document);
     console.groupEnd();
     // if ( !nCore.storage.getItem('indexViewType') ) {
     //   nCore.storage.setItem('indexViewType', 'renderThumbIndexView')

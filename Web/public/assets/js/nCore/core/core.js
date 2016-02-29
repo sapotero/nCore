@@ -101,7 +101,7 @@ nCore.core = (function(){
                   list = groupTemplate.querySelector('.criteriaSelectorGroupList'),
                   cardTemplate = document.querySelector('.criteriaSelectorItemTemplate');
 
-                console.dirxml('criteria -> ', item);
+                console.log('criteria -> ', item);
 
                 if (item.source == null && item.origin_name == null) {
                   activeCell.dataset.query = '[]';

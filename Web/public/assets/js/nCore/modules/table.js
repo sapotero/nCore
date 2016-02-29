@@ -603,6 +603,12 @@ nCore.modules.table = (function(){
     for (var q = 0; q < customCells.length; q++) {
       var completeData = customCells[q].dataset;
           completeData.globalQuery = nCore.document.globalQuery() ? nCore.document.globalQuery() : '';
+          if ( nCore.document.yearReport() ) {
+            completeData.yearReport = JSON.stringify({
+              main    : nCore.document.main(),
+              compare : nCore.document.compare()
+            })
+          };
 
       customCellsQuery.push( { id: customCells[q].id, data: completeData } )
     };

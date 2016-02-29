@@ -1066,6 +1066,8 @@ select[name='month_selector']:disabled {
   width: 100%;
   table-layout: fixed;
   background: #F5F5F5;
+  z-index: 2;
+  opacity: 0.99;
 }
 
 .formulaSelectorGroup {
@@ -1503,4 +1505,21 @@ input[type="radio"].styled:checked label:after,
     background-color: transparent;
     opacity: 1;
     color: grey;
+}
+
+.documentModalHeight >.criteriaSelectorGroupGlobal {
+  overflow-y: scroll;
+  max-height: 300px;
+  min-height: 300px;
+}
+
+.document-thumb-view:hover {
+  box-shadow:         0px 0px 40px 0px rgba(50, 50, 50, 0.18);
+  -webkit-box-shadow: 0px 0px 40px 0px rgba(50, 50, 50, 0.18);
+  -moz-box-shadow:    0px 0px 40px 0px rgba(50, 50, 50, 0.18);
+  transition:         0.4s ease;
+  -webkit-transition: 0.4s ease;
+  -moz-transition:    0.4s ease;
+  -o-transition:      0.4s ease;
+  -ms-transition:     0.4s ease;
 }
