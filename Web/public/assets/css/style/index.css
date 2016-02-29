@@ -1386,16 +1386,12 @@ input[type="radio"] {
 }
 
 .checkbox input[type="checkbox"]:after, .checkbox-inline input[type="checkbox"]:after {
-    border: 2px solid;
+    border: 1px solid #AAAAAA;
     border-radius: 2px;
     content: '';
     display: block;
     height: 18px;
     width: 18px;
-    
-    /*-webkit-transform: rotate(0deg);*/
-    /*transform: rotate(0deg);*/
-
     -webkit-transition: 0.4s ease;
     -moz-transition:    0.4s ease;
     -o-transition:      0.4s ease;
@@ -1490,7 +1486,16 @@ input[type="radio"].styled:checked label:after,
   color: white;
 }
 .checkbox-title {
-  margin-top: 4px;position: absolute;padding-left: 5px;
+  margin-top: 4px;
+  position: absolute;
+  padding-left: 5px;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none; 
 }
 
 .mui-textfield>input:disabled, .mui-textfield>input:read-only, .mui-textfield>textarea:disabled, .mui-textfield>textarea:read-only {

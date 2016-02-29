@@ -921,10 +921,16 @@ nCore.events = (function () {
         overlayTab.classList.add('fadeOut');
 
         setTimeout( function(){
-        overlayFormula.classList.add('animatedSlow');
-        overlayFormula.classList.add('fadeOut');
-          if ( overlayTab ) { tab.removeChild( overlayTab ); }
+
+          overlayFormula.classList.add('animatedSlow');
+          overlayFormula.classList.add('fadeOut');
+          
           formula.removeChild( overlayFormula );
+          if ( overlayTab ) {
+            console.log('overlayTab',overlayTab, tab );
+            tab.removeChild( overlayTab );
+          }
+
         },300)
       };
 
@@ -1108,12 +1114,16 @@ nCore.events = (function () {
     // показываем боковое меню по нажатию кнопки
     nCore.document.root.subscribe('showSideMenu', function(showCellSettings){
       document.getElementById('cellSettings').classList.add('active');
+      document.querySelector('.AddDocument').classList.add('fadeOut');
+      document.querySelector('.AddDocument').classList.remove('fadeIn');
     });
 
     // скрываем боковое меню по нажатию кнопки
     nCore.document.root.subscribe('hideSideMenu', function(showCellSettings){
       if ( !nCore.document.showCellSettings() && document.getElementById('cellSettings') ) {
         document.getElementById('cellSettings').classList.remove('active');
+        document.querySelector('.AddDocument').classList.remove('fadeOut');
+        document.querySelector('.AddDocument').classList.add('fadeIn');
       }
     });
 
@@ -1184,10 +1194,10 @@ nCore.events = (function () {
       var monthSelector = formulaSettings.querySelector('[name="month"]');
 
       if ( activeCell.dataset.useMonth === 'true' ) {
-        console.log('activeCell.dataset.useMonth ++', activeCell.dataset);
+        //console.log('activeCell.dataset.useMonth ++', activeCell.dataset);
         activeCell.dataset.queryMonth = monthSelector.value;
       } else {
-        console.log('activeCell.dataset.useMonth --', activeCell.dataset);
+        //console.log('activeCell.dataset.useMonth --', activeCell.dataset);
         delete activeCell.dataset.queryMonth
         monthSelector.selectedIndex = 0;
         monthSelector.disabled = true;
@@ -1197,10 +1207,10 @@ nCore.events = (function () {
       var formulaSelector = document.querySelector('[name="formula"]');
 
       if ( activeCell.dataset.useFormula === 'true' ) {
-        console.log('activeCell.dataset.useFormula ++', activeCell.dataset);
+        //console.log('activeCell.dataset.useFormula ++', activeCell.dataset);
         activeCell.dataset.formula = formulaSelector.value;
       } else {
-        console.log('activeCell.dataset.useFormula --', activeCell.dataset);
+        //console.log('activeCell.dataset.useFormula --', activeCell.dataset);
         delete activeCell.dataset.formula
         formulaSelector.value = '';
         formulaSelector.disabled = true;
@@ -1210,10 +1220,10 @@ nCore.events = (function () {
       var defaultSelector = formulaSettings.querySelector('[name="default"]');
 
       if ( activeCell.dataset.useDefault === 'true' ) {
-        console.log('activeCell.dataset.useDefault ++', activeCell.dataset);
+        //console.log('activeCell.dataset.useDefault ++', activeCell.dataset);
         activeCell.dataset.queryDefault = defaultSelector.value;
       } else {
-        console.log('activeCell.dataset.useDefault --', activeCell.dataset);
+        //console.log('activeCell.dataset.useDefault --', activeCell.dataset);
         delete activeCell.dataset.queryDefault
         defaultSelector.selectedIndex = 0;
         defaultSelector.disabled = true;
@@ -1233,11 +1243,11 @@ nCore.events = (function () {
           })
         };
 
-        console.log('activeCell.dataset.useChosenOrigin ++', chosenOrigin.selectedOptions);
+        //console.log('activeCell.dataset.useChosenOrigin ++', chosenOrigin.selectedOptions);
         activeCell.dataset.useChosenOrigin = true;
         activeCell.dataset.chosenOrigin = JSON.stringify( tmp_array );
       } else {
-        console.log('activeCell.dataset.useChosenOrigin --', activeCell.dataset);
+        //console.log('activeCell.dataset.useChosenOrigin --', activeCell.dataset);
         delete activeCell.dataset.useChosenOrigin
         delete activeCell.dataset.chosenOrigin
         chosenOrigin.selectedIndex = 0;

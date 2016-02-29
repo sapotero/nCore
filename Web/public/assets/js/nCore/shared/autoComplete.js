@@ -435,7 +435,7 @@ jQuery(function($) {
         window.autoComplete = autoComplete;
       }
 
-      var url = '/documents.json',
+      var url = '/documents/autocomplete',
           input_search_selector = document.querySelector('[name="mainSearch"]')
       
       autoComplete({
@@ -445,7 +445,7 @@ jQuery(function($) {
             function(data){
               var r = [];
               for (var i = data.length - 1; i >= 0; i--) {
-                r.push( data[i].params );
+                r.push( data[i] );
               };
               response( r );
           });
@@ -464,10 +464,10 @@ jQuery(function($) {
           // this.params.date || Date.parse(item.updated_at).toLocaleString('ru-RU', { year: 'numeric', month: 'numeric',day: 'numeric' } );
 
           // return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
-          var raw_html = '<div class="mui-panel autocomplete-suggestion autocomplete-suggestion-panel" data-val="' + item.description + '" data-id="' + item._id + '">'
+          var raw_html = '<div class="mui-panel autocomplete-suggestion autocomplete-suggestion-panel" data-val="' + item.name + '" data-id="' + item._id + '">'
               // raw_html += '  <div class="mui-col-lg-6 id">' + item._id + '</div>';
               // raw_html += '  <div class="mui-col-lg-3 name">' + Date.parse(item.updated_at).toLocaleString('ru-RU', { year: 'numeric', month: 'numeric',day: 'numeric' } ) + '</div>';
-              raw_html += '  <div class="mui-col-lg-9 autocomplete-suggestion-title">' + item.description.replace(re, "<b>$1</b>") + '</div>';
+              raw_html += '  <div class="mui-col-lg-9 autocomplete-suggestion-title">' + item.name.replace(re, "<b>$1</b>") + '</div>';
               raw_html += '  <div class="mui-col-lg-3 ">' + new Date(item.updated_at).toLocaleString('ru-RU', { year: 'numeric', month: 'numeric',day: 'numeric' } ) + '</div>';
               raw_html += '</div>';
 

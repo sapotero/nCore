@@ -13,9 +13,12 @@ Settings::Web::Application.routes.draw do
   root to: redirect('/users/sign_in')
 
   resources :sources
+  
+  get '/documents/autocomplete', to: 'documents#autocomplete' #,as: :document_autocomplete
   resources :documents do
     post :remove
   end
+  
   resources :forms
   resources :queries
 

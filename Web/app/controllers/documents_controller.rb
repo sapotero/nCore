@@ -4,7 +4,13 @@ class DocumentsController < ApplicationController
   protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
 
   def index
-    @query = Document.active
+    @query = Document.active( with_images: true )
+    # @query.page(params[:page]).per(params[:show_count] || 10)
+    render :json => @query
+  end
+
+  def autocomplete
+    @query = Document.find_by_params( params )
     # @query.page(params[:page]).per(params[:show_count] || 10)
     render :json => @query
   end

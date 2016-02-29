@@ -5,15 +5,17 @@ class Document
 
   # belongs_to User
   field :author,      type: String
-  
+
   field :type,        type: String
+  
   field :name,        type: String
   field :description, type: String
-  field :type,        type: String
-  field :datetime,    type: String
-  field :query,       type: String
+  
   field :periodStart, type: String
   field :periodEnd,   type: String
+  field :datetime,    type: String
+
+  field :query,       type: String
   field :archived,    type: Boolean, default: false
   field :globalQuery, type: String
 
@@ -22,6 +24,7 @@ class Document
   field :main,        type: Integer, default: Date.current.year
   field :compare,     type: Integer, default: 1.year.ago.year
   
+  # body и preview лежат в GridFs
   field :body_id
   field :image_id
 
@@ -31,6 +34,12 @@ class Document
   # досутпные всем
   field :global,      type: Boolean, default: false
 
+  def self.find_by_params( search_params = {} )
+    query = active
+    query = query.where( name: /#{Regexp.escape(search_params[:term])}/i ) unless search_params[:term].blank?
+    query = query.order_by(created_at: -1)
+    query
+  end
 
   def body=(base64)
     file = StringIO.new(base64)
@@ -50,9 +59,15 @@ class Document
     Mongoid::GridFs.get(image_id).data
   end
 
-   def self.active()
+  def self.active( with_images = false )
+    documents = self.where( archived: false )
+    documents = self.with_images( documents ) if with_images
+    documents
+  end
+
+  def self.with_images( documents )
     new_docs = []
-    Document.where( archived: false ).each { |doc| new_docs.push ({ params: doc, image: ( doc.image_id.nil? ? '' : doc.image) }) }
+    documents.each { |doc| new_docs.push ({ params: doc, image: ( doc.image_id.nil? ? '' : doc.image) }) }
     # Document.where( archived: false ).each { |doc| new_docs.push ( doc ) }
     new_docs
   end
