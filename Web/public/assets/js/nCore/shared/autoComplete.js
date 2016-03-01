@@ -330,13 +330,19 @@ jQuery(function($) {
                 var val = that.value;
                 that.cache[val] = data;
                 if (data.length && val.length >= o.minChars) {
-                    var s = '';
-                    for (var i=0;i<data.length;i++) s += o.renderItem(data[i], val);
-                    that.sc.innerHTML = s;
-                    that.updateSC(0);
+                  var s = '';
+                  for (var i=0;i<data.length;i++){
+                    s += o.renderItem(data[i], val)
+                  };
+                  that.sc.innerHTML = s;
+                  that.updateSC(0);
                 }
-                else
-                    that.sc.style.display = 'none';
+                else {
+                  console.log( 'no suggests' );
+                  that.sc.style.display = 'block';
+                  that.sc.innerHTML = '<div class="autocomplete-suggestion" > Ничего не найдено </div>'
+                  that.updateSC(0);
+                }
             }
 
             that.keydownHandler = function(e){
@@ -454,7 +460,9 @@ jQuery(function($) {
         onSelect: function(e, term, item){
           console.log('SELECTED: e, term, item', e, term, item);
           input_search_selector.value = '';
-          nCore.document.root.publish('go', "report/" + item.dataset.id)
+          if ( item.dataset.hasOwnProperty('id') ) {
+            nCore.document.root.publish('go', "report/" + item.dataset.id)
+          }
         },
         renderItem: function (item, search){
           console.log('item, search', item, search);
@@ -462,18 +470,10 @@ jQuery(function($) {
           search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
           var re = new RegExp("(" + search.split(' ').join('|') + ")");
 
-          // this.params.date || Date.parse(item.updated_at).toLocaleString('ru-RU', { year: 'numeric', month: 'numeric',day: 'numeric' } );
-
-          // return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, "<b>$1</b>") + '</div>';
           var raw_html = '<div class="mui-panel autocomplete-suggestion autocomplete-suggestion-panel" data-val="' + item.name + '" data-id="' + item._id + '">'
-              // raw_html += '  <div class="mui-col-lg-6 id">' + item._id + '</div>';
-              // raw_html += '  <div class="mui-col-lg-3 name">' + Date.parse(item.updated_at).toLocaleString('ru-RU', { year: 'numeric', month: 'numeric',day: 'numeric' } ) + '</div>';
               raw_html += '  <div class="mui-col-lg-9 autocomplete-suggestion-title">' + item.name.replace(re, "<b>$1</b>") + '</div>';
               raw_html += '  <div class="mui-col-lg-3 ">' + new Date(item.updated_at).toLocaleString('ru-RU', { year: 'numeric', month: 'numeric',day: 'numeric' } ) + '</div>';
               raw_html += '</div>';
-
-              // 2016-01-18T10:25:53Z
-
           return raw_html;
         }
       });

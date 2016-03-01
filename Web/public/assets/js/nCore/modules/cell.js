@@ -138,11 +138,21 @@ nCore.modules.cell = (function(){
 
 
     console.log( 'ID ', value );
+    
     if ( !globalQuery && nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
-      $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] ).val("").trigger("change");
+      console.log('element', element, value, nCore.modules.table.active().dataset[ value ] , select2.id );
+      // if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
+        $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] )
+        element.selectedIndex = 0;
+        $(element).trigger("change");
+      // }
     } else {
       console.log('element', element);
-      // $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] ).val("").trigger("change");
+      if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
+        $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] )
+        element.selectedIndex = 0;
+        $(element).trigger("change");
+      }
     };
 
     if ( select2.hasOwnProperty('url') ){
@@ -175,28 +185,15 @@ nCore.modules.cell = (function(){
         minimumInputLength: 1,
         placeholder: "Начните ввод"
       }).on('change', function(e){
-        if ( nCore.document.ShowSettings() ) {
-          // // апдейтим глобальное условие
-          // // 
-          // } else {
-          //   // апдейтим ячейку
-          //   if ( nCore.document.ShowSettings() ) {
-          // // апдейтим глобальное условие
-          // // 
-          // } else {
-          //   // апдейтим ячейку
-            
-          // };
-
-        };
         nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
         nCore.modules.table.event.publish('newCellSettingsChange');
       });
     };
 
     if ( select2.hasOwnProperty('default') ) {
-      
-      $(element).append( [ new Option( select2.default , select2.id, true) ] ).val("").trigger("change");
+      $(element).append( [ new Option( select2.default , select2.id, true) ] )
+      element.selectedIndex = 0;
+      $(element).trigger("change");
     };
 
     if ( select2.hasOwnProperty('available') ) {
@@ -234,6 +231,7 @@ nCore.modules.cell = (function(){
     //console.info( 'input params: ', criteria, element, name, value );
     var select_query = {};
     var _element = element;
+    var parent = _element.parentNode;
     element.name = name;
 
     switch(name){
@@ -305,21 +303,6 @@ nCore.modules.cell = (function(){
           };
         });
 
-        // теперь у нас есть вся информация по полю, можно строить критерии поиска
-        
-          // var df          = new DocumentFragment(),
-          //     originTable = JSON.parse( nCore.storage.getItem( criteria.source) );
-
-          // for (var q = 0; q < originTable.length; q++) {
-          //   var option = document.createElement('option');
-          //   option.value = originTable[q]._id;
-          //   option.text = originTable[q].russian_name;
-          //   option.dataset.auto = originTable[q].autocomplete_url;
-          //   option.dataset.type = originTable[q].data_type;
-          //   df.appendChild(option);
-          // }
-          // element.appendChild(df);
-          // element.value = value;
         field_type = field_type ? field_type : 'Formula';
 
         var types   = nCore.types[ field_type ],
@@ -420,7 +403,8 @@ nCore.modules.cell = (function(){
               element = el;
               break;
             case 'Fixnum':
-              if ( parent.querySelector('[name="date_end"]') ) {
+              console.log('parent', parent);
+              if ( parent && parent.querySelector('[name="date_end"]') ) {
                 parent.removeChild( parent.querySelector('[name="date_end"]') );
               };
               select_query.bool = true
@@ -688,71 +672,12 @@ nCore.modules.cell = (function(){
       element.cols          = 70;
       element.name          = 'value';
       element.placeholder   = 'Формула...';
-      
-    // если нужно select2
-    // var element = document.createElement('select');
-    //   element.style.display      = 'block';
-    //   element.style.width        = ' 92%';
-    //   element.style.padding      = ' 15px auto';
-    //   // element.style.paddingTop   = ' 15px';
-    //   // element.style.marginBottom = ' 20px';
-    //   // element.style.textAlign    = ' left';
-    //   // element.style.height       = '300px';
-    //   element.name               = 'value';
-    //   // element.id                 = 'testSelect';
-      
-    //   element.multiple = "multiple"
-
     parent.appendChild(element);
-
-    // var formula_fields = JSON.parse( nCore.storage.getItem( element.parentNode.querySelector('[name="source"]').value ) ),
-    // df = new DocumentFragment();
-
-    // for (var q = 0; q < formula_fields.length; q++) {
-    //   var option = document.createElement('option');
-    //   option.value = formula_fields[q]._id;
-    //   option.text  = formula_fields[q].russian_name;
-    //   df.appendChild(option);
-    // }
-
-    // var conditions = [
-    //   {
-    //     text: 'больше',
-    //     value : 'gt'
-    //   },
-    //   {
-    //     text: 'меньше',
-    //     value : 'lt'
-    //   },
-    //   {
-    //     text: 'равно',
-    //     value : 'eq'
-    //   },
-    //   {
-    //     text: 'не равно',
-    //     value : 'ne'
-    //   }
-    // ];
-    
-    // for (var q = 0; q < conditions.length; q++) {
-    //   var option   = document.createElement('option');
-    //   option.value = conditions[q].value;
-    //   option.text  = conditions[q].text;
-    //   df.appendChild(option);
-    // }
-    // element.appendChild(df);
-
-    // //console.log( 'formula_fields', formula_fields, element );
-    
-    // $(element).select2({
-    //     tags: true
-    //   });
 
     if (r){
       return element;
     }
 
-    //console.log('     -------- generate2Formula ---------'); 
   },
   generateInput = function( element, value, r){
     var parent = element.parentNode;
@@ -792,13 +717,6 @@ nCore.modules.cell = (function(){
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     };
-
-    // if ( parent.querySelector('[name="value"]') ) {
-    //   $(element).select2();
-    //   $(element).select2('destroy');
-    //   parent.removeChild( parent.querySelector('[name="value"]') );
-    // };
-
     if ( element.nodeName == 'INPUT' ) {
       //console.warn('input!', element, parent);
       
@@ -807,7 +725,6 @@ nCore.modules.cell = (function(){
 
 
       var _el                = document.createElement('select');
-      // _el.style.display      = 'block';
       _el.style.width        = ' 92%';
       _el.style.padding      = ' 15px auto';
       _el.style.paddingTop   = ' 15px';
@@ -832,7 +749,6 @@ nCore.modules.cell = (function(){
 
 
       var _el                = document.createElement('select');
-      // _el.style.display      = 'block';
       _el.style.width        = ' 92%';
       _el.style.padding      = ' 15px auto';
       _el.style.paddingTop   = ' 15px';
@@ -1120,16 +1036,8 @@ nCore.modules.cell = (function(){
         element.value = value;
       }
     };
-
-    // if(!Modernizr.inputtypes.date) {
-    //   $('[type="date"]').fdatepicker({format: 'yyyy-mm-dd'});
-    // }
-
-    // select_query.id = value;
-
     
     if(!Modernizr.inputtypes.date && ( element.name == 'date_start' || element.name == 'date_end' ) ) {
-      //console.info( element.nodeName, element.type );
       $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
     }
     //console.log( element );

@@ -1,13 +1,13 @@
-if (typeof jQuery.fn.live == 'undefined' || !(jQuery.isFunction(jQuery.fn.live))) {
-  jQuery.fn.extend({
-      live: function (event, callback) {
-         if (this.selector) {
-              jQuery(document).on(event, this.selector, callback);
-          }
-      }
-  });
-}
 jQuery(function($) {
+  if (typeof jQuery.fn.live == 'undefined' || !(jQuery.isFunction(jQuery.fn.live))) {
+    jQuery.fn.extend({
+        live: function (event, callback) {
+           if (this.selector) {
+                jQuery(document).on(event, this.selector, callback);
+            }
+        }
+    });
+  }
   // $('div#paper').on('froalaEditor.initialized', function (e, editor) {
   //   document.querySelector('.fr-wrapper').nextSibling.textContent += 'test';
   // });
@@ -178,11 +178,27 @@ jQuery(function($) {
       df.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
     };
     source.appendChild(df);
+
+    console.log( source );
     
-    $(source).select2().val('').trigger('change');
-    $(origin_name).select2().val('').trigger('change');
-    $(conditions).select2()
-    $(value).select2()
+    var sourceSelect = new Promise(function(resolve, reject){
+      if ( source.options.length ) {
+        source.selectedIndex = 1;
+        resolve(true);
+      } else {
+        reject(-1)
+      }
+    })
+
+    sourceSelect.then(function(data){
+      $(source).select2().trigger('change');
+      origin_name.selectedIndex = 1;
+      return true
+    }).then(function(){
+      $(origin_name).select2().trigger('change');
+      $(conditions).select2()
+      $(value).select2()
+    }).catch(function(error){});
 
     // console.log('ADD', form);
     nCore.modules.table.event.publish('newCellSettingsChange' );
@@ -209,7 +225,7 @@ jQuery(function($) {
   // выбор справочника -> меняем значения в origin_name
   $('select[name="source"]').live('change', function(e){
     
-    // console.log('select[name="table_name"]', this, this.parentNode.querySelector('[name="origin_name"]') );
+    console.log('select[name="table_name"]', this, this.parentNode.querySelector('[name="origin_name"]') );
 
 
       var select = this.parentNode.querySelector('[name="origin_name"]');
@@ -218,7 +234,7 @@ jQuery(function($) {
       var _df = new DocumentFragment();
       var originTable = JSON.parse( nCore.storage.getItem(this.value) );
       
-      // console.log('**originTable', originTable);
+      console.log('**originTable', originTable);
 
 
       for (var q = 0; q < originTable.length; q++) {
@@ -251,13 +267,13 @@ jQuery(function($) {
   // выбор справочника -> меняем значения в origin_name
   $('select[name="origin_name"]').live('change', function(e){
     console.groupCollapsed('select[name="origin_name"] -> change');
-    console.log( 'params ', this, this.value );
+    // console.log( 'params ', this, this.value );
 
     var _val = this.value;
 
     var select = this.parentNode.querySelector('[name="conditions"]');
 
-    console.error('***', this, select );
+    // console.error('***', this, select );
     select.innerHTML = '';
 
 
@@ -267,7 +283,7 @@ jQuery(function($) {
         autocomplete_value,
         autocomplete_url;
     
-    console.info(' select value ', field_array );
+    // console.info(' select value ', field_array );
 
     field_array.forEach(function(obj){
       if ( obj['_id'] == _val || obj['id'] == _val ) {

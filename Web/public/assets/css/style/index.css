@@ -1050,7 +1050,7 @@ select[name='month_selector']:disabled {
 
 .criteriaSelectorGroupGlobal > .criteriaSelectorGroup > .criteriaSelectorGroupList {
   overflow-y: auto;
-  max-height: 210px;
+  max-height: 240px;
   width: 100%;
 }
 

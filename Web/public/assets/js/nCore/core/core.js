@@ -54,7 +54,7 @@ nCore.core = (function(){
     var render = new Promise(function(resolve, reject) {
       addOverlay();
       setTimeout(function(){
-        console.log('nCore.document.globalQuery() ->', nCore.document.globalQuery());
+        // console.log('nCore.document.globalQuery() ->', nCore.document.globalQuery());
         if ( nCore.document.globalQuery() ) {
         
           
@@ -96,45 +96,48 @@ nCore.core = (function(){
               _group.classList.remove('criteriaSelectorGroupTemplate');
               _group.classList.remove('mui--hide');
               tab.appendChild(_group);
+              
+              if ( criterias && criterias.length ) {
+                for (var b = 0; b < criterias.length; b++) {
+                  var _elements_to_update = [],
+                    item = criterias[b],
+                    list = groupTemplate.querySelector('.criteriaSelectorGroupList'),
+                    cardTemplate = document.querySelector('.criteriaSelectorItemTemplate');
 
-              for (var b = 0; b < criterias.length; b++) {
-                var _elements_to_update = [],
-                  item = criterias[b],
-                  list = groupTemplate.querySelector('.criteriaSelectorGroupList'),
-                  cardTemplate = document.querySelector('.criteriaSelectorItemTemplate');
+                  console.table(item)
+                  // console.log('criteria -> ', item);
 
-                console.log('criteria -> ', item);
+                  if (item.source == null && item.origin_name == null) {
+                    activeCell.dataset.query = '[]';
+                    continue;
+                  }
 
-                if (item.source == null && item.origin_name == null) {
-                  activeCell.dataset.query = '[]';
-                  continue;
+                  var card = cardTemplate.cloneNode(true);
+                  card.classList.remove('criteriaSelectorItemTemplate');
+                  card.classList.remove('mui--hide');
+
+                  var form = card.querySelector('.criteriaForm');
+                  criteriaCondition = card.querySelector('select.itemSelectCondition');
+
+                  list.appendChild(card);
+
+                  console.log('list card form',list, card, form);
+
+                  if ( item.origin_name == 'formula' ) {
+                    item.value = Base64.decode( item.value );
+                  }
+
+                  nCore.modules.cell.generateBlock( item, form, 'source',      item.source, true );
+                  nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name, true );
+                  nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions, true );
+                  nCore.modules.cell.generateBlock( item, form, 'value',       item.value, true );
+
+                  card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+
+                  var cr_c = card.querySelector('[name="criteria_condition_group"]');
+                  cr_c.value = item.criteria_condition;
+                  cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
                 }
-
-                var card = cardTemplate.cloneNode(true);
-                card.classList.remove('criteriaSelectorItemTemplate');
-                card.classList.remove('mui--hide');
-
-                var form = card.querySelector('.criteriaForm');
-                criteriaCondition = card.querySelector('select.itemSelectCondition');
-
-                list.appendChild(card);
-
-                console.log('list card form',list, card, form);
-
-                if ( item.origin_name == 'formula' ) {
-                  item.value = Base64.decode( item.value );
-                }
-
-                nCore.modules.cell.generateBlock( item, form, 'source',      item.source, true );
-                nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name, true );
-                nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions, true );
-                nCore.modules.cell.generateBlock( item, form, 'value',       item.value, true );
-
-                card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
-
-                var cr_c = card.querySelector('[name="criteria_condition_group"]');
-                cr_c.value = item.criteria_condition;
-                cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
               }
               console.groupEnd();
               // document.querySelector('.firstTimeCriteria').classList.add('mui--hide');

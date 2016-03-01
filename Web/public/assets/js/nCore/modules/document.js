@@ -4,10 +4,24 @@
 
 var nCore = nCore || {};
 nCore.document = (function(){
+  Date.prototype.formattedDate = function (pattern) {
+    var formattedDate = pattern.replace( 'yyyy', this.getFullYear().toString() );
+    
+    var mm = (this.getMonth() + 1).toString();
+    mm = mm.length > 1 ? mm : '0' + mm;
+    formattedDate = formattedDate.replace('mm', mm);
+    
+    var dd = this.getDate().toString();
+    dd = dd.length > 1 ? dd : '0' + dd;
+    formattedDate = formattedDate.replace('dd', dd);
+    
+    return formattedDate;
+  };
+  
   var _current_date    = new Date(),
       nCoreCurrentYear = _current_date.getFullYear(),
-      nCorePeriodStart = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
-      nCorePeriodEnd   = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
+      nCorePeriodStart = _current_date.formattedDate('yyyy-mm-dd'),
+      nCorePeriodEnd   = _current_date.formattedDate('yyyy-mm-dd'),
 
       nCoreYearReport = false,
       nCoreMain    = _current_date.getFullYear(),
@@ -15,7 +29,7 @@ nCore.document = (function(){
 
       nCoreDocumentUserId       = null,
       nCoreDocumentDepartmentId = null,
-      nCoreGlobalQuery = '++',
+      nCoreGlobalQuery = '[]',
       nCoreDocumentSettingTab = 'documentQueryPane',
       nCoreDocumentId = '',
       nCoreRoot,
@@ -107,7 +121,7 @@ nCore.document = (function(){
   },
   reset = function reset() {
     nCoreIsNew = true;
-    nCore.document.setTitle('Главная');
+    nCore.document.setTitle('Новый документ');
   },
   setAttributes = function setAttributes(data){
     // nCoreIsNew = false;
@@ -172,6 +186,22 @@ nCore.document = (function(){
     nCoreDescription = '',
     nCoreDocumentCellQuery = {};
     nCore.document.setTitle('Новый документ');
+
+    nCoreCurrentYear = _current_date.getFullYear(),
+    nCorePeriodStart = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
+    nCorePeriodEnd   = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
+
+    nCoreYearReport = false,
+    nCoreMain    = _current_date.getFullYear(),
+    nCoreCompare = _current_date.getFullYear()-1,
+
+    nCoreGlobalQuery = '[]',
+    nCoreDocumentId = '',
+
+    nCoreIsNew = true,
+    nCoreType = 'report',
+    nCoreShowSettings = false,
+    nCoreDocumentCellQuery = {};
   },
   save = function save(conf){
     console.log('save conf', conf);

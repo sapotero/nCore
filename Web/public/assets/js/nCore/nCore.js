@@ -195,6 +195,7 @@ nCore = (function(){
 
     // disableCopyPaste(document);
     console.groupEnd();
+
     // if ( !nCore.storage.getItem('indexViewType') ) {
     //   nCore.storage.setItem('indexViewType', 'renderThumbIndexView')
     // };
@@ -429,6 +430,7 @@ nCore = (function(){
       obj.publish   = publish;
       obj.subscribe = subscribe;
     },
+    noop: function(){},
     debug : true
   };
 })();

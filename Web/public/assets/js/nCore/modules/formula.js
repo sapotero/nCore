@@ -10,25 +10,31 @@ nCore.modules.formula = (function(){
   }];
 
   var init = function(){
-    // клик по кнопке добавить в панельке формкла
-    // $(".addFormulaToGroup").live('click', function( e ){
-    //   console.log( 'addFormulaToGroup' );
-    //   nCore.document.root.publish('addFormulaField', {})
-    // });
+    jQuery(function($) {
+      if (typeof jQuery.fn.live == 'undefined' || !(jQuery.isFunction(jQuery.fn.live))) {
+        jQuery.fn.extend({
+            live: function (event, callback) {
+               if (this.selector) {
+                    jQuery(document).on(event, this.selector, callback);
+                }
+            }
+        });
+      }
 
-    $('[name="useFormula"]').live('change', function(){
-      console.log('formula change');
-      document.getElementsByName('formula')[0].disabled = this.checked ? false : true;
-      nCore.modules.table.event.publish('cellFormulaChange');
-    });
+      $('[name="useFormula"]').live('change', function(){
+        console.log('formula change');
+        document.getElementsByName('formula')[0].disabled = this.checked ? false : true;
+        nCore.modules.table.event.publish('cellFormulaChange');
+      });
 
-    $('[name="formula"]').live('change', function(){
-      nCore.modules.table.event.publish('cellFormulaChange');
-    });
+      $('[name="formula"]').live('change', function(){
+        nCore.modules.table.event.publish('cellFormulaChange');
+      });
 
     // $('#paper').live('click', function( e ){
     //   console.log( 'click', e );
     // });
+    });
 
   },
   types =function(){

@@ -15,7 +15,6 @@ nCore.events = (function () {
   }
 
   init = function init() {
-
     ///////////////////////
     // Cобытия документа //
     ///////////////////////
@@ -1612,7 +1611,6 @@ nCore.events = (function () {
       document.querySelector('[name="formula"]').value = activeCell.dataset.formula + ' #' + cell.id
       nCore.modules.table.event.publish('cellFormulaChange');
     });
-
   };
 
   return {
