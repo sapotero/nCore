@@ -601,6 +601,36 @@ nCore.events = (function () {
       mui.overlay('on', options, m );
     });
 
+    nCore.document.root.subscribe('routeFailedToLoad', function (type) {
+
+      var overlayEl = mui.overlay('on'),
+          options   = {
+            'keyboard': false, // teardown when <esc> key is pressed (default: true)
+            'static': true, // maintain overlay when clicked (default: false)
+            'onclose': function () {
+              // after callback
+            }
+          };
+      var render = Transparency.render(document.getElementById('routeFailedToLoad'), {
+        errorMessage: 'Произошла ошибка во время работы приложения',
+        back: "Назад",
+        reload: "Обновить"
+      });
+
+      var m = document.createElement('div');
+      m.style.width = '800px';
+      m.style.height = '200px';
+      m.style.margin = '10% auto';
+      m.style.padding = '10% auto';
+      m.style.backgroundColor = '#fff';
+      m.classList.toggle('mui-panel');
+      m.classList.toggle('mui--z5');
+      
+      m.innerHTML = render.innerHTML;
+
+      mui.overlay('on', options, m );
+    });
+
     nCore.document.root.subscribe('renderIndexView', function (type) {
      
      function addOverlay() {
