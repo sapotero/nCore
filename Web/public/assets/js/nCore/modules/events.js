@@ -336,10 +336,10 @@ nCore.events = (function () {
       var initialize = new Promise(function(resolve, reject) {
         // выполняем асинхронный код
         var editor = $('div#paper').froalaEditor({
-          toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone',/* 'flask',*/ 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
-          toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone',/* 'flask',*/ 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
-          toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone',/* 'flask',*/ 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
-          toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone',/* 'flask',*/ 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtons:   ['file-o', 'floppy-o', 'adjust', 'phone',  'textRotate', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsMD: ['file-o', 'floppy-o', 'adjust', 'phone',  'textRotate', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsSM: ['file-o', 'floppy-o', 'adjust', 'phone',  'textRotate', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+          toolbarButtonsXS: ['file-o', 'floppy-o', 'adjust', 'phone',  'textRotate', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
           language: 'ru',
           charCounterCount: false,
           toolbarSticky: false,
@@ -1132,6 +1132,11 @@ nCore.events = (function () {
                   nCore.modules.cell.generateBlock( item, form, 'source',      item.source );
                   nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name );
                   nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions );
+
+                  if ( item.origin_name == 'formula' ) {
+                    item.value = Base64.decode( item.value );
+                  }
+                  
                   nCore.modules.cell.generateBlock( item, form, 'value',       item.value );
 
                   card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
@@ -1465,7 +1470,7 @@ nCore.events = (function () {
 
           var _select = head[0].querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition');
 
-          data.query.push({
+          var cellQuery = {
             criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
             source             : form.children('select[name="source"]').val(),
             conditions         : form.children('select[name="conditions"]').val(),
@@ -1474,7 +1479,13 @@ nCore.events = (function () {
             periodStart        : form.children('input[name="date_start"]').val(),
             periodEnd          : form.children('input[name="date_end"]').val()
             }                  : form.children('[name="value"]').val()
-          });
+          };
+
+          if ( cellQuery.origin_name == 'formula' ) {
+            cellQuery.value = Base64.encode( cellQuery.value );
+          }
+
+          data.query.push( cellQuery );
         };
 
         _query.push(data);

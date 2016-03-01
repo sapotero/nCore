@@ -29,12 +29,12 @@ initFroalaEditor.then(function(data) {
       , "table.edit": "[_BUTTONS_]"
       , "table.colors": "[_BUTTONS_][_COLORS_]"
     }), a.extend(a.FroalaEditor.DEFAULTS, {
-      tableInsertMaxSize: 10
+      tableInsertMaxSize: 30
       // , tableEditButtons: ["tableHeader", "tableRemove", "|", "tableRows", "tableColumns", "tableStyle", "-", "tableCells", "tableCellBackground", "tableCellVerticalAlign", "tableCellHorizontalAlign", "tableCellStyle"]
       , tableEditButtons: ["tableRemove", "|", "tableRows", "tableColumns", "tableCells","-", "tableCellBackground", "tableCellVerticalAlign", "tableCellHorizontalAlign", "tableCellStyle"]
       , tableInsertButtons: ["tableBack", "|"]
-      , tableResizerOffset: 5
-      , tableResizingLimit: 30
+      , tableResizerOffset: 15
+      , tableResizingLimit: 50
       , tableColorsButtons: ["tableBack", "|"]
       , tableColors: ["#61BD6D", "#1ABC9C", "#54ACD2", "#2C82C9", "#9365B8", "#475577", "#CCCCCC", "#41A85F", "#00A885", "#3D8EB9", "#2969B0", "#553982", "#28324E", "#000000", "#F7DA64", "#FBA026", "#EB6B56", "#E25041", "#A38F84", "#EFEFEF", "#FFFFFF", "#FAC51C", "#F37934", "#D14841", "#B8312F", "#7C706B", "#D1D5D8", "REMOVE"]
       , tableColorsStep: 7
@@ -49,7 +49,7 @@ initFroalaEditor.then(function(data) {
       , tableCellMultipleStyles: !0
       , tableMultipleStyles: !0
       , tableInsertHelper: !0
-      , tableInsertHelperOffset: 20
+      , tableInsertHelperOffset: 50
     }), a.FroalaEditor.PLUGINS.table = function (b) {
       function c() {
         var a = b.$tb.find('.fr-command[data-cmd="insertTable"]')
@@ -1717,10 +1717,10 @@ initFroalaEditor.then(function(data) {
     }
   });
 
-  $.FroalaEditor.DefineIcon('flask', {
+  $.FroalaEditor.DefineIcon('textRotate', {
     NAME: 'level-up'
   });
-  $.FroalaEditor.RegisterCommand('flask', {
+  $.FroalaEditor.RegisterCommand('textRotate', {
     title: 'Повернуть на 90'
     , focus: false
     , undo: false
@@ -1744,10 +1744,11 @@ initFroalaEditor.then(function(data) {
           head_cell.classList.add('cellRotate');
 
           head_cell.style.whiteSpace = 'normal';
-          head_cell.style.height = height + 'px';
-          head_cell.style.width = width+'px';
+          // head_cell.style.height = height + 'px';
+          // head_cell.style.width = '0px';
+          // head_cell.style.width = width+'px';
 
-          head_cell.innerHTML = "<div class='_rotated' style='transform: translate(0,0) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
+          head_cell.innerHTML = "<div class='_rotated' style='transform: translate("+height/2+"px,0) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
         }
       // };
     }
