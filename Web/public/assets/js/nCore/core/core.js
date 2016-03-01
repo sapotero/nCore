@@ -17,7 +17,7 @@ nCore.core = (function(){
 
     console.log( 'globalQuery', JSON.parse( nCore.document.globalQuery() ) );
 
-    var tab = document.querySelector('.criteriaSelectorGroupGlobal');
+    var tab = document.querySelector('._nCoreDocumentSettings .criteriaSelectorGroupGlobal');
     tab.innerHTML = '';
 
     var __elements_to_update = [], criteriaCondition;
@@ -26,15 +26,14 @@ nCore.core = (function(){
     function addOverlay() {
       setTimeout( function(){
         overlayTab = document.createElement('div');
-        overlayTab.style.top        = '50px';
-        overlayTab.style.height     = '94%';
-        overlayTab.style.width      = '100%';
+        overlayTab.style.height     = '320px';
+        overlayTab.style.width      = '39%';
         overlayTab.style.overflow   = 'hidden';
         overlayTab.style.position   = 'absolute';
         overlayTab.style.background = 'rgba(255,255,255, .9)';
         overlayTab.style.zIndex    = '2';
 
-        overlayTab.innerHTML = '<div style="top: 50%; left: 50%;text-align: center; position: absolute;height: 100%;text-align: center;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
+        overlayTab.innerHTML = '<div style="top: 45%; left: 50%;position: absolute;"><i class="fa fa-spinner fa-spin fa-2x"></i></div>'
         
         tab.appendChild( overlayTab );
       }, 100);
@@ -55,10 +54,11 @@ nCore.core = (function(){
     var render = new Promise(function(resolve, reject) {
       addOverlay();
       setTimeout(function(){
-        if ( nCore.document.globalQuery() != '' && JSON.parse( nCore.document.globalQuery() ) ) {
+        console.log('nCore.document.globalQuery() ->', nCore.document.globalQuery());
+        if ( nCore.document.globalQuery() ) {
         
           
-            var queryArray = JSON.parse( nCore.document.globalQuery() ),
+            var queryArray = [ JSON.parse( nCore.document.globalQuery() ) ],
               _selectedIindex = -1;
             for (var z = 0; z < queryArray.length; z++) {
 
@@ -74,6 +74,8 @@ nCore.core = (function(){
               var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
                 groupTemplate = _groupTemplate.cloneNode(true),
                 groupSelectCondition = groupTemplate.getElementsByTagName('select')[0];
+
+              console.log( groupTemplate );
 
               if (groupConditions) {
                 for (var v = 0; v < groupSelectCondition.options.length; v++) {
@@ -119,6 +121,10 @@ nCore.core = (function(){
 
                 console.log('list card form',list, card, form);
 
+                if ( item.origin_name == 'formula' ) {
+                  item.value = Base64.decode( item.value );
+                }
+
                 nCore.modules.cell.generateBlock( item, form, 'source',      item.source, true );
                 nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name, true );
                 nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions, true );
@@ -131,12 +137,12 @@ nCore.core = (function(){
                 cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
               }
               console.groupEnd();
-              document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
+              // document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
             }
             // nCore.modules.table.event.publish('newCellSettingsChange' );
-
-        }
         resolve(true)
+        }
+      reject(false)
       }, 200); 
     });
 

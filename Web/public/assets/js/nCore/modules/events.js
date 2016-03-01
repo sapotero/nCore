@@ -1129,14 +1129,13 @@ nCore.events = (function () {
 
                   list.appendChild(card);
 
-                  nCore.modules.cell.generateBlock( item, form, 'source',      item.source );
-                  nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name );
-                  nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions );
-
                   if ( item.origin_name == 'formula' ) {
                     item.value = Base64.decode( item.value );
                   }
-                  
+
+                  nCore.modules.cell.generateBlock( item, form, 'source',      item.source );
+                  nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name );
+                  nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions );
                   nCore.modules.cell.generateBlock( item, form, 'value',       item.value );
 
                   card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
@@ -1271,13 +1270,17 @@ nCore.events = (function () {
           result_query = [],
           criterias    = body.querySelectorAll('.criteriaSelectorItem');
       
+      var data = {
+        query: []
+      };
+
+      console.log('GLOBAL CRITERIAS', criterias);
+
       for (var i = 0; i < criterias.length; i++) {
         var criteria = criterias[i],
             head     = criteria.querySelector('.criteriaSelectorItemHeader'),
             form     = criteria.querySelector('.criteriaForm');
-        var data = {
-          query: []
-        };
+
         var _dataQueryHash = {
           criteria_condition : head.querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition').value,
           source             : form.querySelector('select[name="source"]').value,
@@ -1290,29 +1293,31 @@ nCore.events = (function () {
           } : form.querySelector('[name="value"]').value
         }
 
-        // if ( nCore.document.yearReport() ) {
-        //   _dataQueryHash.yearReport = {
-        //     main: nCore.document.main(),
-        //     compare: nCore.document.compare()
-        //   }
-        // }
+        if ( _dataQueryHash.origin_name == 'formula' ) {
+          _dataQueryHash.value = Base64.encode( _dataQueryHash.value );
+        }
 
-        console.log('+++++', _dataQueryHash);
+        if ( nCore.document.yearReport() ) {
+          _dataQueryHash.yearReport = {
+            main: nCore.document.main(),
+            compare: nCore.document.compare()
+          }
+        }
 
         data.query.push(_dataQueryHash);
 
         _query.push(data);
       };
 
-      for (var c = _query.length - 1; c >= 0; c--) {
-        if (_query[c].query.length) {
-          result_query.push(_query[c]);
-        };
-      };
+      // for (var c = _query.length - 1; c >= 0; c--) {
+      //   if (_query[c].query.length) {
+      //     result_query.push(_query[c]);
+      //   };
+      // };
 
       console.log('GLOBAL QUERY:', result_query, _query);
 
-      nCore.document.setGlobalQuery( JSON.stringify(result_query) )
+      nCore.document.setGlobalQuery( JSON.stringify(data) )
     });
 
     nCore.modules.table.event.subscribe('cellFormulaChange', function () {
