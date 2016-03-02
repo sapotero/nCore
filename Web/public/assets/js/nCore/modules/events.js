@@ -1039,8 +1039,8 @@ nCore.events = (function () {
       console.dirxml('params: ', cell);
 
       nCore.document.setShowCellSettings( true )
-      var  tab     = document.getElementsByClassName('criteriaSelector')[0], cellQuery;
-      var  formula = document.getElementById('formulaGroupTab');
+      var tab     = document.getElementsByClassName('criteriaSelector')[0], cellQuery;
+      var formula = document.getElementById('formulaGroupTab');
 
       activeCell = cell;
       nCore.modules.table.setActive(activeCell);
@@ -1094,16 +1094,18 @@ nCore.events = (function () {
             if (activeCell.dataset.hasOwnProperty('query')) {
               var queryArray = JSON.parse(activeCell.dataset.query),
                 _selectedIindex = -1;
+              
+              
               for (var z = 0; z < queryArray.length; z++) {
+              console.groupCollapsed("query");
 
+              console.log('criterias',  criterias);
+              console.log('conditions', groupConditions);
 
                 var group = queryArray[z],
                   groupConditions = group.conditions,
                   criterias = group.query;
 
-                console.groupCollapsed("query");
-                console.dir('criterias',  criterias);
-                console.dir('conditions', groupConditions);
 
                 var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
                   groupTemplate = _groupTemplate.cloneNode(true),
@@ -1169,7 +1171,7 @@ nCore.events = (function () {
                 console.groupEnd();
                 document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
               }
-              // nCore.modules.table.event.publish('newCellSettingsChange' );
+              nCore.modules.table.event.publish('newCellSettingsChange' );
             }
             else {
               document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
@@ -1258,8 +1260,7 @@ nCore.events = (function () {
         console.log("ERROR renderCellSettings!", result);
       });
 
-
-        
+      // nCore.
 
       nCore.document.root.publish('showSideMenu', nCore.document.showCellSettings() );
       // nCore.modules.table.active().classList.add('active-selected-cell');
@@ -1490,23 +1491,32 @@ nCore.events = (function () {
 
         var criteriaItemQuery = {};
 
+
+
         for (var z = 0; z < criteriaItems.length; z++) {
           var item = $(criteriaItems[z]),
             head = item.children('.criteriaSelectorItemHeader'),
             form = item.children('.criteriaForm');
 
+          console.log('ITEM', criteriaItems[z].querySelector('[name="criteria_condition_group"]').value );
+
           var _select = head[0].querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition');
 
           var cellQuery = {
-            criteria_condition : head.children('.criteriaSelectorItemOptions').children('.criteriaSelectorItemCondition')[0].value,
+            criteria_condition : head.find('[name="criteria_condition_group"]').val(),
             source             : form.children('select[name="source"]').val(),
             conditions         : form.children('select[name="conditions"]').val(),
             origin_name        : form.children('select[name="origin_name"]').val(),
             value              : form.children('input[type="date"]').length ? {
-            periodStart        : form.children('input[name="date_start"]').val(),
-            periodEnd          : form.children('input[name="date_end"]').val()
+              periodStart      : form.children('input[name="date_start"]').val(),
+              periodEnd        : form.children('input[name="date_end"]').val()
             }                  : form.children('[name="value"]').val()
           };
+
+          // var cr_c = card.querySelector('[name="criteria_condition_group"]');
+          // cr_c.value = item.criteria_condition;
+          // cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
+          head.find('[name="criteria_condition_group"]').trigger('change') 
 
           if ( cellQuery.origin_name == 'formula' ) {
             cellQuery.value = Base64.encode( cellQuery.value );
