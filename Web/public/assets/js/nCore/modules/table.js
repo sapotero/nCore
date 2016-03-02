@@ -423,19 +423,20 @@ nCore.modules.table = (function(){
 
 
       query = uniq(query);
-      
-      var dataCellQuery = [];
-
-      if ( query.length ) {
-        for (var x = query.length - 1; x >= 0; x--) {
-          if ( JSON.parse( query[x] ).length ) {
-            dataCellQuery.push( query[x] )
-          }
-        }
-        // _cell.dataset.query = query;
-      };
       console.log(' result ', query);
-      _cell.dataset.query = dataCellQuery;
+      
+      // var dataCellQuery = [];
+
+      // if ( query.length ) {
+      //   for (var x = query.length - 1; x >= 0; x--) {
+      //     if ( JSON.parse( query[x] ).length ) {
+      //       dataCellQuery.push( query[x] )
+      //     }
+      //   }
+      //   // _cell.dataset.query = query;
+      // };
+
+      _cell.dataset.query = query;
     };
 
     // console.info('query', query);
@@ -477,7 +478,7 @@ nCore.modules.table = (function(){
 
         if ( cell.classList.contains(sideClass) ) {
 
-          if ( cell.dataset.hasOwnProperty('query') ) {
+          if ( cell.dataset.hasOwnProperty('query') && cell.dataset.query != '[]' ) {
             query.push( cell.dataset.query );
           };
           if ( rowQuery.length ) {
@@ -526,7 +527,7 @@ nCore.modules.table = (function(){
           if ( ___dataCell ) {
             // console.log( 'datacell', ___dataCell.dataset );
             if ( ___dataCell.dataset.query ) {
-              _cellData.query.head.push(___dataCell.dataset.query);
+              _cellData.query.head.push( ___dataCell.dataset.query );
               // console.log('*****', ___dataCell.dataset.query);
             };
 
