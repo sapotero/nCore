@@ -48,7 +48,7 @@ class DocumentsController < ApplicationController
       :datetime    => params[ :datetime ],
       :body        => params[ :body ],
       :image       => params[ :image ],
-      :author      => params[ :author ],
+      :author_id   => params[ :author_id ],
       :query       => params[ :query ],
       :periodStart => params[ :periodStart ],
       :periodEnd   => params[ :periodEnd ],

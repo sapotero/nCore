@@ -10,7 +10,6 @@ nCore.core = (function(){
    * @description Выполняется при загрузке модуля
    */
   var init = function(){
-    console.log( this );
   },
   globalQueryPopulate = function(){
     console.groupCollapsed("globalQueryPopulate");

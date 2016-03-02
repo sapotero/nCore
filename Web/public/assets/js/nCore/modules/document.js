@@ -29,7 +29,7 @@ nCore.document = (function(){
 
       nCoreDocumentUserId       = null,
       nCoreDocumentDepartmentId = null,
-      nCoreGlobalQuery = '[]',
+      nCoreGlobalQuery = '[{"query": []}]',
       nCoreDocumentSettingTab = 'documentQueryPane',
       nCoreDocumentId = '',
       nCoreRoot,

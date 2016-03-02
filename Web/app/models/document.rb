@@ -4,10 +4,9 @@ class Document
   include Mongoid::Timestamps
 
   # belongs_to User
-  field :author,      type: String
+  field :author_id,   type: String
 
   field :type,        type: String
-  
   field :name,        type: String
   field :description, type: String
   
@@ -15,9 +14,16 @@ class Document
   field :periodEnd,   type: String
   field :datetime,    type: String
 
+  field :orientation, type: String
+  field :dimensions,  type: Hash
+  
+
   field :query,       type: String
   field :archived,    type: Boolean, default: false
   field :globalQuery, type: String
+
+  # кому доступен для редактирования
+  field :editors,     type: Array
 
   # годовой отчет: год по которому считать/ год с каким сравнивать
   field :yearReport,  type: Boolean, default: false
@@ -33,6 +39,12 @@ class Document
 
   # досутпные всем
   field :global,      type: Boolean, default: false
+
+  def author
+    # переделать на ошс?
+    # Core::OshsMvd::Official.find( author_id ) unless author_id.blank?
+    User.find( author_id ) unless author_id.blank?
+  end
 
   def self.find_by_params( search_params = {} )
     query = active

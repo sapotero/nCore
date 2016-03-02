@@ -164,6 +164,7 @@ nCore.events = (function () {
       nCore.document.root.publish('globalCriteriaCalculate', modalRoot);
 
       var nCoreDocumentAttributes = {
+        author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
         name: data.elements.nCoreName.value,
         description: data.elements.nCoreDescription.value,
         periodStart: data.elements.nCorePeriodStart.value,
@@ -240,6 +241,7 @@ nCore.events = (function () {
             // считаем табличку перед сохранением
             // $.FroalaEditor.COMMANDS.calculator.callback()
             var nCoreDocumentAttributes = {
+              author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
               type: nCore.document.type(),
               name: nCore.document.name(),
               description: nCore.document.description(),
@@ -282,6 +284,7 @@ nCore.events = (function () {
           onrendered: function(canvas) {
 
             var nCoreDocumentAttributes = {
+              author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
               type: nCore.document.type(),
               name: nCore.document.name(),
               description: nCore.document.description(),
@@ -373,16 +376,6 @@ nCore.events = (function () {
 
         var parent = document.querySelector('.fr-wrapper').parentNode
         parent.removeChild( document.querySelector('.fr-wrapper').nextSibling ) ;
-
-        // var menu = document.querySelector('.fr-toolbar'),
-            // menu_clone = menu.cloneNode(true);
-        
-        // удаляем старое меню
-        // menu.parentNode.removeChild(menu);
-        
-        // var newMenu = document.getElementById('newMenu');
-        // newMenu.appendChild(menu_clone);
-
 
       }).catch(function(result) {
         console.log("ERROR!", result);
@@ -683,7 +676,7 @@ nCore.events = (function () {
 
           if ( nCore.storage.hasOwnProperty( type ) && JSON.parse(nCore.storage.getItem(type)).length ) {
             var items = JSON.parse(nCore.storage.getItem(type));
-            console.log('storage: ', items);
+            // console.log('storage: ', items);
 
 
 
@@ -814,7 +807,7 @@ nCore.events = (function () {
               },
               documentDate: {
                 text: function (params) {
-                  console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
+                  // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
                   return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
                     year  : 'numeric',
                     month : 'numeric',
@@ -1299,9 +1292,9 @@ nCore.events = (function () {
           result_query = [],
           criterias    = body.querySelectorAll('.criteriaSelectorItem');
       
-      var data = {
+      var data = [{
         query: []
-      };
+      }];
 
       console.log('GLOBAL CRITERIAS', criterias);
 

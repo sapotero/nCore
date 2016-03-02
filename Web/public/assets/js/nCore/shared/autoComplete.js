@@ -340,7 +340,7 @@ jQuery(function($) {
                 else {
                   console.log( 'no suggests' );
                   that.sc.style.display = 'block';
-                  that.sc.innerHTML = '<div class="autocomplete-suggestion" > Ничего не найдено </div>'
+                  that.sc.innerHTML = '<div class="autocomplete-suggestion" > Совпадений не найдено </div>'
                   that.updateSC(0);
                 }
             }
