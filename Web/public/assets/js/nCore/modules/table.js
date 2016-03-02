@@ -436,7 +436,7 @@ nCore.modules.table = (function(){
       //   // _cell.dataset.query = query;
       // };
 
-      _cell.dataset.query = query;
+      _cell.dataset.query = JSON.stringify(query);
     };
 
     // console.info('query', query);
@@ -525,9 +525,10 @@ nCore.modules.table = (function(){
           };
           
           if ( ___dataCell ) {
-            console.log( 'datacell', ___dataCell.dataset );
+            // console.log( 'datacell', ___dataCell.dataset );
+            
             if ( ___dataCell.dataset.query ) {
-              
+              console.log( 'datacell', JSON.parse(___dataCell.dataset.query) );
               try { 
                 if ( JSON.parse( ___dataCell.dataset.query ) ){
                   _cellData.query.head.push( ___dataCell.dataset.query );
@@ -538,7 +539,7 @@ nCore.modules.table = (function(){
                 _cellData.query.head.push( '['+___dataCell.dataset.query+']' );
               }
               
-              // _cellData.query.head.push( ___dataCell.dataset.query );
+              _cellData.query.head = JSON.parse(___dataCell.dataset.query);
               // console.log('*****', ___dataCell.dataset.query);
             };
 
