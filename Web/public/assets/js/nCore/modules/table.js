@@ -525,9 +525,20 @@ nCore.modules.table = (function(){
           };
           
           if ( ___dataCell ) {
-            // console.log( 'datacell', ___dataCell.dataset );
+            console.log( 'datacell', ___dataCell.dataset );
             if ( ___dataCell.dataset.query ) {
-              _cellData.query.head.push( ___dataCell.dataset.query );
+              
+              try { 
+                if ( JSON.parse( ___dataCell.dataset.query ) ){
+                  _cellData.query.head.push( ___dataCell.dataset.query );
+                } 
+              }
+              catch(e){
+                console.log(e);
+                _cellData.query.head.push( '['+___dataCell.dataset.query+']' );
+              }
+              
+              // _cellData.query.head.push( ___dataCell.dataset.query );
               // console.log('*****', ___dataCell.dataset.query);
             };
 
