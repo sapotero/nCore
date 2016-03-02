@@ -57,7 +57,7 @@ nCore.core = (function(){
         if ( nCore.document.globalQuery() ) {
         
           
-            var queryArray = [ JSON.parse( nCore.document.globalQuery() ) ],
+            var queryArray = JSON.parse( nCore.document.globalQuery() ),
               _selectedIindex = -1;
             for (var z = 0; z < queryArray.length; z++) {
 
@@ -67,8 +67,8 @@ nCore.core = (function(){
                   groupConditions = group.conditions;
 
               console.groupCollapsed("query");
-              console.dir('criterias',  criterias);
-              console.dir('conditions', groupConditions);
+              console.log('criterias',  criterias);
+              console.log('conditions', groupConditions);
 
               var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
                 groupTemplate = _groupTemplate.cloneNode(true),
