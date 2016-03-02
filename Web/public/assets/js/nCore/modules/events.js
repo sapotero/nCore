@@ -1326,7 +1326,7 @@ nCore.events = (function () {
           }
         }
 
-        data.query.push(_dataQueryHash);
+        data[0].query.push(_dataQueryHash);
 
         _query.push(data);
       };
