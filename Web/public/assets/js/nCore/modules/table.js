@@ -421,12 +421,21 @@ nCore.modules.table = (function(){
         // console.log(' headcell ', headCell, query);
       };
 
-      // console.log(' result ', query);
 
       query = uniq(query);
+      
+      var dataCellQuery = [];
+
       if ( query.length ) {
-        _cell.dataset.query = query;
+        for (var x = query.length - 1; x >= 0; x--) {
+          if ( JSON.parse( query[x] ).length ) {
+            dataCellQuery.push( query[x] )
+          }
+        }
+        // _cell.dataset.query = query;
       };
+      console.log(' result ', query);
+      _cell.dataset.query = dataCellQuery;
     };
 
     // console.info('query', query);
@@ -518,6 +527,7 @@ nCore.modules.table = (function(){
             // console.log( 'datacell', ___dataCell.dataset );
             if ( ___dataCell.dataset.query ) {
               _cellData.query.head.push(___dataCell.dataset.query);
+              // console.log('*****', ___dataCell.dataset.query);
             };
 
             if ( ___dataCell.dataset.appg && ___dataCell.dataset.appg == 'true' ) {
