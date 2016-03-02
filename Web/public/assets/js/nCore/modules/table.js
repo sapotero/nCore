@@ -396,7 +396,7 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('includeSubordinates') && headCell.dataset.includeSubordinates == 'true' ) {
           _cell.dataset.includeSubordinates = headCell.dataset.includeSubordinates;
         };
-        if ( headCell.dataset.hasOwnProperty('chosenOrigin') && headCell.dataset.chosenOrigin == 'true' ) {
+        if ( headCell.dataset.hasOwnProperty('chosenOrigin') ) {
           _cell.dataset.chosenOrigin = headCell.dataset.chosenOrigin;
         };        
         if ( headCell.dataset.hasOwnProperty('includeSubthemes') && headCell.dataset.includeSubthemes == 'true' ) {
@@ -576,7 +576,7 @@ nCore.modules.table = (function(){
               _cellData.queryDefault = ___dataCell.dataset.queryDefault
             };
 
-            if ( ___dataCell.dataset.chosenOrigin && ___dataCell.dataset.chosenOrigin == 'true' ) {
+            if ( ___dataCell.dataset.chosenOrigin ) {
               _cellData.origin      = _cellData.hasOwnProperty('origin') ? _cellData.origin : {};
               _cellData.origin.head = ___dataCell.dataset.chosenOrigin;
             };
