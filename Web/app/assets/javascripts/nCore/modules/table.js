@@ -408,7 +408,7 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('group') && headCell.dataset.group == 'true' ) {
           _cell.dataset.group = headCell.dataset.group;
         };
-        if ( headCell.dataset.hasOwnProperty('queryMonth') && headCell.dataset.queryMonth == 'true' ) {
+        if ( headCell.dataset.hasOwnProperty('queryMonth') ) {
           _cell.dataset.queryMonth = headCell.dataset.queryMonth;
         };
         if ( headCell.dataset.hasOwnProperty('formula') && headCell.dataset.formula == 'true' ) {
@@ -565,7 +565,7 @@ nCore.modules.table = (function(){
               _cellData.includeThemesAp = ___dataCell.dataset.includeThemesAp
             };
 
-            if ( ___dataCell.dataset.queryMonth && ___dataCell.dataset.queryMonth == 'true' ) {
+            if ( ___dataCell.dataset.queryMonth ) {
               _cellData.queryMonth = ___dataCell.dataset.queryMonth
             };
             if ( ___dataCell.dataset.formula && ___dataCell.dataset.formula == 'true' ) {
