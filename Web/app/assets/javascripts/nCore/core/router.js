@@ -352,3 +352,4 @@ jQuery(function($) {
   })
 
 });
+// nCore.router.init()

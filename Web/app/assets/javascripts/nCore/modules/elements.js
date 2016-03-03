@@ -117,3 +117,4 @@ nCore.modules.elements = (function(config){
     elements   : elements
   }
 })();
+nCore.modules.elements.init()

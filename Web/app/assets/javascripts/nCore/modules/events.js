@@ -1650,3 +1650,4 @@ nCore.events = (function () {
     init: init,
   };
 })();
+nCore.events.init()

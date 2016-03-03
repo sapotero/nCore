@@ -1057,3 +1057,4 @@ nCore.modules.cell = (function(){
     init              : init
   }
 })();
+nCore.modules.cell.init();

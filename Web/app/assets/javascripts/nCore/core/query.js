@@ -71,3 +71,4 @@ nCore.query = (function(){
     request : request
   }
 })();
+nCore.query.init();

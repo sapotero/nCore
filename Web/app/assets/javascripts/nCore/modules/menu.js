@@ -58,3 +58,4 @@ nCore.menu = (function(){
     attach : attach
   };
 })();
+nCore.menu.init()

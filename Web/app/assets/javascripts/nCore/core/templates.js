@@ -36,3 +36,4 @@ nCore.templates = (function(){
     notPermit : notPermit
   }
 })();
+nCore.templates.init();

@@ -57,4 +57,4 @@ nCore.modules.cellEditor = (function(){
      }
   }
 })();
-
+nCore.modules.cellEditor.init()

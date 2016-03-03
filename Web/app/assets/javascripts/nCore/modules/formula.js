@@ -78,3 +78,4 @@ nCore.modules.formula = (function(){
     generateFormulaQuery : generateFormulaQuery
   }
 })();
+nCore.modules.formula.init();

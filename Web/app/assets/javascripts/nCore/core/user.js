@@ -35,3 +35,4 @@ nCore.user = (function(){
     permissions    : permissions
   }
 })();
+nCore.user.init()

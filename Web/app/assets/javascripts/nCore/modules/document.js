@@ -195,7 +195,7 @@ nCore.document = (function(){
     nCoreMain    = _current_date.getFullYear(),
     nCoreCompare = _current_date.getFullYear()-1,
 
-    nCoreGlobalQuery = '[]',
+    nCoreGlobalQuery = '[{"query": []}]',
     nCoreDocumentId = '',
 
     nCoreIsNew = true,
@@ -298,3 +298,4 @@ nCore.document = (function(){
     generateNew     : generateNew
   };
 })();
+nCore.document.init()

@@ -53,8 +53,8 @@ nCore.core = (function(){
     var render = new Promise(function(resolve, reject) {
       addOverlay();
       setTimeout(function(){
-        // console.log('nCore.document.globalQuery() ->', nCore.document.globalQuery());
         if ( nCore.document.globalQuery() ) {
+        console.log('nCore.document.globalQuery() ->', nCore.document.globalQuery());
         
           
             var queryArray = JSON.parse( nCore.document.globalQuery() ),
@@ -162,3 +162,4 @@ nCore.core = (function(){
     globalQueryPopulate: globalQueryPopulate
   };
 })();
+nCore.core.init();

@@ -716,3 +716,4 @@ nCore.modules.table = (function(){
     generateId : random
   }
 })();
+nCore.modules.table.init()

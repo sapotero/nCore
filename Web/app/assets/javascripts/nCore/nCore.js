@@ -57,63 +57,72 @@ nCore = (function(){
    * @param  {Array}   scriptArray Массив файлов
    * @param  {Function} callback   Коллбек
    */
-  function load(type, scriptArray, callback) {
+  function load(dynamicLoad, type, scriptArray, callback) {
     console.log('load', type, scriptArray);
 
-    var head        = document.getElementsByTagName('body')[0],
+    var dynamicLoad = dynamicLoad || false;
+
+
+      if ( dynamicLoad ) {
+      function onScriptLoaded(scriptName) {
+        var readyState = this.readyState;
+        if (!readyState || /ded|te/.test(readyState)) {
+          toLoad--;
+          if (!toLoad && hasCallback) {
+            if (type !== 'shared') {
+              callback(type, scriptArray);
+            };
+          }
+        }
+      }
+      function addToStorage(url, script){
+        jqxhr = $.ajax( url )
+        .done(function(data) {
+          nCore.storage.setItem( script, data );
+        })
+        .fail(function(data) {
+          var js_source = data.responseText;
+          nCore.storage.setItem( script, js_source );
+        });
+      };
+
+
+      var script, _storageAvailable = storageAvailable('localStorage');
+    
+      var head        = document.getElementsByTagName('body')[0],
         scriptArray = scriptArray,
         toLoad      = scriptArray.length,
         hasCallback = callback.call;
-    function onScriptLoaded(scriptName) {
-      var readyState = this.readyState;
-      if (!readyState || /ded|te/.test(readyState)) {
-        toLoad--;
-        if (!toLoad && hasCallback) {
-          if (type !== 'shared') {
-            callback(type, scriptArray);
-          };
-        }
-      }
-    }
-    function addToStorage(url, script){
-      jqxhr = $.ajax( url )
-      .done(function(data) {
-        nCore.storage.setItem( script, data );
-      })
-      .fail(function(data) {
-        var js_source = data.responseText;
-        nCore.storage.setItem( script, js_source );
-      });
-    };
 
+      for (var i = 0; i < toLoad; i++) {
+        script = document.createElement('script');
+        var scriptName = scriptArray[i];
 
-    var script, _storageAvailable = storageAvailable('localStorage');
+        if ( _storageAvailable && [ 'shared', 'background' ].indexOf(type) === -1 ) {
 
-    for (var i = 0; i < toLoad; i++) {
-      script = document.createElement('script');
-      var scriptName = scriptArray[i];
-
-      if ( _storageAvailable && [ 'shared', 'background' ].indexOf(type) === -1 ) {
-
-        if( nCore.storage.hasOwnProperty( scriptName ) ){
-          script.src = 'data:text/javascript,' + encodeURIComponent( nCore.storage[ scriptName ] );
+          if( nCore.storage.hasOwnProperty( scriptName ) ){
+            script.src = 'data:text/javascript,' + encodeURIComponent( nCore.storage[ scriptName ] );
+          }
+          else {
+            var url = 'assets/js/nCore/'+type+'/'+scriptName+'.js';
+            script.src = url;
+            // script.async = true;
+            console.log(script.src);
+            script.onload = script.onerror = script.onreadystatechange = onScriptLoaded;
+            // addToStorage(url, scriptName);
+          }
         }
         else {
-          var url = 'assets/js/nCore/'+type+'/'+scriptName+'.js';
-          script.src = url;
+          script.src = 'assets/js/nCore/'+type+'/'+scriptName+'.js';
           // script.async = true;
           script.onload = script.onerror = script.onreadystatechange = onScriptLoaded;
-          // addToStorage(url, scriptName);
+          console.log(script.src);
         }
-      }
-      else {
-        script.src = 'assets/js/nCore/'+type+'/'+scriptName+'.js';
-        // script.async = true;
-        script.onload = script.onerror = script.onreadystatechange = onScriptLoaded;
-      }
 
-      head.appendChild(script);
+        head.appendChild(script);
+      }
     }
+    
   };
 
   /**
@@ -123,8 +132,12 @@ nCore = (function(){
    */
   function loadModules(){
     var dependencies = {
-      shared     : [ "jquery", "mui.min", "transparency.min", "froala_v2", "script", "select2.full", "f", "m", "html2canvas.min" ],
-      core       : [ "preloader", "user", "query", "core", "roles", "templates", "router"],
+      //////////////////////////////////////////////////////////////////////
+      // раскоментить для динамической загрузки скриптов stand-alone mode //
+      //////////////////////////////////////////////////////////////////////
+      // shared     : [ "jquery", "mui.min", "transparency.min", "froala_v2", "script", "select2.full", "f", "m", "html2canvas.min" ],
+      
+      core       : [ "storage", "preloader", "user", "query", "core", "roles", "templates", "router"],
       background : [ "worker", "workerBack", "shared", "sharedBack", "update" ],
       modules    : [ "document", "table", "cellEditor", "cell", "events", "menu", "formula" ]
     };
@@ -133,25 +146,47 @@ nCore = (function(){
     for (var type in dependencies){
 
       var loading = new Promise(function(resolve, reject){
-        load( type, dependencies[type], function(type, array){
-          for(var index in array ){
+        // load( false, type, dependencies[type], function(type, array){
+        //   for(var index in array ){
             
-            var module = array[ index ];
+        //     var module = array[ index ];
 
-            if ( nCore.hasOwnProperty(module) && nCore[ module ].hasOwnProperty('init') ) {
-              nCore[module].init();
-              resolve(true)
-            }
-            else if( nCore.modules.hasOwnProperty( module ) ){
-              nCore.modules[module].init()
-              resolve(true)
-            } 
-            else {
-              reject(false)
-            }
+        //     if ( nCore.hasOwnProperty(module) && nCore[ module ].hasOwnProperty('init') ) {
+        //       nCore[module].init();
+        //       resolve(true)
+        //     }
+        //     else if( nCore.modules.hasOwnProperty( module ) ){
+        //       nCore.modules[module].init()
+        //       resolve(true)
+        //     } 
+        //     else {
+        //       reject(false)
+        //     }
             
-          };
-        });
+        //   };
+        // });
+
+        for (var _src in dependencies[type]) {
+          
+          var module = dependencies[type][_src];
+
+          console.log('init: ', module);
+
+          // if ( nCore.hasOwnProperty(module) && nCore[ module ].hasOwnProperty('init') ) {
+          //   nCore[module].init();
+          //   console.log('init: ', module);
+          //   resolve(true)
+          // }
+          // else if( nCore.modules.hasOwnProperty( module ) ){
+          //   nCore.modules[module].init()
+          //   console.log('init: ', module);
+          //   resolve(true)
+          // } 
+          // else {
+          //   console.log('init failed: ', module);
+          //   reject(false)
+          // }
+        }
       });
 
       loading.then(function( data ){
@@ -163,12 +198,12 @@ nCore = (function(){
     };
 
     // хак для медленного соединения
-    var _i = setInterval(function(){
-      if ( nCore.preloader.hasOwnProperty('init') && typeof(nCore.preloader.init) === 'function' ) {
-        nCore.preloader.init();
-        clearInterval(_i);
-      };
-    }, 100);
+    // var _i = setInterval(function(){
+    //   if ( nCore.preloader.hasOwnProperty('init') && typeof(nCore.preloader.init) === 'function' ) {
+    //     nCore.preloader.init();
+    //     clearInterval(_i);
+    //   };
+    // }, 1000);
   };
 
   /**
@@ -178,6 +213,8 @@ nCore = (function(){
    */
   function init(){
     console.groupCollapsed('nCore::Init');
+
+    storageAvailable('localStorage');
 
     nCore.modules   = {};
     nCore.core      = {};
