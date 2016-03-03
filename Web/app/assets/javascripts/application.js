@@ -10,10 +10,11 @@
 //=require nCore/shared/script
 //=require nCore/shared/select2.full
 //=require nCore/shared/f
-//=require nCore/shared/m
+//=require nCore/shared/modernizr
 //=require nCore/shared/html2canvas.min
 //=require nCore/shared/base64
 //=require nCore/shared/autoComplete
+//=require nCore/shared/es6-promise.min
 
 //=require nCore/core/storage
 //=require nCore/core/preloader

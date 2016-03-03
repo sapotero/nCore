@@ -121,8 +121,7 @@ nCore = (function(){
 
         head.appendChild(script);
       }
-    }
-    
+    } 
   };
 
   /**
@@ -137,7 +136,7 @@ nCore = (function(){
       //////////////////////////////////////////////////////////////////////
       // shared     : [ "jquery", "mui.min", "transparency.min", "froala_v2", "script", "select2.full", "f", "m", "html2canvas.min" ],
       
-      core       : [ "storage", "preloader", "user", "query", "core", "roles", "templates", "router"],
+      core       : [ "preloader", "user", "query", "core", "roles", "templates", "router"],
       background : [ "worker", "workerBack", "shared", "sharedBack", "update" ],
       modules    : [ "document", "table", "cellEditor", "cell", "events", "menu", "formula" ]
     };

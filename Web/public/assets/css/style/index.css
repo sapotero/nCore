@@ -498,11 +498,12 @@ buttons {
     list-style: none;
 }
 .criteriaSelectorItemName {
-  margin-top: 6px;
+  margin-top: 8px;
   white-space: nowrap;
-  width: 150px;
+  width: 165px;
   text-align: left;
   overflow: hidden;
+  font-size: 15px;
 
   text-overflow: ellipsis;
 }
@@ -535,12 +536,16 @@ buttons {
 .criteriaMenuItem{
   padding: 5px;
   cursor: pointer;
+  position: relative;
+    top: 2px;
 }
-.criteriaMenuItem:hover{
 
+.criteriaMenuItem:hover{
   transition: 0.1s;
-  box-shadow: 0 3px 6px rgba(0,0,0,.06), 0 3px 6px rgba(0,0,0,.13);
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,.02), 0 3px 6px rgba(0,0,0,.04);
 }
+
 .criteriaMenuItem:active{
   transition: 0.1s;
   box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
@@ -592,8 +597,8 @@ buttons {
   background-position: right center;
   cursor: pointer;
   color: rgba(0,0,0,.87);
-  font-size: 16px;
-  padding: 0 25px 0 0;
+  font-size: 14px;
+  padding: 0 10px 0 0;
 }
 
 .indexListView {
@@ -1344,8 +1349,23 @@ color: rgba(255,255,255,0.4) !important;
 }
 
 .ellips{
-  margin: 5px 0 0 -15px;
-  padding: 0 10px 0 10px;
+  width: 33px;
+  height: 50px;
+  padding: 8px 0px 0 0;
+  margin: 0px;
+  left: -20px;
+  position: relative;
+}
+
+@-moz-document url-prefix() {
+   .ellips{
+      width: 32px;
+      height: 50px;
+      padding: 0 0px 0 0;
+      margin: 0px;
+      left: -20px;
+      position: relative;
+    }
 }
 .ellipsList{
   margin: 5px 0 0 -15px;
@@ -1522,4 +1542,121 @@ input[type="radio"].styled:checked label:after,
   -moz-transition:    0.4s ease;
   -o-transition:      0.4s ease;
   -ms-transition:     0.4s ease;
+}
+
+.spinner {
+  -webkit-animation: rotator 1s linear infinite;
+          animation: rotator 1s linear infinite;
+}
+
+@-webkit-keyframes rotator {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(270deg);
+            transform: rotate(270deg);
+  }
+}
+
+@keyframes rotator {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(270deg);
+            transform: rotate(270deg);
+  }
+}
+.path {
+  stroke-dasharray: 187;
+  stroke-dashoffset: 0;
+  -webkit-transform-origin: center;
+          transform-origin: center;
+  -webkit-animation: dash 1s ease-in-out infinite, colors 4s ease-in-out infinite;
+          animation: dash 1s ease-in-out infinite, colors 4s ease-in-out infinite;
+}
+
+@-webkit-keyframes colors {
+  0% {
+    stroke: #4285F4;
+  }
+  25% {
+    stroke: #DE3E35;
+  }
+  50% {
+    stroke: #F7C223;
+  }
+  75% {
+    stroke: #1B9A59;
+  }
+  100% {
+    stroke: #4285F4;
+  }
+}
+
+@keyframes colors {
+  0% {
+    stroke: #4285F4;
+  }
+  25% {
+    stroke: #DE3E35;
+  }
+  50% {
+    stroke: #F7C223;
+  }
+  75% {
+    stroke: #1B9A59;
+  }
+  100% {
+    stroke: #4285F4;
+  }
+}
+@-webkit-keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    -webkit-transform: rotate(135deg);
+            transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    -webkit-transform: rotate(450deg);
+            transform: rotate(450deg);
+  }
+}
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    -webkit-transform: rotate(135deg);
+            transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    -webkit-transform: rotate(450deg);
+            transform: rotate(450deg);
+  }
+}
+
+.dp16 {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+.dp24 {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+.dp32 {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
 }

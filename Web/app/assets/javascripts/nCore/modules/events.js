@@ -1091,7 +1091,14 @@ nCore.events = (function () {
         setTimeout(function(){
           if (activeCell) {
           
-            if (activeCell.dataset.hasOwnProperty('query')) {
+            if ( activeCell.dataset.hasOwnProperty('query') ) {
+              
+              try {
+                var queryArray = JSON.parse(activeCell.dataset.query);
+              } catch (e){
+                reject(false);
+              };
+
               var queryArray = JSON.parse(activeCell.dataset.query),
                 _selectedIindex = -1;
               
