@@ -185,9 +185,9 @@ nCore.modules.cell = (function(){
         minimumInputLength: 1,
         placeholder: "Начните ввод"
       }).on('change', function(e){
-        if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
+        // if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
           nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
-        }
+        // }
         nCore.modules.table.event.publish('newCellSettingsChange');
       });
     };
@@ -645,11 +645,12 @@ nCore.modules.cell = (function(){
         // 
       } else {
         // апдейтим ячейку
-        if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
+        // if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
           nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
-        }
+        // }
         nCore.modules.table.event.publish('newCellSettingsChange');
       };
+      
       nCore.modules.table.event.publish('newCellSettingsChange');
       
     });
