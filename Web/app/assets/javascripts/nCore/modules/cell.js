@@ -124,7 +124,7 @@ nCore.modules.cell = (function(){
       
       var e = generateBoolSelect2(element, value, true);
 
-      //console.log('bool!', select2, e)
+      console.log('bool!', select2, e)
       parent.appendChild( e );
 
       $(e).select2()
@@ -713,16 +713,18 @@ nCore.modules.cell = (function(){
   },
   generateBoolSelect2 = function( element, value, r){
     //console.groupCollapsed('generateBoolSelect2');
+    console.groupEnd();console.groupEnd();console.groupEnd();console.groupEnd();console.groupEnd();
     var parent = element.parentNode,
         _new = false,
         _el;
-    //console.log('params', element, value, r, parent);
+    console.warn('generateBoolSelect2', element, value, r, parent);
 
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     };
+
     if ( element.nodeName == 'INPUT' ) {
-      //console.warn('input!', element, parent);
+      console.warn('input!', element, parent);
       
       parent.removeChild(element);
       _new = true;
@@ -742,13 +744,12 @@ nCore.modules.cell = (function(){
 
       $(_el).append( [_default, new Option('Да', 'true'), new Option('Нет', 'false')] );
       parent.appendChild(_el);
-      $(_el).select2().val( value ).trigger('change');;
+      parent.selectedIndex = 1;
+      $(_el).select2().trigger('change');;
     };
-
     if ( parent && parent.querySelector('[name="date_start"]') ) {
       parent.removeChild( parent.querySelector('[name="date_start"]') );
     };
-
     if ( element.nodeName == 'TEXTAREA' ) {
       //console.warn('textarea!', element, parent);
       
@@ -775,25 +776,39 @@ nCore.modules.cell = (function(){
       $(_el).select2().val( value ).trigger('change');;
     }
     // parent.appendChild(element);
+    try {
+      $(element).select2('destroy');
+    } catch (e){
+      
+    }
+
+  var _default = new Option('Выберете', '' );
+      _default.disabled = true;
+      _default.selected = true;
+
+    $(element).append( [_default, new Option('Да', 'true'), new Option('Нет', 'false')] ).val( value ).trigger("change");
+
+    $(element).select2();
     
-    $(element).append( [new Option('Да', 'true'), new Option('Нет', 'false')] ).val( value ).trigger("change");
 
     var usedNames = {};
     $().each(function () {
       usedNames[this.text] ? $(this).remove(): usedNames[this.text] = this.value;
     });
 
-    //console.log('generateBoolSelect2 end', element);
+    
+
+    console.log('generateBoolSelect2 end', element);
     
     if ( parent && parent.querySelector('[name="date_end"]') ) {
       parent.removeChild( parent.querySelector('[name="date_end"]') );
     };
 
-    if ( _new ) {
-      return _el;
-    };
     if (r) {
       return element
+    };
+    if ( _new ) {
+      return _el;
     };
     //console.groupEnd();
   },

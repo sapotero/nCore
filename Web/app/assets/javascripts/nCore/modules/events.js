@@ -1256,9 +1256,7 @@ nCore.events = (function () {
                 chosenOrigin.disabled = true;
               };
             }
-          } else {
-            document.querySelector('.firstTimeCriteria').classList.remove('mui--hide');
-          }
+          };
           resolve(true)
         }, 200); 
       });
@@ -1507,7 +1505,7 @@ nCore.events = (function () {
             head = item.children('.criteriaSelectorItemHeader'),
             form = item.children('.criteriaForm');
 
-          console.log('ITEM', criteriaItems[z].querySelector('[name="criteria_condition_group"]').value );
+          console.log('ITEM', item );
 
           var _select = head[0].querySelector('.criteriaSelectorItemOptions > .criteriaSelectorItemCondition');
 
@@ -1525,6 +1523,7 @@ nCore.events = (function () {
           // var cr_c = card.querySelector('[name="criteria_condition_group"]');
           // cr_c.value = item.criteria_condition;
           // cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
+          head.find('[name="origin_name"]').trigger('change') 
           head.find('[name="criteria_condition_group"]').trigger('change') 
 
           if ( cellQuery.origin_name == 'formula' ) {
