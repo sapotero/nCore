@@ -133,6 +133,7 @@ jQuery(function($) {
     // черновой вариант как мы обходим ноды для 
     // того чтобы собрать критерии в один запрос
     nCore.modules.table.event.publish('newCellSettingsChange' );
+    document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
     e.stopPropagation();
   });
 

@@ -95,7 +95,7 @@ nCore.modules.cell = (function(){
         element.style.width        = ' 92%';
         element.style.padding      = ' 15px auto';
         element.style.paddingTop   = ' 15px';
-        element.style.marginBottom = ' 20px';
+        // element.style.marginBottom = ' 20px';
         element.style.textAlign    = ' left';
 
     var element_properties = [];
@@ -111,7 +111,7 @@ nCore.modules.cell = (function(){
       el.style.width        = '92%';
       el.style.padding      = '15px auto';
       el.style.paddingTop   = '15px';
-      el.style.marginBottom = '20px';
+      // el.style.marginBottom = '20px';
       el.placeholder        = 'Введите текст';
       el.style.textAlign    = 'left';
       el.name               = 'value';
@@ -185,7 +185,9 @@ nCore.modules.cell = (function(){
         minimumInputLength: 1,
         placeholder: "Начните ввод"
       }).on('change', function(e){
-        nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
+        if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
+          nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
+        }
         nCore.modules.table.event.publish('newCellSettingsChange');
       });
     };
@@ -600,8 +602,8 @@ nCore.modules.cell = (function(){
       element.style.display      = 'block';
       element.style.width        = ' 92%';
       element.style.padding      = ' 15px auto';
-      element.style.paddingTop   = ' 15px';
-      element.style.marginBottom = ' 20px';
+      // element.style.paddingTop   = ' 15px';
+      // element.style.marginBottom = ' 20px';
       element.style.textAlign    = ' left';
       element.name               = 'value';
       parent.appendChild(element)
@@ -643,7 +645,9 @@ nCore.modules.cell = (function(){
         // 
       } else {
         // апдейтим ячейку
-        nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
+        if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
+          nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
+        }
         nCore.modules.table.event.publish('newCellSettingsChange');
       };
       nCore.modules.table.event.publish('newCellSettingsChange');
@@ -692,8 +696,8 @@ nCore.modules.cell = (function(){
     el.style.display      = 'block';
     el.style.width        = ' 92%';
     el.style.padding      = ' 15px auto';
-    el.style.paddingTop   = ' 15px';
-    el.style.marginBottom = ' 20px';
+    // el.style.paddingTop   = ' 15px';
+    // el.style.marginBottom = ' 20px';
     el.placeholder   = 'Введите текст';
     el.classList.toggle('muiFieldField');
     el.style.textAlign    = ' left';
@@ -727,12 +731,16 @@ nCore.modules.cell = (function(){
       var _el                = document.createElement('select');
       _el.style.width        = ' 92%';
       _el.style.padding      = ' 15px auto';
-      _el.style.paddingTop   = ' 15px';
-      _el.style.marginBottom = ' 20px';
+      // _el.style.paddingTop   = ' 15px';
+      // _el.style.marginBottom = ' 20px';
       _el.style.textAlign    = ' left';
       _el.name               = "value";
 
-      $(_el).append( [new Option('Да', 'true'), new Option('Нет', 'false')] );
+      var _default = new Option('Выберете', '' );
+      _default.disabled = true;
+      _default.selected = true;
+
+      $(_el).append( [_default, new Option('Да', 'true'), new Option('Нет', 'false')] );
       parent.appendChild(_el);
       $(_el).select2().val( value ).trigger('change');;
     };
@@ -751,12 +759,18 @@ nCore.modules.cell = (function(){
       var _el                = document.createElement('select');
       _el.style.width        = ' 92%';
       _el.style.padding      = ' 15px auto';
-      _el.style.paddingTop   = ' 15px';
-      _el.style.marginBottom = ' 20px';
+      // _el.style.paddingTop   = ' 15px';
+      // _el.style.marginBottom = ' 20px';
       _el.style.textAlign    = ' left';
       _el.name               = "value";
 
-      $(_el).append( [new Option('Да', 'true'), new Option('Нет', 'false')] );
+      // $(_el).append( [new Option('Да', 'true'), new Option('Нет', 'false')] );
+      var _default = new Option('Выберете', '' );
+      _default.disabled = true;
+      _default.selected = true;
+
+      $(_el).append( [_default, new Option('Да', 'true'), new Option('Нет', 'false')] );
+      
       parent.appendChild(_el);
       $(_el).select2().val( value ).trigger('change');;
     }
@@ -820,8 +834,8 @@ nCore.modules.cell = (function(){
       el.style.display      = 'block';
       el.style.width        = ' 92%';
       el.style.padding      = ' 15px auto';
-      el.style.paddingTop   = ' 15px';
-      el.style.marginBottom = ' 20px';
+      // el.style.paddingTop   = ' 15px';
+      // el.style.marginBottom = ' 20px';
       el.style.textAlign    = ' left';
       el.placeholder   = 'Введите текст';
       el.name   = 'value';

@@ -1181,7 +1181,7 @@ nCore.events = (function () {
               nCore.modules.table.event.publish('newCellSettingsChange' );
             }
             else {
-              document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
+              document.querySelector('.firstTimeCriteria').classList.remove('mui--hide');
             }
 
             var monthSelector = document.querySelector('select[name="month"]');
@@ -1256,7 +1256,9 @@ nCore.events = (function () {
                 chosenOrigin.disabled = true;
               };
             }
-          };
+          } else {
+            document.querySelector('.firstTimeCriteria').classList.remove('mui--hide');
+          }
           resolve(true)
         }, 200); 
       });
