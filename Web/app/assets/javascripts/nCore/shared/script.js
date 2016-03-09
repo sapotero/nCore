@@ -259,7 +259,7 @@ jQuery(function($) {
       // console.log('**', select, select.selectedIndex);
 
       select.selectedIndex = 1;
-
+      $(select).select2();
       $(select).trigger("change");
       
       return false;
@@ -268,22 +268,20 @@ jQuery(function($) {
   // выбор справочника -> меняем значения в origin_name
   $('select[name="origin_name"]').live('change', function(e){
     console.groupCollapsed('select[name="origin_name"] -> change');
-    // console.log( 'params ', this, this.value );
 
+    
+    var _root = $(this).closest('.criteriaSelectorItem')[0];
     var _val = this.value;
-
     var select = this.parentNode.querySelector('[name="conditions"]');
+    console.log( 'params ', _root, this, this.value );
 
-    // console.error('***', this, select );
-    select.innerHTML = '';
-
-
-    var field_array  = JSON.parse( nCore.storage.getItem( this.parentNode.querySelector('[name="source"]').value ) ),
+    var field_array  = JSON.parse( nCore.storage.getItem( _root.querySelector('[name="source"]').value ) ),
         field_type,
         autocomplete_title,
         autocomplete_value,
         autocomplete_url;
     
+    select.innerHTML = '';
     // console.info(' select value ', field_array );
 
     field_array.forEach(function(obj){
@@ -317,6 +315,7 @@ jQuery(function($) {
     select.value = _val;
 
     this.parentNode.querySelector('[name="conditions"]').selectedIndex = 0;
+    $(select).select2();
     $(this.parentNode.querySelector('[name="conditions"]')).trigger('change');
     
     console.groupEnd();
@@ -330,9 +329,42 @@ jQuery(function($) {
     var element  = this.parentNode.querySelector('[name="value"], [name="date_start"]')
     console.log('params', this, element );
 
+
+    try{
+      var element = this.parentNode.querySelector('[name="value"]');
+      if ( element ) {
+        element.parentNode.removeChild(element);
+      }
+    }catch(e){
+      console.log('error!', e);
+    }
+
+    try{
+      $(element).select2('destroy');
+    }catch(e){
+      console.warn(e);
+    }
+    
+    var _root = $(this).closest('.criteriaSelectorItem')[0];
+
+    var sorted_hash = {};
+    sorted_hash.source      = _root.querySelector('[name="source"]').value;
+    sorted_hash.origin_name = _root.querySelector('[name="origin_name"]').value;
+    sorted_hash.conditions  = _root.querySelector('[name="conditions"]').value;
+    sorted_hash.value       = '';
+
+    var builder = new nCore.modules.cell.builder( sorted_hash, _root );
+
+    console.log('builder', builder);
+    builder.value(true);
+
     // element, name, value 
-    nCore.modules.cell.updateBlock(element, 'value', null );
+    // nCore.modules.cell.updateBlock(element, 'value', null );
     console.groupEnd();
+    _root.querySelector('[name="value"]').value = '';
+    
+
+
     nCore.modules.table.event.publish('newCellSettingsChange' );
     return false;
   })

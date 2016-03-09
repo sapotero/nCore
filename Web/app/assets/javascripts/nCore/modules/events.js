@@ -1104,10 +1104,7 @@ nCore.events = (function () {
               
               
               for (var z = 0; z < queryArray.length; z++) {
-              console.groupCollapsed("query");
-
-              console.log('criterias',  criterias);
-              console.log('conditions', groupConditions);
+                console.groupCollapsed("query");
 
                 var group = queryArray[z],
                   groupConditions = group.conditions,
@@ -1120,7 +1117,7 @@ nCore.events = (function () {
 
                 if (groupConditions) {
                   for (var v = 0; v < groupSelectCondition.options.length; v++) {
-                    console.log('groupSelectCondition', groupSelectCondition);
+                    // console.log('groupSelectCondition', groupSelectCondition);
                     if (groupSelectCondition[v].value === groupConditions) {
                       _selectedIindex = v;
                       break;
@@ -1164,12 +1161,26 @@ nCore.events = (function () {
                     item.value = Base64.decode( item.value );
                   }
 
-                  nCore.modules.cell.generateBlock( item, form, 'source',      item.source );
-                  nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name );
-                  nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions );
-                  nCore.modules.cell.generateBlock( item, form, 'value',       item.value );
+                  var sorted_hash = {};
+                  sorted_hash.criteria_condition = item.criteria_condition
+                  sorted_hash.source = item.source
+                  sorted_hash.origin_name = item.origin_name
+                  sorted_hash.conditions = item.conditions
+                  sorted_hash.value = item.value
 
-                  card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+                  console.warn( '*********', item, sorted_hash );
+
+                  var render = new Promise(function(resolve, reject){
+                    nCore.modules.cell.generateForm( sorted_hash, card )
+                    resolve( [sorted_hash, card] )
+                  });
+                  
+                  render.then(function(data){
+                    // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+                  }).catch(function(error){
+                    console.log(error)
+                  })
+
 
                   var cr_c = card.querySelector('[name="criteria_condition_group"]');
                   cr_c.value = item.criteria_condition;
@@ -1178,7 +1189,7 @@ nCore.events = (function () {
                 console.groupEnd();
                 document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
               }
-              nCore.modules.table.event.publish('newCellSettingsChange' );
+              // nCore.modules.tablee.vent.publish('newCellSettingsChange' );
             }
             else {
               document.querySelector('.firstTimeCriteria').classList.remove('mui--hide');
@@ -1240,7 +1251,6 @@ nCore.events = (function () {
               for ( var i = 0, l = chosenOrigin.options.length, o; i < l; i++ ){
                 var o = chosenOrigin.options[i];
 
-                console.log( o.value, values.indexOf( o.value ) );
                 if ( values.indexOf( o.value ) != -1 ) {
                   o.selected = true;
                 }
@@ -1523,8 +1533,8 @@ nCore.events = (function () {
           // var cr_c = card.querySelector('[name="criteria_condition_group"]');
           // cr_c.value = item.criteria_condition;
           // cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
-          head.find('[name="origin_name"]').trigger('change') 
-          head.find('[name="criteria_condition_group"]').trigger('change') 
+          // head.find('[name="origin_name"]').trigger('change') 
+          // head.find('[name="criteria_condition_group"]').trigger('change') 
 
           if ( cellQuery.origin_name == 'formula' ) {
             cellQuery.value = Base64.encode( cellQuery.value );

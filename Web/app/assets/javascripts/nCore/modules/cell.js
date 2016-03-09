@@ -72,160 +72,973 @@ nCore.modules.cell = (function(){
      }
   };
 
-  var newCell = function(config){
-    var cell = new Cell(config);
-    cells.push(cell);
-    return cell;
+  var _criteria = {},
+      _root     = {};
+
+  // var newCell = function(config){
+  //   var cell = new Cell(config);
+  //   cells.push(cell);
+  //   return cell;
+  // };
+
+  var Builder = function( criteria, root ){
+    this.criterias = criteria;
+    this.root      = root;
   };
+  Builder.prototype.criteria_condition = function(empty) {
+     this.root.querySelector('[name="criteria_condition_group"]').value = this.criterias.criteria_condition;
+  };
+  Builder.prototype.source = function(empty) {
+    var df         = new DocumentFragment(),
+      criteriaKeys = JSON.parse( nCore.storage.criteriaKeys ),
+      element      = document.createElement('select');
+
+    // select2 will not override this
+    element.name             = 'source';
+    element.style.display    = "block";
+    element.style.width      = "92%";
+    element.style.paddingTop = "15px";
+    element.style.textAlign  = "left";
+
+    for ( var q = 0; q < criteriaKeys.length; q++ ) {
+    df.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
+    }
+
+    element.appendChild(df);
+    element.value = this.criterias.source;
+
+    this.root.querySelector('.criteriaForm').appendChild( element );
+
+    $(element).select2().on('change', function(){
+      nCore.modules.table.event.publish('newCellSettingsChange');
+    });
+  };
+  Builder.prototype.conditions = function(empty) {
+    var field_array  = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
+        field_type,
+        autocomplete_title,
+        autocomplete_value,
+        autocomplete_url,
+    
+    element      = document.createElement('select');
+    element.name = 'conditions';
+    element.style.display    = "block";
+    element.style.width      = "92%";
+    element.style.paddingTop = "15px";
+    element.style.textAlign  = "left";
+
+    for (var z = field_array.length - 1; z >= 0; z--) {
+      var field = field_array[z];
+      if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
+        autocomplete_title = field.autocomplete_title;
+        autocomplete_value = field.autocomplete_value;
+        autocomplete_url   = field.autocomplete_url;
+        field_type         = field.data_type;
+      }
+    }
+
+    field_type = field_type ? field_type : 'Formula';
+
+    var types = nCore.types[ field_type ],
+        df    = new DocumentFragment();
+
+    for (var z = 0; z < types.length; z++) {
+      var option = document.createElement('option');
+      option.value = types[z].value;
+      option.text = types[z].caption;
+      df.appendChild(option);
+    }
+    
+    element.appendChild(df);
+    element.value = this.criterias.conditions;
+    
+    this.root.querySelector('.criteriaForm').appendChild( element );
+    
+    $(element).select2().on('change', function(){
+      nCore.modules.table.event.publish('newCellSettingsChange');
+    });
+  };
+  Builder.prototype.origin_name = function(empty) {
+    var df          = new DocumentFragment(),
+    originTable = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
+    element     = document.createElement('select');
+    
+    // select2 will not override this
+    element.name = 'origin_name';
+    element.style.display    = "block";
+    element.style.width      = "92%";
+    element.style.paddingTop = "15px";
+    element.style.textAlign  = "left";
+
+    for (var q = 0; q < originTable.length; q++) {
+      var option = document.createElement('option');
+      option.value = originTable[q]._id;
+      option.text  = originTable[q].russian_name;
+      
+      option.dataset.auto = originTable[q].autocomplete_url;
+      option.dataset.type = originTable[q].data_type;
+      df.appendChild(option);
+    }
+    
+    // добавляем формулу для того чтобы считать сложные запросы
+    var option = document.createElement('option');
+    option.value = 'formula';
+    option.text  = 'Формула';
+    df.appendChild(option);
+
+
+    element.appendChild(df);
+    element.value = this.criterias.origin_name;
+    
+    _root.querySelector('.criteriaForm').appendChild( element );
+    
+    $(element).select2().on('change', function(){
+      nCore.modules.table.event.publish('newCellSettingsChange');
+    });
+  };
+  Builder.prototype.value = function(empty) {
+    empty = empty || false;
+
+
+    var field_array  = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
+        field_type,
+        autocomplete_title,
+        autocomplete_value,
+        autocomplete_url;
+
+    for (var x = field_array.length - 1; x >= 0; x--) {
+      var field = field_array[x];
+      if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
+        autocomplete_title = field.autocomplete_title;
+        autocomplete_value = field.autocomplete_value;
+        autocomplete_url   = field.autocomplete_url;
+        field_type         = field.data_type;
+      }
+    }
+
+    console.info( this.criterias.value, autocomplete_title, autocomplete_value, autocomplete_url, field_type );
+
+
+    switch( field_type ){
+      
+      case "String":
+        switch( this.criterias.conditions ){
+          case "equal":
+            try{
+              var element = this.root.querySelector('[name="value"]');
+              if ( element ) {
+                $(element).select2('destroy');
+                element.parentNode.removeChild(element);
+              }
+            }catch(e){
+              console.log('error!', e);
+            }
+            console.log( 'STRING equal', this.criterias, autocomplete_url, nCore.modules.table.active().dataset[ this.criterias.value ] );
+
+            if ( autocomplete_url ) {
+              var element  = document.createElement('select');
+              element.name = 'value';
+              element.style.display    = "block";
+              element.style.width      = "92%";
+              element.style.paddingTop = "15px";
+              element.style.textAlign  = "left";
+
+              if ( !empty && nCore.modules.table.active().dataset[ this.criterias.value ] !== '' ) {
+                $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
+              }
+
+              this.root.querySelector('.criteriaForm').appendChild( element );
+
+              $( element ).select2({
+                ajax: {
+                  url: autocomplete_url,
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (data) {
+                    return { id: data[ autocomplete_value ], term: data.term };
+                  },
+                  processResults: function (data, params) {
+                    return {
+                      results: $.map(data, function(p) {
+                        // //console.log('recv', p, select2);
+                        
+                        var val = p.hasOwnProperty( autocomplete_title ) ? p[ autocomplete_title ] : p.full_title;
+
+                        return {
+                          id:    p[ autocomplete_value ],
+                          text:  val,
+                          value: val
+                        };
+                      })
+                    };
+                  },
+                  cache: false
+                },
+                minimumInputLength: 1,
+                placeholder: "Начните ввод"
+              }).on('change', function(e){
+                console.log('element', e, element, element.value,element);
+
+                // if ( !nCore.document.ShowSettings() ) {
+                  // if ( nCore.modules.table.active().dataset.hasOwnProperty( element.value ) ) {
+                  // }
+                // }
+                nCore.modules.table.active().dataset[ element.value ] = '';
+                nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+                nCore.modules.table.event.publish('newCellSettingsChange');
+              });
+            } else {
+              
+              var element  = document.createElement('input');
+              element.name = 'value';
+              element.style.display    = "block";
+              element.style.width      = "92%";
+              element.style.paddingTop = "15px";
+              element.style.textAlign  = "left";
+              element.placeholder      = 'Введите текст';
+              element.classList.toggle('muiFieldField');
+
+              element.value = this.criterias.value;
+              this.root.querySelector('.criteriaForm').appendChild( element );
+            }
+
+            
+            
+            
+            // $(element).select2().on('change', function(){
+            //   nCore.modules.table.event.publish('newCellSettingsChange');
+            // });
+
+            break;
+          case "not_equal":
+            try{
+              var element = this.root.querySelector('[name="value"]');
+              if ( element ) {
+                $(element).select2('destroy');
+                element.parentNode.removeChild(element);
+              }
+            }catch(e){
+              console.log('error!', e);
+            }
+            console.log( 'STRING not_equal', this.criterias ); 
+            var element  = document.createElement('select');
+            element.name = 'value';
+            element.style.display    = "block";
+            element.style.width      = "92%";
+            element.style.paddingTop = "15px";
+            element.style.textAlign  = "left";
+
+            if ( autocomplete_url ) {
+              if ( !empty && nCore.modules.table.active().dataset[ this.criterias.value ] !== '' ) {
+                $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
+              }
+
+              this.root.querySelector('.criteriaForm').appendChild( element );
+
+              $( element ).select2({
+                ajax: {
+                  url: autocomplete_url,
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (data) {
+                    return { id: data[ autocomplete_value ], term: data.term };
+                  },
+                  processResults: function (data, params) {
+                    return {
+                      results: $.map(data, function(p) {
+                        // //console.log('recv', p, select2);
+                        
+                        var val = p.hasOwnProperty( autocomplete_title ) ? p[ autocomplete_title ] : p.full_title;
+
+                        return {
+                          id:    p[ autocomplete_value ],
+                          text:  val,
+                          value: val
+                        };
+                      })
+                    };
+                  },
+                  cache: false
+                },
+                minimumInputLength: 1,
+                placeholder: "Начните ввод"
+              }).on('change', function(e){
+                console.log('element', e, element, element.value,element);
+
+                if ( !nCore.document.ShowSettings() ) {
+                  // if ( nCore.modules.table.active().dataset.hasOwnProperty( element.value ) ) {
+                    nCore.modules.table.active().dataset[ element.value ] = '';
+                    nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+                  // }
+                }
+
+                nCore.modules.table.event.publish('newCellSettingsChange');
+              });
+            } else {
+              element.value = this.criterias.value;
+              this.root.querySelector('.criteriaForm').appendChild( element );
+            }
+            break;
+          case "regexp":
+            try{
+              var element = this.root.querySelector('[name="value"]');
+              if ( element ) {
+                $(element).select2('destroy');
+                element.parentNode.removeChild(element);
+              }
+            }catch(e){
+              console.log('error!', e);
+            }
+            element      = document.createElement('input');
+            element.name = 'value';
+            element.style.display    = "block";
+            element.style.width      = "92%";
+            element.style.paddingTop = "15px";
+            element.style.textAlign  = "left";
+            element.classList.toggle('muiFieldField');
+            element.placeholder        = 'Введите текст';
+            element.value = this.criterias.value;
+            _root.querySelector('.criteriaForm').appendChild( element );
+
+            console.log( 'STRING regexp', this.criterias ); 
+            break;
+          case "full_text":
+            console.log( 'STRING full_text', this.criterias ); 
+            try{
+              var element = this.root.querySelector('[name="value"]');
+              if ( element ) {
+                $(element).select2('destroy');
+                element.parentNode.removeChild(element);
+              }
+            }catch(e){
+              console.log('error!', e);
+            }
+            element      = document.createElement('input');
+            element.name = 'value';
+            element.style.display    = "block";
+            element.style.width      = "92%";
+            element.style.paddingTop = "15px";
+            element.style.textAlign  = "left";
+            element.classList.toggle('muiFieldField');
+            element.placeholder        = 'Введите текст';
+            element.value = this.criterias.value;
+            _root.querySelector('.criteriaForm').appendChild( element );
+
+            break;
+          case "group":
+            try{
+              var element = this.root.querySelector('[name="value"]');
+              if ( element ) {
+                $(element).select2('destroy');
+                element.parentNode.removeChild(element);
+              }
+            }catch(e){
+              console.log('error!', e);
+            }
+            autocomplete_url = 'classifiers/groups/groups.json';
+
+            console.log( 'STRING group', this.criterias );
+            var element  = document.createElement('select');
+            element.name = 'value';
+            element.style.display    = "block";
+            element.style.width      = "92%";
+            element.style.paddingTop = "15px";
+            element.style.textAlign  = "left";
+
+            if ( autocomplete_url ) {
+              if ( !empty && nCore.modules.table.active().dataset[ this.criterias.value ] !== '' ) {
+                $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
+              }
+
+              this.root.querySelector('.criteriaForm').appendChild( element );
+
+              $( element ).select2({
+                ajax: {
+                  url: autocomplete_url,
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (data) {
+                    return { id: data[ autocomplete_value ], term: data.term };
+                  },
+                  processResults: function (data, params) {
+                    return {
+                      results: $.map(data, function(p) {
+                        // //console.log('recv', p, select2);
+                        
+                        var val = p.hasOwnProperty( autocomplete_title ) ? p[ autocomplete_title ] : p.full_title;
+
+                        return {
+                          id:    p[ autocomplete_value ],
+                          text:  val,
+                          value: val
+                        };
+                      })
+                    };
+                  },
+                  cache: false
+                },
+                minimumInputLength: 1,
+                placeholder: "Начните ввод"
+              }).on('change', function(e){
+                console.log('element', e, element, element.value,element);
+
+                nCore.modules.table.active().dataset[ element.value ] = '';
+                nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+                nCore.modules.table.event.publish('newCellSettingsChange');
+              });
+            } else {
+              element.value = this.criterias.value;
+              this.root.querySelector('.criteriaForm').appendChild( element );
+            }
+            break;
+          case "not_in_group":
+            try{
+              var element = this.root.querySelector('[name="value"]');
+              if ( element ) {
+                $(element).select2('destroy');
+                element.parentNode.removeChild(element);
+              }
+            }catch(e){
+              console.log('error!', e);
+            }
+            console.log( 'STRING not_in_group', this.criterias );
+            autocomplete_url = 'classifiers/groups/groups.json';
+
+            console.log( 'STRING group', this.criterias );
+            var element  = document.createElement('select');
+            element.name = 'value';
+            element.style.display    = "block";
+            element.style.width      = "92%";
+            element.style.paddingTop = "15px";
+            element.style.textAlign  = "left";
+
+            if ( autocomplete_url ) {
+              if ( !empty && nCore.modules.table.active().dataset[ this.criterias.value ] !== '' ) {
+                $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
+              }
+
+              this.root.querySelector('.criteriaForm').appendChild( element );
+
+              $( element ).select2({
+                ajax: {
+                  url: autocomplete_url,
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (data) {
+                    return { id: data[ autocomplete_value ], term: data.term };
+                  },
+                  processResults: function (data, params) {
+                    return {
+                      results: $.map(data, function(p) {
+                        // //console.log('recv', p, select2);
+                        
+                        var val = p.hasOwnProperty( autocomplete_title ) ? p[ autocomplete_title ] : p.full_title;
+
+                        return {
+                          id:    p[ autocomplete_value ],
+                          text:  val,
+                          value: val
+                        };
+                      })
+                    };
+                  },
+                  cache: false
+                },
+                minimumInputLength: 1,
+                placeholder: "Начните ввод"
+              }).on('change', function(e){
+                console.log('element', e, element, element.value,element);
+
+                nCore.modules.table.active().dataset[ element.value ] = '';
+                nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+                nCore.modules.table.event.publish('newCellSettingsChange');
+
+                // nCore.modules.table.event.publish('newCellSettingsChange');
+              });
+            } else {
+              element.value = this.criterias.value;
+              this.root.querySelector('.criteriaForm').appendChild( element );
+            }
+            break;
+          case "exist":
+            console.log( 'STRING exist', this.criterias );
+
+            try {
+              $(element).select2('destroy');
+            } catch (e){
+              console.log(e);
+            }
+
+            var element             = document.createElement('select');
+            element.style.width     = '92%';
+            element.style.padding   = '15px auto';
+            element.style.textAlign = 'left';
+            element.name            = "value";
+
+            // parent.appendChild(element);
+            
+            var _default = new Option('Выберете', '' );
+              _default.disabled = true;
+              _default.selected = true;
+
+            $(element).append( [ _default, new Option('Да', 'true'), new Option('Нет', 'false') ] ).val( this.criterias.value ).trigger("change");
+
+            this.root.querySelector('.criteriaForm').appendChild( element );
+            $(element).select2();
+            
+
+            break;
+          default:
+            console.log(''); 
+            break;
+        }
+        break;
+      case "DateTime":
+        break;
+      case "Boolean":
+        break;
+      case "Fixnum":
+        break;
+      case "Formula":
+        break;
+      default:
+        console.warn( 'unknown type', field_type );
+        break;
+    }
+
+  };
+
 
   var init = function(){
   },
-  generateBlock = function( criteria, parent, name, value, globalQuery ){
-    //console.groupCollapsed("generateBlock");
-    //console.info( 'input params: ', criteria, parent, name, value );
+  generateForm = function( criteria, root, globalQuery ){
+    console.groupCollapsed("generateForm");
+    
     globalQuery = globalQuery || false;
 
-    var _criteria = criteria,
-        _parent   = parent,
-        _name     = name,
-        _value    = value;
+    console.info( 'criteria:'    , criteria );
+    console.info( 'root:'        , root );
+    console.info( 'globalQuery:' , globalQuery );
 
-    var element = document.createElement('select');
-        element.style.display      = 'block';
-        element.style.width        = ' 92%';
-        element.style.padding      = ' 15px auto';
-        element.style.paddingTop   = ' 15px';
-        // element.style.marginBottom = ' 20px';
-        element.style.textAlign    = ' left';
+    _criteria = criteria;
+    _root   = root;
 
-    var element_properties = [];
-    element_properties = changeBlockAtributes( criteria, element, name, value );
-    
-    var select2 = element_properties[1];
-        element = element_properties[0];
+    var builder = new Builder( _criteria, _root);
 
-    if ( select2.hasOwnProperty('plain') ) {
-      
-      var el = document.createElement('input');
-      el.style.display      = 'block';
-      el.style.width        = '92%';
-      el.style.padding      = '15px auto';
-      el.style.paddingTop   = '15px';
-      // el.style.marginBottom = '20px';
-      el.placeholder        = 'Введите текст';
-      el.style.textAlign    = 'left';
-      el.name               = 'value';
-      el.value              = select2.plain_value;
-      el.classList.toggle('muiFieldField');
+    console.log('builder', builder);
 
-      //console.log('plain!', select2, el)
-      parent.appendChild( el );
-    } else if ( select2.hasOwnProperty('bool') ) {
-      
-      var e = generateBoolSelect2(element, value, true);
+    for( var key in criteria ){
+      console.log('key: ', key, ' -> ',_criteria[ key ] );
 
-      console.log('bool!', select2, e)
-      parent.appendChild( e );
+      switch( key ){
+        case 'criteria_condition':
+          builder.criteria_condition();
+          break;
+        case 'source':
+          builder.source();
+          break;
+        case 'origin_name':
+          builder.origin_name();
+          break;
+        case 'conditions':
+          builder.conditions();
+          break;
+        case 'value':
+          builder.value();
+          break;
 
-      $(e).select2()
-      .on('change', function(){
-        nCore.modules.table.event.publish('newCellSettingsChange' );
-      })
-    } else {
-      parent.appendChild( element );
-    };
+          // if ( criteria.conditions == 'range' ) {
+            
+          //   var df                = new DocumentFragment();
+          //   var element           = document.createElement('input');
+          //   element.type          = 'date';
+          //   element.name          = 'date_start';
+          //   element.placeholder   = 'Начало';
+          //   element.style.width   = "44%";
+          //   element.style.marginRight = "2%";
+          //   element.style.display = "inline-block";
+          //   element.classList.toggle('muiFieldField');
+          //   element.value = criteria.value.periodStart;
+          //   df.appendChild(element);
 
+          //   var element           = document.createElement('input');
+          //   element.type          = 'date';
+          //   element.name          = 'date_end';
+          //   element.placeholder   = 'Окончание';
+          //   element.style.width   = "44%";
+          //   element.style.display = "inline-block";
+          //   element.classList.toggle('muiFieldField');
+          //   element.value = criteria.value.periodEnd;
+          //   df.appendChild(element);
+          //   element = df;
+          // }
 
+          // if ( criteria.conditions == 'exist' ) {
+          //   switch(field_type){
+          //     case "String":
+          //       //console.log('+exist String');
+          //         select_query.bool = true
+          //         select_query.plain_value = value
+          //       break
+          //     case 'DateTime':
+          //       //console.log('+exist DateTime');
+          //       var el           = document.createElement('input');
+          //       el.type          = 'date';
+          //       el.name          = 'date_start';
+          //       el.placeholder   = 'Выберете дату';
+          //       el.style.width   = "92%";
+          //       el.style.display = "inline-block";
+          //       el.classList.toggle('muiFieldField');
+          //       el.value = criteria.value.periodStart;
+          //       element = el;
+          //       break;
+          //     case 'Boolean':
+          //       //console.log('+exist Boolean');
+          //       var el           = document.createElement('input');
+          //       el.type          = 'date';
+          //       el.name          = 'date_start';
+          //       el.placeholder   = 'Выберете дату';
+          //       el.style.width   = "92%";
+          //       el.style.display = "inline-block";
+          //       el.classList.toggle('muiFieldField');
+          //       el.value = criteria.value.periodStart;
+          //       element = el;
+          //       break;
+          //     case 'Fixnum':
+          //       console.log('parent', parent);
+          //       if ( parent && parent.querySelector('[name="date_end"]') ) {
+          //         parent.removeChild( parent.querySelector('[name="date_end"]') );
+          //       };
+          //       select_query.bool = true
+          //       select_query.plain_value = value
+          //       break;
+          //     default:
+          //       break;
+          //   };
+          // };
 
-    console.log( 'ID ', value );
-    
-    if ( !globalQuery && nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
-      console.log('element + ', element, value, nCore.modules.table.active().dataset[ value ] , select2.id );
-      // if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
-        $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] )
-        element.selectedIndex = 0;
-        $(element).trigger("change");
-      // }
-    } else {
-      console.log('element - ', element);
-      if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
-        $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] )
-        element.selectedIndex = 0;
-        $(element).trigger("change");
+          // if ( criteria.conditions == 'equal' ) {
+          //   //console.log('+equal', field_type, criteria.value, autocomplete_url);
+            
+          //   switch(field_type){
+          //     case "String":
+          //       var el = document.createElement('input');
+          //       el.style.display      = 'block';
+          //       el.style.width        = '92%';
+          //       el.style.padding      = '15px auto';
+          //       el.style.paddingTop   = '15px';
+          //       // el.style.marginBottom = '20px';
+          //       el.placeholder        = 'Введите текст';
+          //       el.style.textAlign    = 'left';
+          //       el.name               = 'value';
+          //       el.value              = _criteria.value;
+          //       el.classList.toggle('muiFieldField');
+
+          //       //console.log('plain!', select2, el)
+          //       _root.querySelector('.criteriaForm').appendChild( el );
+
+          //       // if ( autocomplete_url ) {
+          //       //   select_query.url   =  autocomplete_url;
+          //       //   select_query.value =  autocomplete_value;
+          //       //   select_query.title =  autocomplete_title;
+          //       // } else {
+          //       //   select_query.plain = true
+          //       //   select_query.plain_value = value
+          //       // };
+          //       break
+          //     case "Boolean":
+          //       // select_query.plain = true
+          //       // select_query.plain_value = value
+          //       select_query.bool = true
+          //       select_query.plain_value = value
+          //       break
+          //     case 'DateTime':
+          //       var el           = document.createElement('input');
+          //       el.type          = 'date';
+          //       el.name          = 'date_start';
+          //       el.placeholder   = 'Выберете дату';
+          //       el.style.width   = "92%";
+          //       el.style.display = "inline-block";
+          //       el.classList.toggle('muiFieldField');
+          //       el.value = criteria.value.periodStart;
+          //       element = el;
+          //       if(!Modernizr.inputtypes.date && ( element.name == 'date_start' || element.name == 'date_end' ) ) {
+          //         //console.info( element.nodeName, element.type );
+          //         $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
+          //       }
+          //       break;
+          //     case 'Fixnum':
+          //       if ( parent.querySelector('[name="date_end"]') ) {
+          //         parent.removeChild( parent.querySelector('[name="date_end"]') );
+          //       };
+          //       select_query.plain = true;
+          //       select_query.plain_value = value;
+          //       break;
+          //     default:
+          //       break;
+          //   };
+
+          //   if ( criteria.origin_name == 'formula' ) {
+          //     select_query.formula = true;
+          //     select_query.plain_value = criteria.value;
+          //   };
+          // };
+
+          // if ( criteria.conditions == 'not_equal' ) {
+          //   //console.log('+not_equal');
+
+          //   switch(field_type){
+          //     case "String":
+          //       if ( autocomplete_url ) {
+          //         select_query.url   =  autocomplete_url;
+          //         select_query.value =  autocomplete_value;
+          //         select_query.title =  autocomplete_title;
+          //       } else {
+          //         select_query.plain = true
+          //         select_query.plain_value = value
+          //       };
+          //       break
+          //     case "Boolean":
+          //       // select_query.plain = true
+          //       // select_query.plain_value = value
+          //       select_query.bool = true
+          //       select_query.plain_value = value
+          //       break
+          //     case 'DateTime':
+          //       var el           = document.createElement('input');
+          //       el.type          = 'date';
+          //       el.name          = 'date_start';
+          //       el.placeholder   = 'Выберете дату';
+          //       el.style.width   = "92%";
+          //       el.style.display = "inline-block";
+          //       el.classList.toggle('muiFieldField');
+          //       el.value = criteria.value.periodStart;
+          //       element = el;
+          //       if(!Modernizr.inputtypes.date && ( element.name == 'date_start' || element.name == 'date_end' ) ) {
+          //         //console.info( element.nodeName, element.type );
+          //         $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
+          //       }
+          //       break;
+          //     case 'Fixnum':
+          //       if ( parent.querySelector('[name="date_end"]') ) {
+          //         parent.removeChild( parent.querySelector('[name="date_end"]') );
+          //       };
+          //       select_query.plain = true;
+          //       select_query.plain_value = value;
+          //       break;
+          //     default:
+          //       break;
+          //   };
+
+          //   if ( criteria.origin_name == 'formula' ) {
+          //     select_query.formula = true;
+          //     select_query.plain_value = criteria.value;
+          //   };
+          // };
+
+          // switch( criteria.conditions ){
+          //   case 'regexp':
+          //     // //console.log('+regexp');
+          //     select_query.url   =  autocomplete_url;
+          //     select_query.value =  autocomplete_value;
+          //     select_query.title =  autocomplete_title;
+          //     break;
+
+          //   case 'full_text':
+          //     // //console.log('+full_text');
+          //     break;
+
+          //   case 'group':
+          //     // //console.error('+group', field_type, autocomplete_title, autocomplete_value, autocomplete_url);
+          //     select_query.url   =  'classifiers/groups/groups.json';
+          //     select_query.value =  autocomplete_value;
+          //     select_query.title =  autocomplete_title;
+          //     break;
+
+          //   case 'not_in_group':
+          //     // //console.log('+not_in_group');
+          //     select_query.url   =  'classifiers/groups/groups.json';
+          //     select_query.value =  autocomplete_value;
+          //     select_query.title =  autocomplete_title;
+          //     break;
+          //   case 'sum':
+          //     console.log( 'sum+', _element, _element.parentNode );
+              
+          //     if ( criteria.origin_name == 'formula' ) {
+          //       select_query.formula = true;
+          //       select_query.plain_value = criteria.value;
+          //       break;
+          //     };
+
+          //     // hotfix #1
+          //     // if ( parent.querySelector('[name="date_end"]') ) {
+          //     //   parent.removeChild( parent.querySelector('[name="date_end"]') );
+          //     // };
+
+          //     select_query.plain = true;
+          //     select_query.plain_value = '';
+          //     break;
+          //   case 'gt':
+          //     if ( parent.querySelector('[name="date_end"]') ) {
+          //         parent.removeChild( parent.querySelector('[name="date_end"]') );
+          //       };
+          //     select_query.plain = true;
+          //     select_query.plain_value = value;
+          //     break;
+          //   case 'lt':
+          //     if ( parent.querySelector('[name="date_end"]') ) {
+          //         parent.removeChild( parent.querySelector('[name="date_end"]') );
+          //       };
+          //     select_query.plain = true;
+          //     select_query.plain_value = value;
+          //     break;
+          //   case 'gte':
+          //     if ( parent.querySelector('[name="date_end"]') ) {
+          //         parent.removeChild( parent.querySelector('[name="date_end"]') );
+          //       };
+          //     select_query.plain = true;
+          //     select_query.plain_value = value;
+          //     break;
+          //   case 'lte':
+          //     if ( parent.querySelector('[name="date_end"]') ) {
+          //         parent.removeChild( parent.querySelector('[name="date_end"]') );
+          //       };
+          //     select_query.plain = true;
+          //     select_query.plain_value = value;
+          //     break;
+          //   case 'month':
+          //       select_query.bool = true
+          //       select_query.plain_value = value
+          //     break;
+          //   default:
+          //     break;
+          // };
+
+        // default:
+        //   console.log(' warn! changeBlockAtributes', key);
+        //   break;
       }
-    };
+    }
 
-    if ( select2.hasOwnProperty('url') ){
-      //console.log('has url', select2.url);
-      $( element ).select2({
-        ajax: {
-          url: select2.url,
-          dataType: 'json',
-          delay: 250,
-          data: function (data) {
-            return { id: data[ select2.value ], term: data.term };
-          },
-          processResults: function (data, params) {
-            return {
-              results: $.map(data, function(p) {
-                // //console.log('recv', p, select2);
+    console.groupEnd();
+    // var element = document.createElement('select');
+    //     element.style.display      = 'block';
+    //     element.style.width        = ' 92%';
+    //     element.style.padding      = ' 15px auto';
+    //     element.style.paddingTop   = ' 15px';
+    //     // element.style.marginBottom = ' 20px';
+    //     element.style.textAlign    = ' left';
+
+    // var element_properties = [];
+    // element_properties = generateByParams( _criteria, _root );
+    
+    // var select2 = element_properties[1];
+    //     element = element_properties[0];
+
+
+    // if ( select2.hasOwnProperty('plain') ) {
+      
+    //   var el = document.createElement('input');
+    //   el.style.display      = 'block';
+    //   el.style.width        = '92%';
+    //   el.style.padding      = '15px auto';
+    //   el.style.paddingTop   = '15px';
+    //   // el.style.marginBottom = '20px';
+    //   el.placeholder        = 'Введите текст';
+    //   el.style.textAlign    = 'left';
+    //   el.name               = 'value';
+    //   el.value              = select2.plain_value;
+    //   el.classList.toggle('muiFieldField');
+
+    //   //console.log('plain!', select2, el)
+    //   parent.appendChild( el );
+    // }
+    // if ( select2.hasOwnProperty('bool') ) {
+      
+    //   var e = generateBoolSelect2(element, value, true);
+
+    //   console.log('bool!', select2, e)
+    //   parent.appendChild( e );
+
+    //   $(e).select2()
+    //   .on('change', function(){
+    //     nCore.modules.table.event.publish('newCellSettingsChange' );
+    //   })
+    // }
+    
+
+    // console.log( 'ID ', value );
+
+    // if ( select2.hasOwnProperty('url') ){
+    //   //console.log('has url', select2.url);
+    //   $( element ).select2({
+    //     ajax: {
+    //       url: select2.url,
+    //       dataType: 'json',
+    //       delay: 250,
+    //       data: function (data) {
+    //         return { id: data[ select2.value ], term: data.term };
+    //       },
+    //       processResults: function (data, params) {
+    //         return {
+    //           results: $.map(data, function(p) {
+    //             // //console.log('recv', p, select2);
                 
-                var val = p.hasOwnProperty( select2.title ) ? p[ select2.title ] : p.full_title;
+    //             var val = p.hasOwnProperty( select2.title ) ? p[ select2.title ] : p.full_title;
 
-                return {
-                  id:    p[ select2.value ],
-                  text:  val,
-                  value: val
-                };
-              })
-            };
-          },
-          cache: false
-        },
-        minimumInputLength: 1,
-        placeholder: "Начните ввод"
-      }).on('change', function(e){
-        // if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
-          nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
-        // }
-        nCore.modules.table.event.publish('newCellSettingsChange');
-      });
-    };
+    //             return {
+    //               id:    p[ select2.value ],
+    //               text:  val,
+    //               value: val
+    //             };
+    //           })
+    //         };
+    //       },
+    //       cache: false
+    //     },
+    //     minimumInputLength: 1,
+    //     placeholder: "Начните ввод"
+    //   }).on('change', function(e){
+    //     // if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
+    //       nCore.modules.table.active().dataset[ element.value ] = element.options[element.selectedIndex].textContent;
+    //     // }
+    //     nCore.modules.table.event.publish('newCellSettingsChange');
+    //   });
+    // };
 
-    if ( select2.hasOwnProperty('default') ) {
-      $(element).append( [ new Option( select2.default , select2.id, true) ] )
-      element.selectedIndex = 0;
-      $(element).trigger("change");
-    };
+    // if ( select2.hasOwnProperty('default') ) {
+    //   $(element).append( [ new Option( select2.default , select2.id, true) ] )
+    //   element.selectedIndex = 0;
+    //   $(element).trigger("change");
+    // };
 
-    if ( select2.hasOwnProperty('available') ) {
-      $(element).select2({ placeholder: "Выберете поле" }).on('change', function(){
+    // if ( select2.hasOwnProperty('available') ) {
+    //   $(element).select2({ placeholder: "Выберете поле" }).on('change', function(){
         
-        if( select2.action ){
-          select2.action.call(this);
-        };
+    //     if( select2.action ){
+    //       select2.action.call(this);
+    //     };
 
-        nCore.modules.table.event.publish('newCellSettingsChange');
-      });
-    };
+    //     nCore.modules.table.event.publish('newCellSettingsChange');
+    //   });
+    // };
 
-    if ( select2.hasOwnProperty('formula') ) {
-      parent.removeChild( element );
-      element = document.createElement('textarea');
-      element.style.display = 'block';
-      element.style.width   = ' 92%';
-      element.style.margin = ' 15px auto';
-      element.rows          = 10;
-      element.cols          = 70;
-      element.name          = 'value';
-      element.placeholder   = 'Формула...';
-      element.value         = value;
-      parent.appendChild( element );
+    // if ( select2.hasOwnProperty('formula') ) {
+    //   parent.removeChild( element );
+    //   element = document.createElement('textarea');
+    //   element.style.display = 'block';
+    //   element.style.width   = ' 92%';
+    //   element.style.margin = ' 15px auto';
+    //   element.rows          = 10;
+    //   element.cols          = 70;
+    //   element.name          = 'value';
+    //   element.placeholder   = 'Формула...';
+    //   element.value         = value;
+    //   parent.appendChild( element );
 
-      //console.log( 'select2', select2 );
-    };
+    //   //console.log( 'select2', select2 );
+    // };
 
-    //console.groupEnd();
   },
   changeBlockAtributes = function( criteria, element, name, value ){
     // //console.log( 'changeBlockAtributes', criteria, element, name, value );
@@ -237,7 +1050,7 @@ nCore.modules.cell = (function(){
     element.name = name;
 
     switch(name){
-       case 'criteria_condition':
+      case 'criteria_condition':
         var df           = new DocumentFragment();
         
         df.appendChild( new Option('И',  'and' ) );
@@ -605,11 +1418,6 @@ nCore.modules.cell = (function(){
 
 
         select_query.id = value;
-      // case 'Formula':
-      //   //console.log('Formula+');
-      //   select_query.formula = true;
-      //   select_query.plain_value = value;
-      //   break;
       default:
         //console.log(' warn! changeBlockAtributes', criteria, element, name, value);
         break;
@@ -816,7 +1624,7 @@ nCore.modules.cell = (function(){
       
     }
 
-  var _default = new Option('Выберете', '' );
+    var _default = new Option('Выберете', '' );
       _default.disabled = true;
       _default.selected = true;
 
@@ -1116,12 +1924,12 @@ nCore.modules.cell = (function(){
   };
 
   return {
-    newCell           : newCell,
-    cells             : cells,
-    generateFromQuery : generateFromQuery,
-    generateBlock     : generateBlock,
+    init              : init,
+    builder           : Builder,
     updateBlock       : updateBlock,
-    init              : init
+    generateForm      : generateForm,
+    generateFromQuery : generateFromQuery
+
   }
 })();
 nCore.modules.cell.init();
