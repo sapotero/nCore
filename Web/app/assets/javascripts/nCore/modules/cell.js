@@ -898,33 +898,29 @@ nCore.modules.cell = (function(){
     switch( conditions ){
       case 'range':
         parent.removeChild(element);
-        // parent.removeChild( parent.querySelector('[name="date_end"]') );
-        // parent.removeChild( parent.querySelector('[name="date_start"]') );
+        
         if ( parent.querySelector('[name="value"]') ) {
-          $(element).select2();
-          $(element).select2('destroy');
+          // $(element).select2();
+          try {
+            $(element).select2('destroy');
+          } catch(e){};
           parent.removeChild( parent.querySelector('[name="value"]') );
         };
 
         var element           = document.createElement('input');
         element.type          = 'date';
         element.name          = 'date_start';
-        element.placeholder   = 'Начало';
-        element.style.width   = "44%";
-        element.style.marginRight = "2%";
-        element.style.display = "inline-block";
         element.classList.toggle('muiFieldField');
+        element.classList.toggle('muiFieldFieldDate');
         parent.appendChild(element);
 
         var element           = document.createElement('input');
         element.type          = 'date';
         element.name          = 'date_end';
-        element.placeholder   = 'Окончание';
-        element.style.width   = "44%";
-        element.style.display = "inline-block";
         element.classList.toggle('muiFieldField');
+        element.classList.toggle('muiFieldFieldDate');
         parent.appendChild(element);
-        //console.log('+range');
+
         break;
       case 'exist':
         // if ( autocomplete_url ){

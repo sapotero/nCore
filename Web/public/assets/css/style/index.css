@@ -1660,3 +1660,9 @@ input[type="radio"].styled:checked label:after,
   width: 32px;
   height: 32px;
 }
+.muiFieldFieldDate{
+  width: 45%;
+  margin-right: 1%;
+  display: inline-block;
+  font-size: 14px;
+}
