@@ -140,14 +140,14 @@ nCore.modules.cell = (function(){
     console.log( 'ID ', value );
     
     if ( !globalQuery && nCore.modules.table.active().dataset.hasOwnProperty( value ) ) {
-      console.log('element', element, value, nCore.modules.table.active().dataset[ value ] , select2.id );
+      console.log('element + ', element, value, nCore.modules.table.active().dataset[ value ] , select2.id );
       // if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
         $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] )
         element.selectedIndex = 0;
         $(element).trigger("change");
       // }
     } else {
-      console.log('element', element);
+      console.log('element - ', element);
       if ( nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ value ] ) {
         $(element).append( [ new Option( nCore.modules.table.active().dataset[ value ] , select2.id, true) ] )
         element.selectedIndex = 0;
@@ -483,8 +483,41 @@ nCore.modules.cell = (function(){
                 select_query.plain_value = value
               };
               break
+            case "Boolean":
+              // select_query.plain = true
+              // select_query.plain_value = value
+              select_query.bool = true
+              select_query.plain_value = value
+              break
+            case 'DateTime':
+              var el           = document.createElement('input');
+              el.type          = 'date';
+              el.name          = 'date_start';
+              el.placeholder   = 'Выберете дату';
+              el.style.width   = "92%";
+              el.style.display = "inline-block";
+              el.classList.toggle('muiFieldField');
+              el.value = criteria.value.periodStart;
+              element = el;
+              if(!Modernizr.inputtypes.date && ( element.name == 'date_start' || element.name == 'date_end' ) ) {
+                //console.info( element.nodeName, element.type );
+                $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
+              }
+              break;
+            case 'Fixnum':
+              if ( parent.querySelector('[name="date_end"]') ) {
+                parent.removeChild( parent.querySelector('[name="date_end"]') );
+              };
+              select_query.plain = true;
+              select_query.plain_value = value;
+              break;
             default:
               break;
+          };
+
+          if ( criteria.origin_name == 'formula' ) {
+            select_query.formula = true;
+            select_query.plain_value = criteria.value;
           };
         };
 
@@ -971,12 +1004,20 @@ nCore.modules.cell = (function(){
         };
         break;
       case 'not_equal':
-        //console.log('+not_equal');
-        if ( autocomplete_url.length ){
-          generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
-        } else {
-
-        };
+        switch(field_type){
+          case 'Boolean':
+            if ( parent.querySelector('[name="date_end"]') ) {
+              parent.removeChild( parent.querySelector('[name="date_end"]') );
+            };
+            //console.log('bool');
+            element = generateBoolSelect2(element, value, true);
+            break;
+          default:
+            if ( autocomplete_url.length ){
+              generateSelect2(element, autocomplete_url, autocomplete_value, autocomplete_title);
+            }
+            break;
+          };
         break;
       case 'regexp':
         //console.log('+regexp');

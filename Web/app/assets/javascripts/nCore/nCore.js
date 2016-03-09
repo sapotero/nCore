@@ -404,6 +404,10 @@ nCore = (function(){
           caption: "Точное совпадение"
         },
         {
+          value: "not_equal",
+          caption: "Не"
+        },
+        {
           value: "exist",
           caption: "Присутствует"
         }
