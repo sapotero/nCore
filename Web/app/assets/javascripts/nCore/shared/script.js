@@ -361,8 +361,12 @@ jQuery(function($) {
     // element, name, value 
     // nCore.modules.cell.updateBlock(element, 'value', null );
     console.groupEnd();
-    _root.querySelector('[name="value"]').value = '';
     
+    try {
+      _root.querySelector('[name="value"]').value = '';
+    } catch (e){
+      console.log('value bad')
+    }
 
 
     nCore.modules.table.event.publish('newCellSettingsChange' );

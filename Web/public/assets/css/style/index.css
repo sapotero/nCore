@@ -1666,3 +1666,9 @@ input[type="radio"].styled:checked label:after,
   display: inline-block;
   font-size: 14px;
 }
+
+.textreaGenerate{
+  width   : 92%;
+  margin  : 15px auto;
+  display : block;
+}
