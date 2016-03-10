@@ -440,9 +440,10 @@ nCore.modules.table = (function(){
     };
 
     // console.info('query', query);
-    var rowSpan  = 0,
-        rowQuery = [],
-        cellData = [];
+    var rowSpan   = 0,
+        cellIndex = 0,
+        rowQuery  = [],
+        cellData  = [];
     for (var d = 0; d < sideRows.length; d++) {
       
       var row   = sideRows[d],
@@ -452,6 +453,8 @@ nCore.modules.table = (function(){
           cellSettings = {};
       console.group('row');
       // console.info('row', row);
+
+      var diff = 0;
 
       for (var a = 0; a < row.cells.length; a++) {
         var cell = row.cells[a];
@@ -468,6 +471,8 @@ nCore.modules.table = (function(){
 
         if ( cell.rowSpan > 1 ) {
           rowQuery = [];
+          cellIndex = cell.rowSpan;
+
 
           rowSpan = cell.rowSpan;
           if ( cell.dataset.hasOwnProperty('query') ) {
@@ -488,11 +493,17 @@ nCore.modules.table = (function(){
         }
         else {
 
-          var coordinates = cell.getBoundingClientRect(),
-              ___dataCell = dataRowsCenter[a].element,
-              ___query = [];
           
-          console.log( 'without sideClass', cell, cell.cellIndex, cell.parentNode.rowIndex );
+          if ( cell.parentNode.cells.length < maxCells ) {
+            diff = maxCells - cell.parentNode.cells.length
+          }
+          
+          var coordinates = cell.getBoundingClientRect(),
+              ___dataCell = dataRowsCenter[a+diff].element,
+              ___query = [];
+
+
+          console.log( 'without sideClass', cell, cell.cellIndex, cell.parentNode.rowIndex, maxCells, diff, cell.parentNode.cells.length );
 
           if (rowQuery.length) {
             ___query = ___query.concat(rowQuery);

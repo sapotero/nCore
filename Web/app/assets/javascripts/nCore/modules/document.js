@@ -187,9 +187,11 @@ nCore.document = (function(){
     nCoreDocumentCellQuery = {};
     nCore.document.setTitle('Новый документ');
 
+    _current_date    = new Date(),
     nCoreCurrentYear = _current_date.getFullYear(),
-    nCorePeriodStart = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
-    nCorePeriodEnd   = (_current_date.getFullYear() + "-" + ("0"+_current_date.getMonth()+1).slice(-2) + "-" + ("0"+_current_date.getDate()).slice(-2) ),
+    
+    nCorePeriodStart = _current_date.formattedDate('yyyy-mm-dd'),
+    nCorePeriodEnd   = _current_date.formattedDate('yyyy-mm-dd'),
 
     nCoreYearReport = false,
     nCoreMain    = _current_date.getFullYear(),

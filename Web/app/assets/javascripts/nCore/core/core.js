@@ -126,12 +126,27 @@ nCore.core = (function(){
                     item.value = Base64.decode( item.value );
                   }
 
-                  nCore.modules.cell.generateBlock( item, form, 'source',      item.source, true );
-                  nCore.modules.cell.generateBlock( item, form, 'origin_name', item.origin_name, true );
-                  nCore.modules.cell.generateBlock( item, form, 'conditions',  item.conditions, true );
-                  nCore.modules.cell.generateBlock( item, form, 'value',       item.value, true );
+                  var sorted_hash = {};
+                  sorted_hash.criteria_condition = item.criteria_condition;
+                  sorted_hash.source = item.source;
+                  sorted_hash.origin_name = item.origin_name;
+                  sorted_hash.conditions = item.conditions;
+                  sorted_hash.value = item.value;
 
-                  card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+                  console.warn( '*********', item, sorted_hash );
+
+                  var render = new Promise(function(resolve, reject){
+                    nCore.modules.cell.generateForm( sorted_hash, card );
+                    resolve( [sorted_hash, card] );
+                  });
+                  
+                  render.then(function(data){
+                    // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+                  }).catch(function(error){
+                    console.log(error);
+                  })
+
+                  // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
 
                   var cr_c = card.querySelector('[name="criteria_condition_group"]');
                   cr_c.value = item.criteria_condition;
