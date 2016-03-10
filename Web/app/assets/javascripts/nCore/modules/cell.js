@@ -212,7 +212,7 @@ nCore.modules.cell = (function(){
     element.appendChild(df);
     element.value = this.criterias.origin_name;
     
-    _root.querySelector('.criteriaForm').appendChild( element );
+    this.root.querySelector('.criteriaForm').appendChild( element );
     
     $(element).select2().on('change', function(){
       nCore.modules.table.event.publish('newCellSettingsChange');
@@ -333,7 +333,7 @@ nCore.modules.cell = (function(){
           element.classList.toggle('muiFieldField');
           element.placeholder        = 'Введите текст';
           element.value = this.criterias.value;
-          _root.querySelector('.criteriaForm').appendChild( element );
+          this.root.querySelector('.criteriaForm').appendChild( element );
 
           console.log( 'STRING regexp', this.criterias ); 
         },
@@ -400,7 +400,7 @@ nCore.modules.cell = (function(){
           element.classList.toggle('muiFieldFieldDate');
           // element.onfocus= function(){ if(this.value=='search'){this.value = ''} }
           // element.onblur = function(){ if(this.value.length==0){this.value='search';} }
-          _root.querySelector('.criteriaForm').appendChild(element);
+          this.root.querySelector('.criteriaForm').appendChild(element);
         },
         generateRange = function(){
           this.clear();
@@ -421,7 +421,7 @@ nCore.modules.cell = (function(){
           element.classList.toggle('muiFieldFieldDate');
           df.appendChild(element);
 
-          _root.querySelector('.criteriaForm').appendChild( df );
+          this.root.querySelector('.criteriaForm').appendChild( df );
         },
         generateBool = function(){
           this.clear();
@@ -503,7 +503,7 @@ nCore.modules.cell = (function(){
           element.classList.toggle('muiFieldField');
           element.placeholder        = 'Введите текст';
           element.value = this.criterias.value;
-          _root.querySelector('.criteriaForm').appendChild( element );
+          this.root.querySelector('.criteriaForm').appendChild( element );
 
           console.log( 'STRING regexp', this.criterias ); 
         };
@@ -580,9 +580,9 @@ nCore.modules.cell = (function(){
     console.info( 'globalQuery:' , globalQuery );
 
     _criteria = criteria;
-    _root   = root;
+    this.root   = root;
 
-    var builder = new Builder( _criteria, _root);
+    var builder = new Builder( _criteria, this.root);
 
     console.log('builder', builder);
 
