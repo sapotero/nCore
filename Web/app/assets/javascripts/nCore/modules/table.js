@@ -492,7 +492,7 @@ nCore.modules.table = (function(){
               ___dataCell = dataRowsCenter[a].element,
               ___query = [];
           
-          // console.log( 'without sideClass', cell.dataset , ___dataCell, ___dataCell.dataset, dataRowsCenter[a] );
+          console.log( 'without sideClass', cell, cell.cellIndex, cell.parentNode.rowIndex );
 
           if (rowQuery.length) {
             ___query = ___query.concat(rowQuery);
