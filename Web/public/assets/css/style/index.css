@@ -1672,3 +1672,10 @@ input[type="radio"].styled:checked label:after,
   margin  : 15px auto;
   display : block;
 }
+
+.filename{
+      height: 40px;
+    font-style: oblique;
+    font-weight: 900;
+    font-size: 18px;
+}

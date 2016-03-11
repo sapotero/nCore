@@ -24,6 +24,7 @@ nCore.document = (function(){
       nCorePeriodEnd   = _current_date.formattedDate('yyyy-mm-dd'),
 
       nCoreYearReport = false,
+      nCoreTemplate   = false,
       nCoreMain    = _current_date.getFullYear(),
       nCoreCompare = _current_date.getFullYear()-1,
 
@@ -143,6 +144,7 @@ nCore.document = (function(){
     nCoreName              = config.name;
     nCoreDescription       = config.description;
     nCoreDocumentCellQuery = config.query;
+    nCoreTemplate          = config.template;
     nCoreIsNew             = false;
 
     if ( config.body ) {
@@ -194,6 +196,7 @@ nCore.document = (function(){
     nCorePeriodEnd   = _current_date.formattedDate('yyyy-mm-dd'),
 
     nCoreYearReport = false,
+    nCoreTemplate   = false,
     nCoreMain    = _current_date.getFullYear(),
     nCoreCompare = _current_date.getFullYear()-1,
 
@@ -251,6 +254,12 @@ nCore.document = (function(){
   },
   setCompare = function (value) {
     nCoreCompare = value;
+  },
+  getTemplate = function(){
+    return nCoreTemplate;
+  },
+  setTemplate = function(bool){
+    nCoreTemplate = bool;
   };
   
   return {
@@ -284,6 +293,9 @@ nCore.document = (function(){
     setPeriodEnd    : setPeriodEnd,
     globalQuery     : globalQuery,
     setGlobalQuery  : setGlobalQuery,
+
+    setTemplate     : setTemplate,
+    getTemplate     : getTemplate,
     
     yearReport      : yearReport,
     setYearReport   : setYearReport,
@@ -300,4 +312,4 @@ nCore.document = (function(){
     generateNew     : generateNew
   };
 })();
-nCore.document.init()
+nCore.document.init();

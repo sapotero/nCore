@@ -129,6 +129,25 @@
       </div>
     </div>
 
+    <div id="tryToEditTemplate" class="mui--hide animated">
+      <div class="mui-row mui--text-center">
+        <div class="mui--text-dark mui--text-headline errorMessage mui--align-top" style="height: 40px;">
+        </div>
+
+        <div class="mui--text-light-secondary mui--text-subhead details mui--align-top" style="height: 40px;"></div>
+        
+          <div class="filename"></div>
+        
+        
+
+        <div class="mui-form--inline mui--align-bottom">
+          <button class="mui-btn mui-btn--raised cancel" onclick="mui.overlay('off');"></button>
+          <button class="mui-btn mui-btn--raised mui-btn--primary save" onclick="nCore.document.root.publish( 'tryToSaveFromTemplate' )"></button>
+        </div>
+
+      </div>
+    </div>
+
     <%= javascript_include_tag "application" %>
   </body>
 </html>

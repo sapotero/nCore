@@ -2,11 +2,14 @@ class DocumentsController < ApplicationController
   before_filter :set_document, only: [:show, :edit, :update, :destroy, :remove]
 
   respond_to :xls, :html, :json
-  # protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
+  protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
 
   def index
-    @query = Document.active( with_images: true )
-    render :json => @query
+    result = {}
+
+    result['documents'] = Document.active( with_images: true )
+    result['templates'] = Document.find_templates( with_images: true  )
+    render :json => result
   end
 
   def autocomplete
@@ -30,10 +33,6 @@ class DocumentsController < ApplicationController
                show_as_html:      params.key?('debug')
       }
       format.xlsx do
-        # workbook use_autowidth: true
-        # sheet    orientation: landscape
-        # format 'td.fr-highlighted', b: true
-        # format 'td.fr-thick', b: true
         render xlsx: :show, layout: false, filename: @document.name
       end
 
@@ -59,6 +58,7 @@ class DocumentsController < ApplicationController
       :body        => params[ :body ],
       :image       => params[ :image ],
       :author_id   => params[ :author_id ],
+      :provider_id => params[ :provider_id ],
       :query       => params[ :query ],
       :periodStart => params[ :periodStart ],
       :periodEnd   => params[ :periodEnd ],

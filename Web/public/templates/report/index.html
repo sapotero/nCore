@@ -25,8 +25,60 @@
 </table>
 
 <!-- шаблон для превьюх -->
-<div class="mui-row _indexView thumb  mui--hide">
+<div class="mui-row _indexViewTemplate template  mui--hide">
+  <div class="mui--text-light-secondary mui--text-headline mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12" style="padding: 20px 0 10px 40px;">Шаблоны</div>
+  <div id="template" class="mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12 indexThumbView">
+    
+   <!--  <div class="mui-col-md-12 mui-col-xs-12">
+      <div class="mui--text-dark-secondary mui--text-title date"></div>
+    </div> -->
+    <!-- <div class="documents"> -->
+    <div class="document mui-col-md-3 mui-col-ms-offset-0 mui-col-sm-3 mui-col-sm-offset-0 mui-col-xs-6 mui-col-xs-offset-5" style="width: 20%">
+      <div class="mui-panel mui--z1 document-thumb-view">
+        
+        <div class="document-thumb-view-image-wrapper">
+          <div class="mui-panels" style="padding: 5px;">
+            <a class="documentId animated paperBlink ">
+              <img class="documentImage document-thumb-view-image" >
+            </a>
+          </div>
+        </div>
+        
+        <div class="mui-divider"></div>
+        
+        <div class="mui-row">
+          <div class="mui-col-md-10">
 
+            <div class="mui-col-md-12 documentTitle document-thumb-view-title"></div>
+            
+            <div class="mui-col-md-2 mui--text-accent document-thumb-view-icon ">
+              <i class="fa fa-file-o"></i>
+            </div>
+            <div class="mui-col-md-9 mui--text-menu mui--text-black-26 documentDate"></div>
+          </div>
+          <div class="mui-col-md-2">
+            <div class="mui-dropdown">
+              <button class="mui-btn mui-btn--flat ellips mui--text-dark-secondary" data-mui-toggle="dropdown">
+                <!-- <i class="fa fa-ellipsis-v "></i> -->
+                <i class="material-icons">more_vert</i>
+              </button>
+              <ul class="mui-dropdown__menu mui-dropdown__menu--right mui--z3">
+                <li><a class="downloadPdf" href="#">Скачать PDF</a></li>
+                <!-- <li><a class="downloadXls" href="#">Скачать XLS</a></li> -->
+                <!-- <div class="mui-divider"></div> -->
+                <!-- <li><a class="removeDocument" data-href="#">Удалить отчёт</a></li> -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- </div>  -->
+  </div>
+</div>
+
+<div class="mui-row _indexView thumb  mui--hide">
+  <div class="mui--text-light-secondary mui--text-headline mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12" style="padding: 0 0 10px 40px;">Документы</div>
   <div id="thumb" class="mui-col-md-8 mui-col-md-offset-2 mui-col-xs-12 indexThumbView">
     
    <!--  <div class="mui-col-md-12 mui-col-xs-12">
@@ -74,7 +126,6 @@
       </div>
     </div>
     <!-- </div>  -->
-
   </div>
 </div>
 

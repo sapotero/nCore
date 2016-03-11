@@ -1,25 +1,13 @@
-## Settings::Web
+# Конструктор отчётов
 
-Веб интерфейс настроек системы
+#### на стейдже используем gems с веткой reports_2
 
-## Основы внесения изменений
+1) 
+    - sudo apt-get install xfonts-base  xfonts-75dpi
+    - sudo dpkg -i wkhtmltox-0.12.2.1_linux-wheezy-amd64.deb
+    - whereis wkhtmltopdf 
+    - прописать путь в /config/initializers/wicked_pdf.rb
 
-1. Создайте свою ветку с новым функционалом (`git checkout -b my-new-feature`)
-2. Зафиксируйте изменения (`git commit -am 'Add some feature'`)
-3. Отправьте изменения на сервер (`git push origin my-new-feature`)
-4. Создайте новый Merge Request
-
-## Начало работы с проектом
-
-Для нормальной работы с проектом требуется наличие [RVM](https://rvm.io/)
-
-Установить все зависимости
-
-    bundle
-
-Настроить соединение с БД. Для этого скопировать шаблонные настройки:
-
-    cp config/mongoid.yml.example config/mongoid.yml
-
-Указать в них необходимые параметры соединения (хост, логин, пароль, имена БД).
-
+2) rake db:seed
+3) ...
+4) profit!

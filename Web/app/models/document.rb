@@ -5,6 +5,7 @@ class Document
 
   # belongs_to User
   field :author_id,   type: String
+  field :provider_id, type: String
 
   field :type,        type: String
   field :name,        type: String
@@ -48,9 +49,17 @@ class Document
 
   def self.find_by_params( search_params = {} )
     query = active
+    query = query.where( provider_id: User.current.provider_id )
+    query = query.where( template: false )
     query = query.where( name: /#{Regexp.escape(search_params[:term])}/i ) unless search_params[:term].blank?
     query = query.order_by(created_at: -1)
     query
+  end
+
+  def self.find_templates( with_images = false )
+    documents = self.where( template: true )
+    documents = self.with_images( documents ) if with_images
+    documents
   end
 
   def body=(base64)

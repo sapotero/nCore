@@ -1,10 +1,5 @@
 source 'https://rubygems.org'
-
-#gem 'settings_logic', :path => "../Logic"
-
 eval(IO.read('../../gems/core/WebGemfile'), binding)
 
-gem "ckeditor", "~> 4.0.10"
-# gem 'awesome_print'
 gem 'wicked_pdf', '~> 1.0.4'
 gem 'to_spreadsheet', '~> 1.0.6'

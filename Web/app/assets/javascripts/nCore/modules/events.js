@@ -204,14 +204,93 @@ nCore.events = (function () {
     // сохранение документа
     nCore.document.root.subscribe('saveDocument', function (data) {
       console.log('saveDocument');
-
-      if (nCore.document.isNewDocument()) {
-        nCore.document.root.publish('newDocument');
-      }
-      else {
-        nCore.document.root.publish('saveDocumentToDb');
+      // проверяем, не шаблон ли это?
+      if ( nCore.document.getTemplate() ) {
+        console.log('try to edit template: ', nCore.document.getTemplate );
+        nCore.document.root.publish('tryToEditTemplate');
+      } else {
+        if (nCore.document.isNewDocument()) {
+          nCore.document.root.publish('newDocument');
+        }
+        else {
+          nCore.document.root.publish('saveDocumentToDb');
+        }
       }
     });
+
+    nCore.document.root.subscribe('tryToEditTemplate', function (data) {
+      console.log('tryToEditTemplate');
+
+      mui.overlay('on');
+      var options   = {
+        'keyboard': false, // teardown when <esc> key is pressed (default: true)
+        'static': true, // maintain overlay when clicked (default: false)
+        'onclose': function () {
+        }
+      };
+      var render = Transparency.render(document.getElementById('tryToEditTemplate'), {
+        errorMessage: "Вы пытаетесь редактировать шаблон!",
+        details: "Будет создан новый файл с именем",
+        filename : ( document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title() ),
+        cancel: "Отмена",
+        save: "Сохранить"
+      });
+
+      var m = document.createElement('div');
+      m.style.width = '800px';
+      m.style.height = '200px';
+      m.style.margin = '10% auto';
+      m.style.padding = '10% auto';
+      m.style.backgroundColor = '#fff';
+      m.classList.toggle('mui-panel');
+      m.classList.toggle('mui--z5');
+
+      m.classList.toggle('animated');
+      m.classList.toggle('fadeIn');
+      
+      m.innerHTML = render.innerHTML;
+
+      mui.overlay('on', options, m );
+
+    });
+    nCore.document.root.subscribe('tryToSaveFromTemplate', function () {
+      html2canvas( document.querySelector('div#paper') , {
+        onrendered: function(canvas) {
+
+          var nCoreDocumentAttributes = {
+            author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+            type: nCore.document.type(),
+            title: document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title(),
+            name: document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title(),
+            description: document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title(),
+            datetime: new Date().getTime(),
+            body:  Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
+            query: nCore.document.cellQuery() || '',
+            periodStart: nCore.document.periodStart(),
+            periodEnd: nCore.document.periodEnd(),
+            globalQuery: nCore.document.globalQuery(),
+            image: canvas.toDataURL()
+          };
+
+          if ( nCore.document.yearReport() ) {
+            nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
+            nCoreDocumentAttributes.main       = nCore.document.main();
+            nCoreDocumentAttributes.compare    = nCore.document.compare();
+          }
+
+          nCore.document.setAttributes(nCoreDocumentAttributes);
+
+          nCore.query.post('documents.json', nCoreDocumentAttributes)
+            .success(function (data) {
+              console.log('saveDocument', data);
+                location.hash = location.hash.replace(/#\/report\/\w+/, '#/report/'+data._id);
+            }).error(function (data) {
+              console.error('[!] saveDocument', post, data)
+            });
+        }
+      });
+    });
+
 
     nCore.document.root.subscribe('saveDocumentToDb', function (data) {
       console.log('data: ', data);
@@ -316,8 +395,6 @@ nCore.events = (function () {
               });
           }
         });
-
-        
       }
     });
     // изменение свойств документа
@@ -449,6 +526,7 @@ nCore.events = (function () {
           nCore.document.setYearReport(rawDocument.yearReport );
           nCore.document.setMain(rawDocument.main );
           nCore.document.setCompare(rawDocument.compare );
+          nCore.document.setTemplate(rawDocument.template );
 
           callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
           return rawDocument
@@ -675,7 +753,6 @@ nCore.events = (function () {
           // var reload_count = 2;
 
           if ( nCore.storage.hasOwnProperty( type ) && JSON.parse(nCore.storage.getItem(type)).length ) {
-            var items = JSON.parse(nCore.storage.getItem(type));
             // console.log('storage: ', items);
 
 
@@ -799,6 +876,80 @@ nCore.events = (function () {
             // document.getElementById(nCore.storage.getItem('indexViewType')).innerHTML = '';
             // document.getElementById(nCore.storage.getItem('indexViewType')).innerHTML = __result.join('');
             // 
+            // 
+            var helperTemplate = {
+              documentTitle: {
+                text: function (params) {
+                  console.log(this);
+
+                  return this.params.name || '---';
+                }
+              },
+              documentDate: {
+                text: function (params) {
+                  // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
+                  return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
+                    year  : 'numeric',
+                    month : 'numeric',
+                    day   : 'numeric'
+                  } : {
+                    year   : 'numeric',
+                    month  : 'numeric',
+                    day    : 'numeric',
+                    hour   : 'numeric',
+                    minute : 'numeric'
+
+                  });
+                }
+              },
+              documentId: {
+                href: function (params) {
+                  return "#/report/" + this.params._id || Math.random();
+                },
+                text: function () {
+                  return ''
+                }
+              },
+              downloadDoc: {
+                href: function (params) {
+                  return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
+                }
+              },
+              downloadPdf: {
+                href: function (params) {
+                  return "documents/" + this.params._id + ".pdf";
+                }
+              },
+              downloadXls: {
+                href: function (params) {
+                  return "documents/" + this.params._id + ".xlsx";
+                }
+              },
+              removeDocument: {
+                href: function (params) {
+                  return location.hash;
+                },
+                type: function () {
+                  return this.params._id
+                }
+              },
+              documentUser: {
+                text: function () {
+                  return this.params.user
+                }
+              },
+              documentImage: {
+                src: function(params){
+                  return ( this.image.length ? this.image : 'assets/img/doc.png' )
+                }
+              },
+              groupTitle: {
+                text: function () {
+                  return 'Шаблоны'
+                }
+              }
+            };
+            
             var helper = {
               documentTitle: {
                 text: function (params) {
@@ -869,14 +1020,21 @@ nCore.events = (function () {
                 }
               }
             };
+            
+            var templates = JSON.parse(nCore.storage.getItem('templates'));
+            Transparency.render( document.querySelector('#template'), templates, helperTemplate );
 
+
+            var items = JSON.parse(nCore.storage.getItem(type));
             Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
+            console.log('type', type);
+
 
             document.body.classList.add('hide-sidedrawer');
             document.getElementById('thumb').classList.remove('mui--hide')
 
             var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
-              _active_row = document.getElementsByClassName('_indexView ' + nCore.storage.getItem('indexViewType'))[0];
+              _active_row = document.querySelector('._indexView.' + nCore.storage.getItem('indexViewType'));
 
             for (var i = 0; i < _mui_rows.length; i++) {
               _mui_rows[i].classList.add('mui--hide')
@@ -885,6 +1043,22 @@ nCore.events = (function () {
             if (_active_row) {
               _active_row.classList.remove('mui--hide');
             };
+
+            if ( templates.length ) {
+              console.log('templates.length');
+              
+              var _mui_rows = document.querySelector('.mui-row._indexViewTemplate'),
+              _active_row = document.querySelector('._indexViewTemplate');
+
+              for (var i = 0; i < _mui_rows.length; i++) {
+                _mui_rows[i].classList.add('mui--hide')
+              }
+
+              if (_active_row) {
+                _active_row.classList.remove('mui--hide');
+              };
+            }
+
 
             resolve(true)
             // clearInterval(_i);
@@ -1602,10 +1776,17 @@ nCore.events = (function () {
       function load(item) {
         nCore.query.get(item + '.json')
           .success(function (data) {
-            nCore.storage.setItem(item + '', JSON.stringify(data));
+            console.log('loadData', data);
+            if ( item == 'documents') {
+              nCore.storage.setItem('documents', JSON.stringify(data.documents));
+              nCore.storage.setItem('templates', JSON.stringify(data.templates));
+            } else {
+              nCore.storage.setItem(item + '', JSON.stringify(data));
+            }
+            
             nCore.document.root.publish(nCore.storage.getItem('indexViewType'));
           }).error(function (data) {
-            console.error('[!] loadItem -> get', data)
+            console.error('[!] loadItem -> get', data);
           });
       };
 
