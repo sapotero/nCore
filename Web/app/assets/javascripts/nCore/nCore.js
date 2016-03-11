@@ -474,5 +474,4 @@ nCore = (function(){
     debug : true
   };
 })();
-
 nCore.init();

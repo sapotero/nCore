@@ -840,6 +840,11 @@ nCore.events = (function () {
                   return "documents/" + this.params._id + ".pdf";
                 }
               },
+              downloadXls: {
+                href: function (params) {
+                  return "documents/" + this.params._id + ".xlsx";
+                }
+              },
               removeDocument: {
                 href: function (params) {
                   return location.hash;

@@ -1,7 +1,7 @@
 class FormsController < ApplicationController
   before_filter :set_form, only: [:show, :edit, :update, :destroy]
 
-  protect_from_forgery except: [ :index, :create, :edit, :update, :destroy ]
+  # protect_from_forgery except: [ :index, :create, :edit, :update, :destroy ]
 
   # GET /forms
   def index

@@ -1,0 +1,12 @@
+<%= 
+
+format_xls 'table' do
+  workbook use_autowidth: true
+  format 'td', border: Axlsx::STYLE_THIN_BORDER, :alignment=>{:horizontal => :center, :vertical => :center}
+  format 'td.fr-highlighted', b: true, border: Axlsx::STYLE_THIN_BORDER, :alignment=>{:horizontal => :center, :vertical => :center}
+  format 'td.fr-thick', b: true, border: Axlsx::STYLE_THIN_BORDER, :alignment=>{:horizontal => :center, :vertical => :center}
+end
+
+raw Base64.decode64 @document.body
+
+%>

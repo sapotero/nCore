@@ -1,17 +1,16 @@
 class DocumentsController < ApplicationController
   before_filter :set_document, only: [:show, :edit, :update, :destroy, :remove]
 
-  protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
+  respond_to :xls, :html, :json
+  # protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
 
   def index
     @query = Document.active( with_images: true )
-    # @query.page(params[:page]).per(params[:show_count] || 10)
     render :json => @query
   end
 
   def autocomplete
     @query = Document.find_by_params( params )
-    # @query.page(params[:page]).per(params[:show_count] || 10)
     render :json => @query
   end
 
@@ -19,8 +18,10 @@ class DocumentsController < ApplicationController
     document = @document.as_json
     document[:body] = @document.body
     
+    
 
     respond_to do |format|
+      format.json { render json: document }
       format.pdf  {        
         render pdf:              @document.name,
                disposition:      'attachment',
@@ -28,7 +29,16 @@ class DocumentsController < ApplicationController
                orientation:      'Landscape',
                show_as_html:      params.key?('debug')
       }
-      format.json { render json: document }
+      format.xlsx do
+        # workbook use_autowidth: true
+        # sheet    orientation: landscape
+        # format 'td.fr-highlighted', b: true
+        # format 'td.fr-thick', b: true
+        render xlsx: :show, layout: false, filename: @document.name
+      end
+
+      # for test
+      format.html { render :layout => false }
     end
     
   end
@@ -66,9 +76,9 @@ class DocumentsController < ApplicationController
   end
 
   def update
-    ap params
+    # ap params
     @document.body        = params[ :body ]
-    # @document.image       = params[ :image ]
+    @document.image       = params[ :image ]
     @document.periodStart = params[ :periodStart ]
     @document.periodEnd   = params[ :periodEnd ]
     @document.globalQuery = params[ :globalQuery ]

@@ -109,10 +109,9 @@ jQuery(function($) {
         // показываем по умолчанию //
         /////////////////////////////
         nCore.router.add('', function () {
-          var preloadItems = [ 'documents', 'forms' ];
           
-          nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
-          nCore.document.root.publish( 'loadCriteria' );
+          // nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
+          // nCore.document.root.publish( 'loadCriteria' );
 
           location.hash = '#/report'
 
@@ -133,6 +132,8 @@ jQuery(function($) {
         // роуты отчетов //
         ///////////////////
         nCore.router.add('report', function (r) {
+          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
+
           nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
           nCore.document.root.publish( 'loadCriteria' );
           
@@ -157,7 +158,7 @@ jQuery(function($) {
         
         nCore.router.add('report/new', function (r) {
           nCore.document.setTitle('Новый документ'); // document.title = 'report new';
-
+          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
           nCore.templates.render('report/new', function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
@@ -170,7 +171,7 @@ jQuery(function($) {
 
         nCore.router.add('report/:id', function (r) {
           // document.title = 'reports/:id '+ r.params.id;
-
+          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
           nCore.templates.render('report/new', function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
@@ -187,8 +188,9 @@ jQuery(function($) {
         //////////////
         nCore.router.add('buiseness', function (r) {
           // есть ли у юзера право просматривать таблицы
+          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
           if ( nCore.roles.check('viewTable') ) {
-            nCore.templates.render('table/index', function(data){ 
+            nCore.templates.render('report/index', function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
                 wrapper.innerHTML = data;
@@ -203,8 +205,8 @@ jQuery(function($) {
         
         nCore.router.add('buiseness/new', function (r) {
           // document.title = 'buiseness new';
-
-          nCore.templates.render('table/new', function(data){ 
+          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
+          nCore.templates.render('report/new', function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -215,8 +217,8 @@ jQuery(function($) {
 
         nCore.router.add('buiseness/:name', function (r) {
           // document.title = 'buiseness/:name '+ r.params.name;
-
-          nCore.templates.render('table/table', function(data){ 
+          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
+          nCore.templates.render('report/index', function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -231,7 +233,7 @@ jQuery(function($) {
         nCore.router.add('print', function (r) {
           // есть ли у юзера право просматривать таблицы
           if ( nCore.roles.check('viewTable') ) {
-            nCore.templates.render('table/index', function(data){ 
+            nCore.templates.render('report/index', function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
                 wrapper.innerHTML = data;
@@ -247,7 +249,7 @@ jQuery(function($) {
         nCore.router.add('print/new', function (r) {
           // document.title = 'print new';
 
-          nCore.templates.render('table/new', function(data){ 
+          nCore.templates.render('report/new', function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -259,7 +261,7 @@ jQuery(function($) {
         nCore.router.add('print/:name', function (r) {
           // document.title = 'print/:name '+ r.params.name;
 
-          nCore.templates.render('table/table', function(data){ 
+          nCore.templates.render('report/index', function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
