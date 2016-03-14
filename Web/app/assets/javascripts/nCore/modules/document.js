@@ -31,6 +31,7 @@ nCore.document = (function(){
       nCoreDocumentUserId       = null,
       nCoreDocumentDepartmentId = null,
       nCoreGlobalQuery = '[{"query": []}]',
+      nCoreGlobalQueryData = {},
       nCoreDocumentSettingTab = 'documentQueryPane',
       nCoreDocumentId = '',
       nCoreRoot,
@@ -202,6 +203,7 @@ nCore.document = (function(){
 
     nCoreGlobalQuery = '[{"query": []}]',
     nCoreDocumentId = '',
+    nCoreGlobalQueryData = {},
     nCoreDocumentSettingTab = 'documentQueryPane',
 
     nCoreIsNew = true,
@@ -261,6 +263,12 @@ nCore.document = (function(){
   },
   setTemplate = function(bool){
     nCoreTemplate = bool;
+  },
+  globalQueryData = function(){
+    return nCoreGlobalQueryData;
+  },
+  setGlobalQueryData = function(data){
+    nCoreGlobalQueryData = JSON.parse( data );
   };
   
   return {
@@ -297,6 +305,9 @@ nCore.document = (function(){
 
     setTemplate     : setTemplate,
     getTemplate     : getTemplate,
+    
+    globalQueryData : globalQueryData,
+    setGlobalQueryData : setGlobalQueryData,
     
     yearReport      : yearReport,
     setYearReport   : setYearReport,

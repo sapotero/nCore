@@ -253,6 +253,8 @@ nCore.modules.cell = (function(){
           group = group || false;
           if ( group ) {
             autocomplete_url = 'classifiers/groups/groups.json';
+            // хуйня с регистратором и редактором в обращениях граждан ( см. настройки расширенного поиска эластика )
+            autocomplete_value = "_id";
           }
 
           if ( autocomplete_url ) {
@@ -263,8 +265,13 @@ nCore.modules.cell = (function(){
             element.style.paddingTop = "15px";
             element.style.textAlign  = "left";
 
-            if ( !empty && nCore.modules.table.active().dataset[ this.criterias.value ] !== '' ) {
+            if ( !empty && nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ this.criterias.value ] !== '' ) {
               $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
+            }
+
+            // conditions.log
+            if ( nCore.document.ShowSettings() && nCore.document.globalQueryData().hasOwnProperty(this.criterias.value) ) {
+              $(element).append( [ new Option( nCore.document.globalQueryData()[ this.criterias.value ] , this.criterias.value, true) ] );
             }
 
             this.root.querySelector('.criteriaForm').appendChild( element );
@@ -299,12 +306,15 @@ nCore.modules.cell = (function(){
             }).on('change', function(e){
               console.log('element', e, element, element.value,element);
 
-              // if ( !nCore.document.ShowSettings() ) {
-                // if ( nCore.modules.table.active().dataset.hasOwnProperty( element.value ) ) {
-                // }
-              // }
-              nCore.modules.table.active().dataset[ element.value ] = '';
-              nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+              if ( nCore.document.ShowSettings() ) {
+                console.log( 'globalQuery' );
+                nCore.document.globalQueryData()[ element.value ] = '';
+                nCore.document.globalQueryData()[ element.value ] = element.textContent;
+              } else {
+                nCore.modules.table.active().dataset[ element.value ] = '';
+                nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+              }
+              
               nCore.modules.table.event.publish('newCellSettingsChange');
             });
           } else {

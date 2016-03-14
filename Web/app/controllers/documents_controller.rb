@@ -65,7 +65,8 @@ class DocumentsController < ApplicationController
       :globalQuery => params[ :globalQuery ],
       :main        => params[ :main ],
       :compare     => params[ :compare ],
-      :yearReport  => params[ :yearReport ]
+      :yearReport  => params[ :yearReport ],
+      :globalQueryData => params[ :globalQueryData ]
     })
 
     if @document.save
@@ -76,17 +77,18 @@ class DocumentsController < ApplicationController
   end
 
   def update
-    @document.body        = params[ :body ]
-    @document.image       = params[ :image ]
-    @document.periodStart = params[ :periodStart ]
-    @document.periodEnd   = params[ :periodEnd ]
-    @document.globalQuery = params[ :globalQuery ]
-    @document.name        = params[ :name ]
-    @document.description = params[ :description ]
-    @document.query       = params[ :query ]
-    @document.main        = params[ :main ]
-    @document.compare     = params[ :compare ]
-    @document.yearReport  = params[ :yearReport ]
+    @document.body        = params[ :body ] unless params[ :body ].blank?
+    @document.image       = params[ :image ] unless params[ :image ].blank?
+    @document.periodStart = params[ :periodStart ] unless params[ :periodStart ].blank?
+    @document.periodEnd   = params[ :periodEnd ] unless params[ :periodEnd ].blank?
+    @document.globalQuery = params[ :globalQuery ] unless params[ :globalQuery ].blank?
+    @document.name        = params[ :name ] unless params[ :name ].blank?
+    @document.description = params[ :description ] unless params[ :description ].blank?
+    @document.query       = params[ :query ] unless params[ :query ].blank?
+    @document.main        = params[ :main ] unless params[ :main ].blank?
+    @document.compare     = params[ :compare ] unless params[ :compare ].blank?
+    @document.yearReport  = params[ :yearReport ] unless params[ :yearReport ].blank?
+    @document.globalQueryData = params[ :globalQueryData ] unless params[ :globalQueryData ].blank?
     if @document.update({
       :datetime    => params[ :datetime ]
     })

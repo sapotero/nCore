@@ -46,6 +46,7 @@ nCore.events = (function () {
         'keyboard': true, // teardown when <esc> key is pressed (default: true)
         'static': false, // maintain overlay when clicked (default: false)
         'onclose': function () {
+          console.log( 'showDocumentSettings' );
           nCore.document.setShowSettings(false);
         }
       };
@@ -158,96 +159,101 @@ nCore.events = (function () {
     nCore.document.root.subscribe('updateDocument', function (root) {
       console.log(' updateDocument', root);
 
-      if ( !nCore.document.isNewDocument() ) {
-        if ( nCore.document.getTemplate() ) {
+      if ( nCore.document.getTemplate() ) {
         console.log('try to edit template: ', nCore.document.getTemplate );
         nCore.document.root.publish('tryToEditTemplate');
-      } else {
-        function findUp(el, selector) {
-          while (el.parentNode) {
-            el = el.parentNode;
-            if ( el.classList.contains(selector) ){
-              return el;
-            }
-          }
-          return null;
-        }
-
-        mui.overlay('off');
-
-        var modalRoot = findUp(root, '_nCoreDocumentSettings'),
-            data      = modalRoot.querySelector('[name="documentQueryPane"]'),
-            parent    = modalRoot.querySelector('.criteriaSelectorGroupGlobal');
-
-        console.log('update:', data, modalRoot.querySelector("[name='nCoreDescription']").value );
-        nCore.document.root.publish('globalCriteriaCalculate', modalRoot);
-
-        var nCoreDocumentAttributes = {
-          author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
-          provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
-          name: data.elements.nCoreName.value,
-          description: data.elements.nCoreDescription.value,
-          periodStart: data.elements.nCorePeriodStart.value,
-          periodEnd: data.elements.nCorePeriodEnd.value,
-          datetime: new Date().getTime(),
-          query: nCore.document.cellQuery() || '',
-          body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
-          globalQuery: nCore.document.globalQuery()
-        };
-
-        nCore.document.setTitle(       data.elements.nCoreName.value );
-        nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value );
-        nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
-
-        nCore.document.setYearReport(  data.elements.yearReport.checked );
-        nCore.document.setCompare(     data.elements.compare.value );
-        nCore.document.setMain(        data.elements.main.value );
-
-        nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
-        nCoreDocumentAttributes.main       = nCore.document.main();
-        nCoreDocumentAttributes.compare    = nCore.document.compare();
-
-        nCoreDocumentAttributes.description = modalRoot.querySelector("[name='nCoreDescription']").value;
-        nCoreDocumentAttributes.name        = modalRoot.querySelector("[name='nCoreName']").value;
-
-        html2canvas( document.querySelector('div#paper') , {
-          onrendered: function(canvas) {
-
-            var nCoreDocumentAttributes = {
-              author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
-              provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
-              type: nCore.document.type(),
-              description: modalRoot.querySelector("[name='nCoreDescription']").value,
-              name:        modalRoot.querySelector("[name='nCoreName']").value,
-              datetime: new Date().getTime(),
-              body: Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
-              query: nCore.document.cellQuery() || '',
-              periodStart: nCore.document.periodStart(),
-              periodEnd: nCore.document.periodEnd(),
-              globalQuery: nCore.document.globalQuery(),
-              image: canvas.toDataURL()
-            };
-
-            if ( nCore.document.yearReport() ) {
-              nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
-              nCoreDocumentAttributes.main       = nCore.document.main();
-              nCoreDocumentAttributes.compare    = nCore.document.compare();
-            }
-
-            nCore.document.setAttributes(nCoreDocumentAttributes);
-
-            nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
-              .success(function (data) {
-                console.log('saveDocument', data);
-                if (location.hash.match(/new/) !== null) {
-                  location.hash = location.hash.replace(/new/, data._id);
-                };
-              }).error(function (data) {
-                console.error('[!] saveDocument', post, data)
-              });
-          }
-        });
+        return false;
       }
+      
+      if ( nCore.document.isNewDocument() ){
+        nCore.document.root.publish('newDocument');
+      } else {
+          function findUp(el, selector) {
+            while (el.parentNode) {
+              el = el.parentNode;
+              if ( el.classList.contains(selector) ){
+                return el;
+              }
+            }
+            return null;
+          }
+
+          mui.overlay('off');
+
+          var modalRoot = findUp(root, '_nCoreDocumentSettings'),
+              data      = modalRoot.querySelector('[name="documentQueryPane"]'),
+              parent    = modalRoot.querySelector('.criteriaSelectorGroupGlobal');
+
+          console.log('update:', data, modalRoot.querySelector("[name='nCoreDescription']").value );
+          nCore.document.root.publish('globalCriteriaCalculate', modalRoot);
+
+          var nCoreDocumentAttributes = {
+            author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+            provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
+            name: data.elements.nCoreName.value,
+            description: data.elements.nCoreDescription.value,
+            periodStart: data.elements.nCorePeriodStart.value,
+            periodEnd: data.elements.nCorePeriodEnd.value,
+            datetime: new Date().getTime(),
+            query: nCore.document.cellQuery() || '',
+            body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
+            globalQuery: nCore.document.globalQuery(),
+            globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
+          };
+
+          nCore.document.setTitle(       data.elements.nCoreName.value );
+          nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value );
+          nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
+
+          nCore.document.setYearReport(  data.elements.yearReport.checked );
+          nCore.document.setCompare(     data.elements.compare.value );
+          nCore.document.setMain(        data.elements.main.value );
+
+          nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
+          nCoreDocumentAttributes.main       = nCore.document.main();
+          nCoreDocumentAttributes.compare    = nCore.document.compare();
+
+          nCoreDocumentAttributes.description = modalRoot.querySelector("[name='nCoreDescription']").value;
+          nCoreDocumentAttributes.name        = modalRoot.querySelector("[name='nCoreName']").value;
+
+          html2canvas( document.querySelector('div#paper') , {
+            onrendered: function(canvas) {
+
+              var nCoreDocumentAttributes = {
+                author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+                provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
+                type: nCore.document.type(),
+                description: modalRoot.querySelector("[name='nCoreDescription']").value,
+                name:        modalRoot.querySelector("[name='nCoreName']").value,
+                datetime: new Date().getTime(),
+                body: Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
+                query: nCore.document.cellQuery() || '',
+                periodStart: nCore.document.periodStart(),
+                periodEnd: nCore.document.periodEnd(),
+                globalQuery: nCore.document.globalQuery(),
+                image: canvas.toDataURL(),
+                globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
+              };
+
+              if ( nCore.document.yearReport() ) {
+                nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
+                nCoreDocumentAttributes.main       = nCore.document.main();
+                nCoreDocumentAttributes.compare    = nCore.document.compare();
+              }
+
+              nCore.document.setAttributes(nCoreDocumentAttributes);
+
+              nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
+                .success(function (data) {
+                  console.log('saveDocument', data);
+                  if (location.hash.match(/new/) !== null) {
+                    location.hash = location.hash.replace(/new/, data._id);
+                  };
+                }).error(function (data) {
+                  console.error('[!] saveDocument', post, data)
+                });
+            }
+          });
       }
     });
 
@@ -311,16 +317,17 @@ nCore.events = (function () {
             author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
             provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
             type: nCore.document.type(),
-            title: document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title(),
-            name: document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title(),
-            description: document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title(),
+            title: document.querySelector('#nCoreDocumentAuthor').textContent.replace(/[\r\n\s+]/, '') + ' - ' + nCore.document.title(),
+            name: document.querySelector('#nCoreDocumentAuthor').textContent.replace(/[\r\n\s+]/, '') + ' - ' + nCore.document.title(),
+            description: document.querySelector('#nCoreDocumentAuthor').textContent.replace(/[\r\n\s+]/, '') + ' - ' + nCore.document.title(),
             datetime: new Date().getTime(),
             body:  Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
             query: nCore.document.cellQuery() || '',
             periodStart: nCore.document.periodStart(),
             periodEnd: nCore.document.periodEnd(),
             globalQuery: nCore.document.globalQuery(),
-            image: canvas.toDataURL()
+            image: canvas.toDataURL(),
+            globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
           };
 
           if ( nCore.document.yearReport() ) {
@@ -382,7 +389,8 @@ nCore.events = (function () {
               periodStart: nCore.document.periodStart(),
               periodEnd: nCore.document.periodEnd(),
               globalQuery: nCore.document.globalQuery(),
-              image: canvas.toDataURL()
+              image: canvas.toDataURL(),
+              globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
             };
 
             if ( nCore.document.yearReport() ) {
@@ -425,7 +433,8 @@ nCore.events = (function () {
               periodStart: nCore.document.periodStart(),
               periodEnd: nCore.document.periodEnd(),
               globalQuery: nCore.document.globalQuery(),
-              image: canvas.toDataURL()
+              image: canvas.toDataURL(),
+              globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
             };
 
             if ( nCore.document.yearReport() ) {
@@ -574,11 +583,13 @@ nCore.events = (function () {
           nCore.document.setPeriodEnd(rawDocument.periodEnd);
           nCore.document.setPeriodStart(rawDocument.periodStart);
           nCore.document.setGlobalQuery(rawDocument.globalQuery);
+          nCore.document.setGlobalQueryData(rawDocument.globalQueryData ? rawDocument.globalQueryData : '{}');
           nCore.document.setTitle(rawDocument.name);
           nCore.document.setYearReport(rawDocument.yearReport );
           nCore.document.setMain(rawDocument.main );
           nCore.document.setCompare(rawDocument.compare );
           nCore.document.setTemplate(rawDocument.template );
+
 
           callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
           return rawDocument
@@ -1557,7 +1568,7 @@ nCore.events = (function () {
           {
             periodStart : form.querySelector('input[name="date_start"]').value,
             periodEnd : form.querySelector('input[name="date_end"]').value
-          } : form.querySelector('[name="value"]').value
+          } : ( form.querySelector('[name="value"]') ? form.querySelector('[name="value"]').value : '' )
         }
 
         if ( _dataQueryHash.origin_name == 'formula' ) {

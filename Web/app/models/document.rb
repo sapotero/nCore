@@ -21,7 +21,11 @@ class Document
 
   field :query,       type: String
   field :archived,    type: Boolean, default: false
+  
+  # глобальный запрос + данные для автокомплитера
   field :globalQuery, type: String
+  field :globalQueryData, type: String
+  
 
   # кому доступен для редактирования
   field :editors,     type: Array
