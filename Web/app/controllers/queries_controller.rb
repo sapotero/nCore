@@ -1,6 +1,8 @@
 class QueriesController < ApplicationController
   before_filter :set_query, only: [:show, :edit, :update, :destroy]
 
+  rotect_from_forgery except: [ :create, :edit, :update, :destroy ]
+
   def show
   end
 
