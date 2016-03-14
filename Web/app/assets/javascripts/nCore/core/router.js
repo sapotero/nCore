@@ -134,7 +134,7 @@ jQuery(function($) {
         nCore.router.add('report', function (r) {
           document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
 
-          nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
+          nCore.document.root.publish( 'loadItem', [ 'documents' ] );
           nCore.document.root.publish( 'loadCriteria' );
           
           // nCore.document.setTitle('Главная');

@@ -47,12 +47,11 @@ class Document
     User.find( author_id ) unless author_id.blank?
   end
 
-  def self.find_by_params( search_params = {} )
-    query = active
-    query = query.where( provider_id: User.current.provider_id )
-    query = query.where( template: false )
+  def self.autocomplete( current_user, search_params = {} )
+    query = active( current_user )
+    query = query.where( provider_id: current_user['provider_id'] ) if current_user['provider_id']
     query = query.where( name: /#{Regexp.escape(search_params[:term])}/i ) unless search_params[:term].blank?
-    query = query.order_by(created_at: -1)
+    query = query.order_by( created_at: -1 )
     query
   end
 
@@ -80,8 +79,9 @@ class Document
     Mongoid::GridFs.get(image_id).data
   end
 
-  def self.active( with_images = false )
+  def self.active( current_user, with_images = false )
     documents = self.where( archived: false )
+    documents = documents.where( provider_id: current_user['provider_id'] ) if current_user['provider_id']
     documents = self.with_images( documents ) if with_images
     documents
   end

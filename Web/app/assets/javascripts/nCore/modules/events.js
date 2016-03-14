@@ -46,7 +46,7 @@ nCore.events = (function () {
         'keyboard': true, // teardown when <esc> key is pressed (default: true)
         'static': false, // maintain overlay when clicked (default: false)
         'onclose': function () {
-          nCore.document.setShowSettings(false)
+          nCore.document.setShowSettings(false);
         }
       };
 
@@ -56,7 +56,7 @@ nCore.events = (function () {
             
       m.classList.add('_nCoreDocumentSettings');
 
-      nCore.document.setShowSettings(true)
+      nCore.document.setShowSettings(true);
 
       var text = Transparency.render(document.querySelector('.nCoreDocumentSettings'), {
         nCoreName        : nCore.document.name(),
@@ -111,6 +111,20 @@ nCore.events = (function () {
       m.querySelector('[data-mui-controls="'+nCore.document.documentSettingTab()+'"]').parentNode.classList.add('mui--is-active');
 
       nCore.core.globalQueryPopulate();
+
+      var tabs_root = text.querySelector('.mui-tabs__bar'),
+          tabs      = tabs_root.querySelectorAll('li');
+
+      console.log( tabs );
+
+      for (var z = tabs.length - 1; z >= 0; z--) {
+        if ( tabs[z].classList.contains('mui--is-active') ) {
+          tabs[z].classList.remove('mui--is-active');
+        }
+      }
+
+      document.getElementById( nCore.document.documentSettingTab() ).classList.add('mui--is-active');
+      
       
     });
 
@@ -143,61 +157,97 @@ nCore.events = (function () {
     // редактирование настроек документа
     nCore.document.root.subscribe('updateDocument', function (root) {
       console.log(' updateDocument', root);
-      function findUp(el, selector) {
-        while (el.parentNode) {
-          el = el.parentNode;
-          if ( el.classList.contains(selector) ){
-            return el;
-          }
-        }
-        return null;
-      }
 
-      mui.overlay('off');
-
-      var modalRoot = findUp(root, '_nCoreDocumentSettings'),
-          data      = modalRoot.querySelector('[name="documentQueryPane"]'),
-          parent    = modalRoot.querySelector('.criteriaSelectorGroupGlobal');
-
-      console.log('update:', data);
-
-      nCore.document.root.publish('globalCriteriaCalculate', modalRoot);
-
-      var nCoreDocumentAttributes = {
-        author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
-        name: data.elements.nCoreName.value,
-        description: data.elements.nCoreDescription.value,
-        periodStart: data.elements.nCorePeriodStart.value,
-        periodEnd: data.elements.nCorePeriodEnd.value,
-        datetime: new Date().getTime(),
-        query: nCore.document.cellQuery() || '',
-        body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
-        globalQuery: nCore.document.globalQuery()
-      };
-
-      nCore.document.setTitle(       data.elements.nCoreName.value );
-      nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value );
-      nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
-
-      nCore.document.setYearReport(  data.elements.yearReport.checked );
-      nCore.document.setCompare(     data.elements.compare.value );
-      nCore.document.setMain(        data.elements.main.value );
-
-      nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
-      nCoreDocumentAttributes.main       = nCore.document.main();
-      nCoreDocumentAttributes.compare    = nCore.document.compare();
-
-      
       if ( !nCore.document.isNewDocument() ) {
-        nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
-        .success(function (data) {
-          console.log('saveDocument', data);
-          if (location.hash.match(/new/) !== null) {
-            location.hash = location.hash.replace(/new/, data._id);
-          };
-        }).error(function (data) {
-          console.error('[!] saveDocument', post, data)
+        if ( nCore.document.getTemplate() ) {
+        console.log('try to edit template: ', nCore.document.getTemplate );
+        nCore.document.root.publish('tryToEditTemplate');
+      } else {
+        function findUp(el, selector) {
+          while (el.parentNode) {
+            el = el.parentNode;
+            if ( el.classList.contains(selector) ){
+              return el;
+            }
+          }
+          return null;
+        }
+
+        mui.overlay('off');
+
+        var modalRoot = findUp(root, '_nCoreDocumentSettings'),
+            data      = modalRoot.querySelector('[name="documentQueryPane"]'),
+            parent    = modalRoot.querySelector('.criteriaSelectorGroupGlobal');
+
+        console.log('update:', data, modalRoot.querySelector("[name='nCoreDescription']").value );
+        nCore.document.root.publish('globalCriteriaCalculate', modalRoot);
+
+        var nCoreDocumentAttributes = {
+          author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+          provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
+          name: data.elements.nCoreName.value,
+          description: data.elements.nCoreDescription.value,
+          periodStart: data.elements.nCorePeriodStart.value,
+          periodEnd: data.elements.nCorePeriodEnd.value,
+          datetime: new Date().getTime(),
+          query: nCore.document.cellQuery() || '',
+          body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
+          globalQuery: nCore.document.globalQuery()
+        };
+
+        nCore.document.setTitle(       data.elements.nCoreName.value );
+        nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value );
+        nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
+
+        nCore.document.setYearReport(  data.elements.yearReport.checked );
+        nCore.document.setCompare(     data.elements.compare.value );
+        nCore.document.setMain(        data.elements.main.value );
+
+        nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
+        nCoreDocumentAttributes.main       = nCore.document.main();
+        nCoreDocumentAttributes.compare    = nCore.document.compare();
+
+        nCoreDocumentAttributes.description = modalRoot.querySelector("[name='nCoreDescription']").value;
+        nCoreDocumentAttributes.name        = modalRoot.querySelector("[name='nCoreName']").value;
+
+        html2canvas( document.querySelector('div#paper') , {
+          onrendered: function(canvas) {
+
+            var nCoreDocumentAttributes = {
+              author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+              provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
+              type: nCore.document.type(),
+              description: modalRoot.querySelector("[name='nCoreDescription']").value,
+              name:        modalRoot.querySelector("[name='nCoreName']").value,
+              datetime: new Date().getTime(),
+              body: Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
+              query: nCore.document.cellQuery() || '',
+              periodStart: nCore.document.periodStart(),
+              periodEnd: nCore.document.periodEnd(),
+              globalQuery: nCore.document.globalQuery(),
+              image: canvas.toDataURL()
+            };
+
+            if ( nCore.document.yearReport() ) {
+              nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
+              nCoreDocumentAttributes.main       = nCore.document.main();
+              nCoreDocumentAttributes.compare    = nCore.document.compare();
+            }
+
+            nCore.document.setAttributes(nCoreDocumentAttributes);
+
+            nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
+              .success(function (data) {
+                console.log('saveDocument', data);
+                if (location.hash.match(/new/) !== null) {
+                  location.hash = location.hash.replace(/new/, data._id);
+                };
+              }).error(function (data) {
+                console.error('[!] saveDocument', post, data)
+              });
+          }
         });
+      }
       }
     });
 
@@ -259,6 +309,7 @@ nCore.events = (function () {
 
           var nCoreDocumentAttributes = {
             author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+            provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
             type: nCore.document.type(),
             title: document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title(),
             name: document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title(),
@@ -321,6 +372,7 @@ nCore.events = (function () {
             // $.FroalaEditor.COMMANDS.calculator.callback()
             var nCoreDocumentAttributes = {
               author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+              provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
               type: nCore.document.type(),
               name: nCore.document.name(),
               description: nCore.document.description(),
@@ -353,7 +405,6 @@ nCore.events = (function () {
               }).error(function (data) {
                 console.error('[!] newDocument', post, data)
               });
-
           }
         });
 
@@ -364,6 +415,7 @@ nCore.events = (function () {
 
             var nCoreDocumentAttributes = {
               author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+              provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
               type: nCore.document.type(),
               name: nCore.document.name(),
               description: nCore.document.description(),
@@ -610,13 +662,13 @@ nCore.events = (function () {
     ///
     nCore.document.root.subscribe('deleteReport', function(element){
       var id   = element.type,
-          root = $(element).closest(".eachDocument");
+          root = $(element).closest(".document");
 
       console.log('deleteReport', id, element, root);
 
       nCore.query.post('documents/' + id + '/remove', { id: id })
       .success(function (rawDocument) {
-        console.log('***deleteReport', rawDocument);
+        console.log('***deleteReport', root, rawDocument);
         root.addClass('animatedSlow');
         root.addClass('fadeOut');
         setTimeout(function (){ root.detach(); }, 400);
@@ -752,7 +804,7 @@ nCore.events = (function () {
           // сколько раз проверяем 
           // var reload_count = 2;
 
-          if ( nCore.storage.hasOwnProperty( type ) && JSON.parse(nCore.storage.getItem(type)).length ) {
+          if ( nCore.storage.hasOwnProperty( type ) && JSON.parse(nCore.storage.getItem(type)).length || JSON.parse(nCore.storage.getItem('templates')).length ) {
             // console.log('storage: ', items);
 
 
@@ -877,174 +929,86 @@ nCore.events = (function () {
             // document.getElementById(nCore.storage.getItem('indexViewType')).innerHTML = __result.join('');
             // 
             // 
-            var helperTemplate = {
-              documentTitle: {
-                text: function (params) {
-                  console.log(this);
-
-                  return this.params.name || '---';
-                }
-              },
-              documentDate: {
-                text: function (params) {
-                  // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-                  return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
-                    year  : 'numeric',
-                    month : 'numeric',
-                    day   : 'numeric'
-                  } : {
-                    year   : 'numeric',
-                    month  : 'numeric',
-                    day    : 'numeric',
-                    hour   : 'numeric',
-                    minute : 'numeric'
-
-                  });
-                }
-              },
-              documentId: {
-                href: function (params) {
-                  return "#/report/" + this.params._id || Math.random();
-                },
-                text: function () {
-                  return ''
-                }
-              },
-              downloadDoc: {
-                href: function (params) {
-                  return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
-                }
-              },
-              downloadPdf: {
-                href: function (params) {
-                  return "documents/" + this.params._id + ".pdf";
-                }
-              },
-              downloadXls: {
-                href: function (params) {
-                  return "documents/" + this.params._id + ".xlsx";
-                }
-              },
-              removeDocument: {
-                href: function (params) {
-                  return location.hash;
-                },
-                type: function () {
-                  return this.params._id
-                }
-              },
-              documentUser: {
-                text: function () {
-                  return this.params.user
-                }
-              },
-              documentImage: {
-                src: function(params){
-                  return ( this.image.length ? this.image : 'assets/img/doc.png' )
-                }
-              },
-              groupTitle: {
-                text: function () {
-                  return 'Шаблоны'
-                }
-              }
-            };
             
-            var helper = {
-              documentTitle: {
-                text: function (params) {
-                  return this.params.name || '---';
-                }
-              },
-              documentDate: {
-                text: function (params) {
-                  // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-                  return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
-                    year  : 'numeric',
-                    month : 'numeric',
-                    day   : 'numeric'
-                  } : {
-                    year   : 'numeric',
-                    month  : 'numeric',
-                    day    : 'numeric',
-                    hour   : 'numeric',
-                    minute : 'numeric'
 
-                  });
-                }
-              },
-              documentId: {
-                href: function (params) {
-                  return "#/report/" + this.params._id || Math.random();
-                },
-                text: function () {
-                  return ''
-                }
-              },
-              downloadDoc: {
-                href: function (params) {
-                  return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
-                }
-              },
-              downloadPdf: {
-                href: function (params) {
-                  return "documents/" + this.params._id + ".pdf";
-                }
-              },
-              downloadXls: {
-                href: function (params) {
-                  return "documents/" + this.params._id + ".xlsx";
-                }
-              },
-              removeDocument: {
-                href: function (params) {
-                  return location.hash;
-                },
-                type: function () {
-                  return this.params._id
-                }
-              },
-              documentUser: {
-                text: function () {
-                  return this.params.user
-                }
-              },
-              documentImage: {
-                src: function(params){
-                  return ( this.image.length ? this.image : 'assets/img/doc.png' )
-                }
-              },
-              groupTitle: {
-                text: function () {
-                  return 'Шаблоны'
-                }
-              }
-            };
             
-            var templates = JSON.parse(nCore.storage.getItem('templates'));
-            Transparency.render( document.querySelector('#template'), templates, helperTemplate );
+            if ( JSON.parse(nCore.storage.getItem('templates')).length ) {
+              var helperTemplate = {
+                documentTitle: {
+                  text: function (params) {
+                    // console.log(this);
 
+                    return this.params.name || '---';
+                  }
+                },
+                documentDate: {
+                  text: function (params) {
+                    // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
+                    return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
+                      year  : 'numeric',
+                      month : 'numeric',
+                      day   : 'numeric'
+                    } : {
+                      year   : 'numeric',
+                      month  : 'numeric',
+                      day    : 'numeric',
+                      hour   : 'numeric',
+                      minute : 'numeric'
 
-            var items = JSON.parse(nCore.storage.getItem(type));
-            Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
-            console.log('type', type);
+                    });
+                  }
+                },
+                documentId: {
+                  href: function (params) {
+                    return "#/report/" + this.params._id || Math.random();
+                  },
+                  text: function () {
+                    return ''
+                  }
+                },
+                downloadDoc: {
+                  href: function (params) {
+                    return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
+                  }
+                },
+                downloadPdf: {
+                  href: function (params) {
+                    return "documents/" + this.params._id + ".pdf";
+                  }
+                },
+                downloadXls: {
+                  href: function (params) {
+                    return "documents/" + this.params._id + ".xlsx";
+                  }
+                },
+                removeDocument: {
+                  href: function (params) {
+                    return location.hash;
+                  },
+                  type: function () {
+                    return this.params._id
+                  }
+                },
+                documentUser: {
+                  text: function () {
+                    return this.params.user
+                  }
+                },
+                documentImage: {
+                  src: function(params){
+                    return ( this.image.length ? this.image : 'assets/img/doc.png' )
+                  }
+                },
+                groupTitle: {
+                  text: function () {
+                    return 'Шаблоны'
+                  }
+                }
+              };
+              
+              var templates = JSON.parse(nCore.storage.getItem('templates'));
+              Transparency.render( document.querySelector('#template'), templates, helperTemplate );
 
-
-            document.body.classList.add('hide-sidedrawer');
-            document.getElementById('thumb').classList.remove('mui--hide')
-
-            var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
-              _active_row = document.querySelector('._indexView.' + nCore.storage.getItem('indexViewType'));
-
-            for (var i = 0; i < _mui_rows.length; i++) {
-              _mui_rows[i].classList.add('mui--hide')
-            }
-
-            if (_active_row) {
-              _active_row.classList.remove('mui--hide');
-            };
-
-            if ( templates.length ) {
               console.log('templates.length');
               
               var _mui_rows = document.querySelector('.mui-row._indexViewTemplate'),
@@ -1059,16 +1023,100 @@ nCore.events = (function () {
               };
             }
 
+            if ( JSON.parse(nCore.storage.getItem(type)).length ) {
+              var helper = {
+                documentTitle: {
+                  text: function (params) {
+                    return this.params.name || '---';
+                  }
+                },
+                documentDate: {
+                  text: function (params) {
+                    // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
+                    return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
+                      year  : 'numeric',
+                      month : 'numeric',
+                      day   : 'numeric'
+                    } : {
+                      year   : 'numeric',
+                      month  : 'numeric',
+                      day    : 'numeric',
+                      hour   : 'numeric',
+                      minute : 'numeric'
 
+                    });
+                  }
+                },
+                documentId: {
+                  href: function (params) {
+                    return "#/report/" + this.params._id || Math.random();
+                  },
+                  text: function () {
+                    return ''
+                  }
+                },
+                downloadDoc: {
+                  href: function (params) {
+                    return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
+                  }
+                },
+                downloadPdf: {
+                  href: function (params) {
+                    return "documents/" + this.params._id + ".pdf";
+                  }
+                },
+                downloadXls: {
+                  href: function (params) {
+                    return "documents/" + this.params._id + ".xlsx";
+                  }
+                },
+                removeDocument: {
+                  href: function (params) {
+                    return location.hash;
+                  },
+                  type: function () {
+                    return this.params._id
+                  }
+                },
+                documentUser: {
+                  text: function () {
+                    return this.params.user
+                  }
+                },
+                documentImage: {
+                  src: function(params){
+                    return ( this.image.length ? this.image : 'assets/img/doc.png' )
+                  }
+                },
+                groupTitle: {
+                  text: function () {
+                    return 'Шаблоны'
+                  }
+                }
+              };
+
+              var items = JSON.parse(nCore.storage.getItem(type));
+              Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
+
+              document.body.classList.add('hide-sidedrawer');
+              document.getElementById('thumb').classList.remove('mui--hide')
+
+              var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
+                _active_row = document.querySelector('._indexView.' + nCore.storage.getItem('indexViewType'));
+
+              for (var i = 0; i < _mui_rows.length; i++) {
+                _mui_rows[i].classList.add('mui--hide')
+              }
+
+              if (_active_row) {
+                _active_row.classList.remove('mui--hide');
+              };
+            }
             resolve(true)
-            // clearInterval(_i);
           } else {
             reject(false)
           };
-
-          
-          
-        }, 500); 
+        }, 1000); 
       });
 
       render.then(function(data) {

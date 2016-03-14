@@ -202,6 +202,7 @@ nCore.document = (function(){
 
     nCoreGlobalQuery = '[{"query": []}]',
     nCoreDocumentId = '',
+    nCoreDocumentSettingTab = 'documentQueryPane',
 
     nCoreIsNew = true,
     nCoreType = 'report',

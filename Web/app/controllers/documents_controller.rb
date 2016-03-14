@@ -7,13 +7,13 @@ class DocumentsController < ApplicationController
   def index
     result = {}
 
-    result['documents'] = Document.active( with_images: true )
+    result['documents'] = Document.active( current_user, with_images: true )
     result['templates'] = Document.find_templates( with_images: true  )
     render :json => result
   end
 
   def autocomplete
-    @query = Document.find_by_params( params )
+    @query = Document.autocomplete( current_user, params )
     render :json => @query
   end
 
@@ -76,7 +76,6 @@ class DocumentsController < ApplicationController
   end
 
   def update
-    # ap params
     @document.body        = params[ :body ]
     @document.image       = params[ :image ]
     @document.periodStart = params[ :periodStart ]
@@ -103,8 +102,6 @@ class DocumentsController < ApplicationController
   end
 
   def remove
-    ap @document
-
     @document.archived = true
 
     if @document.save

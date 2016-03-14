@@ -1689,7 +1689,12 @@ $.FroalaEditor.LANGUAGE['ru'] = {
         , sideClass: 'fr-thick'
       };
 
-      nCore.modules.table.event.publish('generateQuery', data);
+      if ( nCore.document.getTemplate() ) {
+        console.log('try to edit template: ', nCore.document.getTemplate );
+        nCore.document.root.publish('tryToEditTemplate');
+      } else {
+        nCore.modules.table.event.publish('generateQuery', data);
+      }
     }
   });
 
