@@ -265,14 +265,17 @@ nCore.modules.cell = (function(){
             element.style.paddingTop = "15px";
             element.style.textAlign  = "left";
 
-            if ( !empty && nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') && nCore.modules.table.active().dataset[ this.criterias.value ] !== '' ) {
-              $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
-            }
+            console.log( !empty,  nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') );
 
             // conditions.log
             if ( nCore.document.ShowSettings() && nCore.document.globalQueryData().hasOwnProperty(this.criterias.value) ) {
+              console.log('globalQuery');
               $(element).append( [ new Option( nCore.document.globalQueryData()[ this.criterias.value ] , this.criterias.value, true) ] );
+            } else if ( !empty && nCore.modules.table.active() && nCore.modules.table.active().dataset.hasOwnProperty( this.criterias.value ) ) {
+              console.log('not globalQuery');
+              $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
             }
+
 
             this.root.querySelector('.criteriaForm').appendChild( element );
 
