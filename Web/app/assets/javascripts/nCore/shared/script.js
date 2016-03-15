@@ -240,7 +240,7 @@ jQuery(function($) {
 
       for (var q = 0; q < originTable.length; q++) {
         var option = document.createElement('option');
-        option.value = originTable[q]._id;
+        option.value = originTable[q].origin_name;
         option.text  = originTable[q].russian_name;
 
         originTable[q].autocomplete_url ? option.dataset.auto = originTable[q].autocomplete_url : false;
@@ -285,7 +285,8 @@ jQuery(function($) {
     // console.info(' select value ', field_array );
 
     field_array.forEach(function(obj){
-      if ( obj['_id'] == _val || obj['id'] == _val ) {
+      // if ( obj['_id'] == _val || obj['id'] == _val ) {
+      if ( obj['origin_name'] == _val ) {
         console.log( '+++++++', obj );
         autocomplete_title = obj['autocomplete_title'];
         autocomplete_value = obj['autocomplete_value'];

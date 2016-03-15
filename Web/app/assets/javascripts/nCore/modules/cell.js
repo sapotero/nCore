@@ -122,7 +122,7 @@ nCore.modules.cell = (function(){
       element.style.textAlign  = "left";
 
       for ( var q = 0; q < criteriaKeys.length; q++ ) {
-      df.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
+        df.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
       }
 
       element.appendChild(df);
@@ -130,6 +130,47 @@ nCore.modules.cell = (function(){
 
       this.root.querySelector('.criteriaForm').appendChild( element );
 
+      $(element).select2().on('change', function(){
+        nCore.modules.table.event.publish('newCellSettingsChange');
+      });
+    },
+    origin_name: function(empty) {
+      var df          = new DocumentFragment(),
+      originTable = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
+      element     = document.createElement('select');
+      
+      // select2 will not override this
+      element.name = 'origin_name';
+      element.style.display    = "block";
+      element.style.width      = "92%";
+      element.style.paddingTop = "15px";
+      element.style.textAlign  = "left";
+
+      for (var q = 0; q < originTable.length; q++) {
+        console.error( 'create', originTable[q] );
+        var option = document.createElement('option');
+        // option.value = originTable[q]._id;
+        option.value = originTable[q].origin_name;
+        option.text  = originTable[q].russian_name;
+        
+        option.dataset._id  = originTable[q]._id;
+        option.dataset.auto = originTable[q].autocomplete_url;
+        option.dataset.type = originTable[q].data_type;
+        df.appendChild(option);
+      }
+      
+      // добавляем формулу для того чтобы считать сложные запросы
+      var option = document.createElement('option');
+      option.value = 'formula';
+      option.text  = 'Формула';
+      df.appendChild(option);
+
+
+      element.appendChild(df);
+      element.value = this.criterias.origin_name;
+      
+      this.root.querySelector('.criteriaForm').appendChild( element );
+      
       $(element).select2().on('change', function(){
         nCore.modules.table.event.publish('newCellSettingsChange');
       });
@@ -164,6 +205,7 @@ nCore.modules.cell = (function(){
           df    = new DocumentFragment();
 
       for (var z = 0; z < types.length; z++) {
+        console.log('Options', types[z]);
         var option = document.createElement('option');
         option.value = types[z].value;
         option.text = types[z].caption;
@@ -172,44 +214,6 @@ nCore.modules.cell = (function(){
       
       element.appendChild(df);
       element.value = this.criterias.conditions;
-      
-      this.root.querySelector('.criteriaForm').appendChild( element );
-      
-      $(element).select2().on('change', function(){
-        nCore.modules.table.event.publish('newCellSettingsChange');
-      });
-    },
-    origin_name: function(empty) {
-      var df          = new DocumentFragment(),
-      originTable = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
-      element     = document.createElement('select');
-      
-      // select2 will not override this
-      element.name = 'origin_name';
-      element.style.display    = "block";
-      element.style.width      = "92%";
-      element.style.paddingTop = "15px";
-      element.style.textAlign  = "left";
-
-      for (var q = 0; q < originTable.length; q++) {
-        var option = document.createElement('option');
-        option.value = originTable[q]._id;
-        option.text  = originTable[q].russian_name;
-        
-        option.dataset.auto = originTable[q].autocomplete_url;
-        option.dataset.type = originTable[q].data_type;
-        df.appendChild(option);
-      }
-      
-      // добавляем формулу для того чтобы считать сложные запросы
-      var option = document.createElement('option');
-      option.value = 'formula';
-      option.text  = 'Формула';
-      df.appendChild(option);
-
-
-      element.appendChild(df);
-      element.value = this.criterias.origin_name;
       
       this.root.querySelector('.criteriaForm').appendChild( element );
       
@@ -229,7 +233,9 @@ nCore.modules.cell = (function(){
 
       for (var x = field_array.length - 1; x >= 0; x--) {
         var field = field_array[x];
-        if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
+        console.info( field.origin_name, this.criterias.origin_name );
+        // if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
+        if ( field.origin_name == this.criterias.origin_name ) {
           autocomplete_title = field.autocomplete_title;
           autocomplete_value = field.autocomplete_value;
           autocomplete_url   = field.autocomplete_url;
