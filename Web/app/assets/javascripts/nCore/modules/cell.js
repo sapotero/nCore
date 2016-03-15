@@ -510,9 +510,9 @@ nCore.modules.cell = (function(){
           }
           break;
         case "Fixnum":
-          generatePlain = function(){
+          var generatePlain = function(){
             this.clear();
-            element      = document.createElement('input');
+            var element      = document.createElement('input');
             element.name = 'value';
             element.style.display    = "block";
             element.style.width      = "92%";
@@ -525,11 +525,31 @@ nCore.modules.cell = (function(){
 
             console.log( 'STRING regexp', this.criterias ); 
           };
+          var generateBoolean = function() {
+            this.clear();
+
+            var element             = document.createElement('select');
+            element.style.width     = '92%';
+            element.style.padding   = '15px auto';
+            element.style.textAlign = 'left';
+            element.name            = "value";
+
+            // parent.appendChild(element);
+            
+            var _default = new Option( 'Выберете', '' );
+              _default.disabled = true;
+              _default.selected = true;
+
+            $(element).append( [ _default, new Option('Да', 'true'), new Option('Нет', 'false') ] ).val( this.criterias.value ).trigger("change");
+
+            this.root.querySelector('.criteriaForm').appendChild( element );
+            $(element).select2();
+          };
 
           switch( this.criterias.conditions ){
 
             case "exist":
-              generatePlain.call(this);
+              generateBoolean.call(this);
               break;
             case "equal":
               generatePlain.call(this);
