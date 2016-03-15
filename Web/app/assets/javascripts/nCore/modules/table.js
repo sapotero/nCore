@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 
 // модуль предоставляющий интерфейс для управления таблицами
 
@@ -22,7 +22,7 @@ nCore.modules.table = (function(){
       table = ( initialTable ? initialTable : undefined);
       countMaxCells();
       addEventListener();
-
+// 
       nCore.attachTo( nCore.modules.table.activeCell );
     } else {
       return false;
