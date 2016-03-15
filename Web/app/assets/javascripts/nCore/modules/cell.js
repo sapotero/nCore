@@ -4,24 +4,20 @@
 
 var nCore = nCore || {};
 nCore.modules.cell = (function(){
-  var cells = [], activeCell;
 
   // nCore.modules.table.activeCell.subscribe('setCell', function(cell){
   //   activeCell = cell;
   // });
 
-  var Cell = function(data) {
-    this.index     = 0;
-    this.element   = activeCell;
-    this.items     = data.items       || [];
-    this.query     = data.query       || undefined;
-    this.caption   = data.caption     || undefined;
-    this.parent    = data.parent      || this;
-    this.childs    = data.childrens   || [];
-
-    if ( data.parent ) {
-      this.parent.addChild(this); 
-    };
+  var Cell = function(cell) {
+    this.index     = cell.index    || 0;
+    this.element   = cell.element  || '';
+    this.items     = cell.items    || [];
+    this.query     = cell.query    || undefined;
+    this.caption   = cell.caption  || undefined;
+    this.parent    = cell.parent   || this;
+    this.childs    = cell.childs   || [];
+    this.settings  = cell.settings || {};
   };
    
   Cell.prototype = {
@@ -69,522 +65,526 @@ nCore.modules.cell = (function(){
       for (var item = this.first(); this.hasNext(); item = this.next()) {
         callback(item);
       }
-     }
+     },
+    settings: function(){
+      return this.settings || defaults;
+    }
   };
 
-  var _criteria = {},
-      _root     = {};
 
   var Builder = function( criteria, root ){
     this.criterias = criteria;
     this.root      = root;
   };
-  Builder.prototype.clear = function(){
-    try {
-      $(element).select2('destroy');
-    } catch (e){
-      console.log(e);
-    }
-
-    try{
-      var element = this.root.querySelector('[name="value"]');
-      if ( element ) {
-        element.parentNode.removeChild(element);
+  Builder.prototype = {
+    clear: function(){
+      try {
+        $(element).select2('destroy');
+      } catch (e){
+        console.log(e);
       }
-    }catch(e){
-      console.log('error!', e);
-    }
 
-    try{
-      if ( this.root.querySelector('[type="date"]') ) {
-        var dates = this.root.querySelectorAll('[type="date"]');
-        for (var x = dates.length - 1; x >= 0; x--) {
-          console.log( 'dates[x]', dates[x] );
-          $( dates[x] ).remove();
+      try{
+        var element = this.root.querySelector('[name="value"]');
+        if ( element ) {
+          element.parentNode.removeChild(element);
+        }
+      }catch(e){
+        console.log('error!', e);
+      }
+
+      try{
+        if ( this.root.querySelector('[type="date"]') ) {
+          var dates = this.root.querySelectorAll('[type="date"]');
+          for (var x = dates.length - 1; x >= 0; x--) {
+            console.log( 'dates[x]', dates[x] );
+            $( dates[x] ).remove();
+          }
+        }
+      } catch(e){
+        console.log('dates');
+      }
+    },
+    criteria_condition: function(empty) {
+
+     this.root.querySelector('[name="criteria_condition_group"]').value = this.criterias.criteria_condition;
+    },
+    source: function(empty) {
+      var df         = new DocumentFragment(),
+        criteriaKeys = JSON.parse( nCore.storage.criteriaKeys ),
+        element      = document.createElement('select');
+
+      // select2 will not override this
+      element.name             = 'source';
+      element.style.display    = "block";
+      element.style.width      = "92%";
+      element.style.paddingTop = "15px";
+      element.style.textAlign  = "left";
+
+      for ( var q = 0; q < criteriaKeys.length; q++ ) {
+      df.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
+      }
+
+      element.appendChild(df);
+      element.value = this.criterias.source;
+
+      this.root.querySelector('.criteriaForm').appendChild( element );
+
+      $(element).select2().on('change', function(){
+        nCore.modules.table.event.publish('newCellSettingsChange');
+      });
+    },
+    conditions: function(empty) {
+      var field_array  = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
+          field_type,
+          autocomplete_title,
+          autocomplete_value,
+          autocomplete_url,
+      
+      element      = document.createElement('select');
+      element.name = 'conditions';
+      element.style.display    = "block";
+      element.style.width      = "92%";
+      element.style.paddingTop = "15px";
+      element.style.textAlign  = "left";
+
+      for (var z = field_array.length - 1; z >= 0; z--) {
+        var field = field_array[z];
+        if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
+          autocomplete_title = field.autocomplete_title;
+          autocomplete_value = field.autocomplete_value;
+          autocomplete_url   = field.autocomplete_url;
+          field_type         = field.data_type;
         }
       }
-    } catch(e){
-      console.log('dates');
-    }
-  };
-  Builder.prototype.criteria_condition = function(empty) {
-     this.root.querySelector('[name="criteria_condition_group"]').value = this.criterias.criteria_condition;
-  };
-  Builder.prototype.source = function(empty) {
-    var df         = new DocumentFragment(),
-      criteriaKeys = JSON.parse( nCore.storage.criteriaKeys ),
-      element      = document.createElement('select');
 
-    // select2 will not override this
-    element.name             = 'source';
-    element.style.display    = "block";
-    element.style.width      = "92%";
-    element.style.paddingTop = "15px";
-    element.style.textAlign  = "left";
+      field_type = field_type ? field_type : 'Formula';
 
-    for ( var q = 0; q < criteriaKeys.length; q++ ) {
-    df.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
-    }
+      var types = nCore.types[ field_type ],
+          df    = new DocumentFragment();
 
-    element.appendChild(df);
-    element.value = this.criterias.source;
-
-    this.root.querySelector('.criteriaForm').appendChild( element );
-
-    $(element).select2().on('change', function(){
-      nCore.modules.table.event.publish('newCellSettingsChange');
-    });
-  };
-  Builder.prototype.conditions = function(empty) {
-    var field_array  = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
-        field_type,
-        autocomplete_title,
-        autocomplete_value,
-        autocomplete_url,
-    
-    element      = document.createElement('select');
-    element.name = 'conditions';
-    element.style.display    = "block";
-    element.style.width      = "92%";
-    element.style.paddingTop = "15px";
-    element.style.textAlign  = "left";
-
-    for (var z = field_array.length - 1; z >= 0; z--) {
-      var field = field_array[z];
-      if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
-        autocomplete_title = field.autocomplete_title;
-        autocomplete_value = field.autocomplete_value;
-        autocomplete_url   = field.autocomplete_url;
-        field_type         = field.data_type;
+      for (var z = 0; z < types.length; z++) {
+        var option = document.createElement('option');
+        option.value = types[z].value;
+        option.text = types[z].caption;
+        df.appendChild(option);
       }
-    }
-
-    field_type = field_type ? field_type : 'Formula';
-
-    var types = nCore.types[ field_type ],
-        df    = new DocumentFragment();
-
-    for (var z = 0; z < types.length; z++) {
-      var option = document.createElement('option');
-      option.value = types[z].value;
-      option.text = types[z].caption;
-      df.appendChild(option);
-    }
-    
-    element.appendChild(df);
-    element.value = this.criterias.conditions;
-    
-    this.root.querySelector('.criteriaForm').appendChild( element );
-    
-    $(element).select2().on('change', function(){
-      nCore.modules.table.event.publish('newCellSettingsChange');
-    });
-  };
-  Builder.prototype.origin_name = function(empty) {
-    var df          = new DocumentFragment(),
-    originTable = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
-    element     = document.createElement('select');
-    
-    // select2 will not override this
-    element.name = 'origin_name';
-    element.style.display    = "block";
-    element.style.width      = "92%";
-    element.style.paddingTop = "15px";
-    element.style.textAlign  = "left";
-
-    for (var q = 0; q < originTable.length; q++) {
-      var option = document.createElement('option');
-      option.value = originTable[q]._id;
-      option.text  = originTable[q].russian_name;
       
-      option.dataset.auto = originTable[q].autocomplete_url;
-      option.dataset.type = originTable[q].data_type;
-      df.appendChild(option);
-    }
-    
-    // добавляем формулу для того чтобы считать сложные запросы
-    var option = document.createElement('option');
-    option.value = 'formula';
-    option.text  = 'Формула';
-    df.appendChild(option);
+      element.appendChild(df);
+      element.value = this.criterias.conditions;
+      
+      this.root.querySelector('.criteriaForm').appendChild( element );
+      
+      $(element).select2().on('change', function(){
+        nCore.modules.table.event.publish('newCellSettingsChange');
+      });
+    },
+    origin_name: function(empty) {
+      var df          = new DocumentFragment(),
+      originTable = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
+      element     = document.createElement('select');
+      
+      // select2 will not override this
+      element.name = 'origin_name';
+      element.style.display    = "block";
+      element.style.width      = "92%";
+      element.style.paddingTop = "15px";
+      element.style.textAlign  = "left";
 
-
-    element.appendChild(df);
-    element.value = this.criterias.origin_name;
-    
-    this.root.querySelector('.criteriaForm').appendChild( element );
-    
-    $(element).select2().on('change', function(){
-      nCore.modules.table.event.publish('newCellSettingsChange');
-    });
-  };
-  Builder.prototype.value = function(empty) {
-    empty = empty || false;
-
-
-    var field_array  = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
-        field_type,
-        autocomplete_title,
-        autocomplete_value,
-        autocomplete_url;
-
-    for (var x = field_array.length - 1; x >= 0; x--) {
-      var field = field_array[x];
-      if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
-        autocomplete_title = field.autocomplete_title;
-        autocomplete_value = field.autocomplete_value;
-        autocomplete_url   = field.autocomplete_url;
-        field_type         = field.data_type;
+      for (var q = 0; q < originTable.length; q++) {
+        var option = document.createElement('option');
+        option.value = originTable[q]._id;
+        option.text  = originTable[q].russian_name;
+        
+        option.dataset.auto = originTable[q].autocomplete_url;
+        option.dataset.type = originTable[q].data_type;
+        df.appendChild(option);
       }
-    }
-
-    field_type = field_type || 'Formula';
-
-    console.info( this, this.criterias, this.criterias.value, autocomplete_title, autocomplete_value, autocomplete_url, field_type );
-
-
-    switch( field_type ){
       
-      case "String":
-        var generateSelect2 = function(group){
-          this.clear();
-          // console.log( 'STRING equal', this.criterias, autocomplete_url, nCore.modules.table.active().dataset[ this.criterias.value ] );
-          
-          group = group || false;
-          if ( group ) {
-            autocomplete_url = 'classifiers/groups/groups.json';
-            // хуйня с регистратором и редактором в обращениях граждан ( см. настройки расширенного поиска эластика )
-            autocomplete_value = "_id";
-          }
+      // добавляем формулу для того чтобы считать сложные запросы
+      var option = document.createElement('option');
+      option.value = 'formula';
+      option.text  = 'Формула';
+      df.appendChild(option);
 
-          if ( autocomplete_url ) {
-            var element  = document.createElement('select');
-            element.name = 'value';
-            element.style.display    = "block";
-            element.style.width      = "92%";
-            element.style.paddingTop = "15px";
-            element.style.textAlign  = "left";
 
-            console.log( !empty,  nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') );
+      element.appendChild(df);
+      element.value = this.criterias.origin_name;
+      
+      this.root.querySelector('.criteriaForm').appendChild( element );
+      
+      $(element).select2().on('change', function(){
+        nCore.modules.table.event.publish('newCellSettingsChange');
+      });
+    },
+    value: function(empty) {
+      empty = empty || false;
 
-            // conditions.log
-            if ( nCore.document.ShowSettings() && nCore.document.globalQueryData().hasOwnProperty(this.criterias.value) ) {
-              console.log('globalQuery');
-              $(element).append( [ new Option( nCore.document.globalQueryData()[ this.criterias.value ] , this.criterias.value, true) ] );
-            } else if ( !empty && nCore.modules.table.active() && nCore.modules.table.active().dataset.hasOwnProperty( this.criterias.value ) ) {
-              console.log('not globalQuery');
-              $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
+
+      var field_array  = JSON.parse( nCore.storage.getItem( this.criterias.source ) ),
+          field_type,
+          autocomplete_title,
+          autocomplete_value,
+          autocomplete_url;
+
+      for (var x = field_array.length - 1; x >= 0; x--) {
+        var field = field_array[x];
+        if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
+          autocomplete_title = field.autocomplete_title;
+          autocomplete_value = field.autocomplete_value;
+          autocomplete_url   = field.autocomplete_url;
+          field_type         = field.data_type;
+        }
+      }
+
+      field_type = field_type || 'Formula';
+
+      console.info( this, this.criterias, this.criterias.value, autocomplete_title, autocomplete_value, autocomplete_url, field_type );
+
+
+      switch( field_type ){
+        
+        case "String":
+          var generateSelect2 = function(group){
+            this.clear();
+            // console.log( 'STRING equal', this.criterias, autocomplete_url, nCore.modules.table.active().dataset[ this.criterias.value ] );
+            
+            group = group || false;
+            if ( group ) {
+              autocomplete_url = 'classifiers/groups/groups.json';
+              // хуйня с регистратором и редактором в обращениях граждан ( см. настройки расширенного поиска эластика )
+              autocomplete_value = "_id";
             }
 
+            if ( autocomplete_url ) {
+              var element  = document.createElement('select');
+              element.name = 'value';
+              element.style.display    = "block";
+              element.style.width      = "92%";
+              element.style.paddingTop = "15px";
+              element.style.textAlign  = "left";
 
-            this.root.querySelector('.criteriaForm').appendChild( element );
+              console.log( !empty,  nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') );
 
-            $( element ).select2({
-              ajax: {
-                url: autocomplete_url,
-                dataType: 'json',
-                delay: 250,
-                data: function (data) {
-                  return { id: data[ autocomplete_value ], term: data.term };
-                },
-                processResults: function (data, params) {
-                  return {
-                    results: $.map(data, function(p) {
-                      // //console.log('recv', p, select2);
-                      
-                      var val = p.hasOwnProperty( autocomplete_title ) ? p[ autocomplete_title ] : p.full_title;
-
-                      return {
-                        id:    p[ autocomplete_value ],
-                        text:  val,
-                        value: val
-                      };
-                    })
-                  };
-                },
-                cache: false
-              },
-              minimumInputLength: 1,
-              placeholder: "Начните ввод"
-            }).on('change', function(e){
-              console.log('element', e, element, element.value,element);
-
-              if ( nCore.document.ShowSettings() ) {
-                console.log( 'globalQuery' );
-                nCore.document.globalQueryData()[ element.value ] = '';
-                nCore.document.globalQueryData()[ element.value ] = element.textContent;
-              } else {
-                nCore.modules.table.active().dataset[ element.value ] = '';
-                nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+              // conditions.log
+              if ( nCore.document.ShowSettings() && nCore.document.globalQueryData().hasOwnProperty(this.criterias.value) ) {
+                console.log('globalQuery');
+                $(element).append( [ new Option( nCore.document.globalQueryData()[ this.criterias.value ] , this.criterias.value, true) ] );
+              } else if ( !empty && nCore.modules.table.active() && nCore.modules.table.active().dataset.hasOwnProperty( this.criterias.value ) ) {
+                console.log('not globalQuery');
+                $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
               }
+
+
+              this.root.querySelector('.criteriaForm').appendChild( element );
+
+              $( element ).select2({
+                ajax: {
+                  url: autocomplete_url,
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (data) {
+                    return { id: data[ autocomplete_value ], term: data.term };
+                  },
+                  processResults: function (data, params) {
+                    return {
+                      results: $.map(data, function(p) {
+                        // //console.log('recv', p, select2);
+                        
+                        var val = p.hasOwnProperty( autocomplete_title ) ? p[ autocomplete_title ] : p.full_title;
+
+                        return {
+                          id:    p[ autocomplete_value ],
+                          text:  val,
+                          value: val
+                        };
+                      })
+                    };
+                  },
+                  cache: false
+                },
+                minimumInputLength: 1,
+                placeholder: "Начните ввод"
+              }).on('change', function(e){
+                console.log('element', e, element, element.value,element);
+
+                if ( nCore.document.ShowSettings() ) {
+                  console.log( 'globalQuery' );
+                  nCore.document.globalQueryData()[ element.value ] = '';
+                  nCore.document.globalQueryData()[ element.value ] = element.textContent;
+                } else {
+                  nCore.modules.table.active().dataset[ element.value ] = '';
+                  nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+                }
+                
+                nCore.modules.table.event.publish('newCellSettingsChange');
+              });
+            } else {
               
-              nCore.modules.table.event.publish('newCellSettingsChange');
-            });
-          } else {
-            
-            var element  = document.createElement('input');
+              var element  = document.createElement('input');
+              element.name = 'value';
+              element.style.display    = "block";
+              element.style.width      = "92%";
+              element.style.paddingTop = "15px";
+              element.style.textAlign  = "left";
+              element.placeholder      = 'Введите текст';
+              element.classList.toggle('muiFieldField');
+
+              element.value = this.criterias.value;
+              this.root.querySelector('.criteriaForm').appendChild( element );
+            }
+          },
+          generatePlain = function(){
+            this.clear();
+            var element      = document.createElement('input');
             element.name = 'value';
             element.style.display    = "block";
             element.style.width      = "92%";
             element.style.paddingTop = "15px";
             element.style.textAlign  = "left";
-            element.placeholder      = 'Введите текст';
             element.classList.toggle('muiFieldField');
-
+            element.placeholder        = 'Введите текст';
             element.value = this.criterias.value;
             this.root.querySelector('.criteriaForm').appendChild( element );
-          }
-        },
-        generatePlain = function(){
-          this.clear();
-          var element      = document.createElement('input');
-          element.name = 'value';
-          element.style.display    = "block";
-          element.style.width      = "92%";
-          element.style.paddingTop = "15px";
-          element.style.textAlign  = "left";
-          element.classList.toggle('muiFieldField');
-          element.placeholder        = 'Введите текст';
-          element.value = this.criterias.value;
-          this.root.querySelector('.criteriaForm').appendChild( element );
 
-          console.log( 'STRING regexp', this.criterias ); 
-        },
-        generateBool = function(){
-          this.clear();
-
-          var element             = document.createElement('select');
-          element.style.width     = '92%';
-          element.style.padding   = '15px auto';
-          element.style.textAlign = 'left';
-          element.name            = "value";
-
-          // parent.appendChild(element);
-          
-          var _default = new Option( 'Выберете', '' );
-            _default.disabled = true;
-            _default.selected = true;
-
-          $(element).append( [ _default, new Option('Да', 'true'), new Option('Нет', 'false') ] ).val( this.criterias.value ).trigger("change");
-
-          this.root.querySelector('.criteriaForm').appendChild( element );
-          $(element).select2();
-        };
-
-        switch( this.criterias.conditions ){
-          case "equal":
-            generateSelect2.call(this);
-            break;
-          case "not_equal":
-            generateSelect2.call(this);
-            break;
-          case "regexp":
             console.log( 'STRING regexp', this.criterias ); 
-            generatePlain.call(this);
-            break;
-          case "full_text":
-            console.log( 'STRING full_text', this.criterias ); 
-            generatePlain.call(this);
-            break;
-          case "group":
-            generateSelect2.call(this, true);
-            break;
-          case "not_in_group":
-            generateSelect2.call(this, true);
-            break;
-          case "exist":
-            console.log( 'STRING exist', this.criterias );
-            generateBool.call(this);
-            break;
-          default:
-            console.log(''); 
-            break;
-        }
-        break;
-      case "DateTime":
-        var generateEqual = function(group){
-          this.clear();
-          var element           = document.createElement('input');
-          element.type          = 'date';
-          element.name          = 'date_start';
-          element.placeholder   = 'Выберете дату';
-          element.style.width   = "92%";
-          element.classList.toggle('muiFieldField');
-          element.classList.toggle('muiFieldFieldDate');
-          element.value = this.criterias.value.periodStart == undefined ? '' : this.criterias.value.periodStart;
-          this.root.querySelector('.criteriaForm').appendChild(element);
-        },
-        generateRange = function(){
-          this.clear();
-          
-          var df = new DocumentFragment();
-          
-          var element  = document.createElement('input');
-          element.type = 'date';
-          element.name = 'date_start';
-          element.classList.toggle('muiFieldField');
-          element.classList.toggle('muiFieldFieldDate');
-          element.value = this.criterias.value.periodStart == undefined ? '' : this.criterias.value.periodStart;
-          df.appendChild(element);
+          },
+          generateBool = function(){
+            this.clear();
 
-          element      = document.createElement('input');
-          element.type = 'date';
-          element.name = 'date_end';
-          element.classList.toggle('muiFieldField');
-          element.classList.toggle('muiFieldFieldDate');
-          element.value = this.criterias.value.periodEnd == undefined ? '' : this.criterias.value.periodEnd;
-          df.appendChild(element);
+            var element             = document.createElement('select');
+            element.style.width     = '92%';
+            element.style.padding   = '15px auto';
+            element.style.textAlign = 'left';
+            element.name            = "value";
 
-          this.root.querySelector('.criteriaForm').appendChild( df );
-        },
-        generateBool = function(){
-          this.clear();
+            // parent.appendChild(element);
+            
+            var _default = new Option( 'Выберете', '' );
+              _default.disabled = true;
+              _default.selected = true;
 
-          var element             = document.createElement('select');
-          element.style.width     = '92%';
-          element.style.padding   = '15px auto';
-          element.style.textAlign = 'left';
-          element.name            = "value";
+            $(element).append( [ _default, new Option('Да', 'true'), new Option('Нет', 'false') ] ).val( this.criterias.value ).trigger("change");
 
-          // parent.appendChild(element);
-          
-          var _default = new Option( 'Выберете', '' );
-            _default.disabled = true;
-            _default.selected = true;
+            this.root.querySelector('.criteriaForm').appendChild( element );
+            $(element).select2();
+          };
 
-          $(element).append( [ _default, new Option('Да', 'true'), new Option('Нет', 'false') ] ).val( this.criterias.value ).trigger("change");
+          switch( this.criterias.conditions ){
+            case "equal":
+              generateSelect2.call(this);
+              break;
+            case "not_equal":
+              generateSelect2.call(this);
+              break;
+            case "regexp":
+              console.log( 'STRING regexp', this.criterias ); 
+              generatePlain.call(this);
+              break;
+            case "full_text":
+              console.log( 'STRING full_text', this.criterias ); 
+              generatePlain.call(this);
+              break;
+            case "group":
+              generateSelect2.call(this, true);
+              break;
+            case "not_in_group":
+              generateSelect2.call(this, true);
+              break;
+            case "exist":
+              console.log( 'STRING exist', this.criterias );
+              generateBool.call(this);
+              break;
+            default:
+              console.log(''); 
+              break;
+          }
+          break;
+        case "DateTime":
+          var generateEqual = function(group){
+            this.clear();
+            var element           = document.createElement('input');
+            element.type          = 'date';
+            element.name          = 'date_start';
+            element.placeholder   = 'Выберете дату';
+            element.style.width   = "92%";
+            element.classList.toggle('muiFieldField');
+            element.classList.toggle('muiFieldFieldDate');
+            element.value = this.criterias.value.periodStart == undefined ? '' : this.criterias.value.periodStart;
+            this.root.querySelector('.criteriaForm').appendChild(element);
+          },
+          generateRange = function(){
+            this.clear();
+            
+            var df = new DocumentFragment();
+            
+            var element  = document.createElement('input');
+            element.type = 'date';
+            element.name = 'date_start';
+            element.classList.toggle('muiFieldField');
+            element.classList.toggle('muiFieldFieldDate');
+            element.value = this.criterias.value.periodStart == undefined ? '' : this.criterias.value.periodStart;
+            df.appendChild(element);
 
-          this.root.querySelector('.criteriaForm').appendChild( element );
-          $(element).select2();
-        };
+            element      = document.createElement('input');
+            element.type = 'date';
+            element.name = 'date_end';
+            element.classList.toggle('muiFieldField');
+            element.classList.toggle('muiFieldFieldDate');
+            element.value = this.criterias.value.periodEnd == undefined ? '' : this.criterias.value.periodEnd;
+            df.appendChild(element);
 
-        switch( this.criterias.conditions ){
-          case "equal":
-            generateEqual.call(this);
-            break;
-          case "range":
-            generateRange.call(this);
-            break;
-          case "month":
-            generateBool.call(this);
-            break;
-          default:
-            break;
-        }
+            this.root.querySelector('.criteriaForm').appendChild( df );
+          },
+          generateBool = function(){
+            this.clear();
 
-        if(!Modernizr.inputtypes.date ) {
-          $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
-        }
+            var element             = document.createElement('select');
+            element.style.width     = '92%';
+            element.style.padding   = '15px auto';
+            element.style.textAlign = 'left';
+            element.name            = "value";
 
-        break;
-      case "Boolean":
-        var generate = function() {
-          this.clear();
+            // parent.appendChild(element);
+            
+            var _default = new Option( 'Выберете', '' );
+              _default.disabled = true;
+              _default.selected = true;
 
-          var element             = document.createElement('select');
-          element.style.width     = '92%';
-          element.style.padding   = '15px auto';
-          element.style.textAlign = 'left';
-          element.name            = "value";
+            $(element).append( [ _default, new Option('Да', 'true'), new Option('Нет', 'false') ] ).val( this.criterias.value ).trigger("change");
 
-          // parent.appendChild(element);
-          
-          var _default = new Option( 'Выберете', '' );
-            _default.disabled = true;
-            _default.selected = true;
+            this.root.querySelector('.criteriaForm').appendChild( element );
+            $(element).select2();
+          };
 
-          $(element).append( [ _default, new Option('Да', 'true'), new Option('Нет', 'false') ] ).val( this.criterias.value ).trigger("change");
+          switch( this.criterias.conditions ){
+            case "equal":
+              generateEqual.call(this);
+              break;
+            case "range":
+              generateRange.call(this);
+              break;
+            case "month":
+              generateBool.call(this);
+              break;
+            default:
+              break;
+          }
 
-          this.root.querySelector('.criteriaForm').appendChild( element );
-          $(element).select2();
-        };
+          if(!Modernizr.inputtypes.date ) {
+            $('[name="date_start"],[name="date_end"]').fdatepicker({format: 'yyyy-mm-dd'});
+          }
 
-        switch( this.criterias.conditions ){
-          case 'equal':
-            generate.call(this);
-            break;
-          case "not_equal":
-            generate.call(this);
-            break;
-          case "exist":
-            generate.call(this);
-        }
-        break;
-      case "Fixnum":
-        generatePlain = function(){
-          this.clear();
-          element      = document.createElement('input');
-          element.name = 'value';
-          element.style.display    = "block";
-          element.style.width      = "92%";
-          element.style.paddingTop = "15px";
-          element.style.textAlign  = "left";
-          element.classList.toggle('muiFieldField');
-          element.placeholder        = 'Введите текст';
-          element.value = this.criterias.value;
-          this.root.querySelector('.criteriaForm').appendChild( element );
+          break;
+        case "Boolean":
+          var generate = function() {
+            this.clear();
 
-          console.log( 'STRING regexp', this.criterias ); 
-        };
+            var element             = document.createElement('select');
+            element.style.width     = '92%';
+            element.style.padding   = '15px auto';
+            element.style.textAlign = 'left';
+            element.name            = "value";
 
-        switch( this.criterias.conditions ){
+            // parent.appendChild(element);
+            
+            var _default = new Option( 'Выберете', '' );
+              _default.disabled = true;
+              _default.selected = true;
 
-          case "exist":
-            generatePlain.call(this);
-            break;
-          case "equal":
-            generatePlain.call(this);
-            break;
-          case "gt":
-            generatePlain.call(this);
-            break;
-          case "gte":
-            generatePlain.call(this);
-            break;
-          case "lt":
-            generatePlain.call(this);
-            break;
-          case "lte":
-            generatePlain.call(this);
-            break;
-          case "sum":
-            generatePlain.call(this);
-            break;
-          default:
-            console.log( 'unknown conditions' );
-            break;
-        }
-        break;
-      case "Formula":
-        var generate = function(){
-          this.clear();
+            $(element).append( [ _default, new Option('Да', 'true'), new Option('Нет', 'false') ] ).val( this.criterias.value ).trigger("change");
 
-          var element           = document.createElement('textarea');
-          element.rows          = 10;
-          element.cols          = 70;
-          element.name          = 'value';
-          element.placeholder   = 'Формула...';
-          element.value         = this.criterias.value;
-          element.classList.toggle('textreaGenerate');
+            this.root.querySelector('.criteriaForm').appendChild( element );
+            $(element).select2();
+          };
 
-          this.root.querySelector('.criteriaForm').appendChild( element );
-        };
+          switch( this.criterias.conditions ){
+            case 'equal':
+              generate.call(this);
+              break;
+            case "not_equal":
+              generate.call(this);
+              break;
+            case "exist":
+              generate.call(this);
+          }
+          break;
+        case "Fixnum":
+          generatePlain = function(){
+            this.clear();
+            element      = document.createElement('input');
+            element.name = 'value';
+            element.style.display    = "block";
+            element.style.width      = "92%";
+            element.style.paddingTop = "15px";
+            element.style.textAlign  = "left";
+            element.classList.toggle('muiFieldField');
+            element.placeholder        = 'Введите текст';
+            element.value = this.criterias.value;
+            this.root.querySelector('.criteriaForm').appendChild( element );
 
-        switch( this.criterias.conditions ){
-          case "equal":
-            generate.call(this);
-            break;
-          case "sum":
-            generate.call(this);
-            break;
-        }
-        break;
-      default:
-        console.warn( 'unknown type', field_type );
-        break;
+            console.log( 'STRING regexp', this.criterias ); 
+          };
+
+          switch( this.criterias.conditions ){
+
+            case "exist":
+              generatePlain.call(this);
+              break;
+            case "equal":
+              generatePlain.call(this);
+              break;
+            case "gt":
+              generatePlain.call(this);
+              break;
+            case "gte":
+              generatePlain.call(this);
+              break;
+            case "lt":
+              generatePlain.call(this);
+              break;
+            case "lte":
+              generatePlain.call(this);
+              break;
+            case "sum":
+              generatePlain.call(this);
+              break;
+            default:
+              console.log( 'unknown conditions' );
+              break;
+          }
+          break;
+        case "Formula":
+          var generate = function(){
+            this.clear();
+
+            var element           = document.createElement('textarea');
+            element.rows          = 10;
+            element.cols          = 70;
+            element.name          = 'value';
+            element.placeholder   = 'Формула...';
+            element.value         = this.criterias.value;
+            element.classList.toggle('textreaGenerate');
+
+            this.root.querySelector('.criteriaForm').appendChild( element );
+          };
+
+          switch( this.criterias.conditions ){
+            case "equal":
+              generate.call(this);
+              break;
+            case "sum":
+              generate.call(this);
+              break;
+          }
+          break;
+        default:
+          console.warn( 'unknown type', field_type );
+          break;
+      }
     }
-
   };
+
 
 
   var init = function(){
@@ -598,15 +598,14 @@ nCore.modules.cell = (function(){
     console.info( 'root:'        , root );
     console.info( 'globalQuery:' , globalQuery );
 
-    _criteria = criteria;
     this.root   = root;
 
-    var builder = new Builder( _criteria, this.root);
+    var builder = new Builder( criteria, this.root);
 
     console.log('builder', builder);
 
     for( var key in criteria ){
-      console.log('key: ', key, ' -> ',_criteria[ key ] );
+      console.log('key: ', key, ' -> ',criteria[ key ] );
 
       switch( key ){
         case 'criteria_condition':
@@ -633,6 +632,7 @@ nCore.modules.cell = (function(){
   return {
     init              : init,
     builder           : Builder,
+    self              : Cell,
     generateForm      : generateForm
 
   }

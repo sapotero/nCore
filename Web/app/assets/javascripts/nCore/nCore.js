@@ -213,8 +213,6 @@ nCore = (function(){
   function init(){
     console.groupCollapsed('nCore::Init');
 
-    storageAvailable('localStorage');
-
     nCore.modules   = {};
     nCore.core      = {};
     nCore.query     = {};
@@ -225,6 +223,9 @@ nCore = (function(){
     nCore.update    = {};
     nCore.preloader = {};
     nCore.storage   = {};
+    
+    storageAvailable('localStorage');
+
 
     // раскоментировать для standalone приложения 
     loadModules();

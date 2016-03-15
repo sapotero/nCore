@@ -381,42 +381,44 @@ nCore.modules.table = (function(){
         if ( headCell.dataset.hasOwnProperty('query') ) {
           query.push( headCell.dataset.query );
         };
-        if ( headCell.dataset.hasOwnProperty('appg') && headCell.dataset.appg == 'true' ) {
-          _cell.dataset.appg = headCell.dataset.appg;
-        };
-        if ( headCell.dataset.hasOwnProperty('compare') && headCell.dataset.compare == 'true' ) {
-          _cell.dataset.compare = headCell.dataset.compare;
-        };
-        if ( headCell.dataset.hasOwnProperty('total') && headCell.dataset.total == 'true' ) {
-          _cell.dataset.total = headCell.dataset.total;
-        };
-        if ( headCell.dataset.hasOwnProperty('percent') && headCell.dataset.percent == 'true' ) {
-          _cell.dataset.percent = headCell.dataset.percent;
-        };
-        if ( headCell.dataset.hasOwnProperty('includeSubordinates') && headCell.dataset.includeSubordinates == 'true' ) {
-          _cell.dataset.includeSubordinates = headCell.dataset.includeSubordinates;
-        };
-        if ( headCell.dataset.hasOwnProperty('chosenOrigin') ) {
-          _cell.dataset.chosenOrigin = headCell.dataset.chosenOrigin;
-        };        
-        if ( headCell.dataset.hasOwnProperty('includeSubthemes') && headCell.dataset.includeSubthemes == 'true' ) {
-          _cell.dataset.includeSubthemes = headCell.dataset.includeSubthemes;
-        };
-        if ( headCell.dataset.hasOwnProperty('includeThemesAp') && headCell.dataset.includeThemesAp == 'true' ) {
-          _cell.dataset.includeThemesAp = headCell.dataset.includeThemesAp;
-        };
-        if ( headCell.dataset.hasOwnProperty('group') && headCell.dataset.group == 'true' ) {
-          _cell.dataset.group = headCell.dataset.group;
-        };
-        if ( headCell.dataset.hasOwnProperty('queryMonth') ) {
-          _cell.dataset.queryMonth = headCell.dataset.queryMonth;
-        };
-        if ( headCell.dataset.hasOwnProperty('formula') && headCell.dataset.formula == 'true' ) {
-          _cell.dataset.formula = headCell.dataset.formula;
-        };
-        if ( headCell.dataset.hasOwnProperty('queryDefault') && headCell.dataset.queryDefault == 'true' ) {
-          _cell.dataset.queryDefault = headCell.dataset.queryDefault;
-        };
+        
+        function headDatasetPopulate(){
+          var settings = {
+            settings: {
+            appg : true,
+            compare : true,
+            total : true,
+            percent : true,
+            includeSubordinates : true,
+            includeSubthemes : true,
+            includeThemesAp : true,
+            group : true,
+            formula : true,
+            queryDefault : true,
+            chosenOrigin : false,
+            queryMonth : false
+            }
+          };
+
+          var dataSettings = nCore.modules.cell.self.prototype.settings.call(settings);
+          // console.log( 'item', item, headCellSettings[ item ] );
+          for ( var item in dataSettings ) {
+            if ( headCell.dataset.hasOwnProperty( item ) ) {
+
+              // если не надо проверять, то добавим сразу
+              if ( dataSettings[ item ] == false ){
+              _cell.dataset[ item ] = headCell.dataset[ item ];
+              } else {
+                // перед добавлением проверим что стоит галка у свойства
+                if ( headCell.dataset[ item ] == "true" ) {
+                  _cell.dataset[ item ] = headCell.dataset[ item ];
+                }
+              }
+            }
+          }
+        }
+        
+        headDatasetPopulate();
 
         // console.log(' headcell ', headCell, query);
       };
@@ -554,43 +556,46 @@ nCore.modules.table = (function(){
               // console.log('*****', ___dataCell.dataset.query);
             };
 
-            if ( ___dataCell.dataset.appg && ___dataCell.dataset.appg == 'true' ) {
-              _cellData.appg = ___dataCell.dataset.appg
-            };
-            if ( ___dataCell.dataset.compare && ___dataCell.dataset.compare == 'true' ) {
-              _cellData.compare = ___dataCell.dataset.compare
-            };
-            if ( ___dataCell.dataset.total && ___dataCell.dataset.total == 'true' ) {
-              _cellData.total = ___dataCell.dataset.total
-            };
-            if ( ___dataCell.dataset.percent && ___dataCell.dataset.percent == 'true' ) {
-              _cellData.percent = ___dataCell.dataset.percent
-            };
-            if ( ___dataCell.dataset.includeSubordinates && ___dataCell.dataset.includeSubordinates == 'true' ) {
-              _cellData.includeSubordinates = ___dataCell.dataset.includeSubordinates
-            };
-            if ( ___dataCell.dataset.includeSubthemes && ___dataCell.dataset.includeSubthemes == 'true' ) {
-              _cellData.includeSubthemes = ___dataCell.dataset.includeSubthemes
-            };
-            if ( ___dataCell.dataset.includeThemesAp && ___dataCell.dataset.includeThemesAp == 'true' ) {
-              _cellData.includeThemesAp = ___dataCell.dataset.includeThemesAp
-            };
+            function datasetPopulate(){
+              var data = {
+                settings: {
+                  appg : true,
+                  compare : true,
+                  total : true,
+                  percent : true,
+                  includeSubordinates : true,
+                  includeSubthemes : true,
+                  includeThemesAp : true,
+                  formula : true,
+                  queryDefault : true,
+                  queryMonth : false
+                }
+              };
 
-            if ( ___dataCell.dataset.queryMonth ) {
-              _cellData.queryMonth = ___dataCell.dataset.queryMonth
-            };
-            if ( ___dataCell.dataset.formula && ___dataCell.dataset.formula == 'true' ) {
-              _cellData.formula = ___dataCell.dataset.formula
-            };
+              var dataSettings = nCore.modules.cell.self.prototype.settings.call( data );
+              // console.log( 'item', item, headCellSettings[ item ] );
+              for ( var item in dataSettings ) {
+                if ( ___dataCell.dataset.hasOwnProperty( item ) ) {
 
-            if ( ___dataCell.dataset.queryDefault && ___dataCell.dataset.queryDefault == 'true' ) {
-              _cellData.queryDefault = ___dataCell.dataset.queryDefault
-            };
+                  // если не надо проверять, то добавим сразу
+                  if ( dataSettings[ item ] == false ){
+                    _cellData.queryMonth = ___dataCell.dataset.queryMonth;
+                  } else {
+                    // перед добавлением проверим что стоит галка у свойства
+                    if ( ___dataCell.dataset[ item ] == "true" ) {
+                      _cellData[ item ] = ___dataCell.dataset[ item ];
+                    }
+                  }
+                }
+              }
+            }
+            datasetPopulate();
 
             if ( ___dataCell.dataset.chosenOrigin ) {
               _cellData.origin      = _cellData.hasOwnProperty('origin') ? _cellData.origin : {};
               _cellData.origin.head = ___dataCell.dataset.chosenOrigin;
             };
+
           };
 
           // выбраные элементы "Указать источник" из боковины

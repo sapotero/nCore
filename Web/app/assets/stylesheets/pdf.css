@@ -13,3 +13,8 @@ td, th {
 .fr-view table td, .fr-view table th {
   border: 1px solid #dddddd;
 }
+
+.fr-view table td.fr-highlighted, .fr-view table th.fr-highlighted {
+  font-weight: bold;
+  padding: 5px;
+}
