@@ -113,10 +113,11 @@ jQuery(function($) {
           // nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
           // nCore.document.root.publish( 'loadCriteria' );
 
-          location.hash = '#/report'
+          location.hash = '#/report';
 
+          // var template = new nCore.templates.render({template:  "report/index" });
           // // document.title = 'INDEX';
-          // nCore.templates.render('report/index', function(data){ 
+          // template.render( function(data){ 
           //   if ( data ) {
           //     var wrapper = document.getElementById('content-wrapper');
           //     wrapper.innerHTML = data;
@@ -140,26 +141,34 @@ jQuery(function($) {
           // nCore.document.setTitle('Главная');
 
           // есть ли у юзера право просматривать таблицы
-          if ( nCore.roles.check('viewTable') ) {
-            nCore.templates.render('report/index', function(data){ 
-              if ( data ) {
+          var template = new nCore.templates.render({template: "report/index" });
+          var roles    = new nCore.roles.new();
 
+          if ( roles.check('viewTable') ) {
+          template.render( function(data){ 
+              if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
                 wrapper.innerHTML = data;
-              };
+              }
               nCore.document.setTitle( 'Отчёт' );
               nCore.document.root.publish('attachListMenu');
               nCore.document.root.publish('renderIndexView', 'documents');
             });
           } else {
-            nCore.templates.notPermit();
+            template.notPermit(function(data){
+              if ( data ) {
+                var wrapper = document.getElementById('content-wrapper');
+                wrapper.innerHTML = data;
+              }
+            });
           }
         });
         
         nCore.router.add('report/new', function (r) {
           nCore.document.setTitle('Новый документ'); // document.title = 'report new';
+          var template = new nCore.templates.render({template: "report/new" });
           document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
-          nCore.templates.render('report/new', function(data){ 
+          template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -171,8 +180,9 @@ jQuery(function($) {
 
         nCore.router.add('report/:id', function (r) {
           // document.title = 'reports/:id '+ r.params.id;
+          var template = new nCore.templates.render({template: "report/new" });
           document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
-          nCore.templates.render('report/new', function(data){ 
+          template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -189,8 +199,10 @@ jQuery(function($) {
         nCore.router.add('buiseness', function (r) {
           // есть ли у юзера право просматривать таблицы
           document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
-          if ( nCore.roles.check('viewTable') ) {
-            nCore.templates.render('report/index', function(data){ 
+          var template = new nCore.templates.render({template: "report/index" });
+          var roles    = new nCore.roles.new();
+          if ( roles.check('viewTable') ) {
+            template.render( function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
                 wrapper.innerHTML = data;
@@ -199,14 +211,20 @@ jQuery(function($) {
               nCore.document.root.publish('renderIndexView', 'documents');
             });
           } else {
-            nCore.templates.notPermit();
+            template.notPermit(function(data){
+              if ( data ) {
+                var wrapper = document.getElementById('content-wrapper');
+                wrapper.innerHTML = data;
+              }
+            });
           }
         });
         
         nCore.router.add('buiseness/new', function (r) {
           // document.title = 'buiseness new';
+          var template = new nCore.templates.render({template: "report/new" });
           document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
-          nCore.templates.render('report/new', function(data){ 
+          template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -217,8 +235,9 @@ jQuery(function($) {
 
         nCore.router.add('buiseness/:name', function (r) {
           // document.title = 'buiseness/:name '+ r.params.name;
+          var template = new nCore.templates.render({template: "report/index" });
           document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
-          nCore.templates.render('report/index', function(data){ 
+          template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -232,8 +251,10 @@ jQuery(function($) {
         /////////////////////////
         nCore.router.add('print', function (r) {
           // есть ли у юзера право просматривать таблицы
-          if ( nCore.roles.check('viewTable') ) {
-            nCore.templates.render('report/index', function(data){ 
+          var template = new nCore.templates.render({template: "report/index" });
+          var roles    = new nCore.roles.new();
+          if ( roles.check('viewTable') ) {
+            template.render( function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
                 wrapper.innerHTML = data;
@@ -242,14 +263,20 @@ jQuery(function($) {
               nCore.document.root.publish('renderIndexView', 'documents');
             });
           } else {
-            nCore.templates.notPermit();
+            template.notPermit(function(data){
+              if ( data ) {
+                var wrapper = document.getElementById('content-wrapper');
+                wrapper.innerHTML = data;
+              }
+            });
           }
         });
         
         nCore.router.add('print/new', function (r) {
           // document.title = 'print new';
+          var template = new nCore.templates.render({template: "report/new" });
 
-          nCore.templates.render('report/new', function(data){ 
+          template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -260,8 +287,9 @@ jQuery(function($) {
 
         nCore.router.add('print/:name', function (r) {
           // document.title = 'print/:name '+ r.params.name;
+          var template = new nCore.templates.render({template: "report/index" });
 
-          nCore.templates.render('report/index', function(data){ 
+          template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -276,8 +304,10 @@ jQuery(function($) {
         /////////////////////////
         nCore.router.add('form', function (r) {
           // есть ли у юзера право просматривать таблицы
-          if ( nCore.roles.check('viewTable') ) {
-            nCore.templates.render('form/index', function(data){ 
+          var template = new nCore.templates.render({template: "form/index" });
+          var roles    = new nCore.roles.new();
+          if ( roles.check('viewTable') ) {
+            template.render( function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
                 wrapper.innerHTML = data;
@@ -286,14 +316,20 @@ jQuery(function($) {
               nCore.document.root.publish('renderIndexView', 'forms');
             });
           } else {
-            nCore.templates.notPermit();
+            template.notPermit(function(data){
+              if ( data ) {
+                var wrapper = document.getElementById('content-wrapper');
+                wrapper.innerHTML = data;
+              }
+            });
           }
         });
         
         nCore.router.add('form/new', function (r) {
           // document.title = 'form new';
+          var template = new nCore.templates.render({template: "form/new" });
 
-          nCore.templates.render('form/new', function(data){ 
+          template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -303,8 +339,9 @@ jQuery(function($) {
 
         nCore.router.add('form/:name', function (r) {
           // document.title = 'form/:name '+ r.params.name;
+          var template = new nCore.templates.render({template: "form/form" });
 
-          nCore.templates.render('form/form', function(data){ 
+          template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
@@ -316,8 +353,9 @@ jQuery(function($) {
         nCore.router.add('.*', function (r) {
           // document.title = 'form/:name '+ r.params.name;
           console.log('default', bad);
+          // var template = new nCore.templates.render({template: "form/form" });
 
-          // nCore.templates.render('form/form', function(data){ 
+          // template.render( function(data){ 
           //   if ( data ) {
           //     var wrapper = document.getElementById('content-wrapper');
           //     wrapper.innerHTML = data;

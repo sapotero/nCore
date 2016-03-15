@@ -67,7 +67,7 @@ nCore.modules.cell = (function(){
       }
      },
     settings: function(){
-      return this.settings || defaults;
+      return this.settings;
     }
   };
 
@@ -611,56 +611,20 @@ nCore.modules.cell = (function(){
     }
   };
 
-
-
-  var init = function(){
-  },
-  generateForm = function( criteria, root, globalQuery ){
-    console.groupCollapsed("generateForm");
-    
+  var generateForm = function( criteria, root, globalQuery ){
     globalQuery = globalQuery || false;
-
-    console.info( 'criteria:'    , criteria );
-    console.info( 'root:'        , root );
-    console.info( 'globalQuery:' , globalQuery );
-
     this.root   = root;
 
     var builder = new Builder( criteria, this.root);
-
-    console.log('builder', builder);
-
     for( var key in criteria ){
       console.log('key: ', key, ' -> ',criteria[ key ] );
-
-      switch( key ){
-        case 'criteria_condition':
-          builder.criteria_condition();
-          break;
-        case 'source':
-          builder.source();
-          break;
-        case 'origin_name':
-          builder.origin_name();
-          break;
-        case 'conditions':
-          builder.conditions();
-          break;
-        case 'value':
-          builder.value();
-          break;
-      }
+      builder[key]();
     }
-
-    console.groupEnd();
   };
 
   return {
-    init              : init,
     builder           : Builder,
     self              : Cell,
     generateForm      : generateForm
-
-  }
+  };
 })();
-nCore.modules.cell.init();

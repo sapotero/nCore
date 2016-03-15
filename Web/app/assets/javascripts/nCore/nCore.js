@@ -23,29 +23,6 @@
 var nCore = nCore || {};
 
 nCore = (function(){
-  /**
-   * @function storageAvailable
-   * @description проверка, на доступность локальной базы данных на клиенте (по умолчанию *localStorage* )
-   * @param  {String}  type localstorage
-   * @return {Boolean}      true | false
-   * @memberOf nCore
-   */
-  function storageAvailable(type) {
-    try {
-      var storage = window[type],
-        x = '__storage_test__';
-      storage.setItem(x, x);
-      storage.removeItem(x);
-
-      nCore.storage = window[type];
-      // nCore.storage.clear();
-      return true;
-    }
-    catch(e) {
-      return false;
-    }
-  }
-
   // храним query которую будем копировать через ctrl+c ctrl+v
   var nCoreCellQuery = '';
 
@@ -223,9 +200,6 @@ nCore = (function(){
     nCore.update    = {};
     nCore.preloader = {};
     nCore.storage   = {};
-    
-    storageAvailable('localStorage');
-
 
     // раскоментировать для standalone приложения 
     loadModules();

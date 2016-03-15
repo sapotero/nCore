@@ -9,20 +9,20 @@
 var nCore = nCore || {};
 nCore.user = (function(){
 
-  var userPermissions = ['viewTable', 'viewTableIndex'],
-      userEvent       = {},
-      userName        = {},
-      userActive      = true;
+  var User = function(data){
+    if ( !arguments.length ) {
+      data = {};
+    }
+    this.permissions = data.userPermissions ||  ['viewTable', 'viewTableIndex'];
+    this.userEvent   = data.userEvent       ||  {};
+    this.userName    = data.userName        ||  {};
+    this.userActive  = data.userActive      ||  true;
+  };
+
+  var userEvent       = {};
 
   var init = function(){
     nCore.attachTo( nCore.user.event );
-  },
-  permissions = function(){
-    return userPermissions;
-  },
-  setPermissions = function(data){
-    // после первого раза запрещаем изменять права доступа
-    userPermissions = Object.freeze(data);
   },
   event = function(){
     return userEvent;
@@ -31,8 +31,7 @@ nCore.user = (function(){
   return {
     init           : init,
     event          : event,
-    setPermissions : setPermissions,
-    permissions    : permissions
-  }
+    new            : User
+  };
 })();
-nCore.user.init()
+nCore.user.init();

@@ -13,16 +13,23 @@ nCore.roles = (function(){
  * @function init
  * @description Выполняется при загрузке модуля
  */
-  var init = function(){
+  var Roles = function(data){
+    if ( !arguments.length ) {
+      data = {};
+    }
 
-  },
-  check = function(permission){
-    return ( nCore.user.permissions().indexOf( permission )==-1  ) ? false : true;
-  }
+    this.user = data.user || new nCore.user.new();
+  };
+  Roles.prototype.check = function(permission){
+    return ( this.user.permissions.indexOf( permission )==-1  ) ? false : true;
+  };
+
+  var init = function(){
+  };
 
   return {
     init  : init,
-    check : check
-  }
+    new   : Roles
+  };
 })();
-nCore.roles.init()
+nCore.roles.init();
