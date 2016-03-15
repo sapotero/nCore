@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 eval(IO.read('../../gems/core/WebGemfile'), binding)
 
-# gem 'wicked_pdf', '~> 1.0.4'
-# gem 'to_spreadsheet', '~> 1.0.6'
+gem 'wicked_pdf', '1.0.4'
+gem 'to_spreadsheet', '~> 1.0.6'

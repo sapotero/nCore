@@ -98,11 +98,6 @@ class DocumentsController < ApplicationController
     end
   end
 
-  def destroy
-    @document.destroy
-    redirect_to documents_url, notice: 'Document was successfully destroyed.'
-  end
-
   def remove
     @document.archived = true
 
