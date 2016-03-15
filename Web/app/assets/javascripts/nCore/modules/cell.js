@@ -147,7 +147,7 @@ nCore.modules.cell = (function(){
       element.style.textAlign  = "left";
 
       for (var q = 0; q < originTable.length; q++) {
-        console.error( 'create', originTable[q] );
+        // console.error( 'create', originTable[q] );
         var option = document.createElement('option');
         // option.value = originTable[q]._id;
         option.value = originTable[q].origin_name;
@@ -191,7 +191,7 @@ nCore.modules.cell = (function(){
 
       for (var z = field_array.length - 1; z >= 0; z--) {
         var field = field_array[z];
-        if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
+        if ( field.origin_name == this.criterias.origin_name ) {
           autocomplete_title = field.autocomplete_title;
           autocomplete_value = field.autocomplete_value;
           autocomplete_url   = field.autocomplete_url;
@@ -233,7 +233,7 @@ nCore.modules.cell = (function(){
 
       for (var x = field_array.length - 1; x >= 0; x--) {
         var field = field_array[x];
-        console.info( field.origin_name, this.criterias.origin_name );
+        // console.info( field.origin_name, this.criterias.origin_name );
         // if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
         if ( field.origin_name == this.criterias.origin_name ) {
           autocomplete_title = field.autocomplete_title;
