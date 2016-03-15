@@ -18,18 +18,11 @@ nCore.roles = (function(){
       data = {};
     }
 
-    this.user = data.user || new nCore.user.new();
+    this.user = data || '';
   };
   Roles.prototype.check = function(permission){
     return ( this.user.permissions.indexOf( permission )==-1  ) ? false : true;
   };
 
-  var init = function(){
-  };
-
-  return {
-    init  : init,
-    new   : Roles
-  };
+  return new Roles( nCore.user );
 })();
-nCore.roles.init();

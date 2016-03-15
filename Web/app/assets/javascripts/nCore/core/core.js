@@ -5,13 +5,17 @@
  */
 var nCore = nCore || {};
 nCore.core = (function(){
-  /**
-   * @function init
-   * @description Выполняется при загрузке модуля
-   */
-  var init = function(){
-  },
-  globalQueryPopulate = function(){
+  
+  var Core = function(config){
+    if ( !arguments.length ) {
+      config = {};
+    }
+    this.event  = {};
+    this.progress = document.getElementById('loaderProgress');
+
+  };
+
+  Core.prototype.globalQueryPopulate = function(){
     console.groupCollapsed("globalQueryPopulate");
 
     console.log( 'globalQuery', JSON.parse( nCore.document.globalQuery() ) );
@@ -172,9 +176,5 @@ nCore.core = (function(){
     console.groupEnd();
   };
 
-  return {
-    init: init,
-    globalQueryPopulate: globalQueryPopulate
-  };
+  return new Core();
 })();
-nCore.core.init();

@@ -13,25 +13,13 @@ nCore.user = (function(){
     if ( !arguments.length ) {
       data = {};
     }
-    this.permissions = data.userPermissions ||  ['viewTable', 'viewTableIndex'];
-    this.userEvent   = data.userEvent       ||  {};
-    this.userName    = data.userName        ||  {};
-    this.userActive  = data.userActive      ||  true;
+    this.id   = data.id   || {};
+    this.name = data.name || {};
+    this.permissions = data.userPermissions || ['viewTable', 'viewTableIndex'];
   };
 
-  var userEvent       = {};
-
-  var init = function(){
-    nCore.attachTo( nCore.user.event );
-  },
-  event = function(){
-    return userEvent;
-  };
-
-  return {
-    init           : init,
-    event          : event,
-    new            : User
-  };
+  return new User({
+    id:   document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+    name: document.querySelector('#nCoreDocumentAuthor').textContent
+  });
 })();
-nCore.user.init();

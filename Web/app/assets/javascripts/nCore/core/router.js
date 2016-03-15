@@ -142,9 +142,8 @@ jQuery(function($) {
 
           // есть ли у юзера право просматривать таблицы
           var template = new nCore.templates.render({template: "report/index" });
-          var roles    = new nCore.roles.new();
 
-          if ( roles.check('viewTable') ) {
+          if ( nCore.roles.check('viewTable') ) {
           template.render( function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
@@ -200,8 +199,7 @@ jQuery(function($) {
           // есть ли у юзера право просматривать таблицы
           document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
           var template = new nCore.templates.render({template: "report/index" });
-          var roles    = new nCore.roles.new();
-          if ( roles.check('viewTable') ) {
+          if ( nCore.roles.check('viewTable') ) {
             template.render( function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
@@ -252,8 +250,7 @@ jQuery(function($) {
         nCore.router.add('print', function (r) {
           // есть ли у юзера право просматривать таблицы
           var template = new nCore.templates.render({template: "report/index" });
-          var roles    = new nCore.roles.new();
-          if ( roles.check('viewTable') ) {
+          if ( nCore.roles.check('viewTable') ) {
             template.render( function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');
@@ -305,8 +302,7 @@ jQuery(function($) {
         nCore.router.add('form', function (r) {
           // есть ли у юзера право просматривать таблицы
           var template = new nCore.templates.render({template: "form/index" });
-          var roles    = new nCore.roles.new();
-          if ( roles.check('viewTable') ) {
+          if ( nCore.roles.check('viewTable') ) {
             template.render( function(data){ 
               if ( data ) {
                 var wrapper = document.getElementById('content-wrapper');

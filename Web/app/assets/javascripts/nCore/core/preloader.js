@@ -20,7 +20,6 @@ nCore.preloader = (function(){
     }
     this.event  = {};
     this.progress = document.getElementById('loaderProgress');
-
   };
 
   Preloader.prototype = {
