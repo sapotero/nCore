@@ -1310,36 +1310,32 @@ nCore.events = (function () {
           console.log(item.data.query);
 
           if ( item.data.hasOwnProperty( 'query' ) ){
-            JSON.parse( item.data.query ).forEach( function( rootQuery, i ,rootArray ){
-              console.log( '**', rootQuery );
+            var sources = {};
 
-              var sources = {};
+            JSON.parse( item.data.query ).forEach( function( rootQuery, i ,rootArray ){
+              // console.log( '**', rootQuery );
+
               
               try{
-                var cellQuery = rootQuery.query;
+                var cellQuery  = rootQuery.query;
+                var conditions = rootQuery.conditions;
+
                 if ( cellQuery.length ) {
-                  console.log('cellQuery ->', cellQuery);
+                  // console.log('cellQuery ->', cellQuery);
 
                   cellQuery.forEach( function( query, i, queriesArray ){
-                    
-                    var conditions = query.conditions;
+                    // console.log('query ->', query);
 
-                    console.log('query ->', query);
-
-                      if ( !sources.hasOwnProperty( query.source ) ) {
-                        sources[ query.source ] = {
-                          'and': [],
-                          'or':  []
-                        };
-                      }
-
-                      // проверяем, есть ли такой хеш
-                      // if ( !sources[ query.source ][ conditions ].some(elem => elem == queriesArray ) ){
-                        sources[ query.source ][ query.conditions ].push( queriesArray );
-                      // };
-                      
-                      console.dirxml(' sources ->', sources);
-
+                    if ( !sources.hasOwnProperty( query.source ) ) {
+                      sources[ query.source ] = {
+                        'and': [],
+                        'or':  []
+                      };
+                    }
+                    // проверяем, есть ли такой хеш
+                    if ( !sources[ query.source ][ conditions ].some(elem => elem == queriesArray ) ){
+                      sources[ query.source ][ conditions ].push( queriesArray );
+                    };
                   });
 
 
@@ -1423,7 +1419,7 @@ nCore.events = (function () {
         }
 
         try{
-          delete dup['global'];
+          delete dup['data'];
         }catch(e){
           console.log('error', e);
         }
