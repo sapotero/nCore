@@ -1154,34 +1154,22 @@ nCore.events = (function () {
 
     // создание критериев поиска
     nCore.modules.table.event.subscribe('generateQuery', function (data) {
-      var table = data.table,
-        headClass = data.headClass,
-        sideClass = data.sideClass;
-      nCore.modules.table.tableQuery(table, headClass, sideClass);
+      var tables = document.querySelectorAll('.fr-element.fr-view > table');
+
+      for (var i = 0; i < tables.length; i++) {
+        // генерим id таблицы
+        var table  = tables[i];
+        table.id =  nCore.modules.table.generateId();
+
+        var result = nCore.modules.table.factory.add(table);
+        // console.log( 'TABLE', result );
+      }
+      // отправляем считаться и отправляем
+      nCore.modules.table.factory.execute();
     });
 
     // расчёт критериев поиска и отправление их на сервер
-    nCore.modules.table.event.subscribe('calculateQuery', function (cellData, customCells) {
-      console.log('calculate query', cellData, customCells)
-      nCore.document.setCellQuery(cellData);
-
-      var newCellFormat = [];
-      cellData.forEach( function( cell, i ,array ){
-        var formatter = new nCore.format.convert( cell );
-        newCellFormat.push( formatter.table() );
-      });
-
-      var customCellFormat = [];
-      customCells.forEach( function( cell, i ,array ){
-        var formatter = new nCore.format.convert( cell );
-        customCellFormat.push( formatter.custom() );
-      });
-
-      var data = {
-        data        : newCellFormat,
-        customCells : customCellFormat
-      };
-
+    nCore.modules.table.event.subscribe('calculateQuery', function (data) {
       console.log('data: ', data);
 
       nCore.query.post('queries.json', data).success(function (data) {

@@ -1683,17 +1683,11 @@ $.FroalaEditor.LANGUAGE['ru'] = {
     , undo: false
     , refreshAfterCallback: false
     , callback: function () {
-      var data = {
-        table: document.querySelector('.fr-element.fr-view > table')
-        , headClass: 'fr-highlighted'
-        , sideClass: 'fr-thick'
-      };
-
       if ( nCore.document.getTemplate() ) {
         console.log('try to edit template: ', nCore.document.getTemplate );
         nCore.document.root.publish('tryToEditTemplate');
       } else {
-        nCore.modules.table.event.publish('generateQuery', data);
+        nCore.modules.table.event.publish('generateQuery');
       }
     }
   });
