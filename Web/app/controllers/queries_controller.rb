@@ -8,7 +8,8 @@ class QueriesController < ApplicationController
 
 
   def create
-     return_array = Core::Reports::ElasConstructor.new( params )
+    puts "params: #{params}"
+    return_array = Core::Reports::ElasConstructor.new( params )
     return_array.count
 
     render :json => return_array.results

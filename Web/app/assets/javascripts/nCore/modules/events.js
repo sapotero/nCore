@@ -815,7 +815,7 @@ nCore.events = (function () {
           // сколько раз проверяем 
           // var reload_count = 2;
 
-          if ( nCore.storage.hasOwnProperty( type ) && JSON.parse(nCore.storage.getItem(type)).length || JSON.parse(nCore.storage.getItem('templates')).length ) {
+          if ( nCore.storage.hasOwnProperty( type ) && JSON.parse( nCore.storage.getItem(type) ).length || JSON.parse(nCore.storage.getItem('templates')).length ) {
             // console.log('storage: ', items);
 
 
@@ -1165,23 +1165,292 @@ nCore.events = (function () {
       console.log('calculate query', cellData, customCells)
       nCore.document.setCellQuery(cellData);
 
-      var data = {
-        data : cellData,
-        global : {
+      function newFormat(item ){
+        var newCellFormat = {
+          head   : {},
+          side   : {},
+          global : {},
+          flags  : {}
+        };
+
+        function calculate(from){
+          item.query[ from ].forEach( function( query, i ,array ){
+            // console.log( '**', query );
+            item.global = item.globalQuery;
+            
+            var sources = {};
+            
+            try{
+              var cellQuery = JSON.parse(query);
+              if ( cellQuery.length ) {
+                // console.log('C_cellQuery ->', cellQuery);
+
+                cellQuery.forEach( function( queries, i ,queriesArray ){
+                  // console.log('C_queries ->', queries);
+
+                  var conditions = queries.conditions;
+
+                  queries.query.forEach( function( query, i ,queryArray ){
+                    // console.info('C_query ->', query, query.source);
+
+                    if ( !sources.hasOwnProperty( query.source ) ) {
+                      sources[ query.source ] = {
+                        'and': [],
+                        'or':  []
+                      };
+                    }
+
+                    if ( !sources[ query.source ][ conditions ].some(elem => elem == queryArray ) ){
+                      // проверяем, есть ли такой хеш
+                      sources[ query.source ][ conditions ].push( queryArray );
+                    };
+
+                  });
+                });
+              }
+              // console.warn('FINAL', sources);
+            } catch(e){
+              console.error('JSON PARSE FAILS', e)
+            }
+
+            newCellFormat[ from ] = sources;
+            // cellFormat.push( newCellFormat );
+          });
+        };
+
+        function calculateGlobal(){
+          var globalArray = JSON.parse( nCore.document.globalQuery() );
+
+          globalArray.forEach( function( query, i, array ){
+            // console.log( '**', query );
+            
+            var sources = {};
+
+            try{
+              
+              if ( query.query.length ) {
+                // console.log('cellQuery ->', query);
+
+                query.query.forEach( function( query, i, queryArray ){
+                  // console.log('queries ->', query);
+                  var conditions = 'and';
+
+
+                  if ( !sources.hasOwnProperty( query.source ) ) {
+                    sources[ query.source ] = {
+                      'and': [],
+                      'or':  []
+                    };
+                  }
+
+                  sources[ query.source ][ conditions ].push( queryArray );
+
+                });
+
+
+              }
+              // console.warn('FINAL', sources);
+            } catch(e){
+              console.error('JSON PARSE FAILS', e)
+            }
+
+            newCellFormat.global.query = sources;
+            // cellFormat.push( newCellFormat );
+          });
+        };
+
+        newCellFormat.global = {
           periodStart : nCore.document.periodStart(),
           periodEnd   : nCore.document.periodEnd(),
           providerId  : document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
           reportId    : nCore.document.id()
-        },
-        customCells : customCells
+        };
+
+
+        calculate('head');
+        calculate('side');
+        calculateGlobal();
+
+        // если годовой отчет
+        if ( nCore.document.yearReport() ) {
+          newCellFormat.global.yearReport = {
+            main    : nCore.document.main(),
+            compare : nCore.document.compare()
+          }
+        }
+
+        var dup = Object.assign( {}, item );
+        
+        try{
+          delete dup['query'];
+        }catch(e){
+          console.log('error', e);
+        }
+
+        try{
+          delete dup['global'];
+        }catch(e){
+          console.log('error', e);
+        }
+        
+
+        newCellFormat.flags = dup;
+
+        return newCellFormat;
       };
 
-      if ( nCore.document.yearReport() ) {
-        data.global.yearReport = {
-          main    : nCore.document.main(),
-          compare : nCore.document.compare()
+      function customCellNewFormat(item, globalCalculate ){
+        var newCellFormat = {
+          query  : {},
+          global : {},
+          flags  : {}
+        };
+
+        function calculate(){
+          console.log(item.data.query);
+
+          if ( item.data.hasOwnProperty( 'query' ) ){
+            JSON.parse( item.data.query ).forEach( function( rootQuery, i ,rootArray ){
+              console.log( '**', rootQuery );
+
+              var sources = {};
+              
+              try{
+                var cellQuery = rootQuery.query;
+                if ( cellQuery.length ) {
+                  console.log('cellQuery ->', cellQuery);
+
+                  cellQuery.forEach( function( query, i, queriesArray ){
+                    
+                    var conditions = query.conditions;
+
+                    console.log('query ->', query);
+
+                      if ( !sources.hasOwnProperty( query.source ) ) {
+                        sources[ query.source ] = {
+                          'and': [],
+                          'or':  []
+                        };
+                      }
+
+                      // проверяем, есть ли такой хеш
+                      // if ( !sources[ query.source ][ conditions ].some(elem => elem == queriesArray ) ){
+                        sources[ query.source ][ query.conditions ].push( queriesArray );
+                      // };
+                      
+                      console.dirxml(' sources ->', sources);
+
+                  });
+
+
+                }
+                console.warn('FINAL', sources);
+              } catch(e){
+                console.error('JSON PARSE FAILS', new Error(e) );
+              }
+
+              newCellFormat.query = sources;
+            });
+          }
+        };
+
+        calculate();
+
+        function calculateGlobal(){
+          var globalArray = JSON.parse( nCore.document.globalQuery() );
+
+          globalArray.forEach( function( query, i, array ){
+            // console.log( '**', query );
+            
+            var sources = {};
+
+            try{
+              
+              if ( query.query.length ) {
+                // console.log('cellQuery ->', query);
+
+                query.query.forEach( function( query, i, queryArray ){
+                  // console.log('queries ->', query);
+                  var conditions = 'and';
+
+
+                  if ( !sources.hasOwnProperty( query.source ) ) {
+                    sources[ query.source ] = {
+                      'and': [],
+                      'or':  []
+                    };
+                  }
+
+                  sources[ query.source ][ conditions ].push( queryArray );
+
+                });
+
+
+              }
+              // console.warn('FINAL', sources);
+            } catch(e){
+              console.error('JSON PARSE FAILS', e)
+            }
+
+            newCellFormat.global.query = sources;
+            // cellFormat.push( newCellFormat );
+          });
+        };
+
+        newCellFormat.global = {
+          periodStart : nCore.document.periodStart(),
+          periodEnd   : nCore.document.periodEnd(),
+          providerId  : document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
+          reportId    : nCore.document.id()
+        };
+
+        calculateGlobal();
+
+        // если годовой отчет
+        if ( nCore.document.yearReport() ) {
+          newCellFormat.global.yearReport = {
+            main    : nCore.document.main(),
+            compare : nCore.document.compare()
+          }
         }
-      }
+
+        var dup = Object.assign( {}, item );
+        
+        try{
+          delete dup['query'];
+        }catch(e){
+          console.log('error', e);
+        }
+
+        try{
+          delete dup['global'];
+        }catch(e){
+          console.log('error', e);
+        }
+        
+
+        newCellFormat.flags = dup;
+        return newCellFormat;
+      };
+
+
+      var newCellFormat = [];
+      cellData.forEach( function( cell, i ,array ){
+        newCellFormat.push( newFormat( cell ) );
+      });
+
+      var customCellFormat = [];
+      customCells.forEach( function( customItem, i ,array ){
+        console.log('data', customItem)
+        customCellFormat.push( customCellNewFormat( customItem ) );
+      });
+
+      var data = {
+        data        : newCellFormat,
+        customCells : customCellFormat
+      };
+
+      console.log('data: ', data);
 
       nCore.query.post('queries.json', data).success(function (data) {
         nCore.modules.table.event.publish('insertCellData', data)

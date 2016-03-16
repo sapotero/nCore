@@ -605,17 +605,17 @@ nCore.modules.table = (function(){
           };
 
           // глобальная query
-          if ( nCore.document.globalQuery() ) {
-            console.log( 'globalQuery', nCore.document.globalQuery() );
-            _cellData.globalQuery = nCore.document.globalQuery()
-          };
+          // if ( nCore.document.globalQuery() ) {
+          //   console.log( 'globalQuery', nCore.document.globalQuery() );
+          //   _cellData.globalQuery = nCore.document.globalQuery()
+          // };
 
-          if ( nCore.document.yearReport() ) {
-            _cellData.yearReport = {
-              main    : nCore.document.main(),
-              compare : nCore.document.compare()
-            }
-          };
+          // if ( nCore.document.yearReport() ) {
+          //   _cellData.yearReport = {
+          //     main    : nCore.document.main(),
+          //     compare : nCore.document.compare()
+          //   }
+          // };
 
           cellData.push( _cellData );
         };
