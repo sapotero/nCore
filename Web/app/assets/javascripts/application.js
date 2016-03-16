@@ -17,6 +17,7 @@
 //=require nCore/shared/es6-promise.min
 
 //=require nCore/core/storage
+//=require nCore/core/formatter
 //=require nCore/core/preloader
 //=require nCore/core/user
 //=require nCore/core/query
