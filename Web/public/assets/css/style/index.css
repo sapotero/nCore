@@ -1679,3 +1679,74 @@ input[type="radio"].styled:checked label:after,
     font-weight: 900;
     font-size: 18px;
 }
+
+
+.mui-snackbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    cursor: default;
+    background-color: #323232;
+    z-index: 3;
+    display: block;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    will-change: transform;
+    -webkit-transform: translate(-50%, 80px);
+    transform: translate(-50%, 80px);
+    transition: transform .5s ease-in-out;
+    transition: transform .5s ease-in-out, -webkit-transform .5s ease-in-out;
+    pointer-events: none;
+    width: 50%;
+    min-height: 48px;
+    max-height: 80px
+}
+
+.mui-snackbar--active {
+    -webkit-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+    transition: transform .5s ease;
+    transition: transform .5s ease, -webkit-transform .5s ease
+}
+.mui-snackbar__text {
+    padding: 14px 12px 14px 24px;
+    vertical-align: middle;
+    color: #fff;
+    float: left
+}
+.mui-snackbar__action {
+    background: 0 0;
+    border: none;
+    color: #ff4081;
+    float: right;
+    padding: 14px 24px 14px 12px;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: 0;
+    overflow: hidden;
+    outline: none;
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    -webkit-align-self: center;
+    -ms-flex-item-align: center;
+    align-self: center
+}
+.mui-snackbar__action::-moz-focus-inner {
+    border: 0
+}
+.mui-snackbar__action:not([aria-hidden]) {
+    opacity: 1;
+    pointer-events: auto
+}

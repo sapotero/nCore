@@ -485,5 +485,4 @@ jQuery(function($) {
       compare.disabled = false;
     }
   });
-
 });

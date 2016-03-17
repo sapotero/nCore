@@ -103,10 +103,17 @@
     </header>
     <div class="loader loaderTop" id="loaderProgress"></div>
     
+    <!-- load here -->
     <div id="content-wrapper"></div>
+
+    <!-- тут показываем всплывающие уведомляшки -->
+    <div id="mui-snackbar" class="mui-js-snackbar mui-snackbar">
+      <div class="mui-snackbar__text"></div>
+      <button class="mui-snackbar__action" type="button"></button>
+    </div>
+
     <button class="mui-btn mui-btn--accent mui-btn--fab animated AddDocument mui--z3">
-    <i class="material-icons" style="top: 4px;position: relative;">add</i>
-    
+      <i class="material-icons" style="top: 4px;position: relative;">add</i>
     </button>
 
     <div id="routeFailedToLoad" class="mui--hide">

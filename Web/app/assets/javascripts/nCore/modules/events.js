@@ -1154,6 +1154,20 @@ nCore.events = (function () {
 
     // создание критериев поиска
     nCore.modules.table.event.subscribe('generateQuery', function (data) {
+      
+      ////////////////////////////
+      // показываем уведомляшку //
+      ////////////////////////////
+      
+      var data = {
+        message: 'Отчет начал считаться.',
+        timeout: 2000
+        // actionHandler: function(){},
+        // actionText: 'Отмена'
+      };
+
+      nCore.snackbar.showSnackbar(data);
+
       var tables = document.querySelectorAll('.fr-element.fr-view > table');
 
       for (var i = 0; i < tables.length; i++) {
@@ -1162,8 +1176,8 @@ nCore.events = (function () {
         table.id =  nCore.modules.table.generateId();
 
         var result = nCore.modules.table.factory.add(table);
-        // console.log( 'TABLE', result );
       }
+
       // отправляем считаться и отправляем
       nCore.modules.table.factory.execute();
     });
@@ -1175,13 +1189,32 @@ nCore.events = (function () {
       nCore.query.post('queries.json', data).success(function (data) {
         nCore.modules.table.event.publish('insertCellData', data)
       }).error(function (data) {
-        console.error('[!] calculateQuery -> post', data)
+        console.error('[!] calculateQuery -> post', data);
+
+        var data = {
+          message: `Ошибка! [${data.status}] ${data.statusText}`,
+          timeout: 2000,
+          actionHandler: function(){},
+          actionText: ':('
+        };
+        nCore.snackbar.showSnackbar(data);
       });
     });
     
     // вставка данных в таблицу
     nCore.modules.table.event.subscribe('insertCellData', function (data) {
       console.log('insertCellData', data);
+
+      var data = {
+        message: 'Отчет построен.',
+        timeout: 2000
+        // actionHandler: function(){},
+        // actionText: 'Отмена'
+      };
+      
+      var snack = new nCore.snackbar();
+      snack.showSnackbar(data);
+
       var table = document.querySelector('.fr-element.fr-view > table');
 
       var customCells = data.customCells,
