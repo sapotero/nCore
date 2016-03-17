@@ -1171,11 +1171,7 @@ nCore.events = (function () {
       var tables = document.querySelectorAll('.fr-element.fr-view > table');
 
       for (var i = 0; i < tables.length; i++) {
-        // генерим id таблицы
-        var table  = tables[i];
-        table.id =  nCore.modules.table.generateId();
-
-        var result = nCore.modules.table.factory.add(table);
+        result = nCore.modules.table.factory.add( tables[i] );
       }
 
       // отправляем считаться и отправляем

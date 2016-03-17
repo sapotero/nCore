@@ -455,9 +455,10 @@ nCore.modules.table = (function(){
     console.groupEnd();
 
     this.removeDataRow();
-
   };
 
+
+  // Тут хранятся все таблички, через фабрику создаем новые таблички для расчёта
   var TableFactory = function(){
     this.tables = {};
   };
@@ -467,6 +468,11 @@ nCore.modules.table = (function(){
       headClass: 'fr-highlighted',
       sideClass: 'fr-thick'
     };
+
+    if ( table.id === '' ){
+      table.id =  nCore.modules.table.generateId();
+    }
+
     this.tables[ table.id ] = new Table(config);
     return this.tables[ table.id ];
   };
@@ -519,92 +525,20 @@ nCore.modules.table = (function(){
 
 
   var nCoreTableEvent = {},
-      table,
       maxCells = 0,
-      currentCell,
-      currentRow,
       activeCell = {},
-      mergeCells = [],
-  init = function(config){
-    var config = { table: 'nCoreTable' };
-    
+  init = function(){
     nCore.attachTo( nCore.modules.table.event );
-    var initialTable = document.getElementById(config.table);
-    
-    if ( typeof(initialTable) !== 'undefined' && initialTable !== null ) {
-      console.log( 'error init: table undefined', typeof(initialTable), initialTable );
-      table = ( initialTable ? initialTable : undefined);
-      countMaxCells();
-      addEventListener();
-      nCore.attachTo( nCore.modules.table.activeCell );
-    } else {
-      return false;
-    }
-   },
-  countMaxCells = function(){
-    for(var i = 0; i<table.rows.length; i++){
-      var row = table.rows[i];
-      if ( row.cells.length ) {
-        maxCells = row.cells.length;
-      };
-    }
    },
   active = function(){
     return activeCell;
-   },
+  },
   setActive = function(el){
     activeCell = el;
-   },
-  addEventListener = function(){
-    table.addEventListener('click', function(e){
-      var el = e.path[0];
-      activeCell = el;
-
-      if ( el.nodeName != 'TBODY' ) {
-        currentRow  = el.parentNode.rowIndex;
-        currentCell = el.cellIndex;
-        if (e.ctrlKey) {
-            el.classList.toggle('info');
-
-            var mergeCellName = currentRow + '_' + currentCell;
-
-            if ( mergeCells.hasOwnProperty( mergeCellName ) ) {
-              delete mergeCells[ mergeCellName ];
-            } else {
-              mergeCells[ mergeCellName ]  = {
-                row:  currentRow,
-                cell: currentCell
-              };
-            };
-            activeCell.classList.toggle('primary');
-            console.log(currentCell, currentRow, mergeCells);
-        } else {
-          mergeCells = {};
-          clearSelection();
-          el.classList.toggle('success');
-        }
-      };
-
-      el.parentNode.className = 'active';
-      activeCell.classList.toggle('primary');
-      nCore.modules.table.activeCell.publish('setCell', el);
-      console.log( activeCell );
-    });
-   },
+  },
   event = function event(){
     return nCoreTableEvent;
-   },
-  uniq = function (a) {
-    var prims = {"boolean":{}, "number":{}, "string":{}}, objs = [];
-
-    return a.filter(function(item) {
-      var type = typeof item;
-      if(type in prims)
-        return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
-      else
-        return objs.indexOf(item) >= 0 ? false : objs.push(item);
-    });
-   },
+  },
   random = function() {
     return ( window.performance.now().toString(36).slice(6,-1) + Math.random().toString(36).slice(2,-1) ).toString(36);
   };
