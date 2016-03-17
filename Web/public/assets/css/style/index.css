@@ -1172,9 +1172,9 @@ input.transparent-input {
 }
 
 #appbar-user-menu-search-icon{
-  position: absolute;
-  top: 0px;
-  left: 10px;
+  position: relative;
+  top: 7px;
+  right: -32px;
   color:rgba(255,255,255,0.75) !important;
 }
 
@@ -1686,7 +1686,7 @@ input[type="radio"].styled:checked label:after,
     bottom: 0;
     left: 50%;
     cursor: default;
-    background-color: #323232;
+    background-color: #424242;
     z-index: 3;
     display: block;
     display: -webkit-flex;
@@ -1749,4 +1749,47 @@ input[type="radio"].styled:checked label:after,
 .mui-snackbar__action:not([aria-hidden]) {
     opacity: 1;
     pointer-events: auto
+}
+.mui-tabs__bar>li>a {
+  display: block;
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 14px;
+  color: rgba(0,0,0,.87);
+  cursor: default;
+  height: 42px;
+  line-height: 42px;
+  padding-left: 24px;
+  padding-right: 24px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.mainMenu::before {
+  content: 'menu'
+}
+
+#nCoreDocumentAuthor{
+  text-transform: uppercase;
+}
+
+.sss {
+  position: relative;
+}
+.mui-table.no-margin-bottom {
+  margin-top: 20px;
+  margin-bottom: 0px;
+  position: fixed;
+  z-index: 2
+}
+
+.fr-wrapper{
+  margin-top: 50px;
+}
+#paper{
+  position: relative;
+  top: 50px
 }

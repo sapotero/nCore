@@ -23,7 +23,6 @@
 
   </head>
   <body class="hide-sidedrawer">
-  <div></div>
 
     <div id="sidedrawer" class="mui--no-user-select">
       <div id="sidedrawer-brand" class="mui--appbar-line-height mui--text-title">
@@ -59,15 +58,19 @@
     </div>
 
     <header id="header">
-      <nav id="appbar" class="mui-container-fluid mui-appbar mui--z1" style="z-index: 3">
+      <nav id="appbar" class="mui-container-fluid mui-appbar mui--z1" style="z-index: 5">
         <table width="100%">
           <tbody>
             <tr class="mui--appbar-height">
               <td class="appbar-report-name">
-                <a class="sidedrawer-toggle mui--visible-xs-inline-block js-show-sidedrawer">☰</a>
-                <a class="sidedrawer-toggle mui--hidden-xs js-hide-sidedrawer">☰</a>
+                <a class="sidedrawer-toggle mui--visible-xs-inline-block js-show-sidedrawer">
+                  <i class="material-icons mainMenu" style="position: relative; top: 4px;"></i>
+                </a>
+                <a class="sidedrawer-toggle mui--hidden-xs js-hide-sidedrawer">
+                  <i class="material-icons mainMenu" style="position: relative; top: 4px;"></i>
+                </a>
                 <span class="mui--text-title mui--visible-xs-inline-block"></span>
-                <span class="mui--text-headline" id="nCoreDocumentHeadLine"> Отчёт </span>
+                <span class="mui--text-headline" id="nCoreDocumentHeadLine" style=""> Отчёт </span>
               </td>
               
               <td class="mui--align-middle" id="newMenu">
@@ -78,7 +81,7 @@
                 <div id="appbar-social-links" class="mui--hidden-xs">
 
                   <div class="appbar-user-menu-search">
-                    <i class="fa fa-search" id="appbar-user-menu-search-icon"></i>
+                    <i id="appbar-user-menu-search-icon" class="material-icons remove"  style="position: relative; top: 6px;">search</i>
                     <div class="form-group">
                       <input class="form-control transparent-input" type='text' name='mainSearch' placeholder="Поиск">
                     </div>
@@ -88,12 +91,17 @@
                     <i class="fa fa-cog"></i>
                   </button> -->
                   <button class="appbar-user-menu-button mui--hidden-sm mui--hidden-xs">
-                    <i class="fa fa-envelope-o"></i>
+                    <i class="material-icons remove" style="position: relative; top: 6px;">mail</i>
                   </button>
 
-                  <i class="fa fa-user" data-bind="true" data-name="nCoreDocumentAuthor" data-action="input" id='nCoreDocumentAuthor' data-user-id="<%= current_user._id %>" data-provider-id="<%= current_user.provider_id %>" style="margin-left: 20px;">
-                    <%= current_user.official_name %>
-                  </i>
+                  <div style="display: inline-block;">
+                    <i class="material-icons remove" style="position: relative; top: 6px;">person</i>
+
+                    <span class="mui--text-dark mui--text-subhead" data-bind="true" data-name="nCoreDocumentAuthor" data-action="input" id='nCoreDocumentAuthor' data-user-id="<%= current_user._id %>" data-provider-id="<%= current_user.provider_id %>">
+                      <%= current_user.official_name %>
+                    </span>
+                    
+                  </div>
                 </div>
               </td>
             </tr>

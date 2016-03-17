@@ -105,7 +105,7 @@ jQuery(function($) {
   var load = new Promise(function(resolve, reject){
     setTimeout(
       function(){
-           /////////////////////////////
+         /////////////////////////////
         // показываем по умолчанию //
         /////////////////////////////
         nCore.router.add('', function () {

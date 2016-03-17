@@ -3591,3 +3591,7 @@ table th {
   margin: 0px auto;
   width: 980px;
 }
+
+.fr-toolbar.fr-ltr.fr-desktop.fr-top.fr-basic.cloned{
+  top: 2px;
+}

@@ -179,11 +179,23 @@ nCore.core = (function(){
   Core.prototype.findUpTag = function(el, tag) {
     while (el.parentNode) {
       el = el.parentNode;
-      if (el.tagName === tag)
+      if (el.tagName === tag || el.classList.contains(tag) )
         return el;
     }
     return null;
-  }
+  };
+
+  Core.prototype.uniq = function (a) {
+    var prims = {"boolean":{}, "number":{}, "string":{}}, objs = [];
+
+    return a.filter(function(item) {
+      var type = typeof item;
+      if(type in prims)
+        return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
+      else
+        return objs.indexOf(item) >= 0 ? false : objs.push(item);
+    });
+  };
 
   return new Core();
 })();

@@ -35,6 +35,7 @@
 
 //=require nCore/modules/document
 //=require nCore/modules/table
+//=require nCore/modules/customCell
 //=require nCore/modules/cell
 //=require nCore/modules/events
 //=require nCore/modules/menu

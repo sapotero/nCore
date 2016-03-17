@@ -44,17 +44,6 @@ nCore.modules.table = (function(){
     this.customCellsQuery = [];
   };
 
-  Table.prototype.uniq = function (a) {
-    var prims = {"boolean":{}, "number":{}, "string":{}}, objs = [];
-
-    return a.filter(function(item) {
-      var type = typeof item;
-      if(type in prims)
-        return prims[type].hasOwnProperty(item) ? false : (prims[type][item] = true);
-      else
-        return objs.indexOf(item) >= 0 ? false : objs.push(item);
-    });
-  };
   Table.prototype.calculateMaxCells = function(){
     var table = this.table;
     for(var i=0;i<table.rows.length;i++) {
@@ -66,7 +55,7 @@ nCore.modules.table = (function(){
         this.maxCells = max;
       }
     }
-    console.info('1) maxCells:', maxCells);
+    // console.info('1) maxCells:', maxCells);
     return this.maxCells;
   };
   Table.prototype.calculateHeadRows = function() {
@@ -77,8 +66,8 @@ nCore.modules.table = (function(){
     for (var z = 0; z < head_elements.length; z++) {
       headRows.push(head_elements[z].parentNode);
     }
-    this.headRows = this.uniq(headRows);
-    console.dirxml( '2) headRows', this.headRows );
+    this.headRows = nCore.core.uniq(headRows);
+    // console.dirxml( '2) headRows', this.headRows );
     
     // считаем середины строк шапки
     for (var v = 0; v < this.headRows.length; v++) {
@@ -100,8 +89,8 @@ nCore.modules.table = (function(){
         });
       }
     }
-    console.info( '2.1) headRowsCenter:', this.headRowsCenter );
-    console.info( '2.2) headCellCenter:', this.headCellCenter );
+    // console.info( '2.1) headRowsCenter:', this.headRowsCenter );
+    // console.info( '2.2) headCellCenter:', this.headCellCenter );
   };
   Table.prototype.calculateSideRows = function() {
     
@@ -123,8 +112,8 @@ nCore.modules.table = (function(){
       }
     }
 
-    this.sideRows = uniq(sideRows);
-    console.dirxml('3) sideRows', this.sideRows);
+    this.sideRows = nCore.core.uniq(sideRows);
+    // console.dirxml('3) sideRows', this.sideRows);
     
     // считаем середины строк боковины
     for (var v = 0; v < this.sideRows.length; v++) {
@@ -134,7 +123,7 @@ nCore.modules.table = (function(){
         el: this.sideRows[v]
       });
     };
-    console.info('3.1) sideRowsCenter:', this.sideRowsCenter);
+    // console.info('3.1) sideRowsCenter:', this.sideRowsCenter);
   };
   Table.prototype.calculateDataRow = function(){
     var _tmp = this.table.querySelector('#dataRowForDelete');
@@ -150,7 +139,7 @@ nCore.modules.table = (function(){
 
     this.table.querySelector('tbody').appendChild( this.dataRow );
 
-    console.info('4) dataRow:', this.dataRow);
+    // console.info('4) dataRow:', this.dataRow);
 
     for (var i = 0; i < this.maxCells; i++) {
       var dataCell                = document.createElement('td');
@@ -169,11 +158,46 @@ nCore.modules.table = (function(){
         element : dataCell
       });
     }
-    console.info('5) dataRowsCenter:', this.dataRowsCenter);
+    // console.info('5) dataRowsCenter:', this.dataRowsCenter);
   };
   Table.prototype.removeDataRow = function() {
     this.dataRow.style.display = 'none';
     this.dataRow.parentNode.removeChild(this.dataRow); 
+  };
+  Table.prototype.datasetPopulate = function( cell, dataCell ){
+    var settings = {
+      settings: {
+      appg : true,
+      compare : true,
+      total : true,
+      percent : true,
+      includeSubordinates : true,
+      includeSubthemes : true,
+      includeThemesAp : true,
+      group : true,
+      formula : true,
+      queryDefault : true,
+      chosenOrigin : false,
+      queryMonth : false
+      }
+    };
+
+    var dataSettings = nCore.modules.cell.self.prototype.settings.call(settings);
+    // console.log( 'item', item, dataCellSettings[ item ] );
+    for ( var item in dataSettings ) {
+      if ( dataCell.dataset.hasOwnProperty( item ) ) {
+        // если не надо проверять, то добавим сразу
+        if ( dataSettings[ item ] === false ){
+          cellData.queryMonth = dataCell.dataset.queryMonth;
+          cell.dataset[ item ] = dataCell.dataset[ item ];
+        } else {
+          // перед добавлением проверим что стоит галка у свойства
+          if ( dataCell.dataset[ item ] == "true" ) {
+            cell.dataset[ item ] = dataCell.dataset[ item ];
+          }
+        }
+      }
+    }
   };
   Table.prototype.copyHeadCellAttributes = function() {
     for (var i = this.dataRow.cells.length - 1; i >= 0; i--) {
@@ -200,47 +224,13 @@ nCore.modules.table = (function(){
           query.push( headCell.dataset.query );
         }
         
-        function headDatasetPopulate(){
-          var settings = {
-            settings: {
-            appg : true,
-            compare : true,
-            total : true,
-            percent : true,
-            includeSubordinates : true,
-            includeSubthemes : true,
-            includeThemesAp : true,
-            group : true,
-            formula : true,
-            queryDefault : true,
-            chosenOrigin : false,
-            queryMonth : false
-            }
-          };
+        this.datasetPopulate( _cell, headCell );
 
-          var dataSettings = nCore.modules.cell.self.prototype.settings.call(settings);
-          // console.log( 'item', item, headCellSettings[ item ] );
-          for ( var item in dataSettings ) {
-            if ( headCell.dataset.hasOwnProperty( item ) ) {
-              // если не надо проверять, то добавим сразу
-              if ( dataSettings[ item ] == false ){
-              _cell.dataset[ item ] = headCell.dataset[ item ];
-              } else {
-                // перед добавлением проверим что стоит галка у свойства
-                if ( headCell.dataset[ item ] == "true" ) {
-                  _cell.dataset[ item ] = headCell.dataset[ item ];
-                }
-              }
-            }
-          }
-        }
-        headDatasetPopulate();
+        query = nCore.core.uniq(query);
+        // console.log(' result ', query);
+
+        _cell.dataset.query = JSON.stringify(query);
       }
-
-      query = uniq(query);
-      console.log(' result ', query);
-
-      _cell.dataset.query = JSON.stringify(query);
     }
   };
   Table.prototype.tableCalculate = function() {
@@ -256,7 +246,7 @@ nCore.modules.table = (function(){
           cellDatasetChosenOrigin,
           query = [];
 
-      console.group('row');
+      // console.group('row');
       // console.info('row', row);
 
       var diff = 0;
@@ -264,7 +254,7 @@ nCore.modules.table = (function(){
       for (var a = 0; a < row.cells.length; a++) {
         var cell = row.cells[a];
 
-        console.dirxml('cell', cell);
+        // console.dirxml('cell', cell);
 
         if ( cell.dataset.hasOwnProperty('group') ) {
           group = cell.dataset.group;
@@ -280,7 +270,7 @@ nCore.modules.table = (function(){
           
           if ( cell.dataset.hasOwnProperty('query') ) {
             rowQuery.push( cell.dataset.query );
-            rowQuery = uniq(rowQuery);
+            rowQuery = nCore.core.uniq(rowQuery);
           }
         }
 
@@ -309,7 +299,7 @@ nCore.modules.table = (function(){
             ___query = ___query.concat(rowQuery);
           }
 
-          ___query = uniq(query);
+          ___query = nCore.core.uniq(query);
 
           var result = [];
 
@@ -318,14 +308,14 @@ nCore.modules.table = (function(){
           // result = result.concat(___dataCell.dataset.query);
 
           var __q = [];
-          __q.push(uniq(result));
+          __q.push(nCore.core.uniq(result));
           
           var _cellData = {
             rowIndex  : row.rowIndex,
             cellIndex : cell.cellIndex,
             query     : {
               head: [],
-              side: uniq(result)
+              side: nCore.core.uniq(result)
             }
           };
           // console.log('group', group);
@@ -338,7 +328,7 @@ nCore.modules.table = (function(){
             // console.log( 'datacell', ___dataCell.dataset );
             
             if ( ___dataCell.dataset.query ) {
-              console.log( 'datacell', JSON.parse(___dataCell.dataset.query) );
+              // console.log( 'datacell', JSON.parse(___dataCell.dataset.query) );
               try { 
                 if ( JSON.parse( ___dataCell.dataset.query ) ){
                   _cellData.query.head.push( ___dataCell.dataset.query );
@@ -353,40 +343,7 @@ nCore.modules.table = (function(){
               // console.log('*****', ___dataCell.dataset.query);
             }
 
-            function datasetPopulate(){
-              var data = {
-                settings: {
-                  appg : true,
-                  compare : true,
-                  total : true,
-                  percent : true,
-                  includeSubordinates : true,
-                  includeSubthemes : true,
-                  includeThemesAp : true,
-                  formula : true,
-                  queryDefault : true,
-                  queryMonth : false
-                }
-              };
-
-              var dataSettings = nCore.modules.cell.self.prototype.settings.call( data );
-              // console.log( 'item', item, headCellSettings[ item ] );
-              for ( var item in dataSettings ) {
-                if ( ___dataCell.dataset.hasOwnProperty( item ) ) {
-
-                  // если не надо проверять, то добавим сразу
-                  if ( dataSettings[ item ] === false ){
-                    _cellData.queryMonth = ___dataCell.dataset.queryMonth;
-                  } else {
-                    // перед добавлением проверим что стоит галка у свойства
-                    if ( ___dataCell.dataset[ item ] == "true" ) {
-                      _cellData[ item ] = ___dataCell.dataset[ item ];
-                    }
-                  }
-                }
-              }
-            }
-            datasetPopulate();
+            this.datasetPopulate( _cellData, ___dataCell );
 
             if ( ___dataCell.dataset.chosenOrigin ) {
               _cellData.origin      = _cellData.hasOwnProperty('origin') ? _cellData.origin : {};
@@ -410,27 +367,10 @@ nCore.modules.table = (function(){
 
     console.groupEnd();
   };
-
-  Table.prototype.calculateCustomCells = function(){
-
-    this.customCells = document.querySelectorAll('.calculationCell');
-    var customCells  = this.customCells;
-
-    for (var q = 0; q < customCells.length; q++) {
-      var completeData = customCells[q].dataset;
-      this.customCellsQuery.push({
-        id: customCells[q].id,
-        data: completeData
-      });
-    }
-
-    console.log( '** cellData:', this.cellData );
-    console.log( '** customCellsQuery:', this.customCellsQuery );
-  };
   Table.prototype.calculateTable = function() {
     // generateQueryFromTable = function (table, headClass, sideClass, total){
-    console.group( 'generateQueryFromTable' );
-    console.log( 'params ', this.table, this.headClass, this.sideClass, this.total );
+    // console.group( 'generateQueryFromTable' );
+    // console.log( 'params ', this.table, this.headClass, this.sideClass, this.total );
 
     // считаем макс. кол-во ячеек в таблице
     this.calculateMaxCells();
@@ -444,7 +384,7 @@ nCore.modules.table = (function(){
     // добавляем специальную строку с данными
     this.calculateDataRow();
 
-    console.groupCollapsed('dateCell query calculate');
+    // console.groupCollapsed('dateCell query calculate');
 
     // копируем свойства в ячейках шапки сверху вниз
     this.copyHeadCellAttributes();
@@ -452,15 +392,20 @@ nCore.modules.table = (function(){
     // копируем свойства в ячейках боковины и клеи с шапкой
     this.tableCalculate();
 
-    console.groupEnd();
+    // console.groupEnd();
 
     this.removeDataRow();
   };
 
-
   // Тут хранятся все таблички, через фабрику создаем новые таблички для расчёта
   var TableFactory = function(){
     this.tables = {};
+  };
+  TableFactory.prototype.clear = function() {
+    this.tables = {};
+  };
+  TableFactory.prototype.exist = function(table) {
+    return this.tables.hasOwnProperty( table );
   };
   TableFactory.prototype.add    = function(table) {
     var config = {
@@ -472,8 +417,9 @@ nCore.modules.table = (function(){
     if ( table.id === '' ){
       table.id =  nCore.modules.table.generateId();
     }
-
-    this.tables[ table.id ] = new Table(config);
+    if ( !this.exist() ) {
+      this.tables[ table.id ] = new Table(config);
+    }
     return this.tables[ table.id ];
   };
   TableFactory.prototype.remove = function(table) {
@@ -482,20 +428,26 @@ nCore.modules.table = (function(){
   TableFactory.prototype.last = function(table) {
     return this.tables[ Object.keys( this.tables )[0] ];
   };
-
-
   TableFactory.prototype.execute = function() {
-    var tables = {},
-        cells  = [];
+    console.log('execute start!');
+    var tables = {};
 
     // считаем таблицы
+ 
+    this.clear();
+
+    var _tables = document.querySelectorAll('.fr-element.fr-view > table');
+
+    for (var i = 0; i < _tables.length; i++) {
+      this.add( _tables[i] );
+    }
+
     for (var id in this.tables) {
 
       var table = this.tables[id];
       table.calculateTable();
 
       console.log('tables', id, table);
-      
 
       var newCellFormat = [];
       table.cellData.forEach( function( cell, i ,array ){
@@ -505,14 +457,15 @@ nCore.modules.table = (function(){
       tables[table.table.id] = newCellFormat;
     }
 
-    // считаем кастомные ячейки
-    var custom = this.last();
-    custom.calculateCustomCells();
+    // // считаем кастомные ячейки
+    // var custom = this.last();
+    // custom.calculateCustomCells();
 
-    custom.customCellsQuery.forEach( function( cell, i ,array ){
-      var formatter = new nCore.format.convert( cell );
-      cells.push( formatter.custom() );
-    });
+    // custom.customCellsQuery.forEach( function( cell, i ,array ){
+    //   var formatter = new nCore.format.convert( cell );
+    //   cells.push( formatter.custom() );
+    // });
+    var cells = nCore.modules.customCell.calculate();
 
 
     var data = {
@@ -524,9 +477,11 @@ nCore.modules.table = (function(){
   };
 
 
+
   var nCoreTableEvent = {},
       maxCells = 0,
       activeCell = {},
+      tf = new TableFactory(),
   init = function(){
     nCore.attachTo( nCore.modules.table.event );
    },

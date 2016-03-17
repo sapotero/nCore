@@ -485,4 +485,16 @@ jQuery(function($) {
       compare.disabled = false;
     }
   });
+
+  $('.cloned > button').live('click', function(){
+    if ( $.FroalaEditor.COMMANDS.hasOwnProperty( this.dataset.cmd ) && $.FroalaEditor.COMMANDS[ this.dataset.cmd ].hasOwnProperty('callback') ) {
+      $.FroalaEditor.COMMANDS[ this.dataset.cmd ].callback.call( globalEditor );
+    } else {
+      try{
+        $('div#paper').froalaEditor(`commands.${this.dataset.cmd}`);
+      }
+      catch(e){
+      }
+    }
+  });
 });
