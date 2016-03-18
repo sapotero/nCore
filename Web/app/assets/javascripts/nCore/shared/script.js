@@ -9,9 +9,9 @@ jQuery(function($) {
         }
     });
   }
-  // $('div#paper').on('froalaEditor.initialized', function (e, editor) {
-  //   document.querySelector('.fr-wrapper').nextSibling.textContent += 'test';
-  // });
+  $('div#paper').on('froalaEditor.initialized', function (e, editor) {
+    document.querySelector('.fr-wrapper').nextSibling.textContent += 'test';
+  });
 
   var $bodyEl   = $('body'),
   $sidedrawerEl = $('#sidedrawer'),
@@ -67,7 +67,6 @@ jQuery(function($) {
 
   // поворот страницы
   $rotatePage.click(function(){
-
     $paper.toggleClass('book');
   });
 

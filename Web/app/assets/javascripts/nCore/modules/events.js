@@ -1192,7 +1192,7 @@ nCore.events = (function () {
 
   // расчёт критериев поиска и отправление их на сервер
   nCore.modules.table.event.subscribe('calculateQuery', function (data) {
-    console.log('data: ', data);
+    console.log('data: ', JSON.parse(JSON.stringify( data ))  );
 
     nCore.query.post('queries.json', data).success(function (data) {
       nCore.modules.table.event.publish('insertCellData', data);

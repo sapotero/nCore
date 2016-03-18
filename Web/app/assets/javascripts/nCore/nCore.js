@@ -200,6 +200,7 @@ nCore = (function(){
     nCore.update    = {};
     nCore.preloader = {};
     nCore.storage   = {};
+    nCore.commands  = {};
 
     // раскоментировать для standalone приложения 
     loadModules();

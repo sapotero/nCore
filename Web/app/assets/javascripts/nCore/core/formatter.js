@@ -127,14 +127,14 @@ nCore.format = (function(){
                     'or':  []
                   };
                 }
-                if ( !sources[ query.source ][ conditions ].some(elem => elem == queryArray ) ){
-                  sources[ query.source ][ conditions ].push( queryArray );
+                if ( !sources[ query.source ][ conditions ].some(elem => elem == query ) ){
+                  sources[ query.source ][ conditions ].push( query );
                 };
               });
             });
           }
         } catch(e){
-          console.error('JSON PARSE FAILS', e)
+          console.error('JSON PARSE FAILS', e);
         }
         root[ from ] = sources;
       });

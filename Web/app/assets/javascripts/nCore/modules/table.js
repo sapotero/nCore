@@ -164,7 +164,7 @@ nCore.modules.table = (function(){
     this.dataRow.style.display = 'none';
     this.dataRow.parentNode.removeChild(this.dataRow); 
   };
-  Table.prototype.datasetPopulate = function( cell, dataCell ){
+  Table.prototype.headDatasetPopulate = function( _cell, headCell ){
     var settings = {
       settings: {
       appg : true,
@@ -183,17 +183,49 @@ nCore.modules.table = (function(){
     };
 
     var dataSettings = nCore.modules.cell.self.prototype.settings.call(settings);
-    // console.log( 'item', item, dataCellSettings[ item ] );
+    // console.log( 'item', item, headCellSettings[ item ] );
     for ( var item in dataSettings ) {
-      if ( dataCell.dataset.hasOwnProperty( item ) ) {
+      if ( headCell.dataset.hasOwnProperty( item ) ) {
         // если не надо проверять, то добавим сразу
-        if ( dataSettings[ item ] === false ){
-          cellData.queryMonth = dataCell.dataset.queryMonth;
-          cell.dataset[ item ] = dataCell.dataset[ item ];
+        if ( dataSettings[ item ] == false ){
+        _cell.dataset[ item ] = headCell.dataset[ item ];
         } else {
           // перед добавлением проверим что стоит галка у свойства
-          if ( dataCell.dataset[ item ] == "true" ) {
-            cell.dataset[ item ] = dataCell.dataset[ item ];
+          if ( headCell.dataset[ item ] == "true" ) {
+            _cell.dataset[ item ] = headCell.dataset[ item ];
+          }
+        }
+      }
+    }
+  };
+  Table.prototype.datasetPopulate = function( _cellData, ___dataCell ){
+    var data = {
+      settings: {
+        appg : true,
+        compare : true,
+        total : true,
+        percent : true,
+        includeSubordinates : true,
+        includeSubthemes : true,
+        includeThemesAp : true,
+        formula : true,
+        queryDefault : true,
+        queryMonth : false
+      }
+    };
+
+    var dataSettings = nCore.modules.cell.self.prototype.settings.call( data );
+    // console.log( 'item', item, headCellSettings[ item ] );
+    for ( var item in dataSettings ) {
+      if ( ___dataCell.dataset.hasOwnProperty( item ) ) {
+
+        // если не надо проверять, то добавим сразу
+        if ( dataSettings[ item ] === false ){
+          _cellData.queryMonth = ___dataCell.dataset.queryMonth;
+        } else {
+          // перед добавлением проверим что стоит галка у свойства
+          if ( ___dataCell.dataset[ item ] == "true" ) {
+            _cellData[ item ] = ___dataCell.dataset[ item ];
           }
         }
       }
@@ -224,7 +256,7 @@ nCore.modules.table = (function(){
           query.push( headCell.dataset.query );
         }
         
-        this.datasetPopulate( _cell, headCell );
+        this.headDatasetPopulate( _cell, headCell );
 
         query = nCore.core.uniq(query);
         // console.log(' result ', query);
