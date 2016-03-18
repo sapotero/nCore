@@ -505,7 +505,7 @@ nCore.modules.table = (function(){
     return this.tables[ Object.keys( this.tables )[0] ];
   };
   TableFactory.prototype.execute = function() {
-    console.log('execute start!');
+    // console.log('execute start!');
     var tables = {};
 
     // считаем таблицы
@@ -519,9 +519,9 @@ nCore.modules.table = (function(){
       var table = this.tables[id];
       table.calculateTable();
 
-      console.log('tables', id, table);
-
+      // console.log('tables', id, table);
       var newCellFormat = [];
+      
       table.cellData.forEach( function( cell, i ,array ){
         var formatter = new nCore.format.convert( cell );
         newCellFormat.push( formatter.table() );

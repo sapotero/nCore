@@ -54,10 +54,12 @@ nCore.modules.customCell = (function(){
     }
   };
   CustomCellFactory.prototype.findAll = function() {
-    var cells = document.querySelectorAll('.calculationCell');
+    let cells = document.querySelectorAll('.calculationCell');
     
-    for (var i = 0; i < cells.length; i++) {
-      this.add( cells[i] );
+    if ( cells.length ) {
+      for (let i = 0; i < cells.length; i++) {
+        this.add( cells[i] );
+      }
     }
     
     return this.cells;
@@ -79,7 +81,10 @@ nCore.modules.customCell = (function(){
     root.findAll();
 
     for (var customCell in this.cells) {
-      root.query.push( root.cells[customCell].result() );
+      // console.log( 'customCell', customCell );
+
+      root.cells[customCell].id = customCell;
+      root.query.push( root.cells[customCell].find().result() );
     }
     return root.query;
   };
