@@ -1195,7 +1195,7 @@ nCore.events = (function () {
     console.log('data: ', data);
 
     nCore.query.post('queries.json', data).success(function (data) {
-      nCore.modules.table.event.publish('insertCellData', data)
+      nCore.modules.table.event.publish('insertCellData', data);
     }).error(function (data) {
       console.error('[!] calculateQuery -> post', data);
 
@@ -1213,85 +1213,18 @@ nCore.events = (function () {
   nCore.modules.table.event.subscribe('insertCellData', function (data) {
     console.log('insertCellData', data);
 
-    var data = {
+
+    nCore.modules.table.populate( data.tables );
+    nCore.modules.customCell.populate( data.customCells );
+    
+    var message = {
       message: 'Отчет построен.',
       timeout: 2000
-      // actionHandler: function(){},
-      // actionText: 'Отмена'
     };
     
     var snack = new nCore.snackbar();
-    snack.showSnackbar(data);
-
-    var table = document.querySelector('.fr-element.fr-view > table');
-
-    var customCells = data.customCells,
-        data        = data.table;
-
-    for (var i = 0; i < data.length; i++) {
-      // console.log( 'data[i] ',data[i] );
-      // если есть cellIndex, rowIndex, value
-      if ( data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') ) {
-        var cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
-        switch( typeof( data[i].value ) ){
-          case 'object':
-            // console.log('value type: Object')
-            
-            // проверяем что за объект
-            switch( data[i].value.constructor ){
-              case Array:
-                cell.textContent = data[i].value.join(', ');
-                break;
-              case Object:
-                cell.textContent = JSON.stringify( data[i].value );
-                break;
-              case Date:
-                cell.textContent = data[i].value;
-                break;
-              default:
-                cell.textContent = data[i].value;
-                break;
-            };
-            break;
-          case 'string':
-            console.log('value type: String')
-            // для массива
-            // var test = Array(2).fill( data[i].value );
-            // var df = new DocumentFragment(),
-            //     root = document.createElement('div');
-            //     // root.style.border = '1px solid red';
-            // for (var s = 0; s < test.length; s++) {
-            //   var el = document.createElement('div');
-            //   el.style.display = 'block';
-            //   el.style.width   = '100%';
-            //   el.classList.add('tableBlock')
-            //   el.textContent = test[s];
-            //   df.appendChild( el );
-            // };
-            // root.appendChild( df );
-            // cell.textContent = '';
-            // cell.appendChild( root );
-            cell.textContent = data[i].value;
-
-            break;
-          case 'number':
-            console.log('value type: Number')
-            cell.textContent = data[i].value;
-            break;
-          default:
-            console.error('value type: DEFAULT', data[i].value, typeof( data[i].value ) )
-            cell.textContent = data[i].value;
-            break;
-        };
-      };
-    }
-
-    for (var c = 0; c < customCells.length; c++) {
-      var id    = customCells[c].id,
-          value = customCells[c].value;
-      document.getElementById(id).textContent = value;
-    };
-
+    snack.showSnackbar(message);
+    
     nCore.modules.table.event.publish('calculateFormula');
 
   });

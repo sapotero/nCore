@@ -422,6 +422,82 @@ nCore.modules.table = (function(){
     }
     return this.tables[ table.id ];
   };
+  TableFactory.prototype.findAll = function() {
+    var root = this,
+        tables = document.querySelectorAll('.fr-element.fr-view > table');
+
+    for (var i = 0; i < tables.length; i++) {
+      root.add( tables[i] );
+    }
+    
+    return this.tables;
+  };
+  TableFactory.prototype.populate = function( calculatedTables ) {
+    var root = this;
+
+    for (var calculateTable in calculatedTables) {
+      let data = this.tables[ calculateTable ];
+      let table = calculatedTables[ calculateTable ];
+
+      for (var i = 0; i < data.length; i++) {
+        if ( data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') ) {
+          let cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
+          switch( typeof( data[i].value ) ){
+            case 'object':
+              // console.log('value type: Object')
+              
+              // проверяем что за объект
+              switch( data[i].value.constructor ){
+                case Array:
+                  cell.textContent = data[i].value.join(', ');
+                  break;
+                case Object:
+                  cell.textContent = JSON.stringify( data[i].value );
+                  break;
+                case Date:
+                  cell.textContent = data[i].value;
+                  break;
+                default:
+                  cell.textContent = data[i].value;
+                  break;
+              };
+              break;
+            case 'string':
+              // console.log('value type: String');
+              // для массива
+              // var test = Array(2).fill( data[i].value );
+              // var df = new DocumentFragment(),
+              //     root = document.createElement('div');
+              //     // root.style.border = '1px solid red';
+              // for (var s = 0; s < test.length; s++) {
+              //   var el = document.createElement('div');
+              //   el.style.display = 'block';
+              //   el.style.width   = '100%';
+              //   el.classList.add('tableBlock')
+              //   el.textContent = test[s];
+              //   df.appendChild( el );
+              // };
+              // root.appendChild( df );
+              // cell.textContent = '';
+              // cell.appendChild( root );
+              cell.textContent = data[i].value;
+
+              break;
+            case 'number':
+              // console.log('value type: Number');
+              cell.textContent = data[i].value;
+              break;
+            default:
+              // console.error('value type: DEFAULT', data[i].value, typeof( data[i].value ) );
+              cell.textContent = data[i].value;
+              break;
+          }
+        }
+      }
+    }
+    
+    return this.tables;
+  };
   TableFactory.prototype.remove = function(table) {
     delete this.tables[ table.id ];
   };
@@ -436,11 +512,7 @@ nCore.modules.table = (function(){
  
     this.clear();
 
-    var _tables = document.querySelectorAll('.fr-element.fr-view > table');
-
-    for (var i = 0; i < _tables.length; i++) {
-      this.add( _tables[i] );
-    }
+    this.findAll();
 
     for (var id in this.tables) {
 
