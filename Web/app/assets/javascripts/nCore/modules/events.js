@@ -509,18 +509,18 @@ nCore.events = (function () {
     }).then(function(editor){
 
       // клонируем менюху
-      var menu = document.querySelector('.fr-toolbar.fr-ltr.fr-desktop.fr-top.fr-basic');
+      // var menu = document.querySelector('.fr-toolbar.fr-ltr.fr-desktop.fr-top.fr-basic');
 
-      var clone = menu.cloneNode(true);
+      // var clone = menu.cloneNode(true);
 
-      clone.classList.add('cloned');
+      // clone.classList.add('cloned');
 
-      var paperBar = document.querySelector('#paperBar');
-      paperBar.innerHTML = '';
+      // var paperBar = document.querySelector('#paperBar');
+      // paperBar.innerHTML = '';
 
-      paperBar.appendChild(clone);
+      // paperBar.appendChild(clone);
 
-      menu.classList.add('mui--hide');
+      // menu.classList.add('mui--hide');
       // return editor;
     }).then(function(editor){
       console.log('editor', editor);

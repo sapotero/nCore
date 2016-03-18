@@ -1778,16 +1778,17 @@ input[type="radio"].styled:checked label:after,
 
 .sss {
   position: relative;
+      top: -50px;
 }
 .mui-table.no-margin-bottom {
   margin-top: 20px;
   margin-bottom: 0px;
-  position: fixed;
+  /*position: fixed;*/
   z-index: 2
 }
 
 .fr-wrapper{
-  margin-top: 50px;
+  margin-top: -20px;
 }
 #paper{
   position: relative;

@@ -436,12 +436,12 @@ nCore.modules.table = (function(){
     var root = this;
 
     for (var calculateTable in calculatedTables) {
-      let data = this.tables[ calculateTable ];
-      let table = calculatedTables[ calculateTable ];
+      var data = this.tables[ calculateTable ];
+      var table = calculatedTables[ calculateTable ];
 
       for (var i = 0; i < data.length; i++) {
         if ( data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') ) {
-          let cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
+          var cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
           switch( typeof( data[i].value ) ){
             case 'object':
               // console.log('value type: Object')

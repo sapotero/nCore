@@ -495,6 +495,16 @@ jQuery(function($) {
   });
 
   $('.cloned > button').live('click', function(){
+    var button = this;
+    var dropdown = $(button).next();
+    console.log( this.dataset.cmd,  button, $(button).next() , dropdown );
+
+    if ( $.FroalaEditor.hasOwnProperty( this.dataset.cmd ) ) {
+
+      $.FroalaEditor[ this.dataset.cmd ]
+      return true;
+    }
+
     if ( $.FroalaEditor.COMMANDS.hasOwnProperty( this.dataset.cmd ) && $.FroalaEditor.COMMANDS[ this.dataset.cmd ].hasOwnProperty('callback') ) {
       $.FroalaEditor.COMMANDS[ this.dataset.cmd ].callback.call( globalEditor );
     } else {

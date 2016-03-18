@@ -44,7 +44,7 @@ nCore.modules.customCell = (function(){
       var calculatedCell = calculatedCells[i];
       if ( root.cells.hasOwnProperty( calculatedCell.id ) ) {
         
-        let cell = root.cells[ calculatedCell.id ];
+        var cell = root.cells[ calculatedCell.id ];
         
         cell.id    = calculatedCell.id;
         cell.value = calculatedCell.value;
@@ -54,10 +54,10 @@ nCore.modules.customCell = (function(){
     }
   };
   CustomCellFactory.prototype.findAll = function() {
-    let cells = document.querySelectorAll('.calculationCell');
+    var cells = document.querySelectorAll('.calculationCell');
     
     if ( cells.length ) {
-      for (let i = 0; i < cells.length; i++) {
+      for (var i = 0; i < cells.length; i++) {
         this.add( cells[i] );
       }
     }
