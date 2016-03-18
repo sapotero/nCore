@@ -197,5 +197,17 @@ nCore.core = (function(){
     });
   };
 
+  Core.prototype.hightlightCell = function(cell) {
+    var tds = document.querySelectorAll('.fr-wrapper > .fr-element > table td');
+    
+    for (var i = 0; i < tds.length; i++) {
+      tds[i].classList.remove('ac');
+    }
+
+    if(cell){
+      cell.classList.add('ac');
+    }
+  };
+
   return new Core();
 })();

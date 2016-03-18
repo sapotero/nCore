@@ -1,3 +1,4 @@
+
 jQuery(function($) {
   if (typeof jQuery.fn.live == 'undefined' || !(jQuery.isFunction(jQuery.fn.live))) {
     jQuery.fn.extend({
@@ -72,7 +73,14 @@ jQuery(function($) {
 
   // клик по ячейке в таблице
   $('td.fr-selected-cell').live('click', function(e){
+    "use strict";
     e.preventDefault();
+
+    console.log( 'clicked', this );
+
+
+    nCore.core.hightlightCell(this);
+    
 
     // если произошел клик по клетке с данными с нажатым ctrl
     if ( e.ctrlKey ) {

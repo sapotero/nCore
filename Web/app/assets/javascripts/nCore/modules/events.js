@@ -473,11 +473,11 @@ nCore.events = (function () {
         shortcutsEnabled: ['copyDataCell', 'pasteDataCell']
       });
       $('div#paper').on('froalaEditor.click', function (e, editor, clickEvent) {
-        console.log( 'click', editor, clickEvent );
+        nCore.core.hightlightCell();
       });
-      $('div#paper').on('froalaEditor.commands.before', function (e, editor, cmd, param1, param2) {
-        console.log( 'command', e, editor, cmd, param1, param2 );
-      });
+      // $('div#paper').on('froalaEditor.commands.before', function (e, editor, cmd, param1, param2) {
+      //   console.log( 'command', e, editor, cmd, param1, param2 );
+      // });
       
       resolve(editor);
     });
@@ -489,7 +489,7 @@ nCore.events = (function () {
       var globalEditor;
 
       editor.on('froalaEditor.initialized', function (e, editor) {
-        console.log('e, editor', editor);
+        // console.log('e, editor', editor);
         globalEditor = editor;
         // скрываем unregister version
         if (document.querySelector('.fr-wrapper').nextSibling && document.querySelector('.fr-wrapper').nextSibling.nodeName == 'DIV' && document.querySelector('.fr-wrapper').nextSibling.textContent == 'Unlicensed Froala Editor') {
@@ -500,7 +500,7 @@ nCore.events = (function () {
       $('div#paper').froalaEditor('html.set', (BODY ? BODY : '<p>') + '<p>');
       return globalEditor;
     }).then(function(editor) {
-      console.log('e, editor', editor);
+      // console.log('e, editor', editor);
       
 
       var parent = document.querySelector('.fr-wrapper').parentNode;
@@ -521,7 +521,7 @@ nCore.events = (function () {
       paperBar.appendChild(clone);
 
       menu.classList.add('mui--hide');
-      return editor;
+      // return editor;
     }).then(function(editor){
       console.log('editor', editor);
       return true;
