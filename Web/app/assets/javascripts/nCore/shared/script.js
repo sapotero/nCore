@@ -75,7 +75,7 @@ jQuery(function($) {
     "use strict";
     e.preventDefault();
 
-    console.log( 'clicked', this );
+    // console.log( 'clicked', this );
 
 
     nCore.core.hightlightCell(this);
@@ -83,7 +83,7 @@ jQuery(function($) {
 
     // если произошел клик по клетке с данными с нажатым ctrl
     if ( e.ctrlKey ) {
-      console.log( 'clicked', e.target.dataset )
+      // console.log( 'clicked', e.target.dataset )
       // если есть формула но нет айдишника
       // if ( e.target.dataset.useFormula == 'true' ) {
       if ( !e.target.id ) {
@@ -111,7 +111,7 @@ jQuery(function($) {
   });
 
   $('#content-wrapper').live('click', function(e){
-    nCore.document.setShowCellSettings(false)
+    nCore.document.showCellSettings = false;
     nCore.modules.table.event.publish('hideSideMenu');
   });
 
@@ -350,7 +350,7 @@ jQuery(function($) {
     try{
       $(element).select2('destroy');
     }catch(e){
-      console.warn(e);
+      console.log(e);
     }
     
     var _root = $(this).closest('.criteriaSelectorItem')[0];
@@ -477,6 +477,7 @@ jQuery(function($) {
   });
 
   $('[name="documentGlobalSettings"]').live('click', function(){
+    nCore.modules.table.event.publish('globalCriteriaCalculate');
     nCore.document.root.publish( 'updateDocument', this );
   });
 

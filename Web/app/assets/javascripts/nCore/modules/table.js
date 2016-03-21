@@ -468,12 +468,14 @@ nCore.modules.table = (function(){
     var root = this;
 
     for (var calculateTable in calculatedTables) {
-      var data = this.tables[ calculateTable ];
-      var table = calculatedTables[ calculateTable ];
+      var table = this.tables[ calculateTable ];
+      var data  = calculatedTables[ calculateTable ];
+      console.log( 'calculatedTables', data, table );
 
       for (var i = 0; i < data.length; i++) {
+        // console.log( 'data[i]', data[i], data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') );
         if ( data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') ) {
-          var cell = table.rows[data[i].rowIndex].cells[data[i].cellIndex];
+          var cell = table.table.rows[data[i].rowIndex].cells[data[i].cellIndex];
           switch( typeof( data[i].value ) ){
             case 'object':
               // console.log('value type: Object')
@@ -492,7 +494,7 @@ nCore.modules.table = (function(){
                 default:
                   cell.textContent = data[i].value;
                   break;
-              };
+              }
               break;
             case 'string':
               // console.log('value type: String');

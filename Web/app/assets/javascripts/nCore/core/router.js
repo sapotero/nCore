@@ -138,7 +138,7 @@ jQuery(function($) {
           nCore.document.root.publish( 'loadItem', [ 'documents' ] );
           nCore.document.root.publish( 'loadCriteria' );
           
-          // nCore.document.setTitle('Главная');
+          // nCore.document.windowTitle('Главная'))
 
           // есть ли у юзера право просматривать таблицы
           var template = new nCore.templates.render({template: "report/index" });
@@ -149,7 +149,7 @@ jQuery(function($) {
                 var wrapper = document.getElementById('content-wrapper');
                 wrapper.innerHTML = data;
               }
-              nCore.document.setTitle( 'Отчёт' );
+              nCore.document.windowTitle('Отчёт');
               nCore.document.root.publish('attachListMenu');
               nCore.document.root.publish('renderIndexView', 'documents');
             });
@@ -164,7 +164,7 @@ jQuery(function($) {
         });
         
         nCore.router.add('report/new', function (r) {
-          nCore.document.setTitle('Новый документ'); // document.title = 'report new';
+          nCore.document.windowTitle('Новый документ'); // document.title = 'report new'
           var template = new nCore.templates.render({template: "report/new" });
           document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
           template.render( function(data){ 
@@ -172,7 +172,6 @@ jQuery(function($) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
               nCore.document.root.publish('initEditor');
-              nCore.document.reset();
             };
           });
         });

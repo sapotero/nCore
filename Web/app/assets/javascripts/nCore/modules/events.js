@@ -15,7 +15,6 @@ nCore.events = (function () {
 
   // новый документ
   nCore.document.root.subscribe('newDocument', function (data) {
-    var overlayEl = mui.overlay('on');
     var options = {
       'keyboard': true, // teardown when <esc> key is pressed (default: true)
       'static': false, // maintain overlay when clicked (default: false)
@@ -40,26 +39,25 @@ nCore.events = (function () {
       'static': false, // maintain overlay when clicked (default: false)
       'onclose': function () {
         console.log( 'showDocumentSettings' );
-        nCore.document.setShowSettings(false);
+        nCore.document.setShowSettings = false;
       }
     };
 
     var m = document.createElement('div');
     m.classList.toggle('mui-panel');
     m.classList.toggle('mui--z5');
-          
     m.classList.add('_nCoreDocumentSettings');
 
-    nCore.document.setShowSettings(true);
+    nCore.document.setShowSettings = true;
 
     var text = Transparency.render(document.querySelector('.nCoreDocumentSettings'), {
-      nCoreName        : nCore.document.name(),
-      nCoreDescription : nCore.document.description(),
-      nCorePeriodStart : nCore.document.periodStart(),
-      nCorePeriodEnd   : nCore.document.periodEnd(),
-      nCoreYearReport  : nCore.document.yearReport(),
-      nCoreMain        : nCore.document.main(),
-      nCoreCompare     : nCore.document.compare(),
+      nCoreName        : nCore.document.name,
+      nCoreDescription : nCore.document.description,
+      nCorePeriodStart : nCore.document.periodStart,
+      nCorePeriodEnd   : nCore.document.periodEnd,
+      nCoreYearReport  : nCore.document.yearReport,
+      nCoreMain        : nCore.document.main,
+      nCoreCompare     : nCore.document.compare,
     });
     m.innerHTML = text.innerHTML;
 
@@ -67,7 +65,7 @@ nCore.events = (function () {
         compare    = m.querySelector('[name="compare"]'),
         yearReport = m.querySelector('[name="yearReport"]');
     
-    if ( !nCore.document.yearReport() ) {
+    if ( !nCore.document.yearReport ) {
       yearReport.checked = false;
       main.disabled    = true;
       compare.disabled = true;
@@ -92,7 +90,7 @@ nCore.events = (function () {
       m.querySelector( '#'+ev.paneId ).classList.add('mui--is-active');
       m.querySelector('[data-mui-controls="'+ev.paneId+'"]').parentNode.classList.add('mui--is-active');
 
-      nCore.document.setDocumentSettingTab( ev.paneId );
+      nCore.document.documentSettingTab = ev.paneId;
     }
 
     // attach event handlers
@@ -101,8 +99,8 @@ nCore.events = (function () {
     }
 
     // documentQueryPane по дефолту
-    m.querySelector( '#'+nCore.document.documentSettingTab() ).classList.add('mui--is-active');
-    m.querySelector('[data-mui-controls="'+nCore.document.documentSettingTab()+'"]').parentNode.classList.add('mui--is-active');
+    m.querySelector( '#'+nCore.document.documentSettingTab ).classList.add('mui--is-active');
+    m.querySelector('[data-mui-controls="'+nCore.document.documentSettingTab+'"]').parentNode.classList.add('mui--is-active');
 
     nCore.core.globalQueryPopulate();
 
@@ -117,7 +115,7 @@ nCore.events = (function () {
       }
     }
 
-    document.getElementById( nCore.document.documentSettingTab() ).classList.add('mui--is-active');
+    document.getElementById( nCore.document.documentSettingTab ).classList.add('mui--is-active');
     
     
   });
@@ -149,105 +147,19 @@ nCore.events = (function () {
   });
 
   // редактирование настроек документа
-  nCore.document.root.subscribe('updateDocument', function (root) {
-    console.log(' updateDocument', root);
-
-    if ( nCore.document.getTemplate() ) {
-      console.log('try to edit template: ', nCore.document.getTemplate );
-      nCore.document.root.publish('tryToEditTemplate');
-      return false;
-    }
-    
-    if ( nCore.document.isNewDocument() ){
-      nCore.document.root.publish('newDocument');
-    } else {
-        mui.overlay('off');
-
-        var modalRoot = nCore.core.findUpTag(root, '_nCoreDocumentSettings'),
-            data      = modalRoot.querySelector('[name="documentQueryPane"]');
-
-        console.log('update:', data, modalRoot.querySelector("[name='nCoreDescription']").value );
-        nCore.document.root.publish('globalCriteriaCalculate', modalRoot);
-
-        var nCoreDocumentAttributes = {
-          author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
-          provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
-          name: data.elements.nCoreName.value,
-          description: data.elements.nCoreDescription.value,
-          periodStart: data.elements.nCorePeriodStart.value,
-          periodEnd: data.elements.nCorePeriodEnd.value,
-          datetime: new Date().getTime(),
-          query: nCore.document.cellQuery() || '',
-          body: Base64.encode($('#paper').froalaEditor('html.get') /* на случай если мы сразу говорим сохранить */),
-          globalQuery: nCore.document.globalQuery(),
-          globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
-        };
-
-        nCore.document.setTitle(       data.elements.nCoreName.value );
-        nCore.document.setPeriodEnd(   data.elements.nCorePeriodEnd.value );
-        nCore.document.setPeriodStart( data.elements.nCorePeriodStart.value );
-
-        nCore.document.setYearReport(  data.elements.yearReport.checked );
-        nCore.document.setCompare(     data.elements.compare.value );
-        nCore.document.setMain(        data.elements.main.value );
-
-        nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
-        nCoreDocumentAttributes.main       = nCore.document.main();
-        nCoreDocumentAttributes.compare    = nCore.document.compare();
-
-        nCoreDocumentAttributes.description = modalRoot.querySelector("[name='nCoreDescription']").value;
-        nCoreDocumentAttributes.name        = modalRoot.querySelector("[name='nCoreName']").value;
-
-        html2canvas( document.querySelector('div#paper') , {
-          onrendered: function(canvas) {
-
-            var nCoreDocumentAttributes = {
-              author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
-              provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
-              type: nCore.document.type(),
-              description: modalRoot.querySelector("[name='nCoreDescription']").value,
-              name:        modalRoot.querySelector("[name='nCoreName']").value,
-              datetime: new Date().getTime(),
-              body: Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
-              query: nCore.document.cellQuery() || '',
-              periodStart: nCore.document.periodStart(),
-              periodEnd: nCore.document.periodEnd(),
-              globalQuery: nCore.document.globalQuery(),
-              image: canvas.toDataURL(),
-              globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
-            };
-
-            if ( nCore.document.yearReport() ) {
-              nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
-              nCoreDocumentAttributes.main       = nCore.document.main();
-              nCoreDocumentAttributes.compare    = nCore.document.compare();
-            }
-
-            nCore.document.setAttributes(nCoreDocumentAttributes);
-
-            nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
-              .success(function (data) {
-                console.log('saveDocument', data);
-                if (location.hash.match(/new/) !== null) {
-                  location.hash = location.hash.replace(/new/, data._id);
-                };
-              }).error(function (data) {
-                console.error('[!] saveDocument', post, data)
-              });
-          }
-        });
-    }
+  nCore.document.root.subscribe('updateDocument', function (rootNode) {
+    nCore.document.update( rootNode );
   });
 
   // сохранение документа
   nCore.document.root.subscribe('saveDocument', function (data) {
-    console.log('saveDocument');
+    console.log('saveDocument sub');
     // проверяем, не шаблон ли это?
-    if ( nCore.document.getTemplate() ) {
-      console.log('try to edit template: ', nCore.document.getTemplate );
+    if ( nCore.document.template ) {
+      console.log('try to edit template: ', nCore.document.template );
       nCore.document.root.publish('tryToEditTemplate');
     } else {
-      if (nCore.document.isNewDocument()) {
+      if (nCore.document.isNew ) {
         nCore.document.root.publish('newDocument');
       }
       else {
@@ -256,7 +168,7 @@ nCore.events = (function () {
     }
   });
 
-  nCore.document.root.subscribe('tryToEditTemplate', function (data) {
+  nCore.document.root.subscribe('tryToEditTemplate', function () {
     console.log('tryToEditTemplate');
 
     mui.overlay('on');
@@ -269,7 +181,7 @@ nCore.events = (function () {
     var render = Transparency.render(document.getElementById('tryToEditTemplate'), {
       errorMessage: "Вы пытаетесь редактировать шаблон!",
       details: "Будет создан новый файл с именем",
-      filename : ( document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title() ),
+      filename : ( document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title ),
       cancel: "Отмена",
       save: "Сохранить"
     });
@@ -289,165 +201,29 @@ nCore.events = (function () {
     m.innerHTML = render.innerHTML;
 
     mui.overlay('on', options, m );
-
   });
+
+
   nCore.document.root.subscribe('tryToSaveFromTemplate', function () {
-    html2canvas( document.querySelector('div#paper') , {
-      onrendered: function(canvas) {
-
-        var nCoreDocumentAttributes = {
-          author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
-          provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
-          type: nCore.document.type(),
-          title: document.querySelector('#nCoreDocumentAuthor').textContent.replace(/[\r\n\s+]/, '') + ' - ' + nCore.document.title(),
-          name: document.querySelector('#nCoreDocumentAuthor').textContent.replace(/[\r\n\s+]/, '') + ' - ' + nCore.document.title(),
-          description: document.querySelector('#nCoreDocumentAuthor').textContent.replace(/[\r\n\s+]/, '') + ' - ' + nCore.document.title(),
-          datetime: new Date().getTime(),
-          body:  Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
-          query: nCore.document.cellQuery() || '',
-          periodStart: nCore.document.periodStart(),
-          periodEnd: nCore.document.periodEnd(),
-          globalQuery: nCore.document.globalQuery(),
-          image: canvas.toDataURL(),
-          globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
-        };
-
-        if ( nCore.document.yearReport() ) {
-          nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
-          nCoreDocumentAttributes.main       = nCore.document.main();
-          nCoreDocumentAttributes.compare    = nCore.document.compare();
-        }
-
-        nCore.document.setAttributes(nCoreDocumentAttributes);
-
-        nCore.query.post('documents.json', nCoreDocumentAttributes)
-          .success(function (data) {
-            console.log('saveDocument', data);
-              location.hash = location.hash.replace(/#\/report\/\w+/, '#/report/'+data._id);
-          }).error(function (data) {
-            console.error('[!] saveDocument', post, data)
-          });
-      }
-    });
+    nCore.document.create();
   });
 
 
   nCore.document.root.subscribe('saveDocumentToDb', function (data) {
-    console.log('data: ', data);
-    // nCore.modules.table.event.publish('globalCriteriaCalculate');
-
+    console.log('data++: ', data);
     // если передеали значения из формы
-    if (data && data.nodeName === 'FORM') {
-
-      nCore.document.setName(data.elements.nCoreDocumnetName.value);
-      nCore.document.setDescription(data.elements.nCoreDocumnetDescription.value);
-    };
-
     // если документ новый - показываем модальное окошко с вводом имени
     if (data && data.nodeName == 'FORM') {
-
-
-      html2canvas( document.querySelector('div#paper') , {
-        onrendered: function(canvas) {
-
-          console.log('saveDocument', data);
-          nCore.document.root.publish('newDocument', true);
-
-          if (document.getElementById('mui-overlay')) {
-            mui.overlay('off');
-          };
-
-          // считаем табличку перед сохранением
-          // $.FroalaEditor.COMMANDS.calculator.callback()
-          var nCoreDocumentAttributes = {
-            author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
-            provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
-            type: nCore.document.type(),
-            name: nCore.document.name(),
-            description: nCore.document.description(),
-            datetime: new Date().getTime(),
-            body: Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
-            query: nCore.document.cellQuery() || '',
-            periodStart: nCore.document.periodStart(),
-            periodEnd: nCore.document.periodEnd(),
-            globalQuery: nCore.document.globalQuery(),
-            image: canvas.toDataURL(),
-            globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
-          };
-
-          if ( nCore.document.yearReport() ) {
-            nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
-            nCoreDocumentAttributes.main       = nCore.document.main();
-            nCoreDocumentAttributes.compare    = nCore.document.compare();
-          }
-
-          nCore.document.setAttributes(nCoreDocumentAttributes);
-          console.log(nCoreDocumentAttributes);
-
-          nCore.query.post('documents.json', nCoreDocumentAttributes)
-            .success(function (data) {
-              console.log('newDocument', data);
-
-              if (location.hash.match(/new/) !== null) {
-                location.hash = location.hash.replace(/new/, data._id);
-              };
-
-            }).error(function (data) {
-              console.error('[!] newDocument', post, data)
-            });
-        }
-      });
-
+      nCore.document.setAttributes( data );
+      nCore.document.create();
     }
     else {
-      html2canvas( document.querySelector('div#paper') , {
-        onrendered: function(canvas) {
-
-          var nCoreDocumentAttributes = {
-            author_id: document.querySelector('#nCoreDocumentAuthor').dataset.userId,
-            provider_id: document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
-            type: nCore.document.type(),
-            name: nCore.document.name(),
-            description: nCore.document.description(),
-            datetime: new Date().getTime(),
-            body: Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
-            query: nCore.document.cellQuery() || '',
-            periodStart: nCore.document.periodStart(),
-            periodEnd: nCore.document.periodEnd(),
-            globalQuery: nCore.document.globalQuery(),
-            image: canvas.toDataURL(),
-            globalQueryData : JSON.stringify( nCore.document.globalQueryData() )
-          };
-
-          if ( nCore.document.yearReport() ) {
-            nCoreDocumentAttributes.yearReport = nCore.document.yearReport();
-            nCoreDocumentAttributes.main       = nCore.document.main();
-            nCoreDocumentAttributes.compare    = nCore.document.compare();
-          }
-
-          nCore.document.setAttributes(nCoreDocumentAttributes);
-
-          nCore.query.put('documents/' + nCore.document.id() + '.json', nCoreDocumentAttributes)
-            .success(function (data) {
-              console.log('saveDocument', data);
-              if (location.hash.match(/new/) !== null) {
-                location.hash = location.hash.replace(/new/, data._id);
-              };
-            }).error(function (data) {
-              console.error('[!] saveDocument', post, data)
-            });
-        }
-      });
+      nCore.document.update();
     }
-  });
-  // изменение свойств документа
-  nCore.document.root.subscribe('setDocumentAttributes', function (data) {
-    console.log('[main] setDocumentAttributes:', data);
-    var author = document.getElementById('nCoreDocumentAuthor');
   });
 
   nCore.document.root.subscribe('generateNewDocument', function () {
-    nCore.document.generateNew();
+    nCore.document.new();
   });
 
   // [NEW] изменение свойств документа
@@ -532,9 +308,9 @@ nCore.events = (function () {
   });
 
   // изменение типа документа
-  nCore.document.root.subscribe('setDocumentType', function (type) {
-    nCore.document.setType(type);
-  });
+  // nCore.document.root.subscribe('setDocumentType', function (type) {
+  //   nCore.document.type = type;
+  // });
 
   nCore.document.root.subscribe('go', function (url) {
     location.hash = "#" + url;
@@ -543,33 +319,30 @@ nCore.events = (function () {
   nCore.document.root.subscribe('loadDocument',
     function (id, callback) {
       console.groupCollapsed('Loading document');
-      nCore.document.root.publish('populateChosenOrigin');
-
-      var overlayEl = mui.overlay('on'),
-
-      options = {
-        'keyboard': false, // teardown when <esc> key is pressed (default: true)
-        'static': true, // maintain overlay when clicked (default: false)
-        'onclose': function () {
-          // after callback
-        }
-      };
-      // initialize with child element
-      var m = document.createElement('div');
-      m.style.width = '400px';
-      m.style.height = '100px';
-      m.style.margin = '10% auto';
-      m.style.padding = '10% auto';
-      m.style.backgroundColor = '#fff';
-      m.classList.toggle('mui-panel');
-      m.classList.toggle('mui--z5');
-      m.innerHTML = '<h4>Загрузка документа</h4><div class="loader"></div>';
-
-      var overlay = mui.overlay('on', options, m);
-    overlay.classList.toggle('animated');
-    overlay.classList.toggle('fadeIn');
 
       var load = new Promise(function(resolve, reject) {
+        var overlayEl = mui.overlay('on'),
+
+        options = {
+          'keyboard': false, // teardown when <esc> key is pressed (default: true)
+          'static': true, // maintain overlay when clicked (default: false)
+          'onclose': function () {}
+        };
+        // initialize with child element
+        var m = document.createElement('div');
+        m.style.width = '400px';
+        m.style.height = '100px';
+        m.style.margin = '10% auto';
+        m.style.padding = '10% auto';
+        m.style.backgroundColor = '#fff';
+        m.classList.toggle('mui-panel');
+        m.classList.toggle('mui--z5');
+        m.innerHTML = '<h4>Загрузка документа</h4><div class="loader"></div>';
+
+        var overlay = mui.overlay('on', options, m);
+        overlay.classList.toggle('animated');
+        overlay.classList.toggle('fadeIn');
+
         // выполняем асинхронный код
         nCore.query.get('documents/' + id + '.json', { id: id }).success(function (rawDocument) {
           console.log('***raw', rawDocument);
@@ -579,30 +352,33 @@ nCore.events = (function () {
             mui.overlay('off');
           }, 1000);
 
-          resolve( rawDocument ) 
+          resolve( rawDocument );
         }).error(function (data) {
           mui.overlay('off');
           nCore.document.root.publish('nCoreDocumentFailedToLoad');
-          console.error('[!] loadDocument -> get', data)
+          console.error('[!] loadDocument -> get', data);
           reject(data);
         });
       });
 
       load.then(function(rawDocument) {
-        nCore.document.load(rawDocument);
-        nCore.document.setPeriodEnd(rawDocument.periodEnd);
-        nCore.document.setPeriodStart(rawDocument.periodStart);
-        nCore.document.setGlobalQuery(rawDocument.globalQuery);
-        nCore.document.setGlobalQueryData(rawDocument.globalQueryData ? rawDocument.globalQueryData : '{}');
-        nCore.document.setTitle(rawDocument.name);
-        nCore.document.setYearReport(rawDocument.yearReport );
-        nCore.document.setMain(rawDocument.main );
-        nCore.document.setCompare(rawDocument.compare );
-        nCore.document.setTemplate(rawDocument.template );
+        nCore.document.load( rawDocument );
+        nCore.document.periodEnd       = rawDocument.periodEnd;
+        nCore.document.periodStart     = rawDocument.periodStart;
+        nCore.document.globalQuery     = rawDocument.globalQuery;
+        nCore.document.globalQueryData = rawDocument.globalQueryData ? rawDocument.globalQueryData : '{}';
+        nCore.document.title           = rawDocument.name;
+        nCore.document.yearReport      = rawDocument.yearReport;
+        nCore.document.setMain         = rawDocument.main;
+        nCore.document.compare         = rawDocument.compare;
+        nCore.document.template        = rawDocument.template;
 
+        nCore.document.windowTitle( rawDocument.name );
+
+        nCore.document.root.publish('populateChosenOrigin');
 
         callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
-        return rawDocument
+        return rawDocument;
       }).then(function(result) {
         // var editor = nCore.document.root.publish('initEditor');
         console.log("allDone!", result);
@@ -621,10 +397,10 @@ nCore.events = (function () {
 
   // создание нового документа
   nCore.document.root.subscribe('createNewDocument', function (type) {
-    var documentType = nCore.document.type() || type;
-    console.log('setDocumentType', documentType);
-    nCore.document.setType(documentType);
-    nCore.document.reset();
+    var documentType = nCore.document.type || type;
+    // console.log('setDocumentType', documentType);
+    nCore.document.type = documentType;
+    nCore.document.new();
 
     var overlayEl = mui.overlay('on');
 
@@ -673,7 +449,7 @@ nCore.events = (function () {
   });
 
   nCore.document.root.subscribe('attachListMenu', function (type) {
-    nCore.menu.attach('.mui-panel.indexListView', '.menu'); // new Menu().add();
+    nCore.menu.attach('.mui-panel.indexListView', '.menu');
   });
 
 
@@ -682,22 +458,7 @@ nCore.events = (function () {
   /////////////////////
   ///
   nCore.document.root.subscribe('deleteReport', function(element){
-    var id   = element.type,
-        root = $(element).closest(".document");
-
-    console.log('deleteReport', id, element, root);
-
-    nCore.query.post('documents/' + id + '/remove', { id: id })
-    .success(function (rawDocument) {
-      console.log('***deleteReport', root, rawDocument);
-      root.addClass('animatedSlow');
-      root.addClass('fadeOut');
-      setTimeout(function (){ root.detach(); }, 400);
-
-    }).error(function (data) {
-      mui.overlay('off');
-      console.error('[!] deleteReport -> get', data)
-    });
+    nCore.document.delete( element );
   });
 
   // изменяем тип отображения
@@ -708,7 +469,7 @@ nCore.events = (function () {
 
   nCore.document.root.subscribe('populateChosenOrigin', function(){
     var chosenOrigin = document.querySelector('[name="chosenOrigin"]'),
-        criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );;
+        criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );
 
     for ( var q = 0; q < criteriaKeys.length; q++ ) {
       chosenOrigin.appendChild( new Option( criteriaKeys[q].name, criteriaKeys[q].value ) );
@@ -800,8 +561,8 @@ nCore.events = (function () {
         m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
 
         var overlay = mui.overlay('on', options, m);
-    overlay.classList.toggle('animated');
-    overlay.classList.toggle('fadeIn');
+        overlay.classList.toggle('animated');
+        overlay.classList.toggle('fadeIn');
       }, 300);
     };
     
@@ -828,131 +589,6 @@ nCore.events = (function () {
         if ( nCore.storage.hasOwnProperty( type ) && JSON.parse( nCore.storage.getItem(type) ).length || JSON.parse(nCore.storage.getItem('templates')).length ) {
           // console.log('storage: ', items);
 
-
-
-          ///////////////////////////////
-          // РАЗБИВКА ПО ДАТАМ ГОТОВАЯ //
-          ///////////////////////////////
-          ///
-          // var new_items = items.sort(function(a,b) {
-          //     return new Date(a.params.created_at) - new Date(b.params.created_at);
-          // });
-          // сортируем по датам и выводим по дням
-          // var document_date = '',
-          //     document_date_raw,
-          //     document_array = [],
-          //     __result = [];
-
-          // var helper = {
-          //   documents: {
-          //     documentTitle: {
-          //       text: function (params) {
-          //         console.log('params:',this, params);
-          //         return this.params.name || '---';
-          //       }
-          //     },
-          //     documentDate: {
-          //       text: function (params) {
-          //         console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-          //         return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
-          //           year  : 'numeric',
-          //           month : 'numeric',
-          //           day   : 'numeric'
-          //         } : {
-          //           year   : 'numeric',
-          //           month  : 'numeric',
-          //           day    : 'numeric',
-          //           hour   : 'numeric',
-          //           minute : 'numeric'
-
-          //         });
-          //       }
-          //     },
-          //     documentId: {
-          //       href: function (params) {
-          //         return "#/report/" + this.params._id || Math.random();
-          //       },
-          //       text: function () {
-          //         return ''
-          //       }
-          //     },
-          //     downloadDoc: {
-          //       href: function (params) {
-          //         return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
-          //       }
-          //     },
-          //     downloadPdf: {
-          //       href: function (params) {
-          //         return "documents/" + this.params._id + ".pdf";
-          //       }
-          //     },
-          //     removeDocument: {
-          //       href: function (params) {
-          //         return location.hash;
-          //       },
-          //       type: function () {
-          //         return this.params._id
-          //       }
-          //     },
-          //     documentUser: {
-          //       text: function () {
-          //         return this.params.user
-          //       }
-          //     },
-          //     documentImage: {
-          //       src: function(params){
-          //         return ( this.image.length ? this.image : 'assets/img/doc.png' )
-          //       }
-          //     },
-          //     groupTitle: {
-          //       text: function () {
-          //         return 'Шаблоны'
-          //       }
-          //     }
-          //   }
-          // };
-
-          // for (var q = 0; q < new_items.length; q++) {
-          //   var doc = new_items[q];
-          //   if ( document_date != new Date( doc.params.created_at ).getDate() ) {
-              
-          //     if ( document_array.length ) {
-                
-          //       console.log('RENDER:',document_array );
-
-          //       // рендерим за день 
-          //       var render = Transparency.render( document.getElementById( nCore.storage.getItem('indexViewType') ), {
-          //         date: document_date_raw.toLocaleString().split(',')[0],
-          //         documents: document_array
-          //       },
-          //       helper ).innerHTML;
-
-          //       console.log('-', render);
-
-          //       __result.push ( render );
-          //       // }, helper);
-
-          //       document_array = [];
-          //     }
-          //     document_date     = new Date( doc.params.created_at ).getDate()
-          //     document_date_raw = new Date( doc.params.created_at )
-          //     document_array.push( doc )
-              
-          //     console.log( 'New Day: ', document_date_raw.toLocaleString() );
-              
-          //   } else {
-          //     document_array.push( doc )
-          //   }
-            
-          //   // console.log('document_date', document_date.toLocaleString(), document_date.getDate(), document_date.getMonth() );
-          // }
-          // document.getElementById(nCore.storage.getItem('indexViewType')).innerHTML = '';
-          // document.getElementById(nCore.storage.getItem('indexViewType')).innerHTML = __result.join('');
-          // 
-          // 
-          
-
-          
           if ( JSON.parse(nCore.storage.getItem('templates')).length ) {
             var helperTemplate = {
               documentTitle: {
@@ -1168,23 +804,19 @@ nCore.events = (function () {
     var data = {
       message: 'Отчет начал считаться.',
       timeout: 2000
-      // actionHandler: function(){},
-      // actionText: 'Отмена'
     };
 
     var _tables = document.querySelectorAll('.fr-element.fr-view > table'),
         _cells  = document.querySelectorAll('.calculationCell');
 
     if ( _tables.length || _cells.length ) {
-      console.log( '_tables', _tables.length );
-      // отправляем считаться и отправляем
+      // console.log( '_tables', _tables.length );
+
       nCore.modules.table.factory.execute();
     } else {
       var data = {
         message: 'Нечего расчитывать',
         timeout: 2000
-        // actionHandler: function(){},
-        // actionText: 'Отмена'
       };
     }
     nCore.snackbar.showSnackbar(data);
@@ -1211,21 +843,28 @@ nCore.events = (function () {
   
   // вставка данных в таблицу
   nCore.modules.table.event.subscribe('insertCellData', function (data) {
-    console.log('insertCellData', data);
 
+    var publish = new Promise(function(resolve, reject){
+      console.log('insertCellData', data);
+      try{
+        nCore.modules.table.factory.populate( data.tables );
+        nCore.modules.customCell.populate( data.customCells );
+        resolve(true);
+      } catch (error){
+        reject(error);
+      }
+    });
 
-    nCore.modules.table.populate( data.tables );
-    nCore.modules.customCell.populate( data.customCells );
-    
-    var message = {
-      message: 'Отчет построен.',
-      timeout: 2000
-    };
-    
-    var snack = new nCore.snackbar();
-    snack.showSnackbar(message);
-    
-    nCore.modules.table.event.publish('calculateFormula');
+    publish.then(function(){
+      var message = {
+        message: 'Отчет построен.',
+        timeout: 2000
+      };
+      nCore.snackbar.showSnackbar(message);
+      nCore.modules.table.event.publish('calculateFormula');
+    }).catch(function(error){
+      console.log('error', error);
+    });
 
   });
 
@@ -1236,10 +875,10 @@ nCore.events = (function () {
   // выбор активной ячейки
   nCore.modules.table.event.subscribe('cellSelect', function (cell) {
 
-    console.groupCollapsed("cellSelect");
-    console.dirxml('params: ', cell);
+    // console.groupCollapsed("cellSelect");
+    // console.dirxml('params: ', cell);
 
-    nCore.document.setShowCellSettings( true )
+    nCore.document.showCellSettings = true;
     var tab     = document.getElementsByClassName('criteriaSelector')[0], cellQuery;
     var formula = document.getElementById('formulaGroupTab');
 
@@ -1280,7 +919,7 @@ nCore.events = (function () {
         
         formula.removeChild( overlayFormula );
         if ( overlayTab ) {
-          console.log('overlayTab',overlayTab, tab );
+          // console.log('overlayTab',overlayTab, tab );
           tab.removeChild( overlayTab );
         }
 
@@ -1305,7 +944,7 @@ nCore.events = (function () {
             
             
             for (var z = 0; z < queryArray.length; z++) {
-              console.groupCollapsed("query");
+              // console.groupCollapsed("query");
 
               var group = queryArray[z],
                 groupConditions = group.conditions,
@@ -1342,7 +981,7 @@ nCore.events = (function () {
                   list = groupTemplate.getElementsByClassName('criteriaSelectorGroupList')[0],
                   cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
 
-                console.dirxml('criteria -> ', item);
+                // console.dirxml('criteria -> ', item);
 
                 if (item.source == null && item.origin_name == null) {
                   activeCell.dataset.query = '[]';
@@ -1369,7 +1008,7 @@ nCore.events = (function () {
                 sorted_hash.conditions = item.conditions
                 sorted_hash.value = item.value
 
-                console.warn( '*********', item, sorted_hash );
+                // console.warn( '*********', item, sorted_hash );
 
                 var render = new Promise(function(resolve, reject){
                   nCore.modules.cell.generateForm( sorted_hash, card )
@@ -1379,7 +1018,7 @@ nCore.events = (function () {
                 render.then(function(data){
                   // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
                 }).catch(function(error){
-                  console.log(error)
+                  // console.log(error)
                 })
 
 
@@ -1387,7 +1026,7 @@ nCore.events = (function () {
                 cr_c.value = item.criteria_condition;
                 cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
               }
-              console.groupEnd();
+              // console.groupEnd();
               document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
             }
             // nCore.modules.tablee.vent.publish('newCellSettingsChange' );
@@ -1480,7 +1119,7 @@ nCore.events = (function () {
 
     // nCore.
 
-    nCore.document.root.publish('showSideMenu', nCore.document.showCellSettings() );
+    nCore.document.root.publish('showSideMenu', nCore.document.showCellSettings );
     // nCore.modules.table.active().classList.add('active-selected-cell');
 
     console.groupEnd();
@@ -1495,17 +1134,19 @@ nCore.events = (function () {
 
   // скрываем боковое меню по нажатию кнопки
   nCore.document.root.subscribe('hideSideMenu', function(showCellSettings){
-    if ( !nCore.document.showCellSettings() && document.getElementById('cellSettings') ) {
+    if ( !nCore.document.showCellSettings && document.getElementById('cellSettings') ) {
       document.getElementById('cellSettings').classList.remove('active');
       document.querySelector('.AddDocument').classList.remove('fadeOut');
       document.querySelector('.AddDocument').classList.add('fadeIn');
     }
   });
 
+
+
   nCore.document.root.subscribe('globalCriteriaCalculate', function(body){
     
-    // body = body || document.querySelector('._nCoreDocumentSettings');
-    console.log( 'globalCriteriaCalculate', body );
+    body = body || document.querySelector('._nCoreDocumentSettings');
+    // console.log( 'globalCriteriaCalculate', body );
 
     var _query       = [],
         result_query = [],
@@ -1515,7 +1156,7 @@ nCore.events = (function () {
       query: []
     }];
 
-    console.log('GLOBAL CRITERIAS', criterias);
+    // console.log('GLOBAL CRITERIAS', criterias);
 
     for (var i = 0; i < criterias.length; i++) {
       var criteria = criterias[i],
@@ -1527,21 +1168,33 @@ nCore.events = (function () {
         source             : form.querySelector('select[name="source"]').value,
         conditions         : form.querySelector('select[name="conditions"]').value,
         origin_name        : form.querySelector('select[name="origin_name"]').value,
-        value              : form.querySelector('input[type="date"]') ?
-        {
-          periodStart : form.querySelector('input[name="date_start"]').value,
-          periodEnd : form.querySelector('input[name="date_end"]').value
-        } : ( form.querySelector('[name="value"]') ? form.querySelector('[name="value"]').value : '' )
+      }
+
+      if ( form.querySelector('input[type="date"]') ) {
+
+        if ( form.querySelector('input[name="date_end"]') ) {
+          _dataQueryHash.value = {
+            periodStart : form.querySelector('input[name="date_start"]').value,
+            periodEnd : form.querySelector('input[name="date_end"]').value
+          }
+        } else {
+          _dataQueryHash.value = form.querySelector('input[type="date"]')
+        }
+         
+
+      }
+      if ( form.querySelector('[name="value"]') ) {
+        _dataQueryHash.value = form.querySelector('[name="value"]').value ? form.querySelector('[name="value"]').value : ''
       }
 
       if ( _dataQueryHash.origin_name == 'formula' ) {
         _dataQueryHash.value = Base64.encode( _dataQueryHash.value );
       }
 
-      if ( nCore.document.yearReport() ) {
+      if ( nCore.document.yearReport ) {
         _dataQueryHash.yearReport = {
-          main: nCore.document.main(),
-          compare: nCore.document.compare()
+          main: nCore.document.main,
+          compare: nCore.document.compare
         }
       }
 
@@ -1550,16 +1203,13 @@ nCore.events = (function () {
       _query.push(data);
     };
 
-    // for (var c = _query.length - 1; c >= 0; c--) {
-    //   if (_query[c].query.length) {
-    //     result_query.push(_query[c]);
-    //   };
-    // };
 
-    console.log('GLOBAL QUERY:', result_query, _query);
+    // console.log('GLOBAL QUERY:', result_query, _query);
 
-    nCore.document.setGlobalQuery( JSON.stringify(data) )
+    nCore.document.globalQuery =  JSON.stringify(data);
   });
+
+
 
   nCore.modules.table.event.subscribe('cellFormulaChange', function () {
     var formulaSettings      = document.querySelector('.formulaSettings'),
@@ -1633,48 +1283,6 @@ nCore.events = (function () {
     }
   });
 
-  nCore.modules.table.event.subscribe('setMonth', function(){
-    var monthSelector = document.querySelector('[name="month"]');
-    console.log('set month', monthSelector.value);
-
-    if ( activeCell.dataset.queryMonth ) {
-      monthSelector.value = activeCell.dataset.queryMonth;
-      monthSelector.disabled = false;
-    } else {
-      monthSelector.disabled = true;
-      monthSelector.selectedIndex = 0;
-      $('[name="useMonth"]').trigger('change')
-    }
-  });
-
-  nCore.modules.table.event.subscribe('setDefault', function(){
-    var defaultSelector = document.querySelector('[name="default"]');
-    console.log('set default', defaultSelector.value);
-
-    if ( activeCell.dataset.queryDefault ) {
-      defaultSelector.value = activeCell.dataset.queryDefault;
-      defaultSelector.disabled = false;
-    } else {
-      defaultSelector.disabled = true;
-      defaultSelector.selectedIndex = 0;
-      $('[name="useDefault"]').trigger('change')
-    }
-  });
-
-  nCore.modules.table.event.subscribe('setChosenOrigin', function(){
-    var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
-    console.log('set month', chosenOrigin.value);
-
-    if ( activeCell.dataset.chosenOrigin ) {
-      chosenOrigin.value = activeCell.dataset.chosenOrigin;
-      chosenOrigin.disabled = false;
-    } else {
-      chosenOrigin.disabled = true;
-      chosenOrigin.selectedIndex = 0;
-      $('[name="useChosenOrigin"]').trigger('change')
-    }
-  });
-
   nCore.modules.table.event.subscribe('cellFormulaClear', function () {
     var formulaSettings = document.querySelector('.formulaSettings'),
       formulaSettingsItems = [].slice.call(formulaSettings.querySelectorAll('input'));
@@ -1683,6 +1291,7 @@ nCore.events = (function () {
       checkbox.checked = activeCell.dataset[checkbox.name] === 'true' ? activeCell.dataset[checkbox.name] : null;
     };
   });
+
 
   nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME, URL) {
     console.groupCollapsed("newCellSettingsChange");
@@ -1720,12 +1329,26 @@ nCore.events = (function () {
           criteria_condition : head.find('[name="criteria_condition_group"]').val(),
           source             : form.children('select[name="source"]').val(),
           conditions         : form.children('select[name="conditions"]').val(),
-          origin_name        : form.children('select[name="origin_name"]').val(),
-          value              : form.children('input[type="date"]').length ? {
-            periodStart      : form.children('input[name="date_start"]').val(),
-            periodEnd        : form.children('input[name="date_end"]').val()
-          }                  : form.children('[name="value"]').val()
+          origin_name        : form.children('select[name="origin_name"]').val()
         };
+
+        var _form = form[0];
+        if ( _form.querySelector('input[type="date"]') ) {
+
+          if ( _form.querySelector('input[name="date_end"]') ) {
+            cellQuery.value = {
+              periodStart : _form.querySelector('input[name="date_start"]').value,
+              periodEnd : _form.querySelector('input[name="date_end"]').value
+            }
+          } else {
+            cellQuery.value = _form.querySelector('input[type="date"]')
+          }
+           
+
+        }
+        if ( _form.querySelector('[name="value"]') ) {
+          cellQuery.value = _form.querySelector('[name="value"]').value ? _form.querySelector('[name="value"]').value : ''
+        }
 
         // var cr_c = card.querySelector('[name="criteria_condition_group"]');
         // cr_c.value = item.criteria_condition;
