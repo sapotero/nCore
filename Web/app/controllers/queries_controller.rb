@@ -8,10 +8,8 @@ class QueriesController < ApplicationController
 
 
   def create
-
     elastic_report_result = Core::Reports::ElasticReportManager.make_report(params )
     render :json => elastic_report_result
-  
   end
 
 end

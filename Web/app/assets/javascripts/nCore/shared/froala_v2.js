@@ -5438,8 +5438,8 @@ $.FroalaEditor.LANGUAGE['ru'] = {
     , undo: false
     , refreshAfterCallback: false
     , callback: function () {
-      if ( nCore.document.getTemplate() ) {
-        console.log('try to edit template: ', nCore.document.getTemplate );
+      if ( nCore.document.template ) {
+        console.log('try to edit template: ', nCore.document.template );
         nCore.document.root.publish('tryToEditTemplate');
       } else {
         nCore.document.root.publish('generateQuery');
@@ -5486,21 +5486,21 @@ $.FroalaEditor.LANGUAGE['ru'] = {
       var el = this.selection.element();
       var root_element = el.tagName === 'TD' ? el : nCore.core.findUpTag(el, 'td');
       
-      console.log('90 -> ', el, root_element, root_element.innerHTML, root_element.outerHTML, root_element.querySelector('div.rotated') );
+      // console.log('90 -> ', el, root_element, root_element.innerHTML, root_element.outerHTML, root_element.querySelector('div.rotated') );
 
       // если уже были повернуты
-      if ( root_element.querySelector('div.rotated') ) {
-        root_element.innerHTML = root_element.querySelector('div.rotated').innerHTML;
-      } else {
-        var rotated = document.createElement('div');
-        rotated.style.display = 'inline-block';
-        rotated.classList.add('rotated');
+      // if ( root_element.querySelector('div.rotated') ) {
+      //   root_element.innerHTML = root_element.querySelector('div.rotated').innerHTML;
+      // } else {
+      //   var rotated = document.createElement('div');
+      //   rotated.style.display = 'inline-block';
+      //   rotated.classList.add('rotated');
         
-        rotated.innerHTML = root_element.innerHTML;
-        root_element.innerHTML = rotated.outerHTML;
+      //   rotated.innerHTML = root_element.innerHTML;
+      //   root_element.innerHTML = rotated.outerHTML;
 
-        root_element.style.width = '10%';
-      }
+      //   // root_element.style.width = '10%';
+      // }
 
 
       // if (this.selection.element().nodeName == 'TD') {

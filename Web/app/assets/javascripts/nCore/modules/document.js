@@ -4,324 +4,244 @@
 
 var nCore = nCore || {};
 nCore.document = (function(){
-  Date.prototype.formattedDate = function (pattern) {
-    var formattedDate = pattern.replace( 'yyyy', this.getFullYear().toString() );
-    
-    var mm = (this.getMonth() + 1).toString();
-    mm = mm.length > 1 ? mm : '0' + mm;
-    formattedDate = formattedDate.replace('mm', mm);
-    
-    var dd = this.getDate().toString();
-    dd = dd.length > 1 ? dd : '0' + dd;
-    formattedDate = formattedDate.replace('dd', dd);
-    
-    return formattedDate;
+
+  var Document = function(){
+    this.author               = document.querySelector('#nCoreDocumentAuthor');
+    this.author_id            = document.querySelector('#nCoreDocumentAuthor').dataset.userId;
+    this.provider_id          = document.querySelector('#nCoreDocumentAuthor').dataset.providerId;
+    this.current_date         = new Date();
+    this.currentYear          = this.current_date.getFullYear();
+    this.periodStart          = this.current_date.formattedDate('yyyy-mm-dd');
+    this.periodEnd            = this.current_date.formattedDate('yyyy-mm-dd');
+    this.main                 = this.current_date.getFullYear();
+    this.compare              = this.current_date.getFullYear()-1;
+    this.yearReport           = false;
+    this.template             = false;
+    this.globalQuery          = '[{"query": []}]';
+    this.globalQueryData      = {};
+    this.documentSettingTab   = 'documentQueryPane';
+    this.id                   = '';
+    this.documentEvent        = {};
+    this.type                 = 'report';
+    this.showSettings         = false;
+    this.name                 = '';
+    this.description          = '';
+    this.documentCellQuery    = {};
+    this.isNew                = true;
+    this.root = {};
+    this.showCellSettings     = false;
+
+    this.init();
   };
-  
-  var _current_date    = new Date(),
-      nCoreCurrentYear = _current_date.getFullYear(),
-      nCorePeriodStart = _current_date.formattedDate('yyyy-mm-dd'),
-      nCorePeriodEnd   = _current_date.formattedDate('yyyy-mm-dd'),
+  Document.prototype.init = function() {
+    nCore.attachTo( this.root );
 
-      nCoreYearReport = false,
-      nCoreTemplate   = false,
-      nCoreMain    = _current_date.getFullYear(),
-      nCoreCompare = _current_date.getFullYear()-1,
+    this.root.publish( 'loadItem', [ 'documents' ] );
+    this.root.publish( 'loadCriteria' );
+  };
+  Document.prototype.new = function() {
+    nCore.document = new Document();
+    return nCore.document;
+  };
+  Document.prototype.windowTitle = function(title) {
+    title = title || 'Отчет';
+    document.title = title;
+    document.getElementById('nCoreDocumentHeadLine').textContent = title;
+  };
+  Document.prototype.data = function() {
+    return {
+      id                   : this.id,
+      author_id            : this.author_id,
+      provider_id          : this.provider_id,
+      
+      type                 : this.type,
+      main                 : this.main,
+      compare              : this.compare,
+      yearReport           : this.yearReport,
+      name                 : this.name,
+      description          : this.description,
+      body                 : Base64.encode( $('#paper').froalaEditor('html.get')+'&nbsp;'),
 
-      nCoreDocumentUserId       = null,
-      nCoreDocumentDepartmentId = null,
-      nCoreGlobalQuery = '[{"query": []}]',
-      nCoreGlobalQueryData = {},
-      nCoreDocumentSettingTab = 'documentQueryPane',
-      nCoreDocumentId = '',
-      nCoreRoot,
-      // nCoreDocumentSave,
-      nCoreShowCellSettings,
-      nCoreDocumentEvent = {},
-      nCoreIsNew = true,
-      nCoreTitle,
-      nCoreType = 'report',
-      nCoreShowSettings = false,
-      nCoreName = '',
-      nCoreDescription = '',
-      nCoreDocumentCellQuery = {};
-
-  var init = function (config){
-
-    nCoreRoot = document.getElementById('nCoreDocumentId');
-    nCore.attachTo( nCore.document.root );
-    
-    nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
-    nCore.document.root.publish( 'loadCriteria' );
-  },
-  id = function () {
-    return nCoreDocumentId;
-  },
-  userId = function () {
-    return nCoreDocumentUserId;
-  },
-  setUserId = function (id) {
-    nCoreDocumentUserId = id;
-  },
-  departmentId = function () {
-    return nCoreDocumentDepartmentId;
-  },
-  setDepartmentId = function (id) {
-    nCoreDocumentDepartmentId = id;
-  },
-  periodStart = function () {
-    return nCorePeriodStart;
-  },
-  setPeriodStart = function (date) {
-    nCorePeriodStart = date;
-  },
-  periodEnd = function () {
-    return nCorePeriodEnd;
-  },
-  setPeriodEnd = function (date) {
-    nCorePeriodEnd = date;
-  },
-  root = function root(){
-    return nCoreRoot;
-  },
-  setName = function setName(name){
-    nCoreName = name;
-  },
-  name = function name(){
-    return nCoreName;
-  },
-  type = function type(){
-    return nCoreType;
-  },
-  setType = function setType(type){
-    nCoreType = type;
-  },
-  setDescription = function setDescription(description){
-    nCoreDescription = description;
-  },
-  description = function description(){
-    return nCoreDescription;
-  },
-  setShowSettings = function setShowSettings(params){
-    nCoreShowSettings = params;
-  },
-  ShowSettings = function ShowSettings(){
-    return nCoreShowSettings;
-  },
-  setCellQuery = function setCellQuery(data){
-    console.log('setCellQuery', data);
-    nCoreDocumentCellQuery = data;
-  },
-  cellQuery = function cellQuery(){
-    return nCoreDocumentCellQuery;
-  },
-  event = function event(){
-    return nCoreDocumentEvent;
-  },
-  newDocument = function newDocument() {
-    return nCoreIsNew;
-  },
-  reset = function reset() {
-    nCoreIsNew = true;
-    nCore.document.setTitle('Новый документ');
-  },
-  setAttributes = function setAttributes(data){
-    // nCoreIsNew = false;
-    
-    if ( data.hasOwnProperty('periodStart') ) {
-      nCorePeriodStart = data.periodStart;
+      current_date         : this.current_date,
+      currentYear          : this.currentYear,
+      periodStart          : this.periodStart,
+      periodEnd            : this.periodEnd,
+      
+      globalQuery          : this.globalQuery,
+      globalQueryData      : this.globalQueryData,
+      
+      documentSettingTab   : this.documentSettingTab,
+      documentEvent        : this.documentEvent,
+      
+      documentCellQuery    : this.documentCellQuery
     };
-    if ( data.hasOwnProperty('periodEnd') ) {
-      nCorePeriodEnd = data.periodEnd;
-    };
-
-    nCore.document.root.publish('setDocumentAttributes', data);
-
-  },
-  load = function load(config){
-    nCoreDocumentId        = config._id;
-    nCoreTitle             = config.title;
-    nCoreType              = config.type;
-    nCoreName              = config.name;
-    nCoreDescription       = config.description;
-    nCoreDocumentCellQuery = config.query;
-    nCoreTemplate          = config.template;
-    nCoreIsNew             = false;
+  };
+  Document.prototype.save = function( data ) {
+    console.log('d.p.save', data);
+    this.author_id       = document.querySelector('#nCoreDocumentAuthor').dataset.userId;
+    this.provider_id     = document.querySelector('#nCoreDocumentAuthor').dataset.providerId;
+    this.body            = Base64.encode( $('#paper').froalaEditor('html.get')+'&nbsp;');
+    this.globalQueryData = JSON.stringify( data.globalQueryData ) ;
+    this.datetime        = new Date().getTime();
+    
+    for( var key in data ){
+      if ( this.hasOwnProperty(key) ) {
+        this[ key ] = data[ key ];
+      }
+    }
+  };
+  Document.prototype.setAttributes = function(data) {
+    console.log( 'setAttributes', data );
+    this.name        = data.elements.nCoreDocumnetName.value;
+    this.description = data.elements.nCoreDocumnetDescription.value;
+  };
+  Document.prototype.load = function( config ) {
+    console.log( 'load', config );
+    this.id                = config._id;
+    this.title             = config.title;
+    this.type              = config.type;
+    this.name              = config.name;
+    this.description       = config.description;
+    this.documentCellQuery = config.query;
+    this.template          = config.template;
+    this.isNew             = false;
 
     if ( config.body ) {
-      nCore.document.root.publish('initEditor', Base64.decode( config.body ));
-    };
-    
-    // nCoreRoot.textContent = config.title;
-  },
-  createNew = function createNew(url){
-    var overlayEl = mui.overlay('on');
+      this.root.publish('initEditor', Base64.decode( config.body ));
+    }
+  };
+  Document.prototype.save = function( config ) {
+    console.log( 'load', config );
+    this.id        = config._id;
+    this.title             = config.title;
+    this.type              = config.type;
+    this.name              = config.name;
+    this.description       = config.description;
+    this.documentCellQuery = config.query;
+    this.template          = config.template;
+    this.isNew             = false;
 
-    // set overlay options
-    var options = {
-      'keyboard': true,  // teardown when <esc> key is pressed (default: true)
-      'static'  : false, // maintain overlay when clicked (default: false)
-      'onclose' : function() {
+    if ( config.body ) {
+      this.root.publish('initEditor', Base64.decode( config.body ));
+    }
+  };
+
+  Document.prototype.create = function() {
+    try{
+      html2canvas( document.querySelector('div#paper') , {
+        onrendered: function(canvas) {
+          var nCoreDocumentAttributes = {
+            author_id       : document.querySelector('#nCoreDocumentAuthor').dataset.userId,
+            provider_id     : document.querySelector('#nCoreDocumentAuthor').dataset.providerId,
+            type            : nCore.document.type,
+            name            : nCore.document.name,
+            description     : nCore.document.description,
+            datetime        : new Date().getTime(),
+            body            : Base64.encode($('#paper').froalaEditor('html.get')+'&nbsp;'),
+            query           : nCore.document.cellQuery,
+            periodStart     : nCore.document.periodStart,
+            periodEnd       : nCore.document.periodEnd,
+            globalQuery     : nCore.document.globalQuery,
+            image           : canvas.toDataURL(),
+            globalQueryData : JSON.stringify( nCore.document.globalQueryData )
+          };
+
+          if ( nCore.document.yearReport ) {
+            nCoreDocumentAttributes.yearReport = nCore.document.yearReport;
+            nCoreDocumentAttributes.main       = nCore.document.main;
+            nCoreDocumentAttributes.compare    = nCore.document.compare;
+          }
+
+        // nCore.document.setAttributes(nCoreDocumentAttributes);
+
+        nCore.query.post('documents.json', nCoreDocumentAttributes)
+          .success(function (data) {
+            console.log('saveDocument post', data);
+              location.hash = location.hash.replace(/new/gim, data._id);
+          }).error(function (data) {
+            console.error('[!] saveDocument', data );
+          });
+        }
+      });
+    } catch (e){
+      console.log( 'error', e );
+    }
+  };
+
+  Document.prototype.update = function( rootNode ) {
+    var formRoot = nCore.core.findUpTag(rootNode, '_nCoreDocumentSettings');
+    var settings = formRoot.querySelector('#documentQueryPane > form');
+    console.log('****UPDATE', rootNode, settings.elements);
+
+    for (var z = 0; z < settings.elements.length; z++) {
+      var element = settings.elements[z];
+
+      switch( element.name ){
+        case 'nCoreName':
+          this.name = element.value;
+          break;
+        case 'nCoreDescription':
+          this.description = element.value;
+          break;
+        case 'nCorePeriodStart':
+          this.periodStart = element.value;
+          break;
+        case 'nCorePeriodEnd':
+          this.periodEnd = element.value;
+          break;
+        case 'yearReport':
+          this.yearReport = element.checked ? true : false;
+          break;
+        case 'main':
+          this.main = element.value;
+          break;
+        case 'compare':
+          this.compare = element.value;
+          break;
+        default:
+          continue;
       }
-    };
-    // initialize with child element
-    var m = document.createElement('div');
-    m.style.width = '400px';
-    m.style.height = '100px';
-    m.style.margin = '10% auto';
-    m.style.padding = '10% auto';
-    m.style.backgroundColor = '#fff';
-    m.classList.toggle('mui-panel');
-    m.classList.toggle('mui--z5');
-    m.innerHTML = '<h4>Создание нового документа</h4><div class="loader"></div>';
+    }
 
-    mui.overlay('on', options, m);
-    setTimeout( function(){ 
+
+    html2canvas( document.querySelector('div#paper') , {
+      onrendered: function(canvas) {
+
+        var data = nCore.document.data();
+        data.image = canvas.toDataURL();
+
+        nCore.query.put('documents/' + nCore.document.id + '.json', data ).success(function (data) {
+          console.log('saveDocument putt', data);
+          mui.overlay('off');
+          if (location.hash.match(/new/) !== null) {
+            location.hash = location.hash.replace(/new/, data._id);
+          }
+        }).error(function (data) {
+          console.error('[!] saveDocument', data);
+        });
+      }
+    });
+  };
+
+  Document.prototype.delete = function(element){
+    console.log('***deleteReport', element_root, element);
+
+    var id   = element.type,
+    element_root = $(element).closest(".document");
+
+    console.log('deleteReport', id, element, element_root);
+
+    nCore.query.post('documents/' + id + '/remove', { id: id }).success(function (rawDocument) {
+      
+      element_root.addClass('animatedSlow');
+      element_root.addClass('fadeOut');
+      
+      setTimeout(function (){ element_root.detach(); }, 400);
+    }).error(function (data) {
       mui.overlay('off');
-      $bodyEl.addClass('hide-sidedrawer');
-      location.hash = "#tables/"+ ( url ? url: "new" )
-    },1000);
-  },
-  generateNew = function generateNew(){
-    nCoreDocumentId = '',
-    nCoreIsNew = true,
-    nCoreName = '',
-    nCoreDescription = '',
-    nCoreDocumentCellQuery = {};
-    nCore.document.setTitle('Новый документ');
-
-    _current_date    = new Date(),
-    nCoreCurrentYear = _current_date.getFullYear(),
-    
-    nCorePeriodStart = _current_date.formattedDate('yyyy-mm-dd'),
-    nCorePeriodEnd   = _current_date.formattedDate('yyyy-mm-dd'),
-
-    nCoreYearReport = false,
-    nCoreTemplate   = false,
-    nCoreMain    = _current_date.getFullYear(),
-    nCoreCompare = _current_date.getFullYear()-1,
-
-    nCoreGlobalQuery = '[{"query": []}]',
-    nCoreDocumentId = '',
-    nCoreGlobalQueryData = {},
-    nCoreDocumentSettingTab = 'documentQueryPane',
-
-    nCoreIsNew = true,
-    nCoreType = 'report',
-    nCoreShowSettings = false,
-    nCoreDocumentCellQuery = {};
-  },
-  save = function save(conf){
-    console.log('save conf', conf);
-  },
-  title = function title(){
-    return nCoreTitle;
-  },
-  setTitle = function setTitle(t){
-    nCoreTitle = t ? t : nCoreTitle;
-    document.querySelector('#nCoreDocumentHeadLine').textContent = nCoreTitle;
-    document.title = nCoreType + " | " + nCoreTitle;
-  },
-  globalQuery = function globalQuery (){
-    return nCoreGlobalQuery
-  },
-  setGlobalQuery = function setGlobalQuery (query){
-    nCoreGlobalQuery = query
-  },
-  documentSettingTab = function documentSettingTab (){
-    return nCoreDocumentSettingTab
-  },
-  setDocumentSettingTab = function setDocumentSettingTab (tab){
-    nCoreDocumentSettingTab = tab
-  },
-  showCellSettings = function showCellSettings (){
-    return nCoreShowCellSettings
-  },
-  setShowCellSettings = function setShowCellSettings (bool){
-    nCoreShowCellSettings = bool
-  },
-  yearReport = function () {
-    return nCoreYearReport;
-  },
-  setYearReport = function (value) {
-    nCoreYearReport = value;
-  },
-  main = function () {
-    return nCoreMain;
-  },
-  setMain = function (value) {
-    nCoreMain = value;
-  },
-  compare = function () {
-    return nCoreCompare;
-  },
-  setCompare = function (value) {
-    nCoreCompare = value;
-  },
-  getTemplate = function(){
-    return nCoreTemplate;
-  },
-  setTemplate = function(bool){
-    nCoreTemplate = bool;
-  },
-  globalQueryData = function(){
-    return nCoreGlobalQueryData;
-  },
-  setGlobalQueryData = function(data){
-    nCoreGlobalQueryData = JSON.parse( data );
+      console.error('[!] deleteReport -> get', data);
+    });
   };
   
-  return {
-    init            : init,
-    id              : id,
-    name            : name,
-    description     : description,
-    type            : type,
-    root            : root,
-    event           : event,
-    load            : load,
-    reset           : reset,
-    setShowSettings : setShowSettings,
-    ShowSettings    : ShowSettings,
-    isNewDocument   : newDocument,
-    cellQuery       : cellQuery,
-    setName         : setName,
-    setType         : setType,
-    title           : title,
-    setTitle        : setTitle,
-    setDescription  : setDescription,
-    setAttributes   : setAttributes,
-    setCellQuery    : setCellQuery,
-    userId          : userId,
-    setUserId       : setUserId,
-    departmentId    : departmentId,
-    setDepartmentId : setDepartmentId,
-    periodStart     : periodStart,
-    setPeriodStart  : setPeriodStart,
-    periodEnd       : periodEnd,
-    setPeriodEnd    : setPeriodEnd,
-    globalQuery     : globalQuery,
-    setGlobalQuery  : setGlobalQuery,
-
-    setTemplate     : setTemplate,
-    getTemplate     : getTemplate,
-    
-    globalQueryData : globalQueryData,
-    setGlobalQueryData : setGlobalQueryData,
-    
-    yearReport      : yearReport,
-    setYearReport   : setYearReport,
-    main            : main,
-    setMain         : setMain,
-    compare         : compare,
-    setCompare      : setCompare,
-
-    documentSettingTab     : documentSettingTab,
-    setDocumentSettingTab  : setDocumentSettingTab,
-    showCellSettings       : showCellSettings,
-    setShowCellSettings    : setShowCellSettings,
-    
-    generateNew     : generateNew
-  };
+  return new Document();
 })();
-nCore.document.init();

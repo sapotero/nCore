@@ -81,7 +81,7 @@ nCore.modules.cell = (function(){
       try {
         $(element).select2('destroy');
       } catch (e){
-        console.log(e);
+        // console.log(e);
       }
 
       try{
@@ -90,19 +90,19 @@ nCore.modules.cell = (function(){
           element.parentNode.removeChild(element);
         }
       }catch(e){
-        console.log('error!', e);
+        // console.log('error!', e);
       }
 
       try{
         if ( this.root.querySelector('[type="date"]') ) {
           var dates = this.root.querySelectorAll('[type="date"]');
           for (var x = dates.length - 1; x >= 0; x--) {
-            console.log( 'dates[x]', dates[x] );
+            // console.log( 'dates[x]', dates[x] );
             $( dates[x] ).remove();
           }
         }
       } catch(e){
-        console.log('dates');
+        // console.log('dates');
       }
     },
     criteria_condition: function(empty) {
@@ -147,7 +147,7 @@ nCore.modules.cell = (function(){
       element.style.textAlign  = "left";
 
       for (var q = 0; q < originTable.length; q++) {
-        // console.error( 'create', originTable[q] );
+        // // console.error( 'create', originTable[q] );
         var option = document.createElement('option');
         // option.value = originTable[q]._id;
         option.value = originTable[q].origin_name;
@@ -205,7 +205,7 @@ nCore.modules.cell = (function(){
           df    = new DocumentFragment();
 
       for (var z = 0; z < types.length; z++) {
-        console.log('Options', types[z]);
+        // console.log('Options', types[z]);
         var option = document.createElement('option');
         option.value = types[z].value;
         option.text = types[z].caption;
@@ -233,7 +233,7 @@ nCore.modules.cell = (function(){
 
       for (var x = field_array.length - 1; x >= 0; x--) {
         var field = field_array[x];
-        // console.info( field.origin_name, this.criterias.origin_name );
+        // // console.info( field.origin_name, this.criterias.origin_name );
         // if ( field._id == this.criterias.origin_name || field.id == this.criterias.origin_name ) {
         if ( field.origin_name == this.criterias.origin_name ) {
           autocomplete_title = field.autocomplete_title;
@@ -245,7 +245,7 @@ nCore.modules.cell = (function(){
 
       field_type = field_type || 'Formula';
 
-      console.info( this, this.criterias, this.criterias.value, autocomplete_title, autocomplete_value, autocomplete_url, field_type );
+      // console.info( this, this.criterias, this.criterias.value, autocomplete_title, autocomplete_value, autocomplete_url, field_type );
 
 
       switch( field_type ){
@@ -253,7 +253,7 @@ nCore.modules.cell = (function(){
         case "String":
           var generateSelect2 = function(group){
             this.clear();
-            // console.log( 'STRING equal', this.criterias, autocomplete_url, nCore.modules.table.active().dataset[ this.criterias.value ] );
+            // // console.log( 'STRING equal', this.criterias, autocomplete_url, nCore.modules.table.active().dataset[ this.criterias.value ] );
             
             group = group || false;
             if ( group ) {
@@ -270,14 +270,14 @@ nCore.modules.cell = (function(){
               element.style.paddingTop = "15px";
               element.style.textAlign  = "left";
 
-              console.log( !empty,  nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') );
+              // console.log( !empty,  nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') );
 
               // conditions.log
               if ( nCore.document.ShowSettings() && nCore.document.globalQueryData().hasOwnProperty(this.criterias.value) ) {
-                console.log('globalQuery');
+                // console.log('globalQuery');
                 $(element).append( [ new Option( nCore.document.globalQueryData()[ this.criterias.value ] , this.criterias.value, true) ] );
               } else if ( !empty && nCore.modules.table.active() && nCore.modules.table.active().dataset.hasOwnProperty( this.criterias.value ) ) {
-                console.log('not globalQuery');
+                // console.log('not globalQuery');
                 $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
               }
 
@@ -295,7 +295,7 @@ nCore.modules.cell = (function(){
                   processResults: function (data, params) {
                     return {
                       results: $.map(data, function(p) {
-                        // //console.log('recv', p, select2);
+                        // //// console.log('recv', p, select2);
                         
                         var val = p.hasOwnProperty( autocomplete_title ) ? p[ autocomplete_title ] : p.full_title;
 
@@ -312,10 +312,10 @@ nCore.modules.cell = (function(){
                 minimumInputLength: 1,
                 placeholder: "Начните ввод"
               }).on('change', function(e){
-                console.log('element', e, element, element.value,element);
+                // console.log('element', e, element, element.value,element);
 
                 if ( nCore.document.ShowSettings() ) {
-                  console.log( 'globalQuery' );
+                  // console.log( 'globalQuery' );
                   nCore.document.globalQueryData()[ element.value ] = '';
                   nCore.document.globalQueryData()[ element.value ] = element.textContent;
                 } else {
@@ -353,7 +353,7 @@ nCore.modules.cell = (function(){
             element.value = this.criterias.value;
             this.root.querySelector('.criteriaForm').appendChild( element );
 
-            console.log( 'STRING regexp', this.criterias ); 
+            // console.log( 'STRING regexp', this.criterias ); 
           },
           generateBool = function(){
             this.clear();
@@ -384,11 +384,11 @@ nCore.modules.cell = (function(){
               generateSelect2.call(this);
               break;
             case "regexp":
-              console.log( 'STRING regexp', this.criterias ); 
+              // console.log( 'STRING regexp', this.criterias ); 
               generatePlain.call(this);
               break;
             case "full_text":
-              console.log( 'STRING full_text', this.criterias ); 
+              // console.log( 'STRING full_text', this.criterias ); 
               generatePlain.call(this);
               break;
             case "group":
@@ -398,11 +398,11 @@ nCore.modules.cell = (function(){
               generateSelect2.call(this, true);
               break;
             case "exist":
-              console.log( 'STRING exist', this.criterias );
+              // console.log( 'STRING exist', this.criterias );
               generateBool.call(this);
               break;
             default:
-              console.log(''); 
+              // console.log(''); 
               break;
           }
           break;
@@ -411,12 +411,14 @@ nCore.modules.cell = (function(){
             this.clear();
             var element           = document.createElement('input');
             element.type          = 'date';
-            element.name          = 'date_start';
+            element.name          = 'value';
             element.placeholder   = 'Выберете дату';
             element.style.width   = "92%";
             element.classList.toggle('muiFieldField');
             element.classList.toggle('muiFieldFieldDate');
-            element.value = this.criterias.value.periodStart == undefined ? '' : this.criterias.value.periodStart;
+
+            element.value = this.criterias.value === undefined ? '' : this.criterias.value;
+            
             this.root.querySelector('.criteriaForm').appendChild(element);
           },
           generateRange = function(){
@@ -529,7 +531,7 @@ nCore.modules.cell = (function(){
             element.value = this.criterias.value;
             this.root.querySelector('.criteriaForm').appendChild( element );
 
-            console.log( 'STRING regexp', this.criterias ); 
+            // console.log( 'STRING regexp', this.criterias ); 
           };
           var generateBoolean = function() {
             this.clear();
@@ -576,7 +578,7 @@ nCore.modules.cell = (function(){
               generatePlain.call(this);
               break;
             default:
-              console.log( 'unknown conditions' );
+              // console.log( 'unknown conditions' );
               break;
           }
           break;
@@ -605,7 +607,7 @@ nCore.modules.cell = (function(){
           }
           break;
         default:
-          console.warn( 'unknown type', field_type );
+          // console.warn( 'unknown type', field_type );
           break;
       }
     }
@@ -617,7 +619,7 @@ nCore.modules.cell = (function(){
 
     var builder = new Builder( criteria, this.root);
     for( var key in criteria ){
-      console.log('key: ', key, ' -> ',criteria[ key ] );
+      // console.log('key: ', key, ' -> ',criteria[ key ] );
       builder[key]();
     }
   };

@@ -29,7 +29,7 @@ nCore.format = (function(){
     this.flags  = {};
   };
   Formatter.prototype.calculateGlobal = function(){
-    var globalArray = JSON.parse( nCore.document.globalQuery() ),
+    var globalArray = JSON.parse( nCore.document.globalQuery ),
         global = this.global;
 
     globalArray.forEach( function( query, i, array ){
@@ -51,17 +51,17 @@ nCore.format = (function(){
         console.error('JSON PARSE FAILS', e);
       }
 
-      if ( nCore.document.yearReport() ) {
+      if ( nCore.document.yearReport ) {
         global.yearReport = {
-          main    : nCore.document.main(),
-          compare : nCore.document.compare()
+          main    : nCore.document.main,
+          compare : nCore.document.compare
         }
       }
       
-      global.periodStart = nCore.document.periodStart();
-      global.periodEnd   = nCore.document.periodEnd();
+      global.periodStart = nCore.document.periodStart;
+      global.periodEnd   = nCore.document.periodEnd;
       global.providerId  = document.querySelector('#nCoreDocumentAuthor').dataset.providerId;
-      global.reportId    = nCore.document.id();
+      global.reportId    = nCore.document.id;
       global.query       = sources;
     });
 

@@ -18,13 +18,13 @@ nCore.core = (function(){
   Core.prototype.globalQueryPopulate = function(){
     console.groupCollapsed("globalQueryPopulate");
 
-    console.log( 'globalQuery', JSON.parse( nCore.document.globalQuery() ) );
+    // console.log( 'globalQuery', JSON.parse( nCore.document.globalQuery ) );
 
     var tab = document.querySelector('._nCoreDocumentSettings .criteriaSelectorGroupGlobal');
     tab.innerHTML = '';
 
-    var __elements_to_update = [], criteriaCondition;
-    var overlayTab;
+    var criteriaCondition,
+        overlayTab;
 
     function addOverlay() {
       setTimeout( function(){
@@ -40,7 +40,7 @@ nCore.core = (function(){
         
         tab.appendChild( overlayTab );
       }, 100);
-    };
+    }
     function removeOverlay() {
 
       overlayTab.classList.add('animatedSlow');
@@ -52,123 +52,123 @@ nCore.core = (function(){
           tab.removeChild( overlayTab );
         }
       },300)
-    };
+    }
 
     var render = new Promise(function(resolve, reject) {
       addOverlay();
       setTimeout(function(){
-        if ( nCore.document.globalQuery() ) {
-        console.log('nCore.document.globalQuery() ->', nCore.document.globalQuery());
-        
-          
-            var queryArray = JSON.parse( nCore.document.globalQuery() ),
-              _selectedIindex = -1;
-            for (var z = 0; z < queryArray.length; z++) {
+        if ( nCore.document.globalQuery ) {
+          // console.log('nCore.document.globalQuery ->', nCore.document.globalQuery);
 
+          var queryArray = JSON.parse( nCore.document.globalQuery ),
+            _selectedIindex = -1;
+          for (var z = 0; z < queryArray.length; z++) {
 
-              var group     = queryArray[z],
-                  criterias = group.query,
-                  groupConditions = group.conditions;
+            var group     = queryArray[z],
+                criterias = group.query,
+                groupConditions = group.conditions;
 
-              console.groupCollapsed("query");
-              console.log('criterias',  criterias);
-              console.log('conditions', groupConditions);
+            // console.groupCollapsed("query");
+            // console.log('criterias',  criterias);
+            // console.log('conditions', groupConditions);
 
-              var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
-                groupTemplate = _groupTemplate.cloneNode(true),
-                groupSelectCondition = groupTemplate.getElementsByTagName('select')[0];
+            var _groupTemplate = document.getElementsByClassName('criteriaSelectorGroupTemplate')[0],
+              groupTemplate = _groupTemplate.cloneNode(true),
+              groupSelectCondition = groupTemplate.getElementsByTagName('select')[0];
 
-              console.log( groupTemplate );
+            // console.log( groupTemplate );
 
-              if (groupConditions) {
-                for (var v = 0; v < groupSelectCondition.options.length; v++) {
-                  console.log('groupSelectCondition', groupSelectCondition);
-                  if (groupSelectCondition[v].value === groupConditions) {
-                    _selectedIindex = v;
-                    break;
-                  }
-
-                }
-
-                groupTemplate.querySelector('.connectionGroup').classList.remove('mui--hide');
-              }
-
-              var _group = groupTemplate;
-              groupSelectCondition = _group.getElementsByTagName('select')[0].selectedIndex = _selectedIindex;
-
-              _group.classList.remove('criteriaSelectorGroupTemplate');
-              _group.classList.remove('mui--hide');
-              tab.appendChild(_group);
-              
-              if ( criterias && criterias.length ) {
-                for (var b = 0; b < criterias.length; b++) {
-                  var _elements_to_update = [],
-                    item = criterias[b],
-                    list = groupTemplate.querySelector('.criteriaSelectorGroupList'),
-                    cardTemplate = document.querySelector('.criteriaSelectorItemTemplate');
-
-                  console.table(item)
-                  // console.log('criteria -> ', item);
-
-                  if (item.source == null && item.origin_name == null) {
-                    activeCell.dataset.query = '[]';
-                    continue;
-                  }
-
-                  var card = cardTemplate.cloneNode(true);
-                  card.classList.remove('criteriaSelectorItemTemplate');
-                  card.classList.remove('mui--hide');
-
-                  var form = card.querySelector('.criteriaForm');
-                  criteriaCondition = card.querySelector('select.itemSelectCondition');
-
-                  list.appendChild(card);
-
-                  console.log('list card form',list, card, form);
-
-                  if ( item.origin_name == 'formula' ) {
-                    item.value = Base64.decode( item.value );
-                  }
-
-                  var sorted_hash = {};
-                  sorted_hash.criteria_condition = item.criteria_condition;
-                  sorted_hash.source = item.source;
-                  sorted_hash.origin_name = item.origin_name;
-                  sorted_hash.conditions = item.conditions;
-                  sorted_hash.value = item.value;
-
-                  console.warn( '*********', item, sorted_hash );
-
-                  var render = new Promise(function(resolve, reject){
-                    nCore.modules.cell.generateForm( sorted_hash, card );
-                    resolve( [sorted_hash, card] );
-                  });
-                  
-                  render.then(function(data){
-                    // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
-                  }).catch(function(error){
-                    console.log(error);
-                  })
-
-                  // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
-
-                  var cr_c = card.querySelector('[name="criteria_condition_group"]');
-                  cr_c.value = item.criteria_condition;
-                  cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
+            if (groupConditions) {
+              for (var v = 0; v < groupSelectCondition.options.length; v++) {
+                // console.log('groupSelectCondition', groupSelectCondition);
+                if (groupSelectCondition[v].value === groupConditions) {
+                  _selectedIindex = v;
+                  break;
                 }
               }
-              console.groupEnd();
-              // document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
+
+              groupTemplate.querySelector('.connectionGroup').classList.remove('mui--hide');
             }
-            // nCore.modules.table.event.publish('newCellSettingsChange' );
-        resolve(true)
+
+            var _group = groupTemplate;
+            groupSelectCondition = _group.getElementsByTagName('select')[0].selectedIndex = _selectedIindex;
+
+            _group.classList.remove('criteriaSelectorGroupTemplate');
+            _group.classList.remove('mui--hide');
+            tab.appendChild(_group);
+            
+            if ( criterias && criterias.length ) {
+              for (var b = 0; b < criterias.length; b++) {
+                var _elements_to_update = [],
+                  item = criterias[b],
+                  list = groupTemplate.querySelector('.criteriaSelectorGroupList'),
+                  cardTemplate = document.querySelector('.criteriaSelectorItemTemplate');
+
+                // console.table(item);
+                // console.log('criteria -> ', item);
+
+                if (item.source == null && item.origin_name == null) {
+                  activeCell.dataset.query = '[]';
+                  continue;
+                }
+
+                var card = cardTemplate.cloneNode(true);
+                card.classList.remove('criteriaSelectorItemTemplate');
+                card.classList.remove('mui--hide');
+
+                var form = card.querySelector('.criteriaForm');
+                criteriaCondition = card.querySelector('select.itemSelectCondition');
+
+                list.appendChild(card);
+
+                // console.log('list card form',list, card, form);
+
+                if ( item.origin_name == 'formula' ) {
+                  item.value = Base64.decode( item.value );
+                }
+
+                var sorted_hash = {};
+                sorted_hash.criteria_condition = item.criteria_condition;
+                sorted_hash.source = item.source;
+                sorted_hash.origin_name = item.origin_name;
+                sorted_hash.conditions = item.conditions;
+                sorted_hash.value = item.value;
+
+                // console.warn( '*********', item, sorted_hash );
+                nCore.modules.cell.generateForm( sorted_hash, card );
+                
+
+                // var render = new Promise(function(resolve, reject){
+                //   nCore.modules.cell.generateForm( sorted_hash, card );
+                //   resolve( [sorted_hash, card] );
+                // });
+                
+                // render.then(function(data){
+                //   // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+                // }).catch(function(error){
+                //   console.log(error);
+                // })
+
+                // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+
+                var cr_c = card.querySelector('[name="criteria_condition_group"]');
+                cr_c.value = item.criteria_condition;
+                cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
+              }
+            }
+            // console.groupEnd();
+            // document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
+          }
+          // nCore.modules.table.event.publish('newCellSettingsChange' );
+        resolve(true);
         }
-      reject(false)
+      reject(false);
       }, 200); 
     });
 
-    render.then(function(data) {
-      removeOverlay()
+    render.then(function() {
+      removeOverlay();
+      return true;
     }).catch(function(result) {
       console.log("ERROR renderCellSettings!", result);
     });
@@ -179,7 +179,7 @@ nCore.core = (function(){
   Core.prototype.findUpTag = function(el, tag) {
     while (el.parentNode) {
       el = el.parentNode;
-      if (el.tagName.toLowerCase() === tag.toLowerCase() || el.hasOwnProperty('classList') && el.classList.contains(tag) )
+      if (el.tagName.toLowerCase() === tag.toLowerCase() || el.classList.contains(tag) )
         return el;
     }
     return null;

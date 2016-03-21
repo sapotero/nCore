@@ -51,22 +51,22 @@ class DocumentsController < ApplicationController
 
   def create
     @document = Document.new({
-      :type        => params[ :type ],
-      :name        => params[ :name ],
-      :description => params[ :description ],
-      :datetime    => params[ :datetime ],
-      :body        => params[ :body ],
-      :image       => params[ :image ],
-      :author_id   => params[ :author_id ],
-      :provider_id => params[ :provider_id ],
-      :query       => params[ :query ],
-      :periodStart => params[ :periodStart ],
-      :periodEnd   => params[ :periodEnd ],
-      :globalQuery => params[ :globalQuery ],
-      :main        => params[ :main ],
-      :compare     => params[ :compare ],
-      :yearReport  => params[ :yearReport ],
-      :globalQueryData => params[ :globalQueryData ]
+      :type            => params[ :type ]           || '',
+      :name            => params[ :name ]           || '',
+      :description     => params[ :description ]    || '',
+      :datetime        => params[ :datetime ]       || '',
+      :body            => params[ :body ]           || '',
+      :image           => params[ :image ]          || '',
+      :author_id       => params[ :author_id ]      || '',
+      :provider_id     => params[ :provider_id ]    || '',
+      :query           => params[ :query ]          || '',
+      :periodStart     => params[ :periodStart ]    || '',
+      :periodEnd       => params[ :periodEnd ]      || '',
+      :globalQuery     => params[ :globalQuery ]    || '',
+      :main            => params[ :main ]           || '',
+      :compare         => params[ :compare ]        || '',
+      :yearReport      => params[ :yearReport ]     || '',
+      :globalQueryData => params[ :globalQueryData] || ''
     })
 
     if @document.save

@@ -4,12 +4,17 @@
 
 var nCore = nCore || {};
 nCore.modules.formula = (function(){
-  var types = [{
-    name:  'Сумма',
-    value: 'sum'
-  }];
 
-  var init = function(){
+  var Formula = function(){
+    this.types = [{
+      name:  'Сумма',
+      value: 'sum'
+    }];
+
+    this.initialize();
+  };
+
+  Formula.prototype.initialize = function() {
     jQuery(function($) {
       if (typeof jQuery.fn.live == 'undefined' || !(jQuery.isFunction(jQuery.fn.live))) {
         jQuery.fn.extend({
@@ -22,7 +27,6 @@ nCore.modules.formula = (function(){
       }
 
       $('[name="useFormula"]').live('change', function(){
-        console.log('formula change');
         document.getElementsByName('formula')[0].disabled = this.checked ? false : true;
         nCore.modules.table.event.publish('cellFormulaChange');
       });
@@ -30,23 +34,10 @@ nCore.modules.formula = (function(){
       $('[name="formula"]').live('change', function(){
         nCore.modules.table.event.publish('cellFormulaChange');
       });
-
-    // $('#paper').live('click', function( e ){
-    //   console.log( 'click', e );
-    // });
     });
+  };
 
-  },
-  types =function(){
-    return types;
-  },
-  generateFormulaQuery =function(){
-
-  },
-  populateFormula =function(){
-
-  },
-  calculate =function(){
+  Formula.prototype.calculate = function(){
     var formulas = document.querySelectorAll('[data-formula]'),
         result = '';
 
@@ -62,20 +53,13 @@ nCore.modules.formula = (function(){
         if ( ids && ids.length ) {
           for (var q = 0; q < ids.length; q++) {
             result = result.replace( ids[q], parseInt( document.getElementById( ids[q].substr(1) ).textContent, 10) );
-          };
-        };
+          }
+        }
 
         cell.textContent = parseInt( eval(result) , 10);
-      };
-    };
+      }
+    }
   };
 
-  return {
-    init                 : init,
-    types                : types,
-    calculate            : calculate,
-    populateFormula      : populateFormula,
-    generateFormulaQuery : generateFormulaQuery
-  }
+  return new Formula();
 })();
-nCore.modules.formula.init();
