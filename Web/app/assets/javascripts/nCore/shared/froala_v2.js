@@ -5477,60 +5477,87 @@ $.FroalaEditor.LANGUAGE['ru'] = {
     NAME: 'level-up'
   });
   $.FroalaEditor.RegisterCommand('textRotate', {
-    title: 'Повернуть на 90'
-    , focus: false
-    , undo: false
-    , refreshAfterCallback: false
-    , callback: function () {
+    title: 'Повернуть на 90',
+    focus: false,
+    undo: false,
+    refreshAfterCallback: false,
+    callback: function () {
 
       var el = this.selection.element();
-      console.log('90 -> ', this, '++', this.selection.element(), this.el, el.style);
+      var root_element = el.tagName === 'TD' ? el : nCore.core.findUpTag(el, 'td');
+      
+      console.log('90 -> ', el, root_element, root_element.innerHTML, root_element.outerHTML, root_element.querySelector('div.rotated') );
+
+      // если уже были повернуты
+      if ( root_element.querySelector('div.rotated') ) {
+        root_element.innerHTML = root_element.querySelector('div.rotated').innerHTML;
+      } else {
+        var rotated = document.createElement('div');
+        rotated.style.display = 'inline-block';
+        rotated.classList.add('rotated');
+        
+        rotated.innerHTML = root_element.innerHTML;
+        root_element.innerHTML = rotated.outerHTML;
+
+        root_element.style.width = '10%';
+      }
+
 
       // if (this.selection.element().nodeName == 'TD') {
-        var head_cell = this.selection.element(),
-            height = head_cell.offsetWidth + head_cell.offsetWidth * 0.1,
-            width  = head_cell.offsetHeight;
+      // var head_cell = this.selection.element(),
+      //     height = head_cell.offsetWidth + head_cell.offsetWidth * 0.1,
+      //     width  = head_cell.offsetHeight;
 
-        if (head_cell.classList.contains('cellRotate')) {
-          head_cell.classList.remove('cellRotate');
-          head_cell.innerHTML = head_cell.querySelector('._rotated').innerHTML;
-          head_cell.style.height = '20px';
-        }
-        else {
-          head_cell.classList.add('cellRotate');
+      
 
-          head_cell.style.whiteSpace = 'normal';
-          // head_cell.style.height = height + 'px';
-          // head_cell.style.width = '0px';
-          // head_cell.style.width = width+'px';
 
-          head_cell.innerHTML = "<div class='_rotated' style='transform: translate("+height/2+"px,0) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
-        }
+      // if (head_cell.classList.contains('cellRotate')) {
+      //   head_cell.classList.remove('cellRotate');
+
+      //   var rotated = document.createElement('div');
+      //   rotated.style.display = 'inline-block';
+      //   rotated.classList.add = 'rotated';
+      //   rotated.textContent = head_cell.textContent;
+      
+      //   head_cell.innerHTML = rotated.innerHTML + '<div>';
+      // //   head_cell.innerHTML = head_cell.querySelector('._rotated').innerHTML;
+      // //   head_cell.style.height = '20px';
+      // }
+      // else {
+      //   head_cell.classList.add('cellRotate');
+
+      // //   head_cell.style.whiteSpace = 'normal';
+      // //   // head_cell.style.height = height + 'px';
+      // //   // head_cell.style.width = '0px';
+      // //   // head_cell.style.width = width+'px';
+
+      // //   head_cell.innerHTML = "<div class='_rotated' style='transform: translate("+height/2+"px,0) rotate(270deg)'>" + head_cell.innerHTML + "</div>"
+      //   }
       // };
     }
   });
 
-  $.FroalaEditor.RegisterCommand('copyDataCell', {
-    title: 'copyDataCell',
-    focus: false,
-    undo:  false,
-    refreshAfterCallback: false,
-    callback: function () {
-      console.log('froala_cell_dataset copy');
-    }
-  });
-  $.FroalaEditor.RegisterCommand('pasteDataCell', {
-    title: 'pasteDataCell',
-    focus: false,
-    undo:  false,
-    refreshAfterCallback: false,
-    callback: function () {
-      console.log('froala_cell_dataset paste');
-    }
-  });
+  // $.FroalaEditor.RegisterCommand('copyDataCell', {
+  //   title: 'copyDataCell',
+  //   focus: false,
+  //   undo:  false,
+  //   refreshAfterCallback: false,
+  //   callback: function () {
+  //     console.log('froala_cell_dataset copy');
+  //   }
+  // });
+  // $.FroalaEditor.RegisterCommand('pasteDataCell', {
+  //   title: 'pasteDataCell',
+  //   focus: false,
+  //   undo:  false,
+  //   refreshAfterCallback: false,
+  //   callback: function () {
+  //     console.log('froala_cell_dataset paste');
+  //   }
+  // });
 
-  $.FroalaEditor.RegisterShortcut( 67, 'copyDataCell',  null, true ); // SHIFT + C
-  $.FroalaEditor.RegisterShortcut( 86, 'pasteDataCell', null, true ); // SHIFT + V
+  // $.FroalaEditor.RegisterShortcut( 67, 'copyDataCell',  null, true ); // SHIFT + C
+  // $.FroalaEditor.RegisterShortcut( 86, 'pasteDataCell', null, true ); // SHIFT + V
   // для быстрого переворота документа в тестовом режиме
   $.FroalaEditor.DefineIcon('rotateDocument', {
     NAME: 'flash'

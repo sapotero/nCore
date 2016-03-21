@@ -29,9 +29,6 @@
 //=require nCore/core/router
 
 //=require nCore/background/worker
-//=require nCore/background/workerBack
-//=require nCore/background/shared
-//=require nCore/background/sharedBack
 //=require nCore/background/update
 
 //=require nCore/modules/document

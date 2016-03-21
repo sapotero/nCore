@@ -96,4 +96,30 @@ class Document
     # Document.where( archived: false ).each { |doc| new_docs.push ( doc ) }
     new_docs
   end
+
+  def populate( data )
+    data.each do |table| 
+      id    = table.id
+      cells = table.data
+
+      doc  = Nokogiri::HTML( Base64.decode64(self.body) )
+      rows = doc.css("table\#'#{ id }'] > tbody > tr")
+
+      # details = rows.each_with_index do |row|
+      #   detail = {}
+      #   [
+      #     [:title, 'td[3]/div[1]/a/text()'],
+      #     [:name, 'td[3]/div[2]/span/a/text()'],
+      #     [:date, 'td[4]/text()'],
+      #     [:time, 'td[4]/span/text()'],
+      #     [:number, 'td[5]/a/text()'],
+      #     [:views, 'td[6]/text()'],
+      #   ].each do |name, xpath|
+      #     detail[name] = row.at_xpath(xpath).to_s.strip
+      #   end
+      #   detail
+      # end
+    end
+  end
+
 end
