@@ -9,12 +9,8 @@ class QueriesController < ApplicationController
 
   def create
 
-    elastic_report = Core::Reports::ElasticReportManager.make_report(params )
-
-    #return_array = Core::Reports::ElasConstructor.new( params )
-    #return_array.count
-    render :json => elastic_report
-    #render :json => {}
+    elastic_report_result = Core::Reports::ElasticReportManager.make_report(params )
+    render :json => elastic_report_result
   
   end
 
