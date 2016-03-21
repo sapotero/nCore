@@ -4,22 +4,28 @@
 
 var nCore = nCore || {};
 nCore.worker = (function(){
-  var worker = new Worker('assets/js/nCore/background/workerBack.js');
   
-  var init = function(){
-    // job(worker);
-    return worker
-  },
-  post = function(data){
-    worker.postMessage({
-      command: 'foobard',
-      data: ''
-    });
-  };
+  var worker = '';
 
-  return {
-    init : init,
-    // job  : job,
-    post : post
-  }
+  var initialize = new Promise(function(resolve, reject){
+    worker = new SharedWorker('/assets/js/workerBack.js');
+    
+    worker.port.onmessage = function(e) {
+      console.log('Message received from worker', e);
+    };
+
+    if (worker) {
+      resolve(worker);
+    } else {
+      reject(worker);
+    }
+  });
+
+  initialize.then(function(worker){
+    console.log( 'NEW WORKER', worker );
+  }).catch(function(error){
+    console.error( error );
+  });
+
+  return worker;
 })();

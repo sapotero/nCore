@@ -1618,10 +1618,7 @@ nCore.events = (function () {
       var origins = chosenOrigin.selectedOptions;
       for (var i = 0; i < origins.length; i++) {
         
-        tmp_array.push({
-          value: origins[i].value,
-          name:  origins[i].name
-        })
+        tmp_array.push( origins[i].value )
       };
 
       //console.log('activeCell.dataset.useChosenOrigin ++', chosenOrigin.selectedOptions);
@@ -1634,7 +1631,6 @@ nCore.events = (function () {
       chosenOrigin.selectedIndex = 0;
       chosenOrigin.disabled = true;
     }
-
   });
 
   nCore.modules.table.event.subscribe('setMonth', function(){
