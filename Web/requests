@@ -1,2 +1,0 @@
-{"index":"citizen_requests_production_db_core_cards_citizen_requests_cards"}
-{"query":{"match_all":{}},"script_fields":{"test_1":{"script": " date = new Date(); doc['editors.updated_at'].date"}}}
