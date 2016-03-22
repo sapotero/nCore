@@ -32,6 +32,7 @@
 //=require nCore/background/update
 
 //=require nCore/modules/document
+//=require nCore/modules/dialog
 //=require nCore/modules/table
 //=require nCore/modules/customCell
 //=require nCore/modules/cell

@@ -447,7 +447,7 @@ nCore.modules.table = (function(){
     };
 
     if ( table.id === '' ){
-      table.id =  nCore.modules.table.generateId();
+      table.id =  nCore.core.random();
     }
     if ( !this.exist() ) {
       this.tables[ table.id ] = new Table(config);
@@ -599,17 +599,12 @@ nCore.modules.table = (function(){
   },
   event = function event(){
     return nCoreTableEvent;
-  },
-  random = function() {
-    return ( window.performance.now().toString(36).slice(6,-1) + Math.random().toString(36).slice(2,-1) ).toString(36);
   };
 
   return {
     init       : init,
     event      : event,
-    active     : active,
-    setActive  : setActive,
-    generateId : random,
+    active     : activeCell,
     factory    : new TableFactory()
   };
 })();

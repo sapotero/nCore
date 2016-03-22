@@ -208,6 +208,10 @@ nCore.core = (function(){
       cell.classList.add('ac');
     }
   };
+  Core.prototype.random = function(){
+
+    return ( window.performance.now().toString(36).slice(6,-1) + Math.random().toString(36).slice(2,-1) ).toString(36);
+  };
 
   return new Core();
 })();

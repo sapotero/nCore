@@ -110,6 +110,71 @@ nCore.document = (function(){
       this.root.publish('initEditor', Base64.decode( config.body ));
     }
   };
+  Document.prototype.loadIndex = function(item){
+
+    var render = {};
+    
+    render.addOverlay = function(){
+      console.log('addOverlay');
+      var options = {
+        'keyboard': false, // teardown when <esc> key is pressed (default: true)
+        'static': true, // maintain overlay when clicked (default: false)
+        'onclose': function () {
+          // after callback
+        }
+      };
+
+      var m = document.createElement('div');
+      m.style.width = '400px';
+      m.style.height = '100px';
+      m.style.margin = '10% auto';
+      m.style.padding = '10% auto';
+      m.style.backgroundColor = '#fff';
+      m.classList.toggle('mui-panel');
+      m.classList.toggle('mui--z5');
+      m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
+
+      var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
+    };
+    render.removeOverlay = function(){
+      console.log('removeOverlay');
+      try {
+        mui.overlay('off');
+      } catch(error){
+        throw new Error(error);
+      }
+    };
+
+    render.promise =  new Promise(function(resolve, reject) {
+      nCore.query.get(item + '.json')
+        .success(function (data) {
+          console.log('loadData', data);
+          if ( item == 'documents') {
+            nCore.storage.setItem('documents', JSON.stringify(data.documents));
+            nCore.storage.setItem('templates', JSON.stringify(data.templates));
+          } else {
+            nCore.storage.setItem(item + '', JSON.stringify(data));
+          }
+          resolve(true);
+        }).error(function (data) {
+          console.error('[!] loadItem -> get', data);
+          reject(false);
+        });
+      
+    });
+
+    render.addOverlay();
+
+    render.promise.then(function(data) {
+      setTimeout( render.removeOverlay, 500 );
+      nCore.document.root.publish(nCore.storage.getItem('indexViewType'));
+    }).catch(function(result) {
+      // render.removeOverlay();
+      console.log("ERROR renderCellSettings!", result);
+    });
+  };
   Document.prototype.save = function( config ) {
     console.log( 'load', config );
     this.id        = config._id;
@@ -125,7 +190,6 @@ nCore.document = (function(){
       this.root.publish('initEditor', Base64.decode( config.body ));
     }
   };
-
   Document.prototype.create = function() {
     try{
       html2canvas( document.querySelector('div#paper') , {
@@ -142,9 +206,14 @@ nCore.document = (function(){
             periodStart     : nCore.document.periodStart,
             periodEnd       : nCore.document.periodEnd,
             globalQuery     : nCore.document.globalQuery,
-            image           : canvas.toDataURL(),
             globalQueryData : JSON.stringify( nCore.document.globalQueryData )
           };
+
+
+          canvas.height = $('div#paper').height() * 0.25;
+          canvas.width  = $('div#paper').width() * 0.25;
+          nCoreDocumentAttributes.image = canvas.toDataURL();
+
 
           if ( nCore.document.yearReport ) {
             nCoreDocumentAttributes.yearReport = nCore.document.yearReport;
@@ -167,62 +236,110 @@ nCore.document = (function(){
       console.log( 'error', e );
     }
   };
-
   Document.prototype.update = function( rootNode ) {
-    var formRoot = nCore.core.findUpTag(rootNode, '_nCoreDocumentSettings');
-    var settings = formRoot.querySelector('#documentQueryPane > form');
-    console.log('****UPDATE', rootNode, settings.elements);
+    if ( rootNode ) {
+      var formRoot = nCore.core.findUpTag(rootNode, '_nCoreDocumentSettings');
+      var settings = formRoot.querySelector('#documentQueryPane > form');
+      console.log('****UPDATE', rootNode, settings.elements);
 
-    for (var z = 0; z < settings.elements.length; z++) {
-      var element = settings.elements[z];
+      
+      for (var z = 0; z < settings.elements.length; z++) {
+        var element = settings.elements[z];
 
-      switch( element.name ){
-        case 'nCoreName':
-          this.name = element.value;
-          break;
-        case 'nCoreDescription':
-          this.description = element.value;
-          break;
-        case 'nCorePeriodStart':
-          this.periodStart = element.value;
-          break;
-        case 'nCorePeriodEnd':
-          this.periodEnd = element.value;
-          break;
-        case 'yearReport':
-          this.yearReport = element.checked ? true : false;
-          break;
-        case 'main':
-          this.main = element.value;
-          break;
-        case 'compare':
-          this.compare = element.value;
-          break;
-        default:
-          continue;
+        switch( element.name ){
+          case 'nCoreName':
+            this.name = element.value;
+            break;
+          case 'nCoreDescription':
+            this.description = element.value;
+            break;
+          case 'nCorePeriodStart':
+            this.periodStart = element.value;
+            break;
+          case 'nCorePeriodEnd':
+            this.periodEnd = element.value;
+            break;
+          case 'yearReport':
+            this.yearReport = element.checked ? true : false;
+            break;
+          case 'main':
+            this.main = element.value;
+            break;
+          case 'compare':
+            this.compare = element.value;
+            break;
+          default:
+            continue;
+        }
       }
     }
 
+    var render = {};
+    
+    render.addOverlay = function(){
+      console.log('addOverlay');
+      var options = {
+        'keyboard': false, // teardown when <esc> key is pressed (default: true)
+        'static': true, // maintain overlay when clicked (default: false)
+        'onclose': function () {
+          // after callback
+        }
+      };
 
-    html2canvas( document.querySelector('div#paper') , {
-      onrendered: function(canvas) {
+      var m = document.createElement('div');
+      m.style.width = '400px';
+      m.style.height = '100px';
+      m.style.margin = '10% auto';
+      m.style.padding = '10% auto';
+      m.style.backgroundColor = '#fff';
+      m.classList.toggle('mui-panel');
+      m.classList.toggle('mui--z5');
+      m.innerHTML = '<h4>Сохранение документа</h4><div class="loader"></div>';
 
-        var data = nCore.document.data();
-        data.image = canvas.toDataURL();
-
-        nCore.query.put('documents/' + nCore.document.id + '.json', data ).success(function (data) {
-          console.log('saveDocument putt', data);
-          mui.overlay('off');
-          if (location.hash.match(/new/) !== null) {
-            location.hash = location.hash.replace(/new/, data._id);
-          }
-        }).error(function (data) {
-          console.error('[!] saveDocument', data);
-        });
+      var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
+    };
+    render.removeOverlay = function(){
+      console.log('removeOverlay');
+      try {
+        mui.overlay('off');
+      } catch(error){
+        throw new Error(error);
       }
-    });
-  };
+    };
 
+    render.promise =  new Promise(function(resolve, reject) {
+      html2canvas( document.querySelector('div#paper') , {
+        onrendered: function(canvas) {
+
+          var data = nCore.document.data();
+          // canvas.height = $('div#paper').height() * 0.25;
+          // canvas.width  = $('div#paper').width() * 0.25;
+          data.image = canvas.toDataURL();
+
+          nCore.query.put('documents/' + nCore.document.id + '.json', data ).success(function (data) {
+            console.log('saveDocument putt', data);
+            resolve(data);
+          }).error(function (data) {
+            console.error('[!] saveDocument', data);
+            reject(false);
+          });
+        }
+      });
+    });
+
+    render.addOverlay();
+
+    render.promise.then(function(data) {
+      setTimeout( render.removeOverlay, 1000 );
+      location.hash = location.hash.replace(/new/, data._id);
+    }).catch(function(result) {
+      // render.removeOverlay();
+      console.log("ERROR renderCellSettings!", result);
+    });
+
+  };
   Document.prototype.delete = function(element){
     console.log('***deleteReport', element_root, element);
 

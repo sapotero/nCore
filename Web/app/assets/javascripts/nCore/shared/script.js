@@ -87,7 +87,7 @@ jQuery(function($) {
       // если есть формула но нет айдишника
       // if ( e.target.dataset.useFormula == 'true' ) {
       if ( !e.target.id ) {
-        var id = nCore.modules.table.generateId();
+        var id = nCore.core.random();
         e.target.id = id;
         console.log( 'generate id', id );
       };

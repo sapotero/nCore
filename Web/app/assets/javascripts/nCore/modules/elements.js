@@ -15,7 +15,7 @@ nCore.modules.elements = (function(config){
   }
 
   function nCoreInput( options ) {
-    this.color        = options.color || 'gray';
+    this.color = options.color || 'gray';
   }
 
   function nCoreElement() {}
@@ -33,7 +33,7 @@ nCore.modules.elements = (function(config){
     }
     
     return new parentClass( options );
-  }
+  };
 
   var init = function(config){
     var config = {
@@ -115,6 +115,6 @@ nCore.modules.elements = (function(config){
     init       : init,
     create     : create,
     elements   : elements
-  }
+  };
 })();
-nCore.modules.elements.init()
+// nCore.modules.elements.init()

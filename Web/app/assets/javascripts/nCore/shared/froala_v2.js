@@ -5601,7 +5601,7 @@ $.FroalaEditor.LANGUAGE['ru'] = {
       calculationCell.textContent = '......';
       calculationCell.style.display = 'inline';
       calculationCell.style.marginLeft = '10px';
-      calculationCell.id = nCore.modules.table.generateId();
+      calculationCell.id = nCore.core.random();
       
       var infoCell = document.createElement('div');
       infoCell.style.display = 'block';

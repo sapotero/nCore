@@ -5,7 +5,7 @@
 var nCore = nCore || {};
 nCore.events = (function () {
   // var init;
-  var activeCell;
+  // var nCore.modules.table.active;
 
 
   ///////////////////////
@@ -14,135 +14,20 @@ nCore.events = (function () {
 
 
   // новый документ
-  nCore.document.root.subscribe('newDocument', function (data) {
-    var options = {
-      'keyboard': true, // teardown when <esc> key is pressed (default: true)
-      'static': false, // maintain overlay when clicked (default: false)
-      'onclose': function () {}
-    };
-
-    var m = document.createElement('div');
-    m.classList.toggle('mui-panel');
-    m.classList.toggle('mui--z5');
-    m.classList.toggle('_newDocument');
-    m.innerHTML = '<form onsubmit="nCore.document.root.publish(\'saveDocumentToDb\', this); return false;"><legend>Документ</legend><br><br><div class="mui-textfield mui-textfield--float-label"><input required name="nCoreDocumnetName"><label>Название</label></div><div class="mui-textfield mui-textfield--float-label"><input type=text required name="nCoreDocumnetDescription"><label>Описание</label></div><div class="mui--text-right"><button type=button onclick="mui.overlay(\'off\');" class="mui-btn mui-btn--raised mui-btn--danger">отмена</button><button type=submit class="mui-btn mui-btn--raised mui-btn--primary">сохранить</button></div></form>';
-
-    var overlay = mui.overlay('on', options, m);
-    overlay.classList.toggle('animated');
-    overlay.classList.toggle('fadeIn');
+  nCore.document.root.subscribe('newDocument', function () {
+    nCore.dialog.newDocument();
   });
 
   nCore.document.root.subscribe('showDocumentSettings', function (data) {
-    // set overlay options
-    var options = {
-      'keyboard': true, // teardown when <esc> key is pressed (default: true)
-      'static': false, // maintain overlay when clicked (default: false)
-      'onclose': function () {
-        console.log( 'showDocumentSettings' );
-        nCore.document.setShowSettings = false;
-      }
-    };
-
-    var m = document.createElement('div');
-    m.classList.toggle('mui-panel');
-    m.classList.toggle('mui--z5');
-    m.classList.add('_nCoreDocumentSettings');
-
-    nCore.document.setShowSettings = true;
-
-    var text = Transparency.render(document.querySelector('.nCoreDocumentSettings'), {
-      nCoreName        : nCore.document.name,
-      nCoreDescription : nCore.document.description,
-      nCorePeriodStart : nCore.document.periodStart,
-      nCorePeriodEnd   : nCore.document.periodEnd,
-      nCoreYearReport  : nCore.document.yearReport,
-      nCoreMain        : nCore.document.main,
-      nCoreCompare     : nCore.document.compare,
-    });
-    m.innerHTML = text.innerHTML;
-
-    var main       = m.querySelector('[name="main"]'),
-        compare    = m.querySelector('[name="compare"]'),
-        yearReport = m.querySelector('[name="yearReport"]');
-    
-    if ( !nCore.document.yearReport ) {
-      yearReport.checked = false;
-      main.disabled    = true;
-      compare.disabled = true;
-    } else {
-      yearReport.checked = true;
-      main.disabled    = false;
-      compare.disabled = false;
-    }
-
-    var overlay = mui.overlay('on', options, m);
-    overlay.classList.toggle('animated');
-    overlay.classList.toggle('fadeIn');
-
-    var toggleEls = document.querySelectorAll('[data-mui-controls^="document"]');
-
-    function show(ev) {
-      for (var z = 0; z < toggleEls.length; z++) {
-        toggleEls[z].parentNode.classList.remove('mui--is-active');
-        m.querySelector( '#'+toggleEls[z].dataset.muiControls ).classList.remove('mui--is-active');
-      }
-
-      m.querySelector( '#'+ev.paneId ).classList.add('mui--is-active');
-      m.querySelector('[data-mui-controls="'+ev.paneId+'"]').parentNode.classList.add('mui--is-active');
-
-      nCore.document.documentSettingTab = ev.paneId;
-    }
-
-    // attach event handlers
-    for (var z = 0; z < toggleEls.length; z++) {
-      toggleEls[z].addEventListener('mui.tabs.showstart', show);
-    }
-
-    // documentQueryPane по дефолту
-    m.querySelector( '#'+nCore.document.documentSettingTab ).classList.add('mui--is-active');
-    m.querySelector('[data-mui-controls="'+nCore.document.documentSettingTab+'"]').parentNode.classList.add('mui--is-active');
-
-    nCore.core.globalQueryPopulate();
-
-    var tabs_root = text.querySelector('.mui-tabs__bar'),
-        tabs      = tabs_root.querySelectorAll('li');
-
-    console.log( tabs );
-
-    for (var z = tabs.length - 1; z >= 0; z--) {
-      if ( tabs[z].classList.contains('mui--is-active') ) {
-        tabs[z].classList.remove('mui--is-active');
-      }
-    }
-
-    document.getElementById( nCore.document.documentSettingTab ).classList.add('mui--is-active');
-    
-    
+    nCore.dialog.showSettings();
   });
 
   nCore.document.root.subscribe('showGroupModal', function (data) {
-    // set overlay options
-    var options = {
-      'keyboard': true, // teardown when <esc> key is pressed (default: true)
-      'static':   false, // maintain overlay when clicked (default: false)
-      'onclose':  function () {}
-    };
-    // initialize with child element
-    var m = document.createElement('div');
-    m.style.width = '60%';
-    m.style.margin = '5% auto';
-    m.style.padding = '5% auto';
-    m.classList.toggle('mui-panel');
-    m.classList.toggle('mui--z5');
-    m.innerHTML = '<core-modal limit="20" offset="0" total="100" selected="" from="" source="" caption="Выбор элементов группы"></core-modal>';
-
-    var overlay = mui.overlay('on', options, m);
-    overlay.classList.toggle('animated');
-    overlay.classList.toggle('fadeIn');
+    nCore.dialog.showGroup();
   });
 
   nCore.document.root.subscribe('addGroupData', function (data) {
-    console.log('addGroupData', data);
+    // console.log('addGroupData', data);
     nCore.modules.table.fromGroup(data);
   });
 
@@ -169,38 +54,7 @@ nCore.events = (function () {
   });
 
   nCore.document.root.subscribe('tryToEditTemplate', function () {
-    console.log('tryToEditTemplate');
-
-    mui.overlay('on');
-    var options   = {
-      'keyboard': false, // teardown when <esc> key is pressed (default: true)
-      'static': true, // maintain overlay when clicked (default: false)
-      'onclose': function () {
-      }
-    };
-    var render = Transparency.render(document.getElementById('tryToEditTemplate'), {
-      errorMessage: "Вы пытаетесь редактировать шаблон!",
-      details: "Будет создан новый файл с именем",
-      filename : ( document.querySelector('#nCoreDocumentAuthor').textContent + ' - ' + nCore.document.title ),
-      cancel: "Отмена",
-      save: "Сохранить"
-    });
-
-    var m = document.createElement('div');
-    m.style.width = '800px';
-    m.style.height = '200px';
-    m.style.margin = '10% auto';
-    m.style.padding = '10% auto';
-    m.style.backgroundColor = '#fff';
-    m.classList.toggle('mui-panel');
-    m.classList.toggle('mui--z5');
-
-    m.classList.toggle('animated');
-    m.classList.toggle('fadeIn');
-    
-    m.innerHTML = render.innerHTML;
-
-    mui.overlay('on', options, m );
+    nCore.dialog.editTemplate();
   });
 
 
@@ -316,8 +170,7 @@ nCore.events = (function () {
     location.hash = "#" + url;
   });
 
-  nCore.document.root.subscribe('loadDocument',
-    function (id, callback) {
+  nCore.document.root.subscribe('loadDocument', function (id, callback) {
       console.groupCollapsed('Loading document');
 
       var load = new Promise(function(resolve, reject) {
@@ -385,67 +238,18 @@ nCore.events = (function () {
       }).catch(function(result) {
         console.log("ERROR!", result);
       });
-
     },
     // before callback
-    function (data) {
+    function () {
     },
     // after callback
-    function (data) {
+    function () {
     }
   );
 
   // создание нового документа
   nCore.document.root.subscribe('createNewDocument', function (type) {
-    var documentType = nCore.document.type || type;
-    // console.log('setDocumentType', documentType);
-    nCore.document.type = documentType;
-    nCore.document.new();
-
-    var overlayEl = mui.overlay('on');
-
-    // set overlay options
-    var options = {
-      'keyboard': false, // teardown when <esc> key is pressed (default: true)
-      'static': true, // maintain overlay when clicked (default: false)
-      'onclose': function () {
-        // after callback
-      }
-    };
-    // initialize with child element
-    var m = document.createElement('div');
-    m.style.width = '400px';
-    m.style.height = '100px';
-    m.style.margin = '10% auto';
-    m.style.padding = '10% auto';
-    m.style.backgroundColor = '#fff';
-    m.classList.toggle('mui-panel');
-    m.classList.toggle('mui--z5');
-    m.innerHTML = '<h4>Создание нового документа</h4><div class="loader"></div>';
-
-    var overlay = mui.overlay('on', options, m);
-    overlay.classList.toggle('animated');
-    overlay.classList.toggle('fadeIn');
-    
-    var render = new Promise(function(resolve, reject) {
-      // выполняем асинхронный код
-      setTimeout(function () {
-        mui.overlay('off');
-        document.body.classList.add('hide-sidedrawer');
-        nCore.document.root.publish('generateNewDocument');;
-        location.hash = "#" + documentType + "/new";
-      }, 1000);
-      var error = false;
-
-      error == false ? resolve('rendered!') :reject('error');
-    });
-
-    render.then(function(data) {
-      return data;
-    }).then(function(result) {
-      console.log("allDone!", result);
-    });
-  
+    nCore.dialog.createNew(type);
   });
 
   nCore.document.root.subscribe('attachListMenu', function (type) {
@@ -476,315 +280,219 @@ nCore.events = (function () {
     };
   });
   
-  nCore.document.root.subscribe('nCoreDocumentFailedToLoad', function (type) {
-
-    var overlayEl = mui.overlay('on'),
-        options   = {
-          'keyboard': false, // teardown when <esc> key is pressed (default: true)
-          'static': true, // maintain overlay when clicked (default: false)
-          'onclose': function () {
-            // after callback
-          }
-        };
-    var render = Transparency.render(document.getElementById('nCoreDocumentFailedToLoad'), {
-      errorMessage: 'Произошла ошибка во время загрузки документа',
-      back: "Назад",
-      reload: "Обновить"
-    });
-
-    var m = document.createElement('div');
-    m.style.width = '800px';
-    m.style.height = '200px';
-    m.style.margin = '10% auto';
-    m.style.padding = '10% auto';
-    m.style.backgroundColor = '#fff';
-    m.classList.toggle('mui-panel');
-    m.classList.toggle('mui--z5');
-    
-    m.innerHTML = render.innerHTML;
-
-    mui.overlay('on', options, m );
+  nCore.document.root.subscribe('nCoreDocumentFailedToLoad', function () {
+    nCore.dialog.loadFailed();
   });
 
-  nCore.document.root.subscribe('routeFailedToLoad', function (type) {
-
-    var overlayEl = mui.overlay('on'),
-        options   = {
-          'keyboard': false, // teardown when <esc> key is pressed (default: true)
-          'static': true, // maintain overlay when clicked (default: false)
-          'onclose': function () {
-            // after callback
-          }
-        };
-    var render = Transparency.render(document.getElementById('routeFailedToLoad'), {
-      errorMessage: 'Произошла ошибка во время работы приложения',
-      back: "Назад",
-      reload: "Обновить"
-    });
-
-    var m = document.createElement('div');
-    m.style.width = '800px';
-    m.style.height = '200px';
-    m.style.margin = '10% auto';
-    m.style.padding = '10% auto';
-    m.style.backgroundColor = '#fff';
-    m.classList.toggle('mui-panel');
-    m.classList.toggle('mui--z5');
-    
-    m.innerHTML = render.innerHTML;
-
-    mui.overlay('on', options, m );
+  nCore.document.root.subscribe('routeFailedToLoad', function () {
+    nCore.dialog.applicationError();
   });
 
   nCore.document.root.subscribe('renderIndexView', function (type) {
-   
-   function addOverlay() {
-      setTimeout( function(){
-        var overlayEl = mui.overlay('on'),
-
-        options = {
-          'keyboard': false, // teardown when <esc> key is pressed (default: true)
-          'static': true, // maintain overlay when clicked (default: false)
-          'onclose': function () {
-            // after callback
-          }
-        };
-
-        var m = document.createElement('div');
-        m.style.width = '400px';
-        m.style.height = '100px';
-        m.style.margin = '10% auto';
-        m.style.padding = '10% auto';
-        m.style.backgroundColor = '#fff';
-        m.classList.toggle('mui-panel');
-        m.classList.toggle('mui--z5');
-        m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
-
-        var overlay = mui.overlay('on', options, m);
-        overlay.classList.toggle('animated');
-        overlay.classList.toggle('fadeIn');
-      }, 300);
-    };
-    
-    function removeOverlay() {
-      setTimeout( function(){
-        mui.overlay('off');
-      },300)
-    };
 
     var render = new Promise(function(resolve, reject) {
-      addOverlay();
+      document.getElementById('thumb').classList.add('mui--hide');
       
-      setTimeout(function(){
-        document.getElementById('thumb').classList.add('mui--hide');
+      // если не был выбран вариант отображения страницы
+      if (!nCore.storage.hasOwnProperty('indexViewType')) {
+        nCore.storage.setItem('indexViewType', 'thumb');
+      }
 
-        // если не был выбран вариант отображения страницы
-        if (!nCore.storage.hasOwnProperty('indexViewType')) {
-          nCore.storage.setItem('indexViewType', 'thumb');
-        };
+      if ( nCore.storage.hasOwnProperty( type ) && JSON.parse( nCore.storage.getItem(type) ).length || JSON.parse(nCore.storage.getItem('templates')).length ) {
+        if ( JSON.parse(nCore.storage.getItem('templates')).length ) {
+          var helperTemplate = {
+            documentTitle: {
+              text: function (params) {
+                // console.log(this);
 
-        // сколько раз проверяем 
-        // var reload_count = 2;
-
-        if ( nCore.storage.hasOwnProperty( type ) && JSON.parse( nCore.storage.getItem(type) ).length || JSON.parse(nCore.storage.getItem('templates')).length ) {
-          // console.log('storage: ', items);
-
-          if ( JSON.parse(nCore.storage.getItem('templates')).length ) {
-            var helperTemplate = {
-              documentTitle: {
-                text: function (params) {
-                  // console.log(this);
-
-                  return this.params.name || '---';
-                }
-              },
-              documentDate: {
-                text: function (params) {
-                  // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-                  return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
-                    year  : 'numeric',
-                    month : 'numeric',
-                    day   : 'numeric'
-                  } : {
-                    year   : 'numeric',
-                    month  : 'numeric',
-                    day    : 'numeric',
-                    hour   : 'numeric',
-                    minute : 'numeric'
-
-                  });
-                }
-              },
-              documentId: {
-                href: function (params) {
-                  return "#/report/" + this.params._id || Math.random();
-                },
-                text: function () {
-                  return ''
-                }
-              },
-              downloadDoc: {
-                href: function (params) {
-                  return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
-                }
-              },
-              downloadPdf: {
-                href: function (params) {
-                  return "documents/" + this.params._id + ".pdf";
-                }
-              },
-              downloadXls: {
-                href: function (params) {
-                  return "documents/" + this.params._id + ".xlsx";
-                }
-              },
-              removeDocument: {
-                href: function (params) {
-                  return location.hash;
-                },
-                type: function () {
-                  return this.params._id
-                }
-              },
-              documentUser: {
-                text: function () {
-                  return this.params.user
-                }
-              },
-              documentImage: {
-                src: function(params){
-                  return ( this.image.length ? this.image : 'assets/img/doc.png' )
-                }
-              },
-              groupTitle: {
-                text: function () {
-                  return 'Шаблоны'
-                }
+                return this.params.name || '---';
               }
-            };
-            
-            var templates = JSON.parse(nCore.storage.getItem('templates'));
-            Transparency.render( document.querySelector('#template'), templates, helperTemplate );
+            },
+            documentDate: {
+              text: function (params) {
+                // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
+                return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
+                  year  : 'numeric',
+                  month : 'numeric',
+                  day   : 'numeric'
+                } : {
+                  year   : 'numeric',
+                  month  : 'numeric',
+                  day    : 'numeric',
+                  hour   : 'numeric',
+                  minute : 'numeric'
 
-            console.log('templates.length');
-            
-            var _mui_rows = document.querySelector('.mui-row._indexViewTemplate'),
-            _active_row = document.querySelector('._indexViewTemplate');
-
-            for (var i = 0; i < _mui_rows.length; i++) {
-              _mui_rows[i].classList.add('mui--hide')
+                });
+              }
+            },
+            documentId: {
+              href: function (params) {
+                return "#/report/" + this.params._id || Math.random();
+              },
+              text: function () {
+                return ''
+              }
+            },
+            downloadDoc: {
+              href: function (params) {
+                return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
+              }
+            },
+            downloadPdf: {
+              href: function (params) {
+                return "documents/" + this.params._id + ".pdf";
+              }
+            },
+            downloadXls: {
+              href: function (params) {
+                return "documents/" + this.params._id + ".xlsx";
+              }
+            },
+            removeDocument: {
+              href: function (params) {
+                return location.hash;
+              },
+              type: function () {
+                return this.params._id;
+              }
+            },
+            documentUser: {
+              text: function () {
+                return this.params.user;
+              }
+            },
+            documentImage: {
+              src: function(params){
+                return ( this.image.length ? this.image : 'assets/img/doc.png' );
+              }
+            },
+            groupTitle: {
+              text: function () {
+                return 'Шаблоны';
+              }
             }
+          };
+          
+          var templates = JSON.parse(nCore.storage.getItem('templates'));
+          Transparency.render( document.querySelector('#template'), templates, helperTemplate );
 
-            if (_active_row) {
-              _active_row.classList.remove('mui--hide');
-            };
+          // console.log('templates.length');
+          
+          var _mui_rows = document.querySelector('.mui-row._indexViewTemplate'),
+          _active_row = document.querySelector('._indexViewTemplate');
+
+          for (var i = 0; i < _mui_rows.length; i++) {
+            _mui_rows[i].classList.add('mui--hide');
           }
 
-          if ( JSON.parse(nCore.storage.getItem(type)).length ) {
-            var helper = {
-              documentTitle: {
-                text: function (params) {
-                  return this.params.name || '---';
-                }
-              },
-              documentDate: {
-                text: function (params) {
-                  // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-                  return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
-                    year  : 'numeric',
-                    month : 'numeric',
-                    day   : 'numeric'
-                  } : {
-                    year   : 'numeric',
-                    month  : 'numeric',
-                    day    : 'numeric',
-                    hour   : 'numeric',
-                    minute : 'numeric'
-
-                  });
-                }
-              },
-              documentId: {
-                href: function (params) {
-                  return "#/report/" + this.params._id || Math.random();
-                },
-                text: function () {
-                  return ''
-                }
-              },
-              downloadDoc: {
-                href: function (params) {
-                  return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
-                }
-              },
-              downloadPdf: {
-                href: function (params) {
-                  return "documents/" + this.params._id + ".pdf";
-                }
-              },
-              downloadXls: {
-                href: function (params) {
-                  return "documents/" + this.params._id + ".xlsx";
-                }
-              },
-              removeDocument: {
-                href: function (params) {
-                  return location.hash;
-                },
-                type: function () {
-                  return this.params._id
-                }
-              },
-              documentUser: {
-                text: function () {
-                  return this.params.user
-                }
-              },
-              documentImage: {
-                src: function(params){
-                  return ( this.image.length ? this.image : 'assets/img/doc.png' )
-                }
-              },
-              groupTitle: {
-                text: function () {
-                  return 'Шаблоны'
-                }
+          if (_active_row) {
+            _active_row.classList.remove('mui--hide');
+          };
+        }
+        if ( JSON.parse(nCore.storage.getItem(type)).length ) {
+          var helper = {
+            documentTitle: {
+              text: function (params) {
+                return this.params.name || '---';
               }
-            };
+            },
+            documentDate: {
+              text: function (params) {
+                // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
+                return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
+                  year  : 'numeric',
+                  month : 'numeric',
+                  day   : 'numeric'
+                } : {
+                  year   : 'numeric',
+                  month  : 'numeric',
+                  day    : 'numeric',
+                  hour   : 'numeric',
+                  minute : 'numeric'
 
-            var items = JSON.parse(nCore.storage.getItem(type));
-            Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
-
-            document.body.classList.add('hide-sidedrawer');
-            document.getElementById('thumb').classList.remove('mui--hide')
-
-            var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
-              _active_row = document.querySelector('._indexView.' + nCore.storage.getItem('indexViewType'));
-
-            for (var i = 0; i < _mui_rows.length; i++) {
-              _mui_rows[i].classList.add('mui--hide')
+                });
+              }
+            },
+            documentId: {
+              href: function (params) {
+                return "#/report/" + this.params._id || Math.random();
+              },
+              text: function () {
+                return ''
+              }
+            },
+            downloadDoc: {
+              href: function (params) {
+                return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
+              }
+            },
+            downloadPdf: {
+              href: function (params) {
+                return "documents/" + this.params._id + ".pdf";
+              }
+            },
+            downloadXls: {
+              href: function (params) {
+                return "documents/" + this.params._id + ".xlsx";
+              }
+            },
+            removeDocument: {
+              href: function (params) {
+                return location.hash;
+              },
+              type: function () {
+                return this.params._id
+              }
+            },
+            documentUser: {
+              text: function () {
+                return this.params.user
+              }
+            },
+            documentImage: {
+              src: function(params){
+                return ( this.image.length ? this.image : 'assets/img/doc.png' )
+              }
+            },
+            groupTitle: {
+              text: function () {
+                return 'Шаблоны'
+              }
             }
+          };
 
-            if (_active_row) {
-              _active_row.classList.remove('mui--hide');
-            };
+          var items = JSON.parse(nCore.storage.getItem(type));
+          Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
+
+          document.body.classList.add('hide-sidedrawer');
+          document.getElementById('thumb').classList.remove('mui--hide')
+
+          var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
+            _active_row = document.querySelector('._indexView.' + nCore.storage.getItem('indexViewType'));
+
+          for (var i = 0; i < _mui_rows.length; i++) {
+            _mui_rows[i].classList.add('mui--hide')
           }
-          resolve(true)
-        } else {
-          reject(false)
-        };
-      }, 1000); 
+
+          if (_active_row) {
+            _active_row.classList.remove('mui--hide');
+          };
+        }
+        resolve(true)
+      } else {
+        reject(false);
+      }
     });
 
     render.then(function(data) {
-      removeOverlay()
+      return data;
     }).catch(function(result) {
       console.log("ERROR renderCellSettings!", result);
     });
   });
 
   nCore.document.root.subscribe('renderNotPermit', function (data) {
-    Transparency.render(document.getElementById('content-wrapper'), { 'textBad': 'Operation not permited' });
+    nCore.dilaog.notPermit();
   });
 
   // проверяем что показывать
@@ -810,9 +518,8 @@ nCore.events = (function () {
         _cells  = document.querySelectorAll('.calculationCell');
 
     if ( _tables.length || _cells.length ) {
-      // console.log( '_tables', _tables.length );
-
       nCore.modules.table.factory.execute();
+      nCore.modules.formula.calculate();
     } else {
       var data = {
         message: 'Нечего расчитывать',
@@ -865,7 +572,6 @@ nCore.events = (function () {
     }).catch(function(error){
       console.log('error', error);
     });
-
   });
 
   nCore.modules.table.event.subscribe('calculateFormula', function () {
@@ -882,8 +588,7 @@ nCore.events = (function () {
     var tab     = document.getElementsByClassName('criteriaSelector')[0], cellQuery;
     var formula = document.getElementById('formulaGroupTab');
 
-    activeCell = cell;
-    nCore.modules.table.setActive(activeCell);
+    nCore.modules.table.active = cell;
 
     tab.textContent = '';
     var __elements_to_update = [], criteriaCondition;
@@ -929,17 +634,17 @@ nCore.events = (function () {
     var render = new Promise(function(resolve, reject) {
       addOverlay();
       setTimeout(function(){
-        if (activeCell) {
+        if (nCore.modules.table.active) {
         
-          if ( activeCell.dataset.hasOwnProperty('query') ) {
+          if ( nCore.modules.table.active.dataset.hasOwnProperty('query') ) {
             
             try {
-              var queryArray = JSON.parse(activeCell.dataset.query);
+              var queryArray = JSON.parse(nCore.modules.table.active.dataset.query);
             } catch (e){
               reject(false);
             };
 
-            var queryArray = JSON.parse(activeCell.dataset.query),
+            var queryArray = JSON.parse(nCore.modules.table.active.dataset.query),
               _selectedIindex = -1;
             
             
@@ -984,7 +689,7 @@ nCore.events = (function () {
                 // console.dirxml('criteria -> ', item);
 
                 if (item.source == null && item.origin_name == null) {
-                  activeCell.dataset.query = '[]';
+                  nCore.modules.table.active.dataset.query = '[]';
                   continue;
                 }
 
@@ -1036,13 +741,13 @@ nCore.events = (function () {
           }
 
           var monthSelector = document.querySelector('select[name="month"]');
-          if ( monthSelector && parseInt(activeCell.dataset.queryMonth,10) ) {
-            // console.log('++++', activeCell.dataset.queryMonth)
-            monthSelector.value = activeCell.dataset.queryMonth;
+          if ( monthSelector && parseInt(nCore.modules.table.active.dataset.queryMonth,10) ) {
+            // console.log('++++', nCore.modules.table.active.dataset.queryMonth)
+            monthSelector.value = nCore.modules.table.active.dataset.queryMonth;
             monthSelector.disabled = false;
           } else {
             if ( monthSelector ) {
-              // console.log('----', activeCell.dataset)
+              // console.log('----', nCore.modules.table.active.dataset)
               monthSelector.selectedIndex = 0;
               monthSelector.value = 1;
               monthSelector.disabled = true;
@@ -1050,26 +755,26 @@ nCore.events = (function () {
           }
 
           var formulaSelector = document.querySelector('[name="formula"]');
-          if ( formulaSelector && activeCell.dataset.formula ) {
-            // console.log('++++', activeCell.dataset.formula)
-            formulaSelector.value = activeCell.dataset.formula;
+          if ( formulaSelector && nCore.modules.table.active.dataset.formula ) {
+            // console.log('++++', nCore.modules.table.active.dataset.formula)
+            formulaSelector.value = nCore.modules.table.active.dataset.formula;
             formulaSelector.disabled = false;
           } else {
             if ( formulaSelector ) {
-              // console.log('----', activeCell.dataset)
+              // console.log('----', nCore.modules.table.active.dataset)
               formulaSelector.value = '';
               formulaSelector.disabled = true;
             };
           }
 
           var defaultSelector = document.querySelector('select[name="default"]');
-          if ( defaultSelector && activeCell.dataset.queryDefault ) {
-            // console.log('++++', activeCell.dataset.queryDefault)
-            defaultSelector.value = activeCell.dataset.queryDefault;
+          if ( defaultSelector && nCore.modules.table.active.dataset.queryDefault ) {
+            // console.log('++++', nCore.modules.table.active.dataset.queryDefault)
+            defaultSelector.value = nCore.modules.table.active.dataset.queryDefault;
             defaultSelector.disabled = false;
           } else {
             if ( defaultSelector ) {
-              // console.log('----', activeCell.dataset)
+              // console.log('----', nCore.modules.table.active.dataset)
               defaultSelector.selectedIndex = 0;
               defaultSelector.value = 'empty';
               defaultSelector.disabled = true;
@@ -1077,10 +782,10 @@ nCore.events = (function () {
           }
 
           var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
-          if ( activeCell.dataset.chosenOrigin ) {
+          if ( nCore.modules.table.active.dataset.chosenOrigin ) {
             // chosenOrigin.selectedIndex = -1;
             
-            var array  = JSON.parse(activeCell.dataset.chosenOrigin),
+            var array  = JSON.parse(nCore.modules.table.active.dataset.chosenOrigin),
                 values = [];
 
             for (var r = 0; r < array.length; r++) {
@@ -1100,7 +805,7 @@ nCore.events = (function () {
             chosenOrigin.disabled = false;
           } else {
             if ( chosenOrigin ) {
-              // console.log('----', activeCell.dataset)
+              // console.log('----', nCore.modules.table.active.dataset)
               // chosenOrigin.selectedIndex = null;
               chosenOrigin.value = null;
               chosenOrigin.disabled = true;
@@ -1117,11 +822,7 @@ nCore.events = (function () {
       console.log("ERROR renderCellSettings!", result);
     });
 
-    // nCore.
-
     nCore.document.root.publish('showSideMenu', nCore.document.showCellSettings );
-    // nCore.modules.table.active().classList.add('active-selected-cell');
-
     console.groupEnd();
   });
 
@@ -1140,8 +841,6 @@ nCore.events = (function () {
       document.querySelector('.AddDocument').classList.add('fadeIn');
     }
   });
-
-
 
   nCore.document.root.subscribe('globalCriteriaCalculate', function(body){
     
@@ -1180,8 +879,6 @@ nCore.events = (function () {
         } else {
           _dataQueryHash.value = form.querySelector('input[type="date"]')
         }
-         
-
       }
       if ( form.querySelector('[name="value"]') ) {
         _dataQueryHash.value = form.querySelector('[name="value"]').value ? form.querySelector('[name="value"]').value : ''
@@ -1202,14 +899,10 @@ nCore.events = (function () {
 
       _query.push(data);
     };
-
-
     // console.log('GLOBAL QUERY:', result_query, _query);
 
     nCore.document.globalQuery =  JSON.stringify(data);
   });
-
-
 
   nCore.modules.table.event.subscribe('cellFormulaChange', function () {
     var formulaSettings      = document.querySelector('.formulaSettings'),
@@ -1218,18 +911,18 @@ nCore.events = (function () {
     // Обновляем все галки
     for (var v = 0; v < formulaSettingsItems.length; v++) {
       var checkbox = formulaSettingsItems[v];
-      activeCell.dataset[checkbox.name] = checkbox.checked;
+      nCore.modules.table.active.dataset[checkbox.name] = checkbox.checked;
     };
 
     // обновляем галку с месяцами
     var monthSelector = formulaSettings.querySelector('[name="month"]');
 
-    if ( activeCell.dataset.useMonth === 'true' ) {
-      //console.log('activeCell.dataset.useMonth ++', activeCell.dataset);
-      activeCell.dataset.queryMonth = monthSelector.value;
+    if ( nCore.modules.table.active.dataset.useMonth === 'true' ) {
+      //console.log('nCore.modules.table.active.dataset.useMonth ++', nCore.modules.table.active.dataset);
+      nCore.modules.table.active.dataset.queryMonth = monthSelector.value;
     } else {
-      //console.log('activeCell.dataset.useMonth --', activeCell.dataset);
-      delete activeCell.dataset.queryMonth
+      //console.log('nCore.modules.table.active.dataset.useMonth --', nCore.modules.table.active.dataset);
+      delete nCore.modules.table.active.dataset.queryMonth
       monthSelector.selectedIndex = 0;
       monthSelector.disabled = true;
     }
@@ -1237,12 +930,12 @@ nCore.events = (function () {
     // обновляем галку с формулой
     var formulaSelector = document.querySelector('[name="formula"]');
 
-    if ( activeCell.dataset.useFormula === 'true' ) {
-      //console.log('activeCell.dataset.useFormula ++', activeCell.dataset);
-      activeCell.dataset.formula = formulaSelector.value;
+    if ( nCore.modules.table.active.dataset.useFormula === 'true' ) {
+      //console.log('nCore.modules.table.active.dataset.useFormula ++', nCore.modules.table.active.dataset);
+      nCore.modules.table.active.dataset.formula = formulaSelector.value;
     } else {
-      //console.log('activeCell.dataset.useFormula --', activeCell.dataset);
-      delete activeCell.dataset.formula
+      //console.log('nCore.modules.table.active.dataset.useFormula --', nCore.modules.table.active.dataset);
+      delete nCore.modules.table.active.dataset.formula
       formulaSelector.value = '';
       formulaSelector.disabled = true;
     }
@@ -1250,12 +943,12 @@ nCore.events = (function () {
     // обновляем галку с дефолтным значением
     var defaultSelector = formulaSettings.querySelector('[name="default"]');
 
-    if ( activeCell.dataset.useDefault === 'true' ) {
-      //console.log('activeCell.dataset.useDefault ++', activeCell.dataset);
-      activeCell.dataset.queryDefault = defaultSelector.value;
+    if ( nCore.modules.table.active.dataset.useDefault === 'true' ) {
+      //console.log('nCore.modules.table.active.dataset.useDefault ++', nCore.modules.table.active.dataset);
+      nCore.modules.table.active.dataset.queryDefault = defaultSelector.value;
     } else {
-      //console.log('activeCell.dataset.useDefault --', activeCell.dataset);
-      delete activeCell.dataset.queryDefault
+      //console.log('nCore.modules.table.active.dataset.useDefault --', nCore.modules.table.active.dataset);
+      delete nCore.modules.table.active.dataset.queryDefault
       defaultSelector.selectedIndex = 0;
       defaultSelector.disabled = true;
     }
@@ -1263,7 +956,7 @@ nCore.events = (function () {
     // обновляем источники
     var chosenOrigin = formulaSettings.querySelector('[name="chosenOrigin"]');
 
-    if ( activeCell.dataset.useChosenOrigin === 'true' ) {
+    if ( nCore.modules.table.active.dataset.useChosenOrigin === 'true' ) {
       var tmp_array = [];
       var origins = chosenOrigin.selectedOptions;
       for (var i = 0; i < origins.length; i++) {
@@ -1271,13 +964,13 @@ nCore.events = (function () {
         tmp_array.push( origins[i].value )
       };
 
-      //console.log('activeCell.dataset.useChosenOrigin ++', chosenOrigin.selectedOptions);
-      activeCell.dataset.useChosenOrigin = true;
-      activeCell.dataset.chosenOrigin = JSON.stringify( tmp_array );
+      //console.log('nCore.modules.table.active.dataset.useChosenOrigin ++', chosenOrigin.selectedOptions);
+      nCore.modules.table.active.dataset.useChosenOrigin = true;
+      nCore.modules.table.active.dataset.chosenOrigin = JSON.stringify( tmp_array );
     } else {
-      //console.log('activeCell.dataset.useChosenOrigin --', activeCell.dataset);
-      delete activeCell.dataset.useChosenOrigin
-      delete activeCell.dataset.chosenOrigin
+      //console.log('nCore.modules.table.active.dataset.useChosenOrigin --', nCore.modules.table.active.dataset);
+      delete nCore.modules.table.active.dataset.useChosenOrigin
+      delete nCore.modules.table.active.dataset.chosenOrigin
       chosenOrigin.selectedIndex = 0;
       chosenOrigin.disabled = true;
     }
@@ -1288,10 +981,9 @@ nCore.events = (function () {
       formulaSettingsItems = [].slice.call(formulaSettings.querySelectorAll('input'));
     for (var v = 0; v < formulaSettingsItems.length; v++) {
       var checkbox = formulaSettingsItems[v];
-      checkbox.checked = activeCell.dataset[checkbox.name] === 'true' ? activeCell.dataset[checkbox.name] : null;
+      checkbox.checked = nCore.modules.table.active.dataset[checkbox.name] === 'true' ? nCore.modules.table.active.dataset[checkbox.name] : null;
     };
   });
-
 
   nCore.modules.table.event.subscribe('newCellSettingsChange', function (NAME, URL) {
     console.groupCollapsed("newCellSettingsChange");
@@ -1349,13 +1041,6 @@ nCore.events = (function () {
         if ( _form.querySelector('[name="value"]') ) {
           cellQuery.value = _form.querySelector('[name="value"]').value ? _form.querySelector('[name="value"]').value : ''
         }
-
-        // var cr_c = card.querySelector('[name="criteria_condition_group"]');
-        // cr_c.value = item.criteria_condition;
-        // cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
-        // head.find('[name="origin_name"]').trigger('change') 
-        // head.find('[name="criteria_condition_group"]').trigger('change') 
-
         if ( cellQuery.origin_name == 'formula' ) {
           cellQuery.value = Base64.encode( cellQuery.value );
         }
@@ -1365,6 +1050,7 @@ nCore.events = (function () {
 
       _query.push(data);
     };
+
     // очищаем пустые группы перед добавлением в query
     var _result_query = [];
     for (var c = _query.length - 1; c >= 0; c--) {
@@ -1376,15 +1062,15 @@ nCore.events = (function () {
       // console.log( _query[c].query.source == null );
     };
 
-    if (activeCell) {
-      activeCell.dataset.query = JSON.stringify(_result_query);
+    if (nCore.modules.table.active) {
+      nCore.modules.table.active.dataset.query = JSON.stringify(_result_query);
     };
 
     if (NAME) {
-      activeCell.dataset.name = NAME
+      nCore.modules.table.active.dataset.name = NAME
     };
     if (URL) {
-      activeCell.dataset.url = URL
+      nCore.modules.table.active.dataset.url = URL
     };
 
     console.groupEnd();
@@ -1414,27 +1100,11 @@ nCore.events = (function () {
   nCore.document.root.subscribe('loadItem', function (items) {
     console.log('loadItem', items);
 
-    function load(item) {
-      nCore.query.get(item + '.json')
-        .success(function (data) {
-          console.log('loadData', data);
-          if ( item == 'documents') {
-            nCore.storage.setItem('documents', JSON.stringify(data.documents));
-            nCore.storage.setItem('templates', JSON.stringify(data.templates));
-          } else {
-            nCore.storage.setItem(item + '', JSON.stringify(data));
-          }
-          
-          nCore.document.root.publish(nCore.storage.getItem('indexViewType'));
-        }).error(function (data) {
-          console.error('[!] loadItem -> get', data);
-        });
-    };
-
     for (var z = 0; z < items.length; z++) {
       var item = items[z];
       console.log('ITEM', item);
-      load(item);
+
+      nCore.document.loadIndex(item);
     };
   });
 
@@ -1455,7 +1125,6 @@ nCore.events = (function () {
 
       var keys = [];
       data.filter(function (v, i) {
-        // console.log('filter', v, i);
         keys.push({
           value: v.type,
           name: v.name
@@ -1484,9 +1153,9 @@ nCore.events = (function () {
   });
 
   nCore.document.root.subscribe('addToFormula', function ( cell ) {
-    console.log('activeCell, cell', activeCell, cell);
+    console.log('nCore.modules.table.active, cell', nCore.modules.table.active, cell);
 
-    document.querySelector('[name="formula"]').value = activeCell.dataset.formula + ' #' + cell.id
+    document.querySelector('[name="formula"]').value = nCore.modules.table.active.dataset.formula + ' #' + cell.id
     nCore.modules.table.event.publish('cellFormulaChange');
   });
 
