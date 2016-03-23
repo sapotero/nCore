@@ -12,9 +12,7 @@ nCore.core = (function(){
     }
     this.event  = {};
     this.progress = document.getElementById('loaderProgress');
-
   };
-
   Core.prototype.globalQueryPopulate = function(){
     console.groupCollapsed("globalQueryPopulate");
 
@@ -175,7 +173,6 @@ nCore.core = (function(){
 
     console.groupEnd();
   };
-
   Core.prototype.findUpTag = function(el, tag) {
     while (el.parentNode) {
       el = el.parentNode;
@@ -184,7 +181,6 @@ nCore.core = (function(){
     }
     return null;
   };
-
   Core.prototype.uniq = function (a) {
     var prims = {"boolean":{}, "number":{}, "string":{}}, objs = [];
 
@@ -196,7 +192,6 @@ nCore.core = (function(){
         return objs.indexOf(item) >= 0 ? false : objs.push(item);
     });
   };
-
   Core.prototype.hightlightCell = function(cell) {
     var tds = document.querySelectorAll('.fr-wrapper > .fr-element > table td');
     

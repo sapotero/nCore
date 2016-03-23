@@ -92,8 +92,11 @@ class Document
 
   def self.with_images( documents )
     new_docs = []
-    documents.each { |doc| new_docs.push ({ params: doc, image: ( doc.image_id.nil? ? '' : doc.image) }) }
-    # Document.where( archived: false ).each { |doc| new_docs.push ( doc ) }
+    
+    documents.each do |document|
+      document['img'] = ( document.image_id.nil? ? '' : document.image )
+      new_docs.push( document )
+    end
     new_docs
   end
 

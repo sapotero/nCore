@@ -461,7 +461,7 @@ jQuery(function($) {
           console.log('SELECTED: e, term, item', e, term, item);
           input_search_selector.value = '';
           if ( item.dataset.hasOwnProperty('id') ) {
-            nCore.document.root.publish('go', "report/" + item.dataset.id)
+            nCore.document.event.publish('go', "report/" + item.dataset.id)
           }
         },
         renderItem: function (item, search){

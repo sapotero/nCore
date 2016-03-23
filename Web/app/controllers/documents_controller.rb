@@ -7,8 +7,11 @@ class DocumentsController < ApplicationController
   def index
     result = {}
 
-    result['documents'] = Document.active( current_user, with_images: true )
-    result['templates'] = Document.find_templates( with_images: true  )
+    # result['documents'] = Document.active( current_user, with_images: true )
+    # result['templates'] = Document.find_templates( with_images: true  )
+
+    result['documents'] = Document.active( current_user )
+    result['templates'] = Document.find_templates()
     render :json => result
   end
 

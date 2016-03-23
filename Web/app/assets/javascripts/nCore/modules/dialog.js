@@ -24,7 +24,7 @@ nCore.dialog = (function(){
     m.classList.toggle('mui-panel');
     m.classList.toggle('mui--z5');
     m.classList.toggle('_newDocument');
-    m.innerHTML = '<form onsubmit="nCore.document.root.publish(\'saveDocumentToDb\', this); return false;"><legend>Документ</legend><br><br><div class="mui-textfield mui-textfield--float-label"><input required name="nCoreDocumnetName"><label>Название</label></div><div class="mui-textfield mui-textfield--float-label"><input type=text required name="nCoreDocumnetDescription"><label>Описание</label></div><div class="mui--text-right"><button type=button onclick="mui.overlay(\'off\');" class="mui-btn mui-btn--raised mui-btn--danger">отмена</button><button type=submit class="mui-btn mui-btn--raised mui-btn--primary">сохранить</button></div></form>';
+    m.innerHTML = '<form onsubmit="nCore.document.event.publish(\'saveDocumentToDb\', this); return false;"><legend>Документ</legend><br><br><div class="mui-textfield mui-textfield--float-label"><input required name="nCoreDocumnetName"><label>Название</label></div><div class="mui-textfield mui-textfield--float-label"><input type=text required name="nCoreDocumnetDescription"><label>Описание</label></div><div class="mui--text-right"><button type=button onclick="mui.overlay(\'off\');" class="mui-btn mui-btn--raised mui-btn--danger">отмена</button><button type=submit class="mui-btn mui-btn--raised mui-btn--primary">сохранить</button></div></form>';
 
     var overlay = mui.overlay('on', options, m);
     overlay.classList.toggle('animated');
@@ -202,7 +202,7 @@ nCore.dialog = (function(){
       setTimeout(function () {
         mui.overlay('off');
         document.body.classList.add('hide-sidedrawer');
-        nCore.document.root.publish('generateNewDocument');
+        nCore.document.event.publish('generateNewDocument');
         location.hash = "#" + documentType + "/new";
       }, 1000);
       var error = false;

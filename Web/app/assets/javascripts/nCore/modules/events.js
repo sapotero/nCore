@@ -1,5 +1,4 @@
 "use strict";
-
 // модуль отвечающий за взаимодействие компонентов фреймворка
 
 var nCore = nCore || {};
@@ -14,56 +13,56 @@ nCore.events = (function () {
 
 
   // новый документ
-  nCore.document.root.subscribe('newDocument', function () {
+  nCore.document.event.subscribe('newDocument', function () {
     nCore.dialog.newDocument();
   });
 
-  nCore.document.root.subscribe('showDocumentSettings', function (data) {
+  nCore.document.event.subscribe('showDocumentSettings', function (data) {
     nCore.dialog.showSettings();
   });
 
-  nCore.document.root.subscribe('showGroupModal', function (data) {
+  nCore.document.event.subscribe('showGroupModal', function (data) {
     nCore.dialog.showGroup();
   });
 
-  nCore.document.root.subscribe('addGroupData', function (data) {
+  nCore.document.event.subscribe('addGroupData', function (data) {
     // console.log('addGroupData', data);
     nCore.modules.table.fromGroup(data);
   });
 
   // редактирование настроек документа
-  nCore.document.root.subscribe('updateDocument', function (rootNode) {
+  nCore.document.event.subscribe('updateDocument', function (rootNode) {
     nCore.document.update( rootNode );
   });
 
   // сохранение документа
-  nCore.document.root.subscribe('saveDocument', function (data) {
+  nCore.document.event.subscribe('saveDocument', function (data) {
     console.log('saveDocument sub');
     // проверяем, не шаблон ли это?
     if ( nCore.document.template ) {
       console.log('try to edit template: ', nCore.document.template );
-      nCore.document.root.publish('tryToEditTemplate');
+      nCore.document.event.publish('tryToEditTemplate');
     } else {
       if (nCore.document.isNew ) {
-        nCore.document.root.publish('newDocument');
+        nCore.document.event.publish('newDocument');
       }
       else {
-        nCore.document.root.publish('saveDocumentToDb');
+        nCore.document.event.publish('saveDocumentToDb');
       }
     }
   });
 
-  nCore.document.root.subscribe('tryToEditTemplate', function () {
+  nCore.document.event.subscribe('tryToEditTemplate', function () {
     nCore.dialog.editTemplate();
   });
 
 
-  nCore.document.root.subscribe('tryToSaveFromTemplate', function () {
+  nCore.document.event.subscribe('tryToSaveFromTemplate', function () {
     nCore.document.create();
   });
 
 
-  nCore.document.root.subscribe('saveDocumentToDb', function (data) {
+  nCore.document.event.subscribe('saveDocumentToDb', function (data) {
     console.log('data++: ', data);
     // если передеали значения из формы
     // если документ новый - показываем модальное окошко с вводом имени
@@ -76,12 +75,12 @@ nCore.events = (function () {
     }
   });
 
-  nCore.document.root.subscribe('generateNewDocument', function () {
+  nCore.document.event.subscribe('generateNewDocument', function () {
     nCore.document.new();
   });
 
   // [NEW] изменение свойств документа
-  nCore.document.root.subscribe('initEditor', function (body) {
+  nCore.document.event.subscribe('initEditor', function (body) {
     console.groupCollapsed('initEditor', !!body);
     var BODY = body;
     try{
@@ -162,15 +161,15 @@ nCore.events = (function () {
   });
 
   // изменение типа документа
-  // nCore.document.root.subscribe('setDocumentType', function (type) {
+  // nCore.document.event.subscribe('setDocumentType', function (type) {
   //   nCore.document.type = type;
   // });
 
-  nCore.document.root.subscribe('go', function (url) {
+  nCore.document.event.subscribe('go', function (url) {
     location.hash = "#" + url;
   });
 
-  nCore.document.root.subscribe('loadDocument', function (id, callback) {
+  nCore.document.event.subscribe('loadDocument', function (id, callback) {
       console.groupCollapsed('Loading document');
 
       var load = new Promise(function(resolve, reject) {
@@ -208,7 +207,7 @@ nCore.events = (function () {
           resolve( rawDocument );
         }).error(function (data) {
           mui.overlay('off');
-          nCore.document.root.publish('nCoreDocumentFailedToLoad');
+          nCore.document.event.publish('nCoreDocumentFailedToLoad');
           console.error('[!] loadDocument -> get', data);
           reject(data);
         });
@@ -228,12 +227,12 @@ nCore.events = (function () {
 
         nCore.document.windowTitle( rawDocument.name );
 
-        nCore.document.root.publish('populateChosenOrigin');
+        nCore.document.event.publish('populateChosenOrigin');
 
         callback && typeof (callback) === 'function' ? callback.call(this, rawDocument) : false;
         return rawDocument;
       }).then(function(result) {
-        // var editor = nCore.document.root.publish('initEditor');
+        // var editor = nCore.document.event.publish('initEditor');
         console.log("allDone!", result);
       }).catch(function(result) {
         console.log("ERROR!", result);
@@ -248,11 +247,11 @@ nCore.events = (function () {
   );
 
   // создание нового документа
-  nCore.document.root.subscribe('createNewDocument', function (type) {
+  nCore.document.event.subscribe('createNewDocument', function (type) {
     nCore.dialog.createNew(type);
   });
 
-  nCore.document.root.subscribe('attachListMenu', function (type) {
+  nCore.document.event.subscribe('attachListMenu', function (type) {
     nCore.menu.attach('.mui-panel.indexListView', '.menu');
   });
 
@@ -261,17 +260,17 @@ nCore.events = (function () {
   // События рендера //
   /////////////////////
   ///
-  nCore.document.root.subscribe('deleteReport', function(element){
+  nCore.document.event.subscribe('deleteReport', function(element){
     nCore.document.delete( element );
   });
 
   // изменяем тип отображения
-  nCore.document.root.subscribe('changeRenderType', function (type) {
+  nCore.document.event.subscribe('changeRenderType', function (type) {
     nCore.storage.setItem('indexViewType', type);
-    nCore.document.root.publish('renderIndexView', type);
+    nCore.document.event.publish('renderIndexView', type);
   });
 
-  nCore.document.root.subscribe('populateChosenOrigin', function(){
+  nCore.document.event.subscribe('populateChosenOrigin', function(){
     var chosenOrigin = document.querySelector('[name="chosenOrigin"]'),
         criteriaKeys = JSON.parse( nCore.storage.criteriaKeys );
 
@@ -280,223 +279,24 @@ nCore.events = (function () {
     };
   });
   
-  nCore.document.root.subscribe('nCoreDocumentFailedToLoad', function () {
+  nCore.document.event.subscribe('nCoreDocumentFailedToLoad', function () {
     nCore.dialog.loadFailed();
   });
 
-  nCore.document.root.subscribe('routeFailedToLoad', function () {
+  nCore.document.event.subscribe('routeFailedToLoad', function () {
     nCore.dialog.applicationError();
   });
 
-  nCore.document.root.subscribe('renderIndexView', function (type) {
-
-    var render = new Promise(function(resolve, reject) {
-      document.getElementById('thumb').classList.add('mui--hide');
-      
-      // если не был выбран вариант отображения страницы
-      if (!nCore.storage.hasOwnProperty('indexViewType')) {
-        nCore.storage.setItem('indexViewType', 'thumb');
-      }
-
-      if ( nCore.storage.hasOwnProperty( type ) && JSON.parse( nCore.storage.getItem(type) ).length || JSON.parse(nCore.storage.getItem('templates')).length ) {
-        if ( JSON.parse(nCore.storage.getItem('templates')).length ) {
-          var helperTemplate = {
-            documentTitle: {
-              text: function (params) {
-                // console.log(this);
-
-                return this.params.name || '---';
-              }
-            },
-            documentDate: {
-              text: function (params) {
-                // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-                return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
-                  year  : 'numeric',
-                  month : 'numeric',
-                  day   : 'numeric'
-                } : {
-                  year   : 'numeric',
-                  month  : 'numeric',
-                  day    : 'numeric',
-                  hour   : 'numeric',
-                  minute : 'numeric'
-
-                });
-              }
-            },
-            documentId: {
-              href: function (params) {
-                return "#/report/" + this.params._id || Math.random();
-              },
-              text: function () {
-                return ''
-              }
-            },
-            downloadDoc: {
-              href: function (params) {
-                return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
-              }
-            },
-            downloadPdf: {
-              href: function (params) {
-                return "documents/" + this.params._id + ".pdf";
-              }
-            },
-            downloadXls: {
-              href: function (params) {
-                return "documents/" + this.params._id + ".xlsx";
-              }
-            },
-            removeDocument: {
-              href: function (params) {
-                return location.hash;
-              },
-              type: function () {
-                return this.params._id;
-              }
-            },
-            documentUser: {
-              text: function () {
-                return this.params.user;
-              }
-            },
-            documentImage: {
-              src: function(params){
-                return ( this.image.length ? this.image : 'assets/img/doc.png' );
-              }
-            },
-            groupTitle: {
-              text: function () {
-                return 'Шаблоны';
-              }
-            }
-          };
-          
-          var templates = JSON.parse(nCore.storage.getItem('templates'));
-          Transparency.render( document.querySelector('#template'), templates, helperTemplate );
-
-          // console.log('templates.length');
-          
-          var _mui_rows = document.querySelector('.mui-row._indexViewTemplate'),
-          _active_row = document.querySelector('._indexViewTemplate');
-
-          for (var i = 0; i < _mui_rows.length; i++) {
-            _mui_rows[i].classList.add('mui--hide');
-          }
-
-          if (_active_row) {
-            _active_row.classList.remove('mui--hide');
-          };
-        }
-        if ( JSON.parse(nCore.storage.getItem(type)).length ) {
-          var helper = {
-            documentTitle: {
-              text: function (params) {
-                return this.params.name || '---';
-              }
-            },
-            documentDate: {
-              text: function (params) {
-                // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-                return new Date( this.params.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
-                  year  : 'numeric',
-                  month : 'numeric',
-                  day   : 'numeric'
-                } : {
-                  year   : 'numeric',
-                  month  : 'numeric',
-                  day    : 'numeric',
-                  hour   : 'numeric',
-                  minute : 'numeric'
-
-                });
-              }
-            },
-            documentId: {
-              href: function (params) {
-                return "#/report/" + this.params._id || Math.random();
-              },
-              text: function () {
-                return ''
-              }
-            },
-            downloadDoc: {
-              href: function (params) {
-                return "/" + type + "/" + (this.params._id || Math.random()) + "/download";
-              }
-            },
-            downloadPdf: {
-              href: function (params) {
-                return "documents/" + this.params._id + ".pdf";
-              }
-            },
-            downloadXls: {
-              href: function (params) {
-                return "documents/" + this.params._id + ".xlsx";
-              }
-            },
-            removeDocument: {
-              href: function (params) {
-                return location.hash;
-              },
-              type: function () {
-                return this.params._id
-              }
-            },
-            documentUser: {
-              text: function () {
-                return this.params.user
-              }
-            },
-            documentImage: {
-              src: function(params){
-                return ( this.image.length ? this.image : 'assets/img/doc.png' )
-              }
-            },
-            groupTitle: {
-              text: function () {
-                return 'Шаблоны'
-              }
-            }
-          };
-
-          var items = JSON.parse(nCore.storage.getItem(type));
-          Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
-
-          document.body.classList.add('hide-sidedrawer');
-          document.getElementById('thumb').classList.remove('mui--hide')
-
-          var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
-            _active_row = document.querySelector('._indexView.' + nCore.storage.getItem('indexViewType'));
-
-          for (var i = 0; i < _mui_rows.length; i++) {
-            _mui_rows[i].classList.add('mui--hide')
-          }
-
-          if (_active_row) {
-            _active_row.classList.remove('mui--hide');
-          };
-        }
-        resolve(true)
-      } else {
-        reject(false);
-      }
-    });
-
-    render.then(function(data) {
-      return data;
-    }).catch(function(result) {
-      console.log("ERROR renderCellSettings!", result);
-    });
+  nCore.document.event.subscribe('renderIndexView', function () {
+    nCore.grid.render();
   });
 
-  nCore.document.root.subscribe('renderNotPermit', function (data) {
+  nCore.document.event.subscribe('renderNotPermit', function (data) {
     nCore.dilaog.notPermit();
   });
 
   // проверяем что показывать
-  nCore.document.root.subscribe('onRouteChange', function (data) {
+  nCore.document.event.subscribe('onRouteChange', function (data) {
     console.groupCollapsed('onRouteChange');
     console.log('params: ', data);
     console.groupEnd();
@@ -507,7 +307,7 @@ nCore.events = (function () {
   /////////////////////////
 
   // создание критериев поиска
-  nCore.document.root.subscribe('generateQuery', function (data) {
+  nCore.document.event.subscribe('generateQuery', function (data) {
 
     var data = {
       message: 'Отчет начал считаться.',
@@ -822,19 +622,19 @@ nCore.events = (function () {
       console.log("ERROR renderCellSettings!", result);
     });
 
-    nCore.document.root.publish('showSideMenu', nCore.document.showCellSettings );
+    nCore.document.event.publish('showSideMenu', nCore.document.showCellSettings );
     console.groupEnd();
   });
 
   // показываем боковое меню по нажатию кнопки
-  nCore.document.root.subscribe('showSideMenu', function(showCellSettings){
+  nCore.document.event.subscribe('showSideMenu', function(showCellSettings){
     document.getElementById('cellSettings').classList.add('active');
     document.querySelector('.AddDocument').classList.add('fadeOut');
     document.querySelector('.AddDocument').classList.remove('fadeIn');
   });
 
   // скрываем боковое меню по нажатию кнопки
-  nCore.document.root.subscribe('hideSideMenu', function(showCellSettings){
+  nCore.document.event.subscribe('hideSideMenu', function(showCellSettings){
     if ( !nCore.document.showCellSettings && document.getElementById('cellSettings') ) {
       document.getElementById('cellSettings').classList.remove('active');
       document.querySelector('.AddDocument').classList.remove('fadeOut');
@@ -842,7 +642,7 @@ nCore.events = (function () {
     }
   });
 
-  nCore.document.root.subscribe('globalCriteriaCalculate', function(body){
+  nCore.document.event.subscribe('globalCriteriaCalculate', function(body){
     
     body = body || document.querySelector('._nCoreDocumentSettings');
     // console.log( 'globalCriteriaCalculate', body );
@@ -1095,20 +895,7 @@ nCore.events = (function () {
   // События загрузчика //
   ////////////////////////
 
-
-  // загружаем шаблоны
-  nCore.document.root.subscribe('loadItem', function (items) {
-    console.log('loadItem', items);
-
-    for (var z = 0; z < items.length; z++) {
-      var item = items[z];
-      console.log('ITEM', item);
-
-      nCore.document.loadIndex(item);
-    };
-  });
-
-  nCore.document.root.subscribe('loadCriteria', function (data) {
+  nCore.document.event.subscribe('loadCriteria', function (data) {
     // console.log('loadCriteria', data);
 
     // если уже есть загруженные справочники
@@ -1142,7 +929,7 @@ nCore.events = (function () {
   // Формула //
   /////////////
   
-  nCore.document.root.subscribe('addFormulaField', function ( value) {
+  nCore.document.event.subscribe('addFormulaField', function ( value) {
     var tab     = document.querySelector('.formulaSelectorGroupList'),
         formula = Transparency.render( document.querySelector('.nCoreDocumentFormulaField'), {});
 
@@ -1152,7 +939,7 @@ nCore.events = (function () {
     tab.appendChild( formula );
   });
 
-  nCore.document.root.subscribe('addToFormula', function ( cell ) {
+  nCore.document.event.subscribe('addToFormula', function ( cell ) {
     console.log('nCore.modules.table.active, cell', nCore.modules.table.active, cell);
 
     document.querySelector('[name="formula"]').value = nCore.modules.table.active.dataset.formula + ' #' + cell.id

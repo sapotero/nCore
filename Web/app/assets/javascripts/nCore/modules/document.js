@@ -28,16 +28,20 @@ nCore.document = (function(){
     this.description          = '';
     this.documentCellQuery    = {};
     this.isNew                = true;
-    this.root = {};
+    this.event = {};
     this.showCellSettings     = false;
 
     this.init();
   };
   Document.prototype.init = function() {
-    nCore.attachTo( this.root );
+    var doc = this;
+    
+    console.log('init doc');
 
-    this.root.publish( 'loadItem', [ 'documents' ] );
-    this.root.publish( 'loadCriteria' );
+    nCore.attachTo( doc.event );
+    doc.loadIndex(['documents']);
+    // doc.event.publish( 'loadCriteria' );
+
   };
   Document.prototype.new = function() {
     nCore.document = new Document();
@@ -107,69 +111,35 @@ nCore.document = (function(){
     this.isNew             = false;
 
     if ( config.body ) {
-      this.root.publish('initEditor', Base64.decode( config.body ));
+      this.event.publish('initEditor', Base64.decode( config.body ));
     }
   };
-  Document.prototype.loadIndex = function(item){
+  Document.prototype.loadIndex = function(items){
 
-    var render = {};
-    
-    render.addOverlay = function(){
-      console.log('addOverlay');
-      var options = {
-        'keyboard': false, // teardown when <esc> key is pressed (default: true)
-        'static': true, // maintain overlay when clicked (default: false)
-        'onclose': function () {
-          // after callback
-        }
-      };
+    console.log('loadIndex', items);
 
-      var m = document.createElement('div');
-      m.style.width = '400px';
-      m.style.height = '100px';
-      m.style.margin = '10% auto';
-      m.style.padding = '10% auto';
-      m.style.backgroundColor = '#fff';
-      m.classList.toggle('mui-panel');
-      m.classList.toggle('mui--z5');
-      m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
-
-      var overlay = mui.overlay('on', options, m);
-      overlay.classList.toggle('animated');
-      overlay.classList.toggle('fadeIn');
-    };
-    render.removeOverlay = function(){
-      console.log('removeOverlay');
-      try {
-        mui.overlay('off');
-      } catch(error){
-        throw new Error(error);
-      }
-    };
-
-    render.promise =  new Promise(function(resolve, reject) {
-      nCore.query.get(item + '.json')
-        .success(function (data) {
-          console.log('loadData', data);
-          if ( item == 'documents') {
-            nCore.storage.setItem('documents', JSON.stringify(data.documents));
-            nCore.storage.setItem('templates', JSON.stringify(data.templates));
-          } else {
-            nCore.storage.setItem(item + '', JSON.stringify(data));
-          }
-          resolve(true);
-        }).error(function (data) {
-          console.error('[!] loadItem -> get', data);
-          reject(false);
-        });
-      
+    var load = new Promise(function(resolve, reject) {
+      items.forEach(function(item){
+        nCore.query.get(item + '.json')
+          .success(function (data) {
+            console.log('loadData', data);
+            if ( item == 'documents') {
+              nCore.storage.setItem('documents', JSON.stringify(data.documents));
+              nCore.storage.setItem('templates', JSON.stringify(data.templates));
+            } else {
+              nCore.storage.setItem(item + '', JSON.stringify(data));
+            }
+            resolve(data);
+          }).error(function (data) {
+            console.error('[!] loadItem -> get', data);
+            reject(false);
+          });
+      });
     });
 
-    render.addOverlay();
-
-    render.promise.then(function(data) {
-      setTimeout( render.removeOverlay, 500 );
-      nCore.document.root.publish(nCore.storage.getItem('indexViewType'));
+    load.then(function(data) {
+     nCore.grid.load(data);
+      // nCore.document.event.publish(nCore.storage.getItem('indexViewType'));
     }).catch(function(result) {
       // render.removeOverlay();
       console.log("ERROR renderCellSettings!", result);
@@ -187,7 +157,7 @@ nCore.document = (function(){
     this.isNew             = false;
 
     if ( config.body ) {
-      this.root.publish('initEditor', Base64.decode( config.body ));
+      this.event.publish('initEditor', Base64.decode( config.body ));
     }
   };
   Document.prototype.create = function() {
@@ -338,7 +308,6 @@ nCore.document = (function(){
       // render.removeOverlay();
       console.log("ERROR renderCellSettings!", result);
     });
-
   };
   Document.prototype.delete = function(element){
     console.log('***deleteReport', element_root, element);
@@ -359,6 +328,6 @@ nCore.document = (function(){
       console.error('[!] deleteReport -> get', data);
     });
   };
-  
+
   return new Document();
 })();

@@ -3782,7 +3782,7 @@ initFroalaEditor.then(function(data) {
       , "table.edit": "[_BUTTONS_]"
       , "table.colors": "[_BUTTONS_][_COLORS_]"
     }), a.extend(a.FroalaEditor.DEFAULTS, {
-      tableInsertMaxSize: 30
+      tableInsertMaxSize: 15
       // , tableEditButtons: ["tableHeader", "tableRemove", "|", "tableRows", "tableColumns", "tableStyle", "-", "tableCells", "tableCellBackground", "tableCellVerticalAlign", "tableCellHorizontalAlign", "tableCellStyle"]
       , tableEditButtons: ["tableRemove", "|", "tableRows", "tableColumns", "tableCells","-", "tableCellBackground", "tableCellVerticalAlign", "tableCellHorizontalAlign", "tableCellStyle"]
       , tableInsertButtons: ["tableBack", "|"]
@@ -3863,10 +3863,12 @@ initFroalaEditor.then(function(data) {
             , rows_columns: h()
           }
           , e = b.popups.create("table.insert", d);
+        
         return b.popups.onHide("table.insert", function () {
-          e.find('.fr-table-size .fr-select-table-size > span[data-row="1"][data-col="1"]')
-            .trigger("mouseenter")
-        }), e.on("mouseenter", ".fr-table-size .fr-select-table-size .fr-table-cell", function (c) {
+          e.find('.fr-table-size .fr-select-table-size > span[data-row="1"][data-col="1"]').trigger("mouseenter")
+        }),
+
+        e.on("mouseenter", ".fr-table-size .fr-select-table-size .fr-table-cell", function (c) {
           var d = a(c.currentTarget)
             , e = d.data("row")
             , f = d.data("col")
@@ -3877,9 +3879,21 @@ initFroalaEditor.then(function(data) {
           for (var h = 1; h <= b.opts.tableInsertMaxSize; h++)
             for (var i = 0; i <= b.opts.tableInsertMaxSize; i++) {
               var j = g.find('> span[data-row="' + h + '"][data-col="' + i + '"]');
-              e >= h && f >= i ? j.addClass("hover") : e + 1 >= h || 2 >= h && !b.helpers.isMobile() ? j.css("display", "inline-block") : h > 2 && !b.helpers.isMobile() && j.css("display", "none")
+              
+              if ( e >= h && f >= i ) {
+                j.addClass("hover")
+              } else {
+                
+                if ( e + 1 >= h || 2 >= h && !b.helpers.isMobile() ) {
+                  j.css("display", "inline-block")
+                } else {
+                  h > 2 && !b.helpers.isMobile() && j.css("display", "none")
+               }
+              }
             }
-        }), b.events.on("destroy", function () {
+        }),
+
+        b.events.on("destroy", function () {
           e.off("mouseenter", ".fr-table-size .fr-select-table-size .fr-table-cell")
         }, !0), e
       }
@@ -5425,7 +5439,7 @@ $.FroalaEditor.LANGUAGE['ru'] = {
     , undo: false
     , refreshAfterCallback: false
     , callback: function () {
-      nCore.document.root.publish('saveDocument');
+      nCore.document.event.publish('saveDocument');
     }
   });
 
@@ -5440,9 +5454,9 @@ $.FroalaEditor.LANGUAGE['ru'] = {
     , callback: function () {
       if ( nCore.document.template ) {
         console.log('try to edit template: ', nCore.document.template );
-        nCore.document.root.publish('tryToEditTemplate');
+        nCore.document.event.publish('tryToEditTemplate');
       } else {
-        nCore.document.root.publish('generateQuery');
+        nCore.document.event.publish('generateQuery');
       }
     }
   });
@@ -5456,7 +5470,7 @@ $.FroalaEditor.LANGUAGE['ru'] = {
     , undo: false
     , refreshAfterCallback: false
     , callback: function () {
-      nCore.document.root.publish('showDocumentSettings')
+      nCore.document.event.publish('showDocumentSettings')
     }
   });
 
@@ -5469,7 +5483,7 @@ $.FroalaEditor.LANGUAGE['ru'] = {
     , undo: false
     , refreshAfterCallback: false
     , callback: function () {
-      nCore.document.root.publish('showGroupModal')
+      nCore.document.event.publish('showGroupModal')
     }
   });
 

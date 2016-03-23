@@ -91,7 +91,7 @@ jQuery(function($) {
         e.target.id = id;
         console.log( 'generate id', id );
       };
-      nCore.document.root.publish('addToFormula', e.target );
+      nCore.document.event.publish('addToFormula', e.target );
       // };
     } else {
       nCore.modules.table.event.publish('cellSelect', this );
@@ -117,7 +117,7 @@ jQuery(function($) {
 
   // добвление нового документа
   $('.AddDocument').live('click', function(){
-    nCore.document.root.publish('createNewDocument');
+    nCore.document.event.publish('createNewDocument');
   })
 
   // добавление группы критериев
@@ -153,7 +153,7 @@ jQuery(function($) {
   // удаление документа
   $('.removeDocument').live('click', function(e){
     // e.preventDefault();
-    nCore.document.root.publish('deleteReport', this);
+    nCore.document.event.publish('deleteReport', this);
     return false;
   });
 
@@ -394,7 +394,7 @@ jQuery(function($) {
   $('.criteriaMenuItem.settings, .criteriaSelectorItemHeader').live('click', function(e){
 
     // убрать из прода | каждый раз грузим справочники и критерии
-    nCore.document.root.publish('loadCriteria');
+    nCore.document.event.publish('loadCriteria');
 
     var el = ( $(this).hasClass('criteriaSelectorItem') ? $(this) : $(this).parents('.criteriaSelectorItem') );
     var child = el.children('.criteriaForm');
@@ -427,15 +427,15 @@ jQuery(function($) {
     icon.classList.toggle('fa-th-large');
     icon.classList.toggle('fa-list');
 
-    nCore.document.root.publish('renderIndexView', 'documents');
+    nCore.document.event.publish('renderIndexView', 'documents');
   })
   
 
   $('.layoutSideMenuItem').live('click', function(){
     if ( this.dataset.hasOwnProperty('type') ) {
       $bodyEl.toggleClass('hide-sidedrawer');
-      nCore.document.root.publish('setDocumentType', this.dataset.type);
-      nCore.document.root.publish('go', this.dataset.type);
+      nCore.document.event.publish('setDocumentType', this.dataset.type);
+      nCore.document.event.publish('go', this.dataset.type);
     };
   });
 
@@ -478,7 +478,7 @@ jQuery(function($) {
 
   $('[name="documentGlobalSettings"]').live('click', function(){
     nCore.modules.table.event.publish('globalCriteriaCalculate');
-    nCore.document.root.publish( 'updateDocument', this );
+    nCore.document.event.publish( 'updateDocument', this );
   });
 
   $('[name="yearReport"]').live('change', function(){

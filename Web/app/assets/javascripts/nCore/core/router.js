@@ -7,7 +7,7 @@
  */
 
 var nCore = nCore || {};
-nCore.router =(function() {
+nCore.router = (function() {
   var routes = {},
       decode = decodeURIComponent;
 
@@ -28,18 +28,18 @@ nCore.router =(function() {
 
     for (var i = 0; i < pieces.length && rules; ++i) {
       var piece = esc(pieces[i]);
-      rules = rules[piece.toLowerCase()] || rules[':'];
+      rules = rules[ piece.toLowerCase() ] || rules[':'];
       rules && rules['~'] && (params[rules['~']] = piece);
     }
 
     return rules && {
-      cb: rules['@'],
+      callback: rules['@'],
       params: params
     };
   }
 
   function processQuery(url, ctx, esc) {
-    if (url && ctx.cb) {
+    if (url && ctx.callback) {
       var hash = url.indexOf('#'),
           query = (hash < 0 ? url : url.slice(0, hash)).split('&');
 
@@ -72,14 +72,14 @@ nCore.router =(function() {
 
         rules = rules[name] || (rules[name] = {});
 
-        name == ':' && (rules['~'] = piece.slice(1));
+        name == ':' && ( rules['~'] = piece.slice(1) );
       }
 
       rules['@'] = handler;
     },
 
     exists: function (url) {
-      return !!lookup(url).cb;
+      return !!lookup(url).callback;
     },
 
     lookup: lookup,
@@ -87,13 +87,14 @@ nCore.router =(function() {
     run: function(url) {
       var result = lookup(url);
 
-      result.cb && result.cb({
+      result.callback && result.callback({
         url: url,
         params: result.params
       });
 
-      return !!result.cb;
-    }
+      return !!result.callback;
+    },
+    routes: routes
   };
 })();
 
@@ -110,8 +111,8 @@ jQuery(function($) {
         /////////////////////////////
         nCore.router.add('', function () {
           
-          // nCore.document.root.publish( 'loadItem', [ 'documents', 'forms' ] );
-          // nCore.document.root.publish( 'loadCriteria' );
+          // nCore.document.event.publish( 'loadItem', [ 'documents', 'forms' ] );
+          // nCore.document.event.publish( 'loadCriteria' );
 
           location.hash = '#/report';
 
@@ -124,8 +125,8 @@ jQuery(function($) {
           //   };
             
           //   // рендерим превьюхи документа
-          //   nCore.document.root.publish('attachListMenu');
-          //   nCore.document.root.publish('renderIndexView');
+          //   nCore.document.event.publish('attachListMenu');
+          //   nCore.document.event.publish('renderIndexView');
           // });
         });
 
@@ -133,11 +134,7 @@ jQuery(function($) {
         // роуты отчетов //
         ///////////////////
         nCore.router.add('report', function (r) {
-          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
-
-          nCore.document.root.publish( 'loadItem', [ 'documents' ] );
-          nCore.document.root.publish( 'loadCriteria' );
-          
+          // document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
           // nCore.document.windowTitle('Главная'))
 
           // есть ли у юзера право просматривать таблицы
@@ -150,8 +147,8 @@ jQuery(function($) {
                 wrapper.innerHTML = data;
               }
               nCore.document.windowTitle('Отчёт');
-              nCore.document.root.publish('attachListMenu');
-              nCore.document.root.publish('renderIndexView', 'documents');
+              nCore.document.event.publish('attachListMenu');
+              nCore.document.event.publish('renderIndexView', 'documents');
             });
           } else {
             template.notPermit(function(data){
@@ -165,13 +162,16 @@ jQuery(function($) {
         
         nCore.router.add('report/new', function (r) {
           nCore.document.windowTitle('Новый документ'); // document.title = 'report new'
+
           var template = new nCore.templates.render({template: "report/new" });
-          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
+
+          // document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
+
           template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
-              nCore.document.root.publish('initEditor');
+              nCore.document.event.publish('initEditor');
             };
           });
         });
@@ -179,14 +179,15 @@ jQuery(function($) {
         nCore.router.add('report/:id', function (r) {
           // document.title = 'reports/:id '+ r.params.id;
           var template = new nCore.templates.render({template: "report/new" });
-          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
+          
+          // document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/index.css';
           template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
               
-              nCore.document.root.publish('loadDocument', r.params.id );
-              // nCore.document.root.publish('initEditor');
+              nCore.document.event.publish('loadDocument', r.params.id );
+              // nCore.document.event.publish('initEditor');
             };
           });
         });
@@ -196,7 +197,7 @@ jQuery(function($) {
         //////////////
         nCore.router.add('buiseness', function (r) {
           // есть ли у юзера право просматривать таблицы
-          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
+          // document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
           var template = new nCore.templates.render({template: "report/index" });
           if ( nCore.roles.check('viewTable') ) {
             template.render( function(data){ 
@@ -205,7 +206,7 @@ jQuery(function($) {
                 wrapper.innerHTML = data;
               };
 
-              nCore.document.root.publish('renderIndexView', 'documents');
+              nCore.document.event.publish('renderIndexView', 'documents');
             });
           } else {
             template.notPermit(function(data){
@@ -220,12 +221,12 @@ jQuery(function($) {
         nCore.router.add('buiseness/new', function (r) {
           // document.title = 'buiseness new';
           var template = new nCore.templates.render({template: "report/new" });
-          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
+          // document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
           template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
-              nCore.document.root.publish('initEditor');
+              nCore.document.event.publish('initEditor');
             };
           });
         });
@@ -233,12 +234,12 @@ jQuery(function($) {
         nCore.router.add('buiseness/:name', function (r) {
           // document.title = 'buiseness/:name '+ r.params.name;
           var template = new nCore.templates.render({template: "report/index" });
-          document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
+          // document.querySelector("#nCoreThemeRoller").href = 'assets/css/style/buiseness.css';
           template.render( function(data){ 
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
-              nCore.document.root.publish('initEditor');
+              nCore.document.event.publish('initEditor');
             };
           });
         });
@@ -256,7 +257,7 @@ jQuery(function($) {
                 wrapper.innerHTML = data;
               };
 
-              nCore.document.root.publish('renderIndexView', 'documents');
+              nCore.document.event.publish('renderIndexView', 'documents');
             });
           } else {
             template.notPermit(function(data){
@@ -276,7 +277,7 @@ jQuery(function($) {
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
-              nCore.document.root.publish('initEditor');
+              nCore.document.event.publish('initEditor');
             };
           });
         });
@@ -289,7 +290,7 @@ jQuery(function($) {
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
-              nCore.document.root.publish('initEditor');
+              nCore.document.event.publish('initEditor');
             };
           });
         });
@@ -308,7 +309,7 @@ jQuery(function($) {
                 wrapper.innerHTML = data;
               };
 
-              nCore.document.root.publish('renderIndexView', 'forms');
+              nCore.document.event.publish('renderIndexView', 'forms');
             });
           } else {
             template.notPermit(function(data){
@@ -340,7 +341,7 @@ jQuery(function($) {
             if ( data ) {
               var wrapper = document.getElementById('content-wrapper');
               wrapper.innerHTML = data;
-              nCore.document.root.publish('initEditor');
+              nCore.document.event.publish('initEditor');
             };
           });
         });
@@ -354,28 +355,29 @@ jQuery(function($) {
           //   if ( data ) {
           //     var wrapper = document.getElementById('content-wrapper');
           //     wrapper.innerHTML = data;
-          //     nCore.document.root.publish('initEditor');
+          //     nCore.document.event.publish('initEditor');
           //   };
           // });
         });
 
         function processHash() {
-          var hash = location.hash || '#';
+          var hash  = location.hash || '#',
+              route = hash.slice(1);
 
-          if ( nCore.router.exists( hash.slice(1) ) ) {
+          if ( nCore.router.exists( route ) ) {
             // если роут есть
-            nCore.router.run( hash.slice(1) );
+            nCore.router.run( route );
           } else {
             // если нет показываем пользователю х
             console.log('not exists');
-            nCore.document.root.publish('routeFailedToLoad');
+            nCore.document.event.publish('routeFailedToLoad');
           }
         }
 
         window.addEventListener('hashchange', processHash);
         processHash();
         
-      }, 10);
+      }, 100);
       // reject(false)
       resolve(true)
   });

@@ -1216,6 +1216,8 @@ color: rgba(255,255,255,0.4) !important;
   /*padding: 5px;*/
   padding-right: 16.66667%;
   background-color: #FAFAFA;
+  position: fixed;
+  z-index: 10;
 }
 
 .button{
@@ -1796,4 +1798,13 @@ input[type="radio"].styled:checked label:after,
 }
 .fr-element table td.ac{
   border: 1px double #1e88e5;
+}
+
+#_templates{
+  top: 30px;
+  position: relative;
+}
+#_documents{
+  top: 30px;
+  position: relative;
 }
