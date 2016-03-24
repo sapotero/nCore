@@ -18,6 +18,7 @@ nCore.grid = (function(){
   var Menu = function(){
     this.element = document.querySelector('.bar');
     this.buttons = [];
+    this.active  = {};
   };
   Menu.prototype.clear = function(){
     this.buttons = [];
@@ -39,12 +40,12 @@ nCore.grid = (function(){
     var menu = this;
     for (var i = 0; i < menu.buttons.length; i++) {
       var button = menu.buttons[i];
-      // console.log('buttons', button);
 
       button.addEventListener('click', function(event){
-        // console.log('event', event, button.dataset.command, menu.hasOwnProperty( button.dataset.command ));
         try {
           menu[ button.dataset.command ]( button.dataset );
+          menu.active = event.target;
+          menu.updateState();
         } catch(e){
           throw new Error(e);
         }
@@ -52,18 +53,40 @@ nCore.grid = (function(){
     }
   };
   Menu.prototype.sort = function( dataset ){
-    console.log( 'dataset', dataset);
+    var param     = dataset.sortField,
+        direction = dataset.sortDirection;
 
-    // var param     = event.eventTarget.dataset.sortField,
-    //     direction = event.eventTarget.dataset.sortDirection;
-    
+    nCore.grid.order( param, direction );
+    nCore.grid.render(true);
+  };
+  Menu.prototype.changeView = function( dataset ){
+    console.log( 'changeView dataset', dataset);
+    // menu.active = button;
+    // menu.updateState();
     // nCore.grid.order( param, direction );
     // nCore.grid.render(true);
   };
-  Menu.prototype.changeView = function( dataset ){
-    console.log( 'dataset', dataset);
-    // nCore.grid.order( param, direction );
-    // nCore.grid.render(true);
+  Menu.prototype.updateState = function(){
+    var buttons = this.buttons;
+    var menu = this;
+
+    for (var i = 0; i < buttons.length; i++) {
+      var icon = buttons[i].parentNode.querySelector('.material-icons.mdPosition');
+
+
+      if ( buttons[i] == menu.active ) {
+        // console.log('icon+', icon);
+        if ( icon.classList.contains( 'white' ) ) {
+          icon.classList.remove('white');
+        }
+      } else {
+        // console.log('icon-', icon);
+        buttons[i].dataset.active = false;
+        if ( !icon.classList.contains( 'white' ) ) {
+          icon.classList.add('white');
+        }
+      }
+    }
   };
 
   var GridFactory = function(){
@@ -122,6 +145,7 @@ nCore.grid = (function(){
       // console.log( factory, factory.thumbs );
 
       // factory.order();
+
       factory.render();
     }).catch(function(error){
       throw new Error(error);
@@ -301,10 +325,9 @@ nCore.grid = (function(){
         setTimeout( function(){
           render.removeOverlay();
         }, 1000 );
+        factory.menu = new Menu();
+        factory.menu.attach();
       }
-
-      factory.menu = new Menu();
-      factory.menu.attach();
     }).catch(function(result) {
       console.log("ERROR renderCellSettings!", result);
     });
