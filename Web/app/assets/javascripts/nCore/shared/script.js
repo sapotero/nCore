@@ -23,29 +23,29 @@ jQuery(function($) {
   // ==========================================================================
   // Toggle Sidedrawer
   // ==========================================================================
-  function showSidedrawer() {
-    // show overlay
-    var options = {
-      onclose: function() {
-        // $sidedrawerEl.removeClass('active');
-        hideSidedrawer()
-      }
-    };
-    // $('#sidedrawer-brand').toggleClass('mui--z5');
-    var $overlayEl = $( mui.overlay('on', options)) ;
-    // $sidedrawerEl.appendTo($overlayEl);
-    setTimeout(function() {
-      $sidedrawerEl.addClass('active');
-    }, 200);
-  }
+  // function showSidedrawer() {
+  //   // show overlay
+  //   var options = {
+  //     onclose: function() {
+  //       // $sidedrawerEl.removeClass('active');
+  //       hideSidedrawer()
+  //     }
+  //   };
+  //   // $('#sidedrawer-brand').toggleClass('mui--z5');
+  //   var $overlayEl = $( mui.overlay('on', options)) ;
+  //   // $sidedrawerEl.appendTo($overlayEl);
+  //   setTimeout(function() {
+  //     $sidedrawerEl.addClass('active');
+  //   }, 200);
+  // }
 
   function hideSidedrawer() {
     $bodyEl.toggleClass('hide-sidedrawer');
     $('#sidedrawer-brand').removeClass('mui--z5');
-    // $sidedrawerEl.removeClass('active'); 
+    $sidedrawerEl.removeClass('active'); 
   }
 
-  $('.js-hide-sidedrawer').on('click', showSidedrawer);
+  // $('.js-hide-sidedrawer').on('click', showSidedrawer);
   $('.js-hide-sidedrawer').on('click', hideSidedrawer);
   
   
@@ -110,10 +110,10 @@ jQuery(function($) {
     e.stopPropagation();
   });
 
-  $('#content-wrapper').live('click', function(e){
-    nCore.document.showCellSettings = false;
-    nCore.modules.table.event.publish('hideSideMenu');
-  });
+  // $('#content-wrapper').live('click', function(e){
+  //   nCore.document.showCellSettings = false;
+  //   nCore.modules.table.event.publish('hideSideMenu');
+  // });
 
   // добвление нового документа
   $('.AddDocument').live('click', function(){

@@ -251,7 +251,7 @@ iframe.fr-iframe {
   width: auto !important;
 }
 .fr-toolbar.fr-top {
-  top: -84px;
+  top: -79px;
   /*left: -14px;*/
   border-radius: 2px 2px 0 0;
   -moz-border-radius: 2px 2px 0 0;
@@ -519,7 +519,16 @@ iframe.fr-iframe {
 .fr-desktop .fr-command:focus {
   color: #222222;
   background: #ebebeb;
+      /*height: 35px;*/
 }
+
+.fr-toolbar.fr-ltr.fr-desktop.fr-top.fr-basic > .fr-command:hover,
+.fr-toolbar.fr-ltr.fr-desktop.fr-top.fr-basic > .fr-command:focus {
+  color: #222222;
+  background: #ebebeb;
+  height: 35px;
+}
+
 .fr-desktop .fr-command:hover::after,
 .fr-desktop .fr-command:focus::after {
   border-top-color: #222222 !important;
@@ -616,9 +625,11 @@ iframe.fr-iframe {
   white-space: nowrap;
   color: inherit;
   text-decoration: none;
+  /*height: 35px;*/
 }
 .fr-command.fr-btn + .fr-dropdown-menu .fr-dropdown-wrapper .fr-dropdown-content ul.fr-dropdown-list li a.fr-active {
   background: #d6d6d6;
+  /*height: 35px;*/
 }
 .fr-command.fr-btn + .fr-dropdown-menu .fr-dropdown-wrapper .fr-dropdown-content ul.fr-dropdown-list li a.fr-disabled {
   color: #bdbdbd;

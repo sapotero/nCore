@@ -15,9 +15,63 @@ nCore.grid = (function(){
     this.isTemplate  = data.template    || false;
   };
 
+  var Menu = function(){
+    this.element = document.querySelector('.bar');
+    this.buttons = [];
+  };
+  Menu.prototype.clear = function(){
+    this.buttons = [];
+  };
+  Menu.prototype.attach = function(){
+    var menu = this;
+    var buttons = menu.element.querySelectorAll("[data-command]");
+
+    if ( buttons.length ) {
+      for (var i = 0; i < buttons.length; i++) {
+        var button = buttons[i];
+        menu.buttons.push( button );
+      }
+      menu.event();
+    }
+  };
+
+  Menu.prototype.event = function(){
+    var menu = this;
+    for (var i = 0; i < menu.buttons.length; i++) {
+      var button = menu.buttons[i];
+      // console.log('buttons', button);
+
+      button.addEventListener('click', function(event){
+        // console.log('event', event, button.dataset.command, menu.hasOwnProperty( button.dataset.command ));
+        try {
+          menu[ button.dataset.command ]( button.dataset );
+        } catch(e){
+          throw new Error(e);
+        }
+      });
+    }
+  };
+  Menu.prototype.sort = function( dataset ){
+    console.log( 'dataset', dataset);
+
+    // var param     = event.eventTarget.dataset.sortField,
+    //     direction = event.eventTarget.dataset.sortDirection;
+    
+    // nCore.grid.order( param, direction );
+    // nCore.grid.render(true);
+  };
+  Menu.prototype.changeView = function( dataset ){
+    console.log( 'dataset', dataset);
+    // nCore.grid.order( param, direction );
+    // nCore.grid.render(true);
+  };
+
   var GridFactory = function(){
-    this.thumbs   = {};
-    this.viewType = this.Constant.THUMB;
+    this.thumbs    = {};
+    this.menu      = {};
+    this.viewType  = this.Constant.THUMB;
+    this.sortType  = this.Constant.SORT.TYPE.NAME;
+    this.sortOrder = this.Constant.SORT.ORDER.ASC;
   };
 
   GridFactory.prototype.Constant = {
@@ -26,6 +80,15 @@ nCore.grid = (function(){
     ROOT  : {
       DOCUMENTS : document.querySelector('#documents'),
       TEMPLATES : document.querySelector('#templates')
+    },
+    SORT  : {
+      TYPE : {
+        NAME : 'name'
+      },
+      ORDER : {
+        ASC  :  1,
+        DESC : -1
+      }
     }
   };
 
@@ -57,6 +120,8 @@ nCore.grid = (function(){
     
     load.then(function(data){
       // console.log( factory, factory.thumbs );
+
+      // factory.order();
       factory.render();
     }).catch(function(error){
       throw new Error(error);
@@ -67,14 +132,29 @@ nCore.grid = (function(){
       document.querySelector( selector ).innertHTML = '';
     }
   };
+  GridFactory.prototype.compare = function(a,b,dir){
+    return a > b ? 1 : a < b ? -1 : 0;
+  };
+  GridFactory.prototype.order = function( param, direction ){
+    var factory = this;
 
-  GridFactory.prototype.render = function(){
+    var _sort      = param     || factory.sortType,
+        _direction = direction || factory.sortOrder;
+
+    for( var type in factory.thumbs){
+      factory.thumbs[type].sort(function(a,b) {
+        return _direction * (factory.compare(a[_sort], b[_sort] ) < factory.compare(b[_sort], a[_sort] ) ? -1:1) ;
+      });
+    }
+  };
+
+  GridFactory.prototype.render = function( _update ){
     
     var factory = this;
-    // factory.clear();
-    console.log( 'render' );
-    var render = {};
 
+    // factory.clear();
+    // console.log( 'render' );
+    var render = {};
     render.addOverlay = function(){
       // console.log('addOverlay');
       var options = {
@@ -99,18 +179,18 @@ nCore.grid = (function(){
       overlay.classList.toggle('animated');
       overlay.classList.toggle('fadeIn');
     };
-
     render.removeOverlay = function(){
-      console.log('removeOverlay');
+      // console.log('removeOverlay');
       try {
         mui.overlay('off');
       } catch(error){
         throw new Error(error);
       }
     };
-    
-    render.addOverlay();
 
+    if ( !_update ) {
+      render.addOverlay();
+    }
 
     render.promise = new Promise(function(resolve, reject) {
       
@@ -205,135 +285,26 @@ nCore.grid = (function(){
 
           var _root = document.getElementById('_'+_type);
           _root.classList.remove('mui--hide');
-          console.log( _root );
+          // console.log( _root );
           Transparency.render( _root, res, helperTemplate );
         }
         resolve(true);
       } else {
         reject(false);
       }
-      // if ( nCore.storage.hasOwnProperty( type ) && JSON.parse( nCore.storage.getItem(type) ).length || JSON.parse(nCore.storage.getItem('templates')).length ) {
-
-          
-          // var templates = JSON.parse(nCore.storage.getItem('templates'));
-          
-
-          // console.log('templates.length');
-          
-          // var _mui_rows = document.querySelector('.mui-row._indexViewTemplate'),
-          // _active_row = document.querySelector('._indexViewTemplate');
-
-          // for (var i = 0; i < _mui_rows.length; i++) {
-          //   _mui_rows[i].classList.add('mui--hide');
-          // }
-
-          // if (_active_row) {
-          //   _active_row.classList.remove('mui--hide');
-          // }
-        
-
-      //   // if ( JSON.parse(nCore.storage.getItem(type)).length ) {
-      //   //   var helper = {
-      //   //     documentTitle: {
-      //   //       text: function (params) {
-      //   //         return this.name || '---';
-      //   //       }
-      //   //     },
-      //   //     documentDate: {
-      //   //       text: function (params) {
-      //   //         // console.log('type=list', nCore.storage.getItem('indexViewType') === 'list');
-      //   //         return new Date( this.updated_at ).toLocaleString('ru-RU', nCore.storage.getItem('indexViewType') === 'list' ? { 
-      //   //           year  : 'numeric',
-      //   //           month : 'numeric',
-      //   //           day   : 'numeric'
-      //   //         } : {
-      //   //           year   : 'numeric',
-      //   //           month  : 'numeric',
-      //   //           day    : 'numeric',
-      //   //           hour   : 'numeric',
-      //   //           minute : 'numeric'
-
-      //   //         });
-      //   //       }
-      //   //     },
-      //   //     documentId: {
-      //   //       href: function (params) {
-      //   //         return "#/report/" + this._id || Math.random();
-      //   //       },
-      //   //       text: function () {
-      //   //         return ''
-      //   //       }
-      //   //     },
-      //   //     downloadDoc: {
-      //   //       href: function (params) {
-      //   //         return "/" + type + "/" + (this._id || Math.random()) + "/download";
-      //   //       }
-      //   //     },
-      //   //     downloadPdf: {
-      //   //       href: function (params) {
-      //   //         return "documents/" + this._id + ".pdf";
-      //   //       }
-      //   //     },
-      //   //     downloadXls: {
-      //   //       href: function (params) {
-      //   //         return "documents/" + this._id + ".xlsx";
-      //   //       }
-      //   //     },
-      //   //     removeDocument: {
-      //   //       href: function (params) {
-      //   //         return location.hash;
-      //   //       },
-      //   //       type: function () {
-      //   //         return this._id
-      //   //       }
-      //   //     },
-      //   //     documentUser: {
-      //   //       text: function () {
-      //   //         return this.user
-      //   //       }
-      //   //     },
-      //   //     // documentImage: {
-      //   //     //   src: function(params){
-      //   //     //     return ( this.image.length ? this.image : 'assets/img/doc.png' )
-      //   //     //   }
-      //   //     // },
-      //   //     groupTitle: {
-      //   //       text: function () {
-      //   //         return 'Шаблоны'
-      //   //       }
-      //   //     }
-      //   //   };
-
-      //   //   var items = JSON.parse(nCore.storage.getItem(type));
-      //   //   Transparency.render(document.getElementById(nCore.storage.getItem('indexViewType')), items, helper);
-
-      //   //   document.body.classList.add('hide-sidedrawer');
-      //   //   document.getElementById('thumb').classList.remove('mui--hide')
-
-      //   //   var _mui_rows = document.getElementsByClassName('mui-row _indexView'),
-      //   //     _active_row = document.querySelector('._indexView.' + nCore.storage.getItem('indexViewType'));
-
-      //   //   for (var i = 0; i < _mui_rows.length; i++) {
-      //   //     _mui_rows[i].classList.add('mui--hide')
-      //   //   }
-
-      //   //   if (_active_row) {
-      //   //     _active_row.classList.remove('mui--hide');
-      //   //   };
-      //   // }
-      //   resolve(true);
-      // } else {
-      //   reject(false);
-      // }
       resolve(true);
     });
     
 
-    render.promise.then(function(data) {
-      setTimeout( function(){
-        render.removeOverlay();
-      }, 1000 );
-      // console.log( 'after', factory.thumbs.templates );
+    render.promise.then(function() {
+      if ( !_update ) {
+        setTimeout( function(){
+          render.removeOverlay();
+        }, 1000 );
+      }
+
+      factory.menu = new Menu();
+      factory.menu.attach();
     }).catch(function(result) {
       console.log("ERROR renderCellSettings!", result);
     });
@@ -344,14 +315,14 @@ nCore.grid = (function(){
         thumb = new Thumb( data.thumb );
 
     if ( !factory.thumbs.hasOwnProperty( data.type ) ) {
-      factory.thumbs[ data.type ] = {};
+      factory.thumbs[ data.type ] = [];
     }
 
     // console.log('add', data);
-    factory.thumbs[ data.type ][ thumb._id ] = thumb;
+    factory.thumbs[ data.type ].push( thumb );
   };
-  GridFactory.prototype.remove = function(thumb){
-    delete this.thumbs[thumb._id];
+  GridFactory.prototype.remove = function(){
+    delete this.thumbs;
   };
   GridFactory.prototype.clear = function(){
     this.thumbs = {};

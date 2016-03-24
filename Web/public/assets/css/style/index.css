@@ -288,7 +288,7 @@ buttons {
   margin-top: 10px;
 }
 .mui-panel.mainbar {
-  height: 44px;
+  height: 36px;
   padding: 3px; 
   background-color: #FAFAFA;
 }
@@ -1212,7 +1212,7 @@ color: rgba(255,255,255,0.4) !important;
 .reportIndexSubMenu {
   width: 100%;
   margin: 0px auto;
-  height: 44px;
+  height: 36px;
   /*padding: 5px;*/
   padding-right: 16.66667%;
   background-color: #FAFAFA;
@@ -1807,4 +1807,8 @@ input[type="radio"].styled:checked label:after,
 #_documents{
   top: 30px;
   position: relative;
+}
+.sortButton{
+  position: relative;
+  top: -6px;
 }

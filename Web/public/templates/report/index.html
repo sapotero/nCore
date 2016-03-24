@@ -2,27 +2,28 @@
 <table class="mui-table no-margin-bottom ">
   <tr>
     <td class="mui--row bar">
-      <div class="mui-panel mui--z1 reportIndexSubMenu mui--text-right">
-        <button class="mui-btn mui-btn--flat button indexViewChange">
+      <div class="mui-panel mui--z1 reportIndexSubMenu mui--text-right ">
+        <button data-command='changeView' class="mui-btn mui-btn--flat button indexViewChange sortButton">
           <i class="fa fa-th"></i>
         </button>
 
-        <div class="mui-dropdown">
+        <div class="mui-dropdown sortButton">
           <button class="mui-btn mui-btn--flat button" data-mui-toggle="dropdown">
              Сортировка
             <!-- <i class="fa fa-sort-alpha-asc"></i> -->
             <span class="mui-caret"></span>
           </button>
           <ul class="mui-dropdown__menu">
-            <li><a href="#"> По названию </a></li>
-            <li><a href="#"> По дате создания </a></li>
-            <li><a href="#"> По дате изменения </a></li>
+            <li><a data-command='sort' data-sort-field='name'    data-sort-direction='1'> По названию </a></li>
+            <li><a data-command='sort' data-sort-field='created' data-sort-direction='1'> По дате создания </a></li>
+            <li><a data-command='sort' data-sort-field='updated' data-sort-direction='1'> По дате изменения </a></li>
           </ul>
         </div>
       </div>
     </td>
   </tr>
 </table>
+
 
 <!-- шаблон для превьюх -->
 <div id="_templates" class="mui-row _indexViewTemplate mui--hide">

@@ -628,17 +628,23 @@ nCore.events = (function () {
 
   // показываем боковое меню по нажатию кнопки
   nCore.document.event.subscribe('showSideMenu', function(showCellSettings){
-    document.getElementById('cellSettings').classList.add('active');
-    document.querySelector('.AddDocument').classList.add('fadeOut');
-    document.querySelector('.AddDocument').classList.remove('fadeIn');
+    try{
+      document.querySelector('#cellSettings').classList.add('active');
+      document.querySelector('.AddDocument').classList.add('fadeOut');
+      document.querySelector('.AddDocument').classList.remove('fadeIn');
+    } catch(e){
+      throw new Error(e);
+    }
   });
 
   // скрываем боковое меню по нажатию кнопки
   nCore.document.event.subscribe('hideSideMenu', function(showCellSettings){
-    if ( !nCore.document.showCellSettings && document.getElementById('cellSettings') ) {
-      document.getElementById('cellSettings').classList.remove('active');
+    try{
+      document.querySelector('#cellSettings').classList.remove('active');
       document.querySelector('.AddDocument').classList.remove('fadeOut');
       document.querySelector('.AddDocument').classList.add('fadeIn');
+    } catch(e){
+      throw new Error(e);
     }
   });
 
