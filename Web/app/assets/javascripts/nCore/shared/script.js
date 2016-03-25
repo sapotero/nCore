@@ -515,4 +515,70 @@ jQuery(function($) {
       }
     }
   });
+
+
+  $('input#optionsCurrent').live('click', function(e){
+    nCore.document.providerSelected = 'optionsCurrent';
+    nCore.dialog.clearSelect2();
+  });
+
+  $('input#optionsAll').live('click', function(e){
+    nCore.document.providerSelected = 'optionsAll';
+    nCore.dialog.clearSelect2();
+  });
+
+  $('input#optionsSelected').live('click', function(e){
+    console.log( 'optionsSelected', e.target );
+    var optionsElement = e.target;
+
+    nCore.dialog.clearSelect2();
+
+
+    nCore.document.providerSelected = '';
+    var option = e.target,
+        parent = option.parentNode.parentNode;
+
+    var load = new Promise(function(resolve, reject){
+      nCore.query.get('/documents/providers').success(function (data) {
+        console.log('load', data);
+        resolve(data);
+      }).error(function (data) {
+        console.error('[!] input[value="optionsSelected"]', data);
+        reject(data);
+      });
+    });
+
+    load.then(function(data){
+      var select = document.createElement('select');
+      select.name = '__selected';
+      select.multiple = true;
+      select.style.overflow = 'auto';
+      select.classList.add('mui-col-lg-12');
+      // select.dataset.select2Tags = '[{"id": "1", "text": "One"}, {"id": "2", "text": "Two"}]';
+
+      for (var i = 0; i < data.length; i++) {
+        var option = document.createElement('option');
+        option.value       = data[i]._id;
+        option.textContent = data[i].name;
+        select.appendChild(option);
+      }
+
+      parent.appendChild(select);
+
+      $(select).select2({
+        tags: true
+      }).on('change', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        nCore.document.providerSelected = $(select).val();
+        // console.log( $(select).val(), select.selectedOptions );
+
+        
+      });
+
+    }).catch(function(error){
+      throw new Error(error);
+    });
+  });
 });

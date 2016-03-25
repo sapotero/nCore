@@ -20,12 +20,15 @@ class DocumentsController < ApplicationController
     render :json => @query
   end
 
+  def providers
+    @provider = Provider.where(actived: true).only(:_id, :name).to_json(:only => [:_id, :name])
+    render :json => @provider
+  end
+
   def show
     document = @document.as_json
     document[:body] = @document.body
     
-    
-
     respond_to do |format|
       format.json { render json: document }
       format.pdf  {        
@@ -54,22 +57,24 @@ class DocumentsController < ApplicationController
 
   def create
     @document = Document.new({
-      :type            => params[ :type ]           || '',
-      :name            => params[ :name ]           || '',
-      :description     => params[ :description ]    || '',
-      :datetime        => params[ :datetime ]       || '',
-      :body            => params[ :body ]           || '',
-      :image           => params[ :image ]          || '',
-      :author_id       => params[ :author_id ]      || '',
-      :provider_id     => params[ :provider_id ]    || '',
-      :query           => params[ :query ]          || '',
-      :periodStart     => params[ :periodStart ]    || '',
-      :periodEnd       => params[ :periodEnd ]      || '',
-      :globalQuery     => params[ :globalQuery ]    || '',
-      :main            => params[ :main ]           || '',
-      :compare         => params[ :compare ]        || '',
-      :yearReport      => params[ :yearReport ]     || '',
-      :globalQueryData => params[ :globalQueryData] || ''
+      :type             => params[ :type ]           || '',
+      :name             => params[ :name ]           || '',
+      :description      => params[ :description ]    || '',
+      :datetime         => params[ :datetime ]       || '',
+      :body             => params[ :body ]           || '',
+      :image            => params[ :image ]          || '',
+      :author_id        => params[ :author_id ]      || '',
+      :provider_id      => params[ :provider_id ]    || '',
+      :query            => params[ :query ]          || '',
+      :periodStart      => params[ :periodStart ]    || '',
+      :periodEnd        => params[ :periodEnd ]      || '',
+      :globalQuery      => params[ :globalQuery ]    || '',
+      :main             => params[ :main ]           || '',
+      :compare          => params[ :compare ]        || '',
+      :yearReport       => params[ :yearReport ]     || '',
+      :globalQueryData  => params[ :globalQueryData] || '',
+      :providerSelected => params[ :providerSelected] || ''
+      
     })
 
     if @document.save
@@ -91,8 +96,9 @@ class DocumentsController < ApplicationController
     @document.main        = params[ :main ]                unless params[ :main ].blank?
     @document.compare     = params[ :compare ]             unless params[ :compare ].blank?
     @document.yearReport  = params[ :yearReport ]          unless params[ :yearReport ].blank?
-    @document.globalQueryData = params[ :globalQueryData ] unless params[ :globalQueryData ].blank?
-    if @document.update({
+    @document.globalQueryData  = params[ :globalQueryData ]  unless params[ :globalQueryData ].blank?
+    @document.providerSelected = params[ :providerSelected ] unless params[ :providerSelected ].blank?
+        if @document.update({
       :datetime    => params[ :datetime ]
     })
       render :json => @document

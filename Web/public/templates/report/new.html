@@ -269,8 +269,6 @@
               Годовой отчёт
             </label>
           </div>
-
-          
           <div class="mui-textfield mui-textfield--float-label mui-col-lg-6">
             <input type="number" name="main" class="nCoreMain" min="1990" max="2100" step="1" value="2015" >
             <label>Отчётный год</label>
@@ -279,6 +277,42 @@
             <input type="number" name="compare" class="nCoreCompare" min="1990" max="2100" step="1" value="2015" >
             <label>Сравнить с</label>
           </div>
+
+          <div class="mui-col-lg-12 ">
+            <label class="mui--text-light mui--text-subhead" style="position: relative; left: -10px;">
+              Провайдер
+            </label>
+            <div class="mui-radio">
+              <label>
+                <input type="radio"
+                       name="optionsRadios"
+                       id="optionsCurrent"
+                       value="optionsCurrent"
+                       >
+                Текущий
+              </label>
+            </div>
+            <div class="mui-radio">
+              <label>
+                <input type="radio"
+                       name="optionsRadios"
+                       id="optionsAll"
+                       value="optionsAll">
+                Все провайдеры
+              </label>
+            </div>
+            <div class="mui-radio">
+              <label>
+                <input type="radio"
+                       name="optionsRadios"
+                       id="optionsSelected"
+                       value="optionsSelected">
+                Несколько
+              </label>
+            </div>
+          </div>
+
+
       </div>
     </form>
   </div>
@@ -301,9 +335,9 @@
     </div>
   </div>
 
-  <div class="mui-col-lg-12">
+  <div class="mui-col-lg-12 mui--text-right">
     <div class="mui-form--inline">
-      <button type="submit" class="mui-btn mui-btn--raised" style="margin: 10px -5px;" name="documentGlobalSettings">Сохранить</button>
+      <button type="submit" class="mui-btn mui-btn--primary mui-btn--raised" style="margin: 10px -5px;" name="documentGlobalSettings">Сохранить</button>
     </div>
   </div>
 </div>

@@ -30,6 +30,7 @@ nCore.document = (function(){
     this.isNew                = true;
     this.event = {};
     this.showCellSettings     = false;
+    this.providerSelected     = 'current';
 
     this.init();
   };
@@ -77,7 +78,8 @@ nCore.document = (function(){
       documentSettingTab   : this.documentSettingTab,
       documentEvent        : this.documentEvent,
       
-      documentCellQuery    : this.documentCellQuery
+      documentCellQuery    : this.documentCellQuery,
+      providerSelected     : this.providerSelected
     };
   };
   Document.prototype.save = function( data ) {
@@ -109,6 +111,12 @@ nCore.document = (function(){
     this.documentCellQuery = config.query;
     this.template          = config.template;
     this.isNew             = false;
+
+    try{
+      this.providerSelected = JSON.parse( config.providerSelected );
+    } catch(e){
+      this.providerSelected = config.providerSelected;
+    }
 
     if ( config.body ) {
       this.event.publish('initEditor', Base64.decode( config.body ));
@@ -176,7 +184,9 @@ nCore.document = (function(){
             periodStart     : nCore.document.periodStart,
             periodEnd       : nCore.document.periodEnd,
             globalQuery     : nCore.document.globalQuery,
-            globalQueryData : JSON.stringify( nCore.document.globalQueryData )
+            globalQueryData : JSON.stringify( nCore.document.globalQueryData ),
+            providerSelected: JSON.stringify( nCore.document.providerSelected )
+            
           };
 
 

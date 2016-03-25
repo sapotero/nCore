@@ -15,6 +15,7 @@ class Document
   field :periodEnd,   type: String
   field :datetime,    type: String
 
+
   field :orientation, type: String
   field :dimensions,  type: Hash
   
@@ -23,9 +24,9 @@ class Document
   field :archived,    type: Boolean, default: false
   
   # глобальный запрос + данные для автокомплитера
-  field :globalQuery, type: String
-  field :globalQueryData, type: String
-  
+  field :globalQuery,      type: String
+  field :globalQueryData,  type: String
+  field :providerSelected, type: String
 
   # кому доступен для редактирования
   field :editors,     type: Array

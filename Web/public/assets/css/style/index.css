@@ -1828,6 +1828,17 @@ input[type="radio"].styled:checked label:after,
 
 .mui-dropdown__menu>li>a {
   display: block;
+  padding: 10px 30px 10px 15px;
+  clear: both;
+  font-weight: 400;
+  color: rgba(0,0,0,.87);
+  white-space: nowrap;
+  border-left: 2px solid rgba(0,0,0,0);
+  transition: 0.2s ease;
+}
+
+.mui-dropdown__menu>li>a.bar {
+  display: block;
   padding: 0px 30px 10px 15px;
   clear: both;
   font-weight: 400;

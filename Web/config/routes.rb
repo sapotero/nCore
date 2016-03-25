@@ -15,6 +15,7 @@ Settings::Web::Application.routes.draw do
   resources :sources
   
   get '/documents/autocomplete', to: 'documents#autocomplete' #,as: :document_autocomplete
+  get '/documents/providers',    to: 'documents#providers' #,as: :document_autocomplete
   resources :documents do
     post :remove
   end

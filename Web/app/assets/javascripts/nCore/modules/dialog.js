@@ -30,6 +30,22 @@ nCore.dialog = (function(){
     overlay.classList.toggle('animated');
     overlay.classList.toggle('fadeIn');
   };
+  Dialog.prototype.clearSelect2 = function(){
+    try {
+      $('[name="__selected"]').select2('destroy');
+    } catch (e){
+      // console.log(e);
+    }
+
+    try{
+      var element = document.querySelector('[name="__selected"]');
+      if ( element ) {
+        element.parentNode.removeChild(element);
+      }
+    }catch(e){
+      // console.log('error!', e);
+    }
+  };
   Dialog.prototype.showSettings = function(){
     // set overlay options
     var options = {
@@ -58,6 +74,58 @@ nCore.dialog = (function(){
       nCoreCompare     : nCore.document.compare,
     });
     m.innerHTML = text.innerHTML;
+    
+    this.clearSelect2();
+
+    if (nCore.document.providerSelected == 'optionsCurrent' || nCore.document.providerSelected == 'optionsAll') {
+      m.querySelector('#'+nCore.document.providerSelected).checked = true;
+    } else {
+      m.querySelector('#optionsSelected').checked = true;
+
+      var load = new Promise(function(resolve, reject){
+        nCore.query.get('/documents/providers').success(function (data) {
+          console.log('load', data);
+          resolve(data);
+        }).error(function (data) {
+          console.error('[!] input[value="optionsSelected"]', data);
+          reject(data);
+        });
+      });
+
+      var option = m.querySelector('#optionsSelected'),
+        parent = option.parentNode.parentNode;
+
+      load.then(function(data){
+        var select = document.createElement('select');
+        select.name = '__selected';
+        select.multiple = true;
+        select.style.overflow = 'auto';
+        select.classList.add('mui-col-lg-12');
+        select.dataset.select2Tags = '[{"id": "1", "text": "One"}, {"id": "2", "text": "Two"}]';
+
+        for (var i = 0; i < data.length; i++) {
+          var option = document.createElement('option');
+          option.value       = data[i]._id;
+          option.textContent = data[i].name;
+          select.appendChild(option);
+          if ( nCore.document.providerSelected.indexOf(data[i]._id) != -1 ) {
+            option.selected = true;
+          }
+        }
+
+        parent.appendChild(select);
+
+        $(select).select2({
+          tags: true
+        }).on('change', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          nCore.document.providerSelected = $(select).val();
+        });
+      }).catch(function(error){
+      throw new Error(error);
+      });
+    }
 
     var main       = m.querySelector('[name="main"]'),
         compare    = m.querySelector('[name="compare"]'),
@@ -79,21 +147,21 @@ nCore.dialog = (function(){
 
     var toggleEls = document.querySelectorAll('[data-mui-controls^="document"]');
 
-    function show(ev) {
-      for (var z = 0; z < toggleEls.length; z++) {
-        toggleEls[z].parentNode.classList.remove('mui--is-active');
-        m.querySelector( '#'+toggleEls[z].dataset.muiControls ).classList.remove('mui--is-active');
-      }
-
-      m.querySelector( '#'+ev.paneId ).classList.add('mui--is-active');
-      m.querySelector('[data-mui-controls="'+ev.paneId+'"]').parentNode.classList.add('mui--is-active');
-
-      nCore.document.documentSettingTab = ev.paneId;
-    }
+    
 
     // attach event handlers
     for (var z = 0; z < toggleEls.length; z++) {
-      toggleEls[z].addEventListener('mui.tabs.showstart', show);
+      toggleEls[z].addEventListener('mui.tabs.showstart', function show(ev) {
+        for (var z = 0; z < toggleEls.length; z++) {
+          toggleEls[z].parentNode.classList.remove('mui--is-active');
+          m.querySelector( '#'+toggleEls[z].dataset.muiControls ).classList.remove('mui--is-active');
+        }
+
+        m.querySelector( '#'+ev.paneId ).classList.add('mui--is-active');
+        m.querySelector('[data-mui-controls="'+ev.paneId+'"]').parentNode.classList.add('mui--is-active');
+
+        nCore.document.documentSettingTab = ev.paneId;
+      });
     }
 
     // documentQueryPane по дефолту
@@ -113,7 +181,7 @@ nCore.dialog = (function(){
       }
     }
 
-    document.getElementById( nCore.document.documentSettingTab ).classList.add('mui--is-active');
+    // document.getElementById( nCore.document.documentSettingTab ).classList.add('mui--is-active');
   };
   Dialog.prototype.showGroup = function(){
     // set overlay options
