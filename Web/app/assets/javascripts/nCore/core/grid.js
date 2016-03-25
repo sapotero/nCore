@@ -117,6 +117,7 @@ nCore.grid = (function(){
 
   GridFactory.prototype.load = function(data){
     var factory = this;
+    factory.clear();
 
     var load = new Promise(function(resolve, reject){
       if ( data ) {

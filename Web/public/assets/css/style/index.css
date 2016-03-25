@@ -1783,7 +1783,7 @@ input[type="radio"].styled:checked label:after,
       top: -50px;
 }
 .mui-table.no-margin-bottom {
-  margin-top: 20px;
+  margin-top: 14px;
   margin-bottom: 0px;
   /*position: fixed;*/
   z-index: 2
