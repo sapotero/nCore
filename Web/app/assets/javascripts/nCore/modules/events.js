@@ -353,12 +353,16 @@ nCore.events = (function () {
 
     var publish = new Promise(function(resolve, reject){
       console.log('insertCellData', data);
-      try{
-        nCore.modules.table.factory.populate( data.tables );
-        nCore.modules.customCell.populate( data.customCells );
-        resolve(true);
-      } catch (error){
-        reject(error);
+      if (data) {
+        try{
+          nCore.modules.table.factory.populate( data.tables );
+          nCore.modules.customCell.populate( data.customCells );
+          resolve(true);
+        } catch (error){
+          reject(error);
+        }
+      } else {
+        reject( new Error('NO DATA') );
       }
     });
 
@@ -521,10 +525,10 @@ nCore.events = (function () {
                 });
                 
                 render.then(function(data){
-                  // card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
                 }).catch(function(error){
-                  // console.log(error)
+                  console.log(error)
                 })
+                card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
 
 
                 var cr_c = card.querySelector('[name="criteria_condition_group"]');

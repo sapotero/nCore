@@ -265,7 +265,7 @@ nCore.modules.table = (function(){
       }
     }
   };
-  Table.prototype.tableCalculate = function() {
+  Table.prototype.getQueries = function() {
     // console.info('query', query);
     var rowSpan   = 0,
         cellIndex = 0,
@@ -422,7 +422,7 @@ nCore.modules.table = (function(){
     this.copyHeadCellAttributes();
 
     // копируем свойства в ячейках боковины и клеи с шапкой
-    this.tableCalculate();
+    this.getQueries();
 
     // console.groupEnd();
 

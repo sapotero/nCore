@@ -138,6 +138,7 @@ jQuery(function($) {
           // nCore.document.windowTitle('Главная'))
 
           // есть ли у юзера право просматривать таблицы
+          nCore.document.loadIndex(['documents']);
           var template = new nCore.templates.render({template: "report/index" });
 
           if ( nCore.roles.check('viewTable') ) {

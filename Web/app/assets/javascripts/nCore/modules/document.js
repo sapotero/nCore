@@ -40,9 +40,7 @@ nCore.document = (function(){
     console.log('init doc');
 
     nCore.attachTo( doc.event );
-    doc.loadIndex(['documents']);
     // doc.event.publish( 'loadCriteria' );
-
   };
   Document.prototype.new = function() {
     nCore.document = new Document();

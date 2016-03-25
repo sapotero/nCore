@@ -44,7 +44,9 @@ nCore.format = (function(){
                 'or':  []
               };
             }
-            sources[ query.source ][ conditions ].push( query );
+
+
+            sources[ query.source ][ conditions ].push( [query] );
           });
         }
       } catch(e){
@@ -118,20 +120,50 @@ nCore.format = (function(){
         try{
           var cellQuery = JSON.parse(query);
           if ( cellQuery.length ) {
+              var _sources = {};
            cellQuery.forEach( function( queries, i ,queriesArray ){
+
               var conditions = queries.conditions;
               queries.query.forEach( function( query, i ,queryArray ){
                 if ( !sources.hasOwnProperty( query.source ) ) {
-                  sources[ query.source ] = {
-                    'and': [],
-                    'or':  []
+                sources[ query.source ] = {
+                  'and': [],
+                  'or':  []
                   };
                 }
+
                 if ( !sources[ query.source ][ conditions ].some(elem => elem == query ) ){
                   sources[ query.source ][ conditions ].push( query );
-                };
+                }
+
+                if ( !_sources.hasOwnProperty( query.source ) ) {
+                  _sources[ query.source ] = {};
+                  if ( !_sources[ query.source ].hasOwnProperty( conditions ) ) {
+                  _sources[ query.source ] = {
+                    'and': [],
+                    'or':  []
+                    };
+                  }
+
+                  for (var b = 0; b < queriesArray.length; b++) {
+                    // console.log(queriesArray[b]);
+                    var q = [];
+                    for (var i = 0; i < queriesArray[b].query.length; i++) {
+                      console.log('cmp++', queriesArray[b].query[i], query.source);
+
+                      if (queriesArray[b].query[i].source === query.source){
+                        q.push(queriesArray[b].query[i]);
+
+                        
+                      }
+                    }
+                    _sources[ query.source ][ queriesArray[b].conditions ].push( q );
+                  }
+                }
               });
+
             });
+            console.log( '_sources ->', _sources );
           }
         } catch(e){
           console.error('JSON PARSE FAILS', e);
