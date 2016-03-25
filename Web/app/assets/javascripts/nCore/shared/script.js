@@ -110,10 +110,10 @@ jQuery(function($) {
     e.stopPropagation();
   });
 
-  // $('#content-wrapper').live('click', function(e){
-  //   nCore.document.showCellSettings = false;
-  //   nCore.modules.table.event.publish('hideSideMenu');
-  // });
+  $('#content-wrapper').live('click', function(e){
+    nCore.document.showCellSettings = false;
+    nCore.modules.table.event.publish('hideSideMenu');
+  });
 
   // добвление нового документа
   $('.AddDocument').live('click', function(){

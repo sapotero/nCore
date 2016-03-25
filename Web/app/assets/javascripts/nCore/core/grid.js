@@ -177,11 +177,8 @@ nCore.grid = (function(){
     
     var factory = this;
 
-    // factory.clear();
-    // console.log( 'render' );
     var render = {};
     render.addOverlay = function(){
-      // console.log('addOverlay');
       var options = {
         'keyboard': false, // teardown when <esc> key is pressed (default: true)
         'static': true, // maintain overlay when clicked (default: false)

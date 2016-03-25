@@ -635,6 +635,7 @@ nCore.events = (function () {
     try{
       document.querySelector('#cellSettings').classList.add('active');
       document.querySelector('.AddDocument').classList.add('fadeOut');
+      document.querySelector('.AddDocument').classList.add('mui--hide');
       document.querySelector('.AddDocument').classList.remove('fadeIn');
     } catch(e){
       throw new Error(e);
@@ -645,6 +646,7 @@ nCore.events = (function () {
   nCore.document.event.subscribe('hideSideMenu', function(showCellSettings){
     try{
       document.querySelector('#cellSettings').classList.remove('active');
+      document.querySelector('.AddDocument').classList.remove('mui--hide');
       document.querySelector('.AddDocument').classList.remove('fadeOut');
       document.querySelector('.AddDocument').classList.add('fadeIn');
     } catch(e){

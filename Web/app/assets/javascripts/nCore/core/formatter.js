@@ -149,7 +149,7 @@ nCore.format = (function(){
                     // console.log(queriesArray[b]);
                     var q = [];
                     for (var i = 0; i < queriesArray[b].query.length; i++) {
-                      console.log('cmp++', queriesArray[b].query[i], query.source);
+                      // console.log('cmp++', queriesArray[b].query[i], query.source);
 
                       if (queriesArray[b].query[i].source === query.source){
                         q.push(queriesArray[b].query[i]);
@@ -163,12 +163,12 @@ nCore.format = (function(){
               });
 
             });
-            console.log( '_sources ->', _sources );
+            // console.log( '_sources ->', _sources );
           }
         } catch(e){
           console.error('JSON PARSE FAILS', e);
         }
-        root[ from ] = sources;
+        root[ from ] = _sources;
       });
     }
     return this;

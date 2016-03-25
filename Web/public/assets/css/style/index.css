@@ -99,7 +99,7 @@ buttons {
 
 #cellSettings {
   position: fixed;
-  top: 64px;
+  top: 56px;
   bottom: 0;
   width: 316px;
   right: -316px;
@@ -1760,8 +1760,8 @@ input[type="radio"].styled:checked label:after,
   font-size: 14px;
   color: rgba(0,0,0,.87);
   cursor: default;
-  height: 42px;
-  line-height: 42px;
+  height: 36px;
+  line-height: 36px;
   padding-left: 24px;
   padding-right: 24px;
   -webkit-user-select: none;
