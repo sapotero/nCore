@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  before_filter :set_document, only: [:show, :edit, :update, :destroy, :remove]
+  before_filter :set_document, only: [ :show, :edit, :update, :destroy, :remove, :calculate ]
 
   respond_to :xls, :html, :json
   protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove, :calculate ]
@@ -22,6 +22,7 @@ class DocumentsController < ApplicationController
 
   def calculate
     puts params
+    puts @document
 
     elastic_report_result = @document.calculate( params )
     render :json => elastic_report_result

@@ -172,7 +172,6 @@ nCore.grid = (function(){
       });
     }
   };
-
   GridFactory.prototype.render = function( _update ){
     
     var factory = this;
@@ -206,7 +205,7 @@ nCore.grid = (function(){
       try {
         mui.overlay('off');
       } catch(error){
-        throw new Error(error);
+        // throw new Error(error);
       }
     };
 
@@ -330,7 +329,6 @@ nCore.grid = (function(){
       console.log("ERROR renderCellSettings!", result);
     });
   };
-  
   GridFactory.prototype.add = function(data){
     var factory = this,
         thumb = new Thumb( data.thumb );

@@ -5,18 +5,7 @@ nCore.commands = (function(){
   
   var Commands = function(){
     
-    this.bodyEl       = '';
-    this.sidedrawerEl = '';
-    this.cellSettings = '';
-    this.rotatePage   = '';
-    this.paper        = '';
-    this.brand        = '';
-
-    return this;
-  };
-
-  Commands.prototype.populate = function() {
-    this.bodyEl       = $('body');
+    this.body         = document.body;
     this.sidedrawerEl = $('#sidedrawer');
     this.cellSettings = $('#cellSettings');
     this.rotatePage   = $('#rotatePage');
@@ -26,51 +15,41 @@ nCore.commands = (function(){
     return this;
   };
 
-  Commands.prototype.showSidedrawer = function showSidedrawer() {
-    var root = this;
+  Commands.prototype.toggleMainMenu = function(){
+    if ( nCore.commands.body.classList.contains('hide-sidedrawer') ) {
+      // Скрываем
+      nCore.commands.body.classList.remove('hide-sidedrawer');
 
-    console.log('comands++');
+      var options = {
+        onclose: function() {
+          nCore.commands.body.classList.add('hide-sidedrawer');
+        }
+      };
+      mui.overlay('on', options) ;
 
-    var options = {
-      onclose: function() {
-        root.hideSidedrawer();
-      }
-    };
-    var overlayEl = $( mui.overlay('on', options)) ;
-    setTimeout(function() {
-      root.sidedrawerEl.addClass('active');
-    }, 200);
+    } else {
+      nCore.commands.body.classList.add('hide-sidedrawer');
+      nCore.commands.brand.removeClass('mui--z5');
+    }
   };
-  Commands.prototype.hideSidedrawer = function() {
-    console.log('comands++');
-    var root = this;
 
-    root.bodyEl.toggleClass('hide-sidedrawer');
-    root.brand.removeClass('mui--z5');
-  };
   Commands.prototype.build = function(){
     console.log('comands++');
-
-    var root = this;
-    // root.populate();
-
-    jQuery(function($) {
-      $('.js-hide-sidedrawer').on('click', root.showSidedrawer );
-      $('.js-hide-sidedrawer').on('click', root.hideSidedrawer );
-
-      var titleEls = $('strong', root.sidedrawerEl);
-      titleEls.next().hide();
-      titleEls.on('click', function() {
-        console.log('click')
-        ;
-        $(this).next().slideToggle(200);
-
-        root.sidedrawerEl.removeClass('active');
-        mui.overlay('off');
-
-      });
-    });
+    var _root = this;
+    document.querySelector('.js-hide-sidedrawer').addEventListener('click', _root.toggleMainMenu );
+    return this;
   };
 
-  return new Commands().populate();
+  Commands.prototype.build = function(){
+    console.log('comands++');
+    var _root = this;
+    document.querySelector('.js-hide-sidedrawer').addEventListener('click', _root.toggleMainMenu );
+    return this;
+  };
+
+  Commands.prototype.live = function(){
+  };
+
+
+  return new Commands().build();
 })();

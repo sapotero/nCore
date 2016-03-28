@@ -9,46 +9,13 @@ jQuery(function($) {
         }
     });
   }
-  $('div#paper').on('froalaEditor.initialized', function (e, editor) {
-    document.querySelector('.fr-wrapper').nextSibling.textContent += 'test';
-  });
 
   var $bodyEl   = $('body'),
   $sidedrawerEl = $('#sidedrawer'),
   $cellSettings = $('#cellSettings'),
   $rotatePage   = $('#rotatePage'),
   $paper        = $('#paper');
-  
-  
-  // ==========================================================================
-  // Toggle Sidedrawer
-  // ==========================================================================
-  // function showSidedrawer() {
-  //   // show overlay
-  //   var options = {
-  //     onclose: function() {
-  //       // $sidedrawerEl.removeClass('active');
-  //       hideSidedrawer()
-  //     }
-  //   };
-  //   // $('#sidedrawer-brand').toggleClass('mui--z5');
-  //   var $overlayEl = $( mui.overlay('on', options)) ;
-  //   // $sidedrawerEl.appendTo($overlayEl);
-  //   setTimeout(function() {
-  //     $sidedrawerEl.addClass('active');
-  //   }, 200);
-  // }
 
-  function hideSidedrawer() {
-    $bodyEl.toggleClass('hide-sidedrawer');
-    $('#sidedrawer-brand').removeClass('mui--z5');
-    $sidedrawerEl.removeClass('active'); 
-  }
-
-  // $('.js-hide-sidedrawer').on('click', showSidedrawer);
-  $('.js-hide-sidedrawer').on('click', hideSidedrawer);
-  
-  
   // ==========================================================================
   // Animate menu
   // ==========================================================================
@@ -57,11 +24,12 @@ jQuery(function($) {
   $titleEls.next().hide();
 
   $titleEls.on('click', function() {
-
+    
     console.log('click');
     $(this).next().slideToggle(200);
     $sidedrawerEl.removeClass('active');
     mui.overlay('off');
+    // nCore.commands.body.classList.add('hide-sidedrawer');
 
   });
 

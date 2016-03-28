@@ -14,13 +14,12 @@ Settings::Web::Application.routes.draw do
 
   resources :sources
   
-  get '/documents/autocomplete', to: 'documents#autocomplete' #,as: :document_autocomplete
-  get '/documents/providers',    to: 'documents#providers' #,as: :document_autocomplete
-  
+  get  '/documents/autocomplete',  to: 'documents#autocomplete' #,as: :document_autocomplete
+  get  '/documents/providers',     to: 'documents#providers' #,as: :document_autocomplete
+  post '/documents/:id/calculate', to: 'documents#calculate' #,as: :document_autocomplete
 
   resources :documents do
     post :remove
-    post :calculate
   end
   
   # resources :forms

@@ -638,7 +638,7 @@ nCore.events = (function () {
       document.querySelector('.AddDocument').classList.add('mui--hide');
       document.querySelector('.AddDocument').classList.remove('fadeIn');
     } catch(e){
-      throw new Error(e);
+      // throw new Error(e);
     }
   });
 
@@ -650,7 +650,7 @@ nCore.events = (function () {
       document.querySelector('.AddDocument').classList.remove('fadeOut');
       document.querySelector('.AddDocument').classList.add('fadeIn');
     } catch(e){
-      throw new Error(e);
+      // throw new Error(e);
     }
   });
 
