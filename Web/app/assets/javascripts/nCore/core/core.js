@@ -24,7 +24,8 @@ nCore.core = (function(){
     var criteriaCondition,
         overlayTab;
 
-    function addOverlay() {
+    var render = {};
+    render.addOverlay = function() {
       setTimeout( function(){
         overlayTab = document.createElement('div');
         overlayTab.style.height     = '320px';
@@ -38,8 +39,8 @@ nCore.core = (function(){
         
         tab.appendChild( overlayTab );
       }, 100);
-    }
-    function removeOverlay() {
+    };
+    render.removeOverlay = function() {
 
       overlayTab.classList.add('animatedSlow');
       overlayTab.classList.add('fadeOut');
@@ -50,10 +51,10 @@ nCore.core = (function(){
           tab.removeChild( overlayTab );
         }
       },300)
-    }
+    };
 
-    var render = new Promise(function(resolve, reject) {
-      addOverlay();
+    render.promise = new Promise(function(resolve, reject) {
+      render.addOverlay();
       setTimeout(function(){
         if ( nCore.document.globalQuery ) {
           // console.log('nCore.document.globalQuery ->', nCore.document.globalQuery);
@@ -164,11 +165,11 @@ nCore.core = (function(){
       }, 200); 
     });
 
-    render.then(function() {
-      removeOverlay();
+    render.promise.then(function() {
+      render.removeOverlay();
       return true;
     }).catch(function(result) {
-      console.log("ERROR renderCellSettings!", result);
+      console.log( "ERROR renderCellSettings!", result );
     });
 
     console.groupEnd();

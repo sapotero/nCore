@@ -1851,3 +1851,11 @@ input[type="radio"].styled:checked label:after,
 .white {
   color: rgba(0,0,0,0);
 }
+
+.report-index-Main-menu{
+  position: absolute;
+  top: 56px;
+  height: 100%;
+  min-height: 250px;
+  padding: 0px;
+}

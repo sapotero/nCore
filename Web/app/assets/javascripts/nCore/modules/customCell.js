@@ -12,6 +12,7 @@ nCore.modules.customCell = (function(){
 
     this.id      = '';
     this.value   = '';
+    this.element = '';
 
     return this;
   };
@@ -35,6 +36,7 @@ nCore.modules.customCell = (function(){
   };
   CustomCellFactory.prototype.clear = function() {
     this.cells = {};
+    this.query = [];
   };
   CustomCellFactory.prototype.populate = function( calculatedCells ) {
     var root = this;
@@ -84,8 +86,12 @@ nCore.modules.customCell = (function(){
       // console.log( 'customCell', customCell );
 
       root.cells[customCell].id = customCell;
-      root.query.push( root.cells[customCell].find().result() );
+
+      var formatter = new nCore.format.convert( customCell );
+      root.query.push( formatter.custom() );
     }
+
+    // console.log( 'root.query',root.query );
     return root.query;
   };
 

@@ -273,9 +273,9 @@ nCore.modules.cell = (function(){
               // console.log( !empty,  nCore.modules.table.active && nCore.modules.table.active.hasOwnProperty('dataset') );
 
               // conditions.log
-              if ( nCore.document.showSettings && nCore.document.globalQueryData().hasOwnProperty(this.criterias.value) ) {
+              if ( nCore.document.showSettings && nCore.document.globalQueryData.hasOwnProperty(this.criterias.value) ) {
                 // console.log('globalQuery');
-                $(element).append( [ new Option( nCore.document.globalQueryData()[ this.criterias.value ] , this.criterias.value, true) ] );
+                $(element).append( [ new Option( nCore.document.globalQueryData[ this.criterias.value ] , this.criterias.value, true) ] );
               } else if ( !empty && nCore.modules.table.active && nCore.modules.table.active.dataset.hasOwnProperty( this.criterias.value ) ) {
                 // console.log('not globalQuery');
                 $(element).append( [ new Option( nCore.modules.table.active.dataset[ this.criterias.value ] , this.criterias.value, true) ] );
@@ -316,8 +316,8 @@ nCore.modules.cell = (function(){
 
                 if ( nCore.document.showSettings ) {
                   // console.log( 'globalQuery' );
-                  nCore.document.globalQueryData()[ element.value ] = '';
-                  nCore.document.globalQueryData()[ element.value ] = element.textContent;
+                  nCore.document.globalQueryData[ element.value ] = '';
+                  nCore.document.globalQueryData[ element.value ] = element.textContent;
                 } else {
                   nCore.modules.table.active.dataset[ element.value ] = '';
                   nCore.modules.table.active.dataset[ element.value ] = element.textContent;

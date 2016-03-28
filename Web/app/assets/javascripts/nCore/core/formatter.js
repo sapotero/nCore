@@ -37,16 +37,13 @@ nCore.format = (function(){
       try{
         if ( query.query.length ) {
           query.query.forEach( function( query, i, queryArray ){
-            var conditions = 'and';
             if ( !sources.hasOwnProperty( query.source ) ) {
               sources[ query.source ] = {
                 'and': [],
                 'or':  []
               };
             }
-
-
-            sources[ query.source ][ conditions ].push( [query] );
+            sources[ query.source ][ query.criteria_condition ].push( query );
           });
         }
       } catch(e){
@@ -57,14 +54,15 @@ nCore.format = (function(){
         global.yearReport = {
           main    : nCore.document.main,
           compare : nCore.document.compare
-        }
+        };
       }
       
-      global.periodStart = nCore.document.periodStart;
-      global.periodEnd   = nCore.document.periodEnd;
-      global.providerId  = document.querySelector('#nCoreDocumentAuthor').dataset.providerId;
-      global.reportId    = nCore.document.id;
-      global.query       = sources;
+      global.periodStart      = nCore.document.periodStart;
+      global.periodEnd        = nCore.document.periodEnd;
+      global.providerId       = document.querySelector('#nCoreDocumentAuthor').dataset.providerId;
+      global.reportId         = nCore.document.id;
+      global.query            = sources;
+      global.providerSelected = nCore.document.providerSelected;
     });
 
     return this;
@@ -77,100 +75,142 @@ nCore.format = (function(){
 
     this.flags = dup;
   };
-  Formatter.prototype.customCellCalculate = function(){
-    var item = this.item,
+   Formatter.prototype.customCellCalculate = function(){
+    var item = document.querySelector('#'+this.item),
         root = this;
 
-    if ( item.data.hasOwnProperty( 'query' ) ){
-      var sources = {};
-      JSON.parse( item.data.query ).forEach( function( rootQuery, i ,rootArray ){
+      var keys = {};
+
+      // console.log( 'KEYS', keys );
+
+      var _raw_query = JSON.parse( item.dataset.query );
+      // console.log( '_raw_query' );
+
+      _raw_query.forEach( function( query, i ,queriesArray ){
         try{
-          var cellQuery  = rootQuery.query;
-          var conditions = rootQuery.conditions;
+          var cellQuery = query.query;
+
+          // console.log( 'query', query, cellQuery );
+          var conditions = query.conditions;
+
           if ( cellQuery.length ) {
-            cellQuery.forEach( function( query, i, queriesArray ){
-              if ( !sources.hasOwnProperty( query.source ) ) {
-                sources[ query.source ] = {
+
+            var tmp = {};
+            for (var g = 0; g < cellQuery.length; g++) {
+              var query = cellQuery[g];
+
+              // console.log('queries', query);
+              // console.log('_sources', sources);
+
+
+              // queries.query.forEach( function( query, i, queryArray ){
+                
+              if ( !tmp.hasOwnProperty( query.source ) ) {
+                tmp[ query.source ] = {
                   'and': [],
                   'or':  []
                 };
               }
-              // проверяем, есть ли такой хеш
-              if ( !sources[ query.source ][ conditions ].some(elem => elem == queriesArray ) ){
-                sources[ query.source ][ conditions ].push( queriesArray );
+              tmp[ query.source ][ conditions ].push( query );
+              
+              // });a
+            }
+            // console.log( 'TMP:', tmp );
+
+            for( var tmp_key in tmp ){
+              var tmp_source = tmp_key;
+
+              if ( !keys.hasOwnProperty( tmp_source ) ) {
+                keys[ tmp_source ] = {
+                  'and': [],
+                  'or':  []
+                };
               }
-            });
+
+              // console.log( 'tmp_key', tmp_key, keys[tmp_source] );
+
+              var tmp_and = tmp[tmp_key].and;
+              var tmp_or  = tmp[tmp_key].or;
+
+              if ( tmp_and.length ) {
+                keys[tmp_source].and.push( tmp[tmp_key].and );
+              }
+              if ( tmp_or.length ) {
+                keys[tmp_source].or.push( tmp[tmp_key].or );
+              }
+            };
           }
-          // console.warn('FINAL', sources);
         } catch(e){
-          console.error('JSON PARSE FAILS', new Error(e) );
+          console.error('JSON PARSE FAILS', e);
         }
-        root.query = sources;
       });
-    }
+      root.query = keys;
+
     return this;
   };
   Formatter.prototype.tableCellCalculate = function( from ){
     var item = this.item,
         root = this;
 
+    var keys = {};
+
     if ( item.hasOwnProperty('query') && item.query.hasOwnProperty(from) ) {
+      // console.log('item.query[ from ]', item.query[ from ]);
+      var sources = {};
+
       item.query[ from ].forEach( function( query, i ,array ){
-        var sources = {};
         try{
           var cellQuery = JSON.parse(query);
           if ( cellQuery.length ) {
-              var _sources = {};
-           cellQuery.forEach( function( queries, i ,queriesArray ){
+
+            cellQuery.forEach( function( queries, i, queriesArray ){
+              
+              // console.log('from', from);
+              // console.log('_sources', sources);
 
               var conditions = queries.conditions;
-              queries.query.forEach( function( query, i ,queryArray ){
-                if ( !sources.hasOwnProperty( query.source ) ) {
-                sources[ query.source ] = {
-                  'and': [],
-                  'or':  []
-                  };
-                }
-
-                if ( !sources[ query.source ][ conditions ].some(elem => elem == query ) ){
-                  sources[ query.source ][ conditions ].push( query );
-                }
-
-                if ( !_sources.hasOwnProperty( query.source ) ) {
-                  _sources[ query.source ] = {};
-                  if ( !_sources[ query.source ].hasOwnProperty( conditions ) ) {
-                  _sources[ query.source ] = {
+              var tmp = {};
+              queries.query.forEach( function( query, i, queryArray ){
+                if ( !tmp.hasOwnProperty( query.source ) ) {
+                  tmp[ query.source ] = {
                     'and': [],
                     'or':  []
-                    };
-                  }
-
-                  for (var b = 0; b < queriesArray.length; b++) {
-                    // console.log(queriesArray[b]);
-                    var q = [];
-                    for (var i = 0; i < queriesArray[b].query.length; i++) {
-                      // console.log('cmp++', queriesArray[b].query[i], query.source);
-
-                      if (queriesArray[b].query[i].source === query.source){
-                        q.push(queriesArray[b].query[i]);
-
-                        
-                      }
-                    }
-                    _sources[ query.source ][ queriesArray[b].conditions ].push( q );
-                  }
+                  };
                 }
+                tmp[ query.source ][ conditions ].push( query );
               });
 
+            for( var tmp_key in tmp ){
+              var tmp_source = tmp_key;
+
+              if ( !keys.hasOwnProperty( tmp_source ) ) {
+                keys[ tmp_source ] = {
+                  'and': [],
+                  'or':  []
+                };
+              }
+
+              // console.log( 'tmp_key', tmp_key, keys[tmp_source] );
+
+              var tmp_and = tmp[tmp_key].and;
+              var tmp_or  = tmp[tmp_key].or;
+
+              if ( tmp_and.length ) {
+                keys[tmp_source].and.push( tmp[tmp_key].and );
+              }
+              if ( tmp_or.length ) {
+                keys[tmp_source].or.push( tmp[tmp_key].or );
+              }
+            }
+
             });
-            // console.log( '_sources ->', _sources );
           }
         } catch(e){
           console.error('JSON PARSE FAILS', e);
         }
-        root[ from ] = _sources;
       });
     }
+    root[ from ] = keys;
     return this;
   };
   Formatter.prototype.resultTable = function(){

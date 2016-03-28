@@ -354,7 +354,7 @@ nCore.modules.table = (function(){
           
           if ( group ) {
             _cellData.group = group;
-          };
+          }
           
           if ( ___dataCell ) {
             // console.log( 'datacell', ___dataCell.dataset );
@@ -424,9 +424,9 @@ nCore.modules.table = (function(){
     // копируем свойства в ячейках боковины и клеи с шапкой
     this.getQueries();
 
-    // console.groupEnd();
+    console.groupEnd();
 
-    this.removeDataRow();
+    // this.removeDataRow();
   };
 
   // Тут хранятся все таблички, через фабрику создаем новые таблички для расчёта
@@ -557,6 +557,8 @@ nCore.modules.table = (function(){
       var newCellFormat = [];
       
       table.cellData.forEach( function( cell, i ,array ){
+        // console.log('+cell', cell);
+
         var formatter = new nCore.format.convert( cell );
         newCellFormat.push( formatter.table() );
       });
@@ -571,6 +573,7 @@ nCore.modules.table = (function(){
     //   var formatter = new nCore.format.convert( cell );
     //   cells.push( formatter.custom() );
     // });
+    nCore.modules.customCell.clear();
     var cells = nCore.modules.customCell.calculate();
 
 
