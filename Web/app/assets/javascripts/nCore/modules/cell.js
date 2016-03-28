@@ -253,7 +253,7 @@ nCore.modules.cell = (function(){
         case "String":
           var generateSelect2 = function(group){
             this.clear();
-            // // console.log( 'STRING equal', this.criterias, autocomplete_url, nCore.modules.table.active().dataset[ this.criterias.value ] );
+            // // console.log( 'STRING equal', this.criterias, autocomplete_url, nCore.modules.table.active.dataset[ this.criterias.value ] );
             
             group = group || false;
             if ( group ) {
@@ -270,15 +270,15 @@ nCore.modules.cell = (function(){
               element.style.paddingTop = "15px";
               element.style.textAlign  = "left";
 
-              // console.log( !empty,  nCore.modules.table.active() && nCore.modules.table.active().hasOwnProperty('dataset') );
+              // console.log( !empty,  nCore.modules.table.active && nCore.modules.table.active.hasOwnProperty('dataset') );
 
               // conditions.log
               if ( nCore.document.showSettings && nCore.document.globalQueryData().hasOwnProperty(this.criterias.value) ) {
                 // console.log('globalQuery');
                 $(element).append( [ new Option( nCore.document.globalQueryData()[ this.criterias.value ] , this.criterias.value, true) ] );
-              } else if ( !empty && nCore.modules.table.active() && nCore.modules.table.active().dataset.hasOwnProperty( this.criterias.value ) ) {
+              } else if ( !empty && nCore.modules.table.active && nCore.modules.table.active.dataset.hasOwnProperty( this.criterias.value ) ) {
                 // console.log('not globalQuery');
-                $(element).append( [ new Option( nCore.modules.table.active().dataset[ this.criterias.value ] , this.criterias.value, true) ] );
+                $(element).append( [ new Option( nCore.modules.table.active.dataset[ this.criterias.value ] , this.criterias.value, true) ] );
               }
 
 
@@ -319,8 +319,8 @@ nCore.modules.cell = (function(){
                   nCore.document.globalQueryData()[ element.value ] = '';
                   nCore.document.globalQueryData()[ element.value ] = element.textContent;
                 } else {
-                  nCore.modules.table.active().dataset[ element.value ] = '';
-                  nCore.modules.table.active().dataset[ element.value ] = element.textContent;
+                  nCore.modules.table.active.dataset[ element.value ] = '';
+                  nCore.modules.table.active.dataset[ element.value ] = element.textContent;
                 }
                 
                 nCore.modules.table.event.publish('newCellSettingsChange');
