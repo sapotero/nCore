@@ -87,12 +87,12 @@ nCore.dialog = (function(){
           console.log('load', data);
           resolve(data);
         }).error(function (data) {
-          console.error('[!] input[value="optionsSelected"]', data);
+          console.error('[!] input[value="options_selected"]', data);
           reject(data);
         });
       });
 
-      var option = m.querySelector('#optionsSelected'),
+      var option = m.querySelector('#options_selected'),
         parent = option.parentNode.parentNode;
 
       load.then(function(data){
@@ -101,7 +101,7 @@ nCore.dialog = (function(){
         select.multiple = true;
         select.style.overflow = 'auto';
         select.classList.add('mui-col-lg-12');
-        select.dataset.select2Tags = '[{"id": "1", "text": "One"}, {"id": "2", "text": "Two"}]';
+        // select.dataset.select2Tags = '[{"id": "1", "text": "One"}, {"id": "2", "text": "Two"}]';
 
         for (var i = 0; i < data.length; i++) {
           var option = document.createElement('option');

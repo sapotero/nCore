@@ -77,7 +77,7 @@ nCore.document = (function(){
       documentEvent        : this.documentEvent,
       
       documentCellQuery    : this.documentCellQuery,
-      providerSelected     : this.providerSelected.replace('options', '').toLowerCase()
+      providerSelected     : this.providerSelected
     };
   };
   Document.prototype.save = function( data ) {
@@ -247,6 +247,10 @@ nCore.document = (function(){
             this.compare = element.value;
             break;
           default:
+            // console.log('UPADATE elemtn', element, element.checked );
+            if ( element.checked === true && element.value !== 'selected') {
+              this.providerSelected = element.value;
+            }
             continue;
         }
       }

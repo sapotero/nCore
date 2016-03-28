@@ -517,18 +517,18 @@ jQuery(function($) {
   });
 
 
-  $('input#optionsCurrent').live('click', function(e){
-    nCore.document.providerSelected = 'optionsCurrent';
+  $('input#options_current').live('click', function(e){
+    nCore.document.providerSelected = 'current';
     nCore.dialog.clearSelect2();
   });
 
-  $('input#optionsAll').live('click', function(e){
-    nCore.document.providerSelected = 'optionsAll';
+  $('input#options_all').live('click', function(e){
+    nCore.document.providerSelected = 'all';
     nCore.dialog.clearSelect2();
   });
 
-  $('input#optionsSelected').live('click', function(e){
-    console.log( 'optionsSelected', e.target );
+  $('input#options_selected').live('click', function(e){
+    console.log( 'options_selected', e.target );
     var optionsElement = e.target;
 
     nCore.dialog.clearSelect2();
@@ -543,7 +543,7 @@ jQuery(function($) {
         console.log('load', data);
         resolve(data);
       }).error(function (data) {
-        console.error('[!] input[value="optionsSelected"]', data);
+        console.error('[!] input[value="options_selected"]', data);
         reject(data);
       });
     });
