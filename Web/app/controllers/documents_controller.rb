@@ -2,7 +2,7 @@ class DocumentsController < ApplicationController
   before_filter :set_document, only: [:show, :edit, :update, :destroy, :remove]
 
   respond_to :xls, :html, :json
-  protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove ]
+  protect_from_forgery except: [ :index, :create, :edit, :update, :destroy, :remove, :calculate ]
 
   def index
     result = {}
@@ -18,6 +18,13 @@ class DocumentsController < ApplicationController
   def autocomplete
     @query = Document.autocomplete( current_user, params )
     render :json => @query
+  end
+
+  def calculate
+    puts params
+
+    elastic_report_result = @document.calculate( params )
+    render :json => elastic_report_result
   end
 
   def providers

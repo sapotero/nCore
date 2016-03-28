@@ -77,10 +77,10 @@ nCore.dialog = (function(){
     
     this.clearSelect2();
 
-    if (nCore.document.providerSelected == 'optionsCurrent' || nCore.document.providerSelected == 'optionsAll') {
-      m.querySelector('#'+nCore.document.providerSelected).checked = true;
+    if (nCore.document.providerSelected == 'current' || nCore.document.providerSelected == 'all') {
+      m.querySelector('#options_'+nCore.document.providerSelected).checked = true;
     } else {
-      m.querySelector('#optionsSelected').checked = true;
+      m.querySelector('#options_selected').checked = true;
 
       var load = new Promise(function(resolve, reject){
         nCore.query.get('/documents/providers').success(function (data) {

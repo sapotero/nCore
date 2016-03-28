@@ -91,7 +91,7 @@ class Document
     documents
   end
 
-  def self.with_images( documents )
+    def self.with_images( documents )
     new_docs = []
     
     documents.each do |document|
@@ -99,6 +99,14 @@ class Document
       new_docs.push( document )
     end
     new_docs
+  end
+
+  def calculate(data)
+    return Core::Reports::ElasticReport.find_or_initialize_by(report_id: self.id).calculate(data)
+  end
+  
+  def elastic_report
+    Core::Reports::ElasticReport.where(report_id: self.id).first
   end
 
   def populate( data )

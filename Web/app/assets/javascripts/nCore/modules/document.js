@@ -30,7 +30,7 @@ nCore.document = (function(){
     this.isNew                = true;
     this.event = {};
     this.showCellSettings     = false;
-    this.providerSelected     = 'current';
+    this.providerSelected     = 'optionsCurrent';
 
     this.init();
   };
@@ -77,7 +77,7 @@ nCore.document = (function(){
       documentEvent        : this.documentEvent,
       
       documentCellQuery    : this.documentCellQuery,
-      providerSelected     : this.providerSelected
+      providerSelected     : this.providerSelected.replace('options', '').toLowerCase()
     };
   };
   Document.prototype.save = function( data ) {
@@ -113,7 +113,7 @@ nCore.document = (function(){
     try{
       this.providerSelected = JSON.parse( config.providerSelected );
     } catch(e){
-      this.providerSelected = config.providerSelected;
+      this.providerSelected = config.providerSelected || 'current';
     }
 
     if ( config.body ) {

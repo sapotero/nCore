@@ -333,7 +333,7 @@ nCore.events = (function () {
   nCore.modules.table.event.subscribe('calculateQuery', function (data) {
     console.log('data: ', JSON.parse(JSON.stringify( data ))  );
 
-    nCore.query.post('queries.json', data).success(function (data) {
+    nCore.query.post('documents/' + nCore.document.id + '/calculate', data).success(function (data) {
       nCore.modules.table.event.publish('insertCellData', data);
     }).error(function (data) {
       console.error('[!] calculateQuery -> post', data);

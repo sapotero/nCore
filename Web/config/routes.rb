@@ -16,12 +16,15 @@ Settings::Web::Application.routes.draw do
   
   get '/documents/autocomplete', to: 'documents#autocomplete' #,as: :document_autocomplete
   get '/documents/providers',    to: 'documents#providers' #,as: :document_autocomplete
+  
+
   resources :documents do
     post :remove
+    post :calculate
   end
   
-  resources :forms
-  resources :queries
+  # resources :forms
+  # resources :queries
 
   resources :groups
   resources :members
