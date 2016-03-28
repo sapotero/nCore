@@ -102,7 +102,7 @@ class Document
   end
 
   def calculate(data)
-    return Core::Reports::ElasticReport.find_or_initialize_by(report_id: data["id"]).calculate(data)
+    return Core::Reports::ElasticReport.find_or_initialize_by(report_id: self.id).calculate(data)
   end
   
   def elastic_report
