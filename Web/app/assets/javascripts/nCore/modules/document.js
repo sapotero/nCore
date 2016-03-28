@@ -204,15 +204,16 @@ nCore.document = (function(){
         nCore.query.post('documents.json', nCoreDocumentAttributes)
           .success(function (data) {
             console.log('saveDocument post', data);
-              location.hash = location.hash.replace(/new/gim, data._id);
+              location.hash = [ '#', 'report', data._id ].join('/');
           }).error(function (data) {
             console.error('[!] saveDocument', data );
           });
         }
       });
     } catch (e){
-      console.log( 'error', e );
+      return new Error(e);
     }
+    return this;
   };
   Document.prototype.update = function( rootNode ) {
     if ( rootNode ) {

@@ -58,7 +58,18 @@ nCore.events = (function () {
 
 
   nCore.document.event.subscribe('tryToSaveFromTemplate', function () {
-    nCore.document.create();
+    var load = new Promise(function(resolve, reject){
+      var a = nCore.document.create();
+      
+      a ? resolve(a) : reject(a);
+
+    });
+
+    load.then(function(){
+      nCore.document.event.publish('go', 'report/'+nCore.document.id );
+    }).catch(function(e){
+      throw new Error(e);
+    })
   });
 
 
@@ -352,7 +363,8 @@ nCore.events = (function () {
   nCore.modules.table.event.subscribe('insertCellData', function (data) {
 
     var publish = new Promise(function(resolve, reject){
-      console.log('insertCellData', data);
+      console.log('[+++] insertCellData', data);
+
       if (data) {
         try{
           nCore.modules.table.factory.populate( data.tables );
@@ -398,7 +410,9 @@ nCore.events = (function () {
     var __elements_to_update = [], criteriaCondition;
     var overlayTab, overlayFormula;
 
-    function addOverlay() {
+    var render = {};
+    
+    render.addOverlay =function() {
       setTimeout( function(){
         overlayTab = document.createElement('div');
         overlayTab.style.top        = '50px';
@@ -416,7 +430,8 @@ nCore.events = (function () {
         formula.appendChild( overlayFormula );
       }, 100);
     };
-    function removeOverlay() {
+
+    render.removeOverlay = function() {
 
       overlayTab.classList.add('animatedSlow');
       overlayTab.classList.add('fadeOut');
@@ -435,8 +450,8 @@ nCore.events = (function () {
       },300)
     };
 
-    var render = new Promise(function(resolve, reject) {
-      addOverlay();
+    render.promise = new Promise(function(resolve, reject) {
+      render.addOverlay();
       setTimeout(function(){
         if (nCore.modules.table.active) {
         
@@ -484,56 +499,58 @@ nCore.events = (function () {
               _group.classList.remove('mui--hide');
               tab.appendChild(_group);
 
-              for (var b = 0; b < criterias.length; b++) {
-                var _elements_to_update = [],
-                  item = criterias[b],
-                  list = groupTemplate.getElementsByClassName('criteriaSelectorGroupList')[0],
-                  cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
+              if ( criterias && criterias.length ) {
+                for (var b = 0; b < criterias.length; b++) {
+                  var _elements_to_update = [],
+                    item = criterias[b],
+                    list = groupTemplate.getElementsByClassName('criteriaSelectorGroupList')[0],
+                    cardTemplate = document.getElementsByClassName('criteriaSelectorItemTemplate')[0];
 
-                // console.dirxml('criteria -> ', item);
+                  // console.dirxml('criteria -> ', item);
 
-                if (item.source == null && item.origin_name == null) {
-                  nCore.modules.table.active.dataset.query = '[]';
-                  continue;
+                  if (item.source == null && item.origin_name == null) {
+                    nCore.modules.table.active.dataset.query = '[]';
+                    continue;
+                  }
+
+                  var card = cardTemplate.cloneNode(true);
+                  card.classList.remove('criteriaSelectorItemTemplate');
+                  card.classList.remove('mui--hide');
+
+                  var form = card.getElementsByClassName('criteriaForm')[0];
+                  criteriaCondition = card.querySelector('select.itemSelectCondition');
+
+                  list.appendChild(card);
+
+                  if ( item.origin_name == 'formula' ) {
+                    item.value = Base64.decode( item.value );
+                  }
+
+                  var sorted_hash = {};
+                  sorted_hash.criteria_condition = item.criteria_condition
+                  sorted_hash.source = item.source
+                  sorted_hash.origin_name = item.origin_name
+                  sorted_hash.conditions = item.conditions
+                  sorted_hash.value = item.value
+
+                  // console.warn( '*********', item, sorted_hash );
+
+                  var render = new Promise(function(resolve, reject){
+                    nCore.modules.cell.generateForm( sorted_hash, card )
+                    resolve( [sorted_hash, card] )
+                  });
+                  
+                  render.then(function(data){
+                  }).catch(function(error){
+                    console.log(error)
+                  })
+                  card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
+
+
+                  var cr_c = card.querySelector('[name="criteria_condition_group"]');
+                  cr_c.value = item.criteria_condition;
+                  cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
                 }
-
-                var card = cardTemplate.cloneNode(true);
-                card.classList.remove('criteriaSelectorItemTemplate');
-                card.classList.remove('mui--hide');
-
-                var form = card.getElementsByClassName('criteriaForm')[0];
-                criteriaCondition = card.querySelector('select.itemSelectCondition');
-
-                list.appendChild(card);
-
-                if ( item.origin_name == 'formula' ) {
-                  item.value = Base64.decode( item.value );
-                }
-
-                var sorted_hash = {};
-                sorted_hash.criteria_condition = item.criteria_condition
-                sorted_hash.source = item.source
-                sorted_hash.origin_name = item.origin_name
-                sorted_hash.conditions = item.conditions
-                sorted_hash.value = item.value
-
-                // console.warn( '*********', item, sorted_hash );
-
-                var render = new Promise(function(resolve, reject){
-                  nCore.modules.cell.generateForm( sorted_hash, card )
-                  resolve( [sorted_hash, card] )
-                });
-                
-                render.then(function(data){
-                }).catch(function(error){
-                  console.log(error)
-                })
-                card.querySelector('.criteriaSelectorItemName').textContent = card.querySelector('[name="source"]').options[ card.querySelector('[name="source"]').selectedIndex ].textContent;
-
-
-                var cr_c = card.querySelector('[name="criteria_condition_group"]');
-                cr_c.value = item.criteria_condition;
-                cr_c.selectedIndex = item.criteria_condition == 'and' ? 0 : 1;
               }
               // console.groupEnd();
               document.querySelector('.firstTimeCriteria').classList.add('mui--hide');
@@ -620,8 +637,8 @@ nCore.events = (function () {
       }, 200); 
     });
 
-    render.then(function(data) {
-      removeOverlay()
+    render.promise.then(function(data) {
+      render.removeOverlay()
     }).catch(function(result) {
       console.log("ERROR renderCellSettings!", result);
     });

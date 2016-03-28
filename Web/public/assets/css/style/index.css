@@ -1858,4 +1858,5 @@ input[type="radio"].styled:checked label:after,
   height: 100%;
   min-height: 250px;
   padding: 0px;
+  display: none;
 }

@@ -90,7 +90,7 @@ nCore.modules.customCell = (function(){
       var formatter = new nCore.format.convert( customCell );
       root.query.push( formatter.custom() );
     }
-
+    // debugger;
     // console.log( 'root.query',root.query );
     return root.query;
   };

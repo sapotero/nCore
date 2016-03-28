@@ -75,7 +75,7 @@ nCore.format = (function(){
 
     this.flags = dup;
   };
-   Formatter.prototype.customCellCalculate = function(){
+  Formatter.prototype.customCellCalculate = function(){
     var item = document.querySelector('#'+this.item),
         root = this;
 
@@ -171,6 +171,7 @@ nCore.format = (function(){
               var conditions = queries.conditions;
               var tmp = {};
               queries.query.forEach( function( query, i, queryArray ){
+                
                 if ( !tmp.hasOwnProperty( query.source ) ) {
                   tmp[ query.source ] = {
                     'and': [],
@@ -178,39 +179,40 @@ nCore.format = (function(){
                   };
                 }
                 tmp[ query.source ][ conditions ].push( query );
+                
               });
 
-            for( var tmp_key in tmp ){
-              var tmp_source = tmp_key;
+              for( var tmp_key in tmp ){
+                var tmp_source = tmp_key;
 
-              if ( !keys.hasOwnProperty( tmp_source ) ) {
-                keys[ tmp_source ] = {
-                  'and': [],
-                  'or':  []
-                };
+                if ( !keys.hasOwnProperty( tmp_source ) ) {
+                  keys[ tmp_source ] = {
+                    'and': [],
+                    'or':  []
+                  };
+                }
+
+                console.log( 'tmp_key', tmp_key, keys[tmp_source] );
+
+                var tmp_and = tmp[tmp_key].and;
+                var tmp_or  = tmp[tmp_key].or;
+
+                if ( tmp_and.length ) {
+                  keys[tmp_source].and.push( tmp[tmp_key].and );
+                }
+                if ( tmp_or.length ) {
+                  keys[tmp_source].or.push( tmp[tmp_key].or );
+                }
               }
-
-              // console.log( 'tmp_key', tmp_key, keys[tmp_source] );
-
-              var tmp_and = tmp[tmp_key].and;
-              var tmp_or  = tmp[tmp_key].or;
-
-              if ( tmp_and.length ) {
-                keys[tmp_source].and.push( tmp[tmp_key].and );
-              }
-              if ( tmp_or.length ) {
-                keys[tmp_source].or.push( tmp[tmp_key].or );
-              }
-            }
 
             });
           }
+        root[ from ] = keys;
         } catch(e){
           console.error('JSON PARSE FAILS', e);
         }
       });
     }
-    root[ from ] = keys;
     return this;
   };
   Formatter.prototype.resultTable = function(){

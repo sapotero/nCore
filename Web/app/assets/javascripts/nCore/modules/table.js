@@ -426,7 +426,7 @@ nCore.modules.table = (function(){
 
     console.groupEnd();
 
-    // this.removeDataRow();
+    this.removeDataRow();
   };
 
   // Тут хранятся все таблички, через фабрику создаем новые таблички для расчёта
@@ -445,6 +445,7 @@ nCore.modules.table = (function(){
       headClass: 'fr-highlighted',
       sideClass: 'fr-thick'
     };
+    console.log( 'table.id', table.id );
 
     if ( table.id === '' ){
       table.id =  nCore.core.random();
@@ -473,7 +474,7 @@ nCore.modules.table = (function(){
       console.log( 'calculatedTables', data, table );
 
       for (var i = 0; i < data.length; i++) {
-        // console.log( 'data[i]', data[i], data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') );
+        console.log( 'data[i]', data[i], data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') );
         if ( data[i].hasOwnProperty('cellIndex') && data[i].hasOwnProperty('rowIndex') && data[i].hasOwnProperty('value') ) {
           var cell = table.table.rows[data[i].rowIndex].cells[data[i].cellIndex];
           switch( typeof( data[i].value ) ){
