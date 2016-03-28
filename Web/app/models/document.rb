@@ -102,11 +102,11 @@ class Document
   end
 
   def calculate(data)
-    return Core::Reports::ElasticReport.find_or_initialize_by(report_id: self.id).calculate(data)
+    return Core::Reports::ElasticReport.find_or_initialize_by(report_id: self.id.to_s).calculate(data)
   end
   
   def elastic_report
-    Core::Reports::ElasticReport.where(report_id: self.id).first
+    Core::Reports::ElasticReport.where(report_id: self.id.to_s).first
   end
 
   def populate( data )
