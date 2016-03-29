@@ -43,7 +43,7 @@ nCore.format = (function(){
                 'or':  []
               };
             }
-            sources[ query.source ][ query.criteria_condition ].push( query );
+            sources[ query.source ][ query.criteria_condition ].push( [query] );
           });
         }
       } catch(e){
@@ -179,7 +179,7 @@ nCore.format = (function(){
                   };
                 }
                 tmp[ query.source ][ conditions ].push( query );
-                
+
               });
 
               for( var tmp_key in tmp ){
@@ -192,7 +192,7 @@ nCore.format = (function(){
                   };
                 }
 
-                console.log( 'tmp_key', tmp_key, keys[tmp_source] );
+                // console.log( 'tmp_key', tmp_key, keys[tmp_source] );
 
                 var tmp_and = tmp[tmp_key].and;
                 var tmp_or  = tmp[tmp_key].or;

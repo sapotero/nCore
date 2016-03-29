@@ -100,7 +100,7 @@ nCore.document = (function(){
     this.description = data.elements.nCoreDocumnetDescription.value;
   };
   Document.prototype.load = function( config ) {
-    console.log( 'load', config );
+    // console.log( 'load', config );
     this.id                = config._id;
     this.title             = config.title;
     this.type              = config.type;

@@ -108,7 +108,7 @@ nCore.dialog = (function(){
           option.value       = data[i]._id;
           option.textContent = data[i].name;
           select.appendChild(option);
-          if ( nCore.document.providerSelected.indexOf(data[i]._id) != -1 ) {
+          if ( [ 'all', 'current' ].indexOf( nCore.document.providerSelected ) != -1 && nCore.document.providerSelected.indexOf(data[i]._id) != -1 ) {
             option.selected = true;
           }
         }

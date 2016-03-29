@@ -123,7 +123,7 @@ nCore.events = (function () {
     });
 
     initialize.then(function(editor) {
-      console.log('document loaded', editor);
+      // console.log('document loaded', editor);
       $('div#paper').trigger('click');
 
       var globalEditor;
@@ -208,7 +208,7 @@ nCore.events = (function () {
 
         // выполняем асинхронный код
         nCore.query.get('documents/' + id + '.json', { id: id }).success(function (rawDocument) {
-          console.log('***raw', rawDocument);
+          // console.log('***raw', rawDocument);
           console.groupEnd();
           
           setTimeout(function () {
