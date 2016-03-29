@@ -89,9 +89,63 @@ nCore.grid = (function(){
     }
   };
 
+  var SideMenu = function(){
+    this.elements = {};
+    this.active   = 'templates';
+  };
+  SideMenu.prototype.Constant = {
+    ITEM   : 'mdl-list__item',
+    ACTIVE : 'active'
+  };
+
+  SideMenu.prototype.find = function(){
+    this.elements = document.querySelectorAll( '.' + this.Constant.ITEM );
+    return this;
+  };
+  SideMenu.prototype.clear = function(){
+    var _root = this;
+    for (var i = 0; i < _root.elements.length; i++) {
+      var el = _root.elements[i];
+      el.classList.remove( _root.Constant.ACTIVE );
+    }
+
+    return this;
+  };
+  SideMenu.prototype.event = function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.clear();
+    var element = e.target.classList.contains( this.Constant.ITEM ) ? e.target : nCore.core.findUpClass( e.target, this.Constant.ITEM );
+    
+    console.log('element', element);
+    this.active = element.dataset.command;
+
+    this.setActive();
+  };
+  SideMenu.prototype.attach = function(){
+    this.find();
+
+    for (var i = 0; i < this.elements.length; i++) {
+      var el = this.elements[i];
+      el.addEventListener( 'click', this.event.bind(this), false );
+    }
+
+    return this;
+  };
+  SideMenu.prototype.setActive = function(){
+    if ( this.active ) {
+      this.elements.querySelector('[data-commnad="'+this.active+'"]');
+      console.log( this.elements.querySelector('[data-commnad="'+this.active+'"]') );
+    }
+
+    return this;
+  };
+
   var GridFactory = function(){
     this.thumbs    = {};
     this.menu      = {};
+    this.sideMenu  = {};
     this.viewType  = this.Constant.THUMB;
     this.sortType  = this.Constant.SORT.TYPE.NAME;
     this.sortOrder = this.Constant.SORT.ORDER.ASC;
@@ -322,8 +376,11 @@ nCore.grid = (function(){
         setTimeout( function(){
           render.removeOverlay();
         }, 1000 );
-        factory.menu = new Menu();
+        factory.menu     = new Menu();
+        factory.sideMenu = new SideMenu();
         factory.menu.attach();
+        factory.sideMenu.attach();
+        // factory.resizer();
       }
     }).catch(function(result) {
       console.log("ERROR renderCellSettings!", result);
@@ -345,6 +402,37 @@ nCore.grid = (function(){
   };
   GridFactory.prototype.clear = function(){
     this.thumbs = {};
+  };
+
+
+  ////////////////////////////////
+  // для ресайза меню как гугле //
+  // раскоментить потом         //
+  ////////////////////////////////
+  GridFactory.prototype.initResize = function(e) {
+    window.addEventListener('mousemove', this.Resize, false);
+    window.addEventListener('mouseup',   this.stopResize, false);
+  };
+  GridFactory.prototype.Resize = function(e) {
+    console.log(e);
+    this.resizer.element.style.width  = (e.clientX - this.resizer.element.offsetLeft) + 'px';
+    this.resizer.element.style.height = (e.clientY - this.resizer.element.offsetTop) + 'px';
+  };
+  GridFactory.prototype.stopResize = function(e) {
+    window.removeEventListener('mousemove', this.resizer.Resize, false);
+    window.removeEventListener('mouseup',   this.resizer.stopResize, false);
+  };
+  GridFactory.prototype.resizer = function(){
+    var root = this;
+
+    root.sideMenu = document.querySelector('#mainMenu');
+    root.resizer  = {
+      element : document.querySelector('.resizer'),
+      box     : document.querySelector('.resizer').getBoundingClientRect()
+    };
+
+    root.resizer.element.addEventListener('mousedown', root.initResize, false);
+    return root;
   };
 
   return new GridFactory();

@@ -19,7 +19,6 @@
     <!-- Лист -->
     <td class="mui-col-md-8 paperWrappers" id="mainDocumentView">
       <div class="mui-panel mui--z2" id="paper" style="margin-bottom: 50px;">
-
       </div>
     </td>
 
@@ -348,8 +347,8 @@
   <div class="mui-row mui--text-center">
     <div class="mui--text-dark mui--text-headline errorMessage mui--align-top" style="height: 120px;"></div>
     <div class="mui-form--inline mui--align-bottom">
-      <button class="mui-btn mui-btn--raised back" onclick="nCore.document.root.publish( 'go', nCore.document.type() )"></button>
-      <button class="mui-btn mui-btn--raised mui-btn--primary reload"  onclick="nCore.document.root.publish('loadDocument', nCore.document.id())"></button>
+      <button class="mui-btn mui-btn--raised back" onclick="nCore.document.event.publish( 'go', nCore.document.type() )"></button>
+      <button class="mui-btn mui-btn--raised mui-btn--primary reload"  onclick="nCore.document.event.publish('loadDocument', nCore.document.id())"></button>
     </div>
   </div>
 </div>

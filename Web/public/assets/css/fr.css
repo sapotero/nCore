@@ -20,7 +20,7 @@
   /*z-index: 2;*/
   /*overflow: hidden;*/
   text-align: initial;
-  -webkit-user-select: auto;
+  /*-webkit-user-select: auto;*/
 }
 .fr-element img {
   max-width: calc(100% - (2 * 5px));
@@ -95,7 +95,7 @@ iframe.fr-iframe {
   background: #ffffff;
   border: 0px;
   border-top: 0;
-  top: -20px;
+  top: 10px;
 }
 .fr-box.fr-basic .fr-wrapper .fr-placeholder {
   top: 10px;
@@ -3600,9 +3600,24 @@ table th {
 
 .fr-toolbar.fr-top {
   margin: 0px auto;
-  width: 980px;
+  z-index: 10;
+  position: fixed;
+  top: 56px;
+
+  left: 0px;
+  right: 0px;
+
+  text-align: center;
+  /*width: 930px;*/
+  background: #FAFAFA;
+  width: 100%;
+  padding-left: calc((100% - 930px)/2);
+
 }
 
 .fr-toolbar.fr-ltr.fr-desktop.fr-top.fr-basic.cloned{
   top: 2px;
+}
+
+.fr-toolbarz {
 }

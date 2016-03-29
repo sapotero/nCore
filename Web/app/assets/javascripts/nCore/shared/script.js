@@ -79,6 +79,8 @@ jQuery(function($) {
   });
 
   $('#content-wrapper').live('click', function(e){
+    // e.preventDefault();
+    // e.stopPropagation();
     nCore.document.showCellSettings = false;
     nCore.modules.table.event.publish('hideSideMenu');
   });
@@ -549,4 +551,12 @@ jQuery(function($) {
       throw new Error(error);
     });
   });
+
+  // $('.mdl-list__item').live('click', function(e){
+  //   console.log( 'e', e );
+    
+  //   // var els = 
+
+  //   e.target.classList.add('active');
+  // })
 });

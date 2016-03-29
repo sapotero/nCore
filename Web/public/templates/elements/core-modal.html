@@ -407,7 +407,7 @@ window.onload = (function( window, document, undefined) {
 
     this.submit.addEventListener('click', function(){
       console.log('submit click' );
-      nCore.document.root.publish('addGroupData', root.getSelected() );
+      nCore.document.event.publish('addGroupData', root.getSelected() );
       mui.overlay('off');
     });
 

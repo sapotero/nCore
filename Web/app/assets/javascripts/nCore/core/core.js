@@ -177,7 +177,15 @@ nCore.core = (function(){
   Core.prototype.findUpTag = function(el, tag) {
     while (el.parentNode) {
       el = el.parentNode;
-      if (el.tagName.toLowerCase() === tag.toLowerCase() || el.classList.contains(tag) )
+      if (el.tagName.toLowerCase() === tag.toLowerCase() || el.classList.contains(_class) )
+        return el;
+    }
+    return null;
+  };
+  Core.prototype.findUpClass = function(el, _class) {
+    while (el.parentNode) {
+      el = el.parentNode;
+      if ( el.classList.contains(_class) )
         return el;
     }
     return null;
