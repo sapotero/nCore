@@ -376,18 +376,30 @@ window.onload = (function( window, document, undefined) {
       option.text = criteriaKeys[j].name;
       this.criteria_source.appendChild(option);
     }
+    var option = document.createElement('option');
+    option.value = 'all';
+    option.text  = 'Все журналы';
+    this.criteria_source.appendChild(option);
   };
 
   CoreModalProto.populateCriteriaOrigin = function(source){
     this.criteria_origin.innerHTML = '';
-    var keys = JSON.parse(nCore.storage[source]);
-    for (var j = 0; j < keys.length; j++) {
+    if ( source === 'all' ) {
       var option = document.createElement('option');
-      option.value = keys[j].origin_name;
-      option.text  = keys[j].russian_name;
-      keys[j].autocomplete_url ? option.dataset.auto = keys[j].autocomplete_url : false;
-
+      option.value = 'provider_id';
+      option.text  = 'Провайдер';
       this.criteria_origin.appendChild(option);
+    } else {
+
+      var keys = JSON.parse(nCore.storage[source]);
+      for (var j = 0; j < keys.length; j++) {
+        var option = document.createElement('option');
+        option.value = keys[j].origin_name;
+        option.text  = keys[j].russian_name;
+        keys[j].autocomplete_url ? option.dataset.auto = keys[j].autocomplete_url : false;
+
+        this.criteria_origin.appendChild(option);
+      }
     }
   };
 
@@ -403,15 +415,25 @@ window.onload = (function( window, document, undefined) {
       "conditions":"and"}]
   };
   CoreModalProto.generateQueryProvider = function(ID){
-    return [
-        {"query":[{
-          "criteria_condition" : "and",
-          "source"             : this.criteria_source.value,
-          "conditions"         : "equal",
-          "origin_name"        : this.criteria_origin.value,
-          "value"              : ID
-        }],
-      "conditions":"and"}]
+    var query = {
+      "query":[],
+      "conditions":"and"
+    };
+
+    var criteriaKeys = JSON.parse(nCore.storage.criteriaKeys);
+    for (var j = 0; j < criteriaKeys.length; j++) {
+      // option.value = criteriaKeys[j].value;
+      // option.text = criteriaKeys[j].name;
+      query.query.push({
+        "criteria_condition" : "and",
+        "source"             : criteriaKeys[j].value,
+        "conditions"         : "equal",
+        "origin_name"        : this.criteria_origin.value,
+        "value"              : ID
+      });
+    }
+
+    return [query]
   };
 
   CoreModalProto.initialize = function(){
