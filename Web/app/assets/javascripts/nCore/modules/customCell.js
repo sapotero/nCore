@@ -33,10 +33,12 @@ nCore.modules.customCell = (function(){
   var CustomCellFactory = function(){
     this.cells = {};
     this.query = [];
+    this.data  = {};
   };
   CustomCellFactory.prototype.clear = function() {
     this.cells = {};
     this.query = [];
+    this.data  = {};
   };
   CustomCellFactory.prototype.populate = function( calculatedCells ) {
     var root = this;
@@ -83,12 +85,12 @@ nCore.modules.customCell = (function(){
     root.findAll();
 
     for (var customCell in this.cells) {
-      // console.log( 'customCell', customCell );
+      console.log( 'customCell', customCell );
 
       root.cells[customCell].id = customCell;
 
       var formatter = new nCore.format.convert( customCell );
-      root.data = {};
+      
       root.data[customCell] = [];
 
       root.data[customCell].push( formatter.custom() );
