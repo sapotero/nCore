@@ -68,8 +68,18 @@ nCore.format = (function(){
     return this;
   };
   Formatter.prototype.calculateFlags = function(){
+    // console.log( 'calculateFlags', this.item );
+
     var dup = Object.assign( {}, this.item );
 
+    delete dup.query;
+    delete dup.data;
+
+    this.flags = dup;
+  };
+  Formatter.prototype.customCellCalculateFlags = function(){
+    var item = document.querySelector( '#'+this.item );
+    var dup = Object.assign( {}, item.dataset );
     delete dup.query;
     delete dup.data;
 
@@ -239,7 +249,7 @@ nCore.format = (function(){
   };
   Formatter.prototype.custom = function(){
     this.customCellCalculate();
-    this.calculateFlags();
+    this.customCellCalculateFlags();
     this.calculateGlobal();
     return this.resultCustom();
   };

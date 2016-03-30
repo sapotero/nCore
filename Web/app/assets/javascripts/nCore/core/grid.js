@@ -135,8 +135,13 @@ nCore.grid = (function(){
   };
   SideMenu.prototype.setActive = function(){
     if ( this.active ) {
-      this.elements.querySelector('[data-commnad="'+this.active+'"]');
-      console.log( this.elements.querySelector('[data-commnad="'+this.active+'"]') );
+      for (var i = 0; i < this.elements.length; i++) {
+        if ( this.elements[i].dataset.hasOwnProperty('command') && this.elements[i].dataset.command == this.active ) {
+          console.log( 'eq > ', this.elements[i] );
+          this.elements[i].classList.add( this.Constant.ACTIVE );
+          this.active = this.elements[i].dataset.command;
+        }
+      }
     }
 
     return this;
@@ -156,7 +161,8 @@ nCore.grid = (function(){
     LIST  : 'list',
     ROOT  : {
       DOCUMENTS : document.querySelector('#documents'),
-      TEMPLATES : document.querySelector('#templates')
+      TEMPLATES : document.querySelector('#templates'),
+      MY        : document.querySelector('#my')
     },
     SORT  : {
       TYPE : {
