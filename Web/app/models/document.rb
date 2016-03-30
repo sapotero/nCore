@@ -92,7 +92,13 @@ class Document
     documents
   end
 
-    def self.with_images( documents )
+  def self.by_provider( provider )
+    documents = self.where( provider_id: provider )
+    documents = documents.where( template: false )
+    documents
+  end
+
+  def self.with_images( documents )
     new_docs = []
     
     documents.each do |document|

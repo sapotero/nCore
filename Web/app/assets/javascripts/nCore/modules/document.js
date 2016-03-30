@@ -151,6 +151,37 @@ nCore.document = (function(){
       console.log("ERROR renderCellSettings!", result);
     });
   };
+
+  Document.prototype.loadByType = function(type){
+
+    console.log('loadByType', type);
+
+    var load = new Promise(function(resolve, reject) {
+      nCore.query.get('/documents/type', { type: type } )
+        .success(function (data) {
+          console.log('loadByType', data);
+
+          // if ( item == 'documents') {
+          //   // nCore.storage.setItem('documents', JSON.stringify(data.documents));
+          //   // nCore.storage.setItem('templates', JSON.stringify(data.templates));
+          // } else {
+          //   // nCore.storage.setItem(item + '', JSON.stringify(data));
+          // }
+          resolve(data);
+        }).error(function (data) {
+          console.error('[!] loadItem -> get', data);
+          reject(false);
+        });
+
+    });
+
+    load.then(function(data) {
+     nCore.grid.loadByType(data);
+    }).catch(function(result) {
+      console.log("ERROR loadByType!", result);
+    });
+  };
+
   Document.prototype.save = function( config ) {
     console.log( 'load', config );
     this.id        = config._id;

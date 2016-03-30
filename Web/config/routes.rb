@@ -16,6 +16,7 @@ Settings::Web::Application.routes.draw do
   
   get  '/documents/autocomplete',  to: 'documents#autocomplete' #,as: :document_autocomplete
   get  '/documents/providers',     to: 'documents#providers'
+  get  '/documents/type',          to: 'documents#type'
   post '/documents/:id/calculate', to: 'documents#calculate'
 
 

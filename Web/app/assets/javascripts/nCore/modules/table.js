@@ -278,7 +278,7 @@ nCore.modules.table = (function(){
           cellDatasetChosenOrigin,
           query = [];
 
-      console.group('row');
+      // console.group('row');
       // console.info('row', row);
 
       var diff = 0;
@@ -406,7 +406,7 @@ nCore.modules.table = (function(){
     try{
       this.removeDataRow();
     } catch(e){
-      console.error(e);
+      // console.error(e);
     }
     // считаем макс. кол-во ячеек в таблице
     this.calculateMaxCells();
@@ -435,6 +435,7 @@ nCore.modules.table = (function(){
   Table.prototype.modalGroup = function( data ) {
     var table = this.table;
 
+    var df = new DocumentFragment();
 
     var _clone = table.querySelector('tr:last-child');
 
@@ -462,9 +463,9 @@ nCore.modules.table = (function(){
         dataCell.textContent = _data.name;
         dataCell.dataset.query = JSON.stringify(_data.query);
       }
-      table.appendChild(clone);
+      df.appendChild(clone);
     }
-
+    table.appendChild(df);
   };
   Table.prototype.modalProvider = function( data ) {
     var table = this.table;
@@ -484,8 +485,8 @@ nCore.modules.table = (function(){
         // console.log('td', _td[i]);
       }
 
-      console.log( 'data', _data );
-      console.log( 'dataCell', _clone );
+      // console.log( 'data', _data );
+      // console.log( 'dataCell', _clone );
 
       if ( dataCell ) {
         dataCell.dataset[_data.provider_id] = _data.name;

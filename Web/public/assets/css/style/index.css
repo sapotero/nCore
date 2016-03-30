@@ -1812,9 +1812,13 @@ input[type="radio"].styled:checked label:after,
   top: 30px;
   position: relative;
 }
+#_current{
+  top: 30px;
+  position: relative;
+}
 .sortButton{
   position: relative;
-  top: 5px;
+  top: 9px;
 }
 
 .mdPosition{

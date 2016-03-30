@@ -118,7 +118,7 @@ nCore.grid = (function(){
     this.clear();
     var element = e.target.classList.contains( this.Constant.ITEM ) ? e.target : nCore.core.findUpClass( e.target, this.Constant.ITEM );
     
-    console.log('element', element);
+    // console.log('element', element);
     this.active = element.dataset.command;
 
     this.setActive();
@@ -137,12 +137,13 @@ nCore.grid = (function(){
     if ( this.active ) {
       for (var i = 0; i < this.elements.length; i++) {
         if ( this.elements[i].dataset.hasOwnProperty('command') && this.elements[i].dataset.command == this.active ) {
-          console.log( 'eq > ', this.elements[i] );
+          // console.log( 'eq > ', this.elements[i] );
           this.elements[i].classList.add( this.Constant.ACTIVE );
           this.active = this.elements[i].dataset.command;
         }
       }
     }
+    nCore.grid.sideMenuRender( this.active );
 
     return this;
   };
@@ -173,6 +174,214 @@ nCore.grid = (function(){
         DESC : -1
       }
     }
+  };
+
+  
+  GridFactory.prototype.sideMenuRender = function(type){
+    
+    console.log('sideMenuRender', type);
+    
+    type !== 'all' ? nCore.document.loadByType(type) : this.render(true);
+  };
+
+  GridFactory.prototype.loadByType = function(raw){
+    
+    console.log('GridFactory : loadByType', raw);
+    // return false;
+    // 
+    var type = raw._type;
+    var data = raw.thumbs;
+
+    var factory = this;
+    
+    if (factory.thumbs.hasOwnProperty(type)) {
+      factory.thumbs[type] = [];
+    }
+
+    var load = new Promise(function(resolve, reject){
+      if ( data.length ) {
+        for (var i = 0; i < data.length; i++) {
+          var thumb = data[i];
+
+          factory.add({
+            thumb : thumb,
+            type  : type
+          });
+        }
+
+        resolve(type);
+      } else {
+        reject(false);
+      }
+    });
+    
+    load.then(function(data){
+      factory.renderByType(data);
+    }).catch(function(error){
+      throw new Error(error);
+    });
+  };
+  GridFactory.prototype.renderByType = function( type ){
+    console.log( 'renderByType', type );
+    var factory = this;
+
+    var render = {};
+    render.addOverlay = function(){
+      var options = {
+        'keyboard': false, // teardown when <esc> key is pressed (default: true)
+        'static': true, // maintain overlay when clicked (default: false)
+        'onclose': function () {
+          // after callback
+        }
+      };
+
+      var m = document.createElement('div');
+      m.style.width = '400px';
+      m.style.height = '100px';
+      m.style.margin = '10% auto';
+      m.style.padding = '10% auto';
+      m.style.backgroundColor = '#fff';
+      m.classList.toggle('mui-panel');
+      m.classList.toggle('mui--z5');
+      m.innerHTML = '<h4>Загрузка документов</h4><div class="loader"></div>';
+
+      var overlay = mui.overlay('on', options, m);
+      overlay.classList.toggle('animated');
+      overlay.classList.toggle('fadeIn');
+    };
+    render.removeOverlay = function(){
+      // console.log('removeOverlay');
+      try {
+        mui.overlay('off');
+      } catch(error){
+        // throw new Error(error);
+      }
+    };
+
+    render.promise = new Promise(function(resolve, reject) {
+      
+      if ( factory.thumbs ) {
+
+        for(var _type in factory.thumbs ){
+          
+          if ( type === _type ) {
+            var _type_elements = [];
+
+            var helperTemplate = {
+              type: {
+                text: function (params) {
+                  return this.types;
+                }
+              }
+            };
+            helperTemplate[_type] = {
+                documentTitle: {
+                  text: function (params) {
+                    // console.log('+++', this);
+
+                    return this.name || '---';
+                  }
+                },
+                documentDate: {
+                  text: function (params) {
+                    return new Date( this.updated ).toLocaleString('ru-RU', _type === 'list' ? { 
+                      year  : 'numeric',
+                      month : 'numeric',
+                      day   : 'numeric'
+                    } : {
+                      year   : 'numeric',
+                      month  : 'numeric',
+                      day    : 'numeric',
+                      hour   : 'numeric',
+                      minute : 'numeric'
+
+                    });
+                  }
+                },
+                documentId: {
+                  href: function (params) {
+                    return "#/report/" + this._id || Math.random();
+                  },
+                  text: function () {
+                    return ''
+                  }
+                },
+                downloadDoc: {
+                  href: function (params) {
+                    return "/" + type + "/" + (this._id || Math.random()) + "/download";
+                  }
+                },
+                downloadPdf: {
+                  href: function (params) {
+                    return "documents/" + this._id + ".pdf";
+                  }
+                },
+                downloadXls: {
+                  href: function (params) {
+                    return "documents/" + this._id + ".xlsx";
+                  }
+                },
+                removeDocument: {
+                  href: function (params) {
+                    return location.hash;
+                  },
+                  type: function () {
+                    return this._id;
+                  }
+                },
+                documentUser: {
+                  text: function () {
+                    return this.user;
+                  }
+                },
+                documentImage: {
+                  src: function(params){
+                    return this.img;
+                  }
+                }
+              };
+
+            for(var _element in factory.thumbs[_type] ){
+              _type_elements.push( factory.thumbs[_type][_element] );
+            }
+
+
+            var res = {};
+            res[ _type] = _type_elements;
+            res['type'] = _type;
+            // console.log( res );
+
+            var _root = document.getElementById('_'+_type);
+            _root.classList.remove('mui--hide');
+            // console.log( _root );
+            Transparency.render( _root, res, helperTemplate );
+          } else {
+            var _root = document.getElementById('_'+_type);
+            _root.classList.add('mui--hide');
+          }
+        }
+        resolve(true);
+      } else {
+        reject(false);
+      }
+      resolve(true);
+    });
+    
+
+    render.promise.then(function() {
+      if ( true ) {
+        setTimeout( function(){
+          render.removeOverlay();
+        }, 1000 );
+        // factory.menu     = new Menu();
+        // factory.sideMenu = new SideMenu();
+        // factory.menu.attach();
+        // factory.sideMenu.attach();
+        // factory.resizer();
+      }
+    }).catch(function(result) {
+      console.log("ERROR renderCellSettings!", result);
+    });
   };
 
   GridFactory.prototype.load = function(data){

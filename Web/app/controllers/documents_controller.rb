@@ -25,6 +25,28 @@ class DocumentsController < ApplicationController
     render :json => elastic_report_result
   end
 
+  def type
+
+    data = [];
+
+    case params[:type]
+      when 'templates'
+        data   = Document.find_templates()
+        result = 'templates'
+      when 'documents'
+        data   = Document.by_provider( current_user.provider_id )
+        result = 'documents'
+      when 'current'
+        data   = Document.active( current_user )
+        result = 'current'
+      else
+        nil
+    end
+
+
+    render :json => {thumbs: data, _type: result}
+  end
+
   def providers
     @provider = Provider.where(actived: true).only(:_id, :name).to_json(:only => [:_id, :name])
     render :json => @provider
