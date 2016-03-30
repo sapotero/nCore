@@ -88,11 +88,14 @@ nCore.modules.customCell = (function(){
       root.cells[customCell].id = customCell;
 
       var formatter = new nCore.format.convert( customCell );
-      root.query.push( formatter.custom() );
+      root.data = {};
+      root.data[customCell] = [];
+
+      root.data[customCell].push( formatter.custom() );
     }
     // debugger;
     // console.log( 'root.query',root.query );
-    return root.query;
+    return root.data;
   };
 
   return new CustomCellFactory();
