@@ -1215,7 +1215,7 @@ color: rgba(255,255,255,0.4) !important;
   width: 100%;
   margin: 0px auto;
   height: 36px;
-  /*padding: 5px;*/
+  padding: 0px;
   padding-right: 16.66667%;
   background-color: #FAFAFA;
   position: fixed;
@@ -1814,7 +1814,7 @@ input[type="radio"].styled:checked label:after,
 }
 .sortButton{
   position: relative;
-  top: -6px;
+  top: 5px;
 }
 
 .mdPosition{

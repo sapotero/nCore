@@ -3613,6 +3613,9 @@ table th {
   width: 100%;
   padding-left: calc((100% - 930px)/2);
 
+  padding-top: 0px;
+  padding-bottom: 0px;
+
 }
 
 .fr-toolbar.fr-ltr.fr-desktop.fr-top.fr-basic.cloned{

@@ -368,7 +368,7 @@ jQuery(function($) {
           if ( nCore.router.exists( route ) ) {
             // если роут есть
             nCore.router.run( route );
-            nCore.commands.body.classList.add('hide-sidedrawer');
+            document.body.classList.add('hide-sidedrawer');
           } else {
             // если нет показываем пользователю х
             console.log('not exists');

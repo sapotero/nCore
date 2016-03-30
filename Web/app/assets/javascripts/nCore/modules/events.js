@@ -26,9 +26,15 @@ nCore.events = (function () {
   });
 
   nCore.document.event.subscribe('addGroupData', function (data) {
-    // console.log('addGroupData', data);
-    nCore.modules.table.fromGroup(data);
+    console.log('addGroupData', data);
+    nCore.modules.table.factory.modalGroup(data);
   });
+
+  nCore.document.event.subscribe('addProviderData', function (data) {
+    console.log('addProviderData', data);
+    nCore.modules.table.factory.modalProvider( data );
+  });
+
 
   // редактирование настроек документа
   nCore.document.event.subscribe('updateDocument', function (rootNode) {

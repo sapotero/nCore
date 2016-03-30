@@ -15,8 +15,9 @@ Settings::Web::Application.routes.draw do
   resources :sources
   
   get  '/documents/autocomplete',  to: 'documents#autocomplete' #,as: :document_autocomplete
-  get  '/documents/providers',     to: 'documents#providers' #,as: :document_autocomplete
-  post '/documents/:id/calculate', to: 'documents#calculate' #,as: :document_autocomplete
+  get  '/documents/providers',     to: 'documents#providers'
+  post '/documents/:id/calculate', to: 'documents#calculate'
+
 
   resources :documents do
     post :remove
@@ -25,6 +26,7 @@ Settings::Web::Application.routes.draw do
   # resources :forms
   # resources :queries
 
-  resources :groups
-  resources :members
+  get '/groups/journal', to: 'groups#journal'
+  resources :groups,  only: [:index]
+  resources :members, only: [:index]
 end

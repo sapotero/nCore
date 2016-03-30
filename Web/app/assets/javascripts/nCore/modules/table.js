@@ -278,7 +278,7 @@ nCore.modules.table = (function(){
           cellDatasetChosenOrigin,
           query = [];
 
-      // console.group('row');
+      console.group('row');
       // console.info('row', row);
 
       var diff = 0;
@@ -403,7 +403,11 @@ nCore.modules.table = (function(){
     // generateQueryFromTable = function (table, headClass, sideClass, total){
     // console.group( 'generateQueryFromTable' );
     // console.log( 'params ', this.table, this.headClass, this.sideClass, this.total );
-
+    try{
+      this.removeDataRow();
+    } catch(e){
+      console.error(e);
+    }
     // считаем макс. кол-во ячеек в таблице
     this.calculateMaxCells();
 
@@ -427,6 +431,73 @@ nCore.modules.table = (function(){
     console.groupEnd();
 
     this.removeDataRow();
+  };
+  Table.prototype.modalGroup = function( data ) {
+    var table = this.table;
+
+
+    var _clone = table.querySelector('tr:last-child');
+
+    for (var i = data.length - 1; i >= 0; i--) {
+      var _data = data[i],
+          clone = _clone.cloneNode(true),
+          dataCell = clone.querySelector('.fr-thick:first-child');
+      
+      // очищаем ячейки
+      var _td    = clone.cells;
+      for (var z = _td.length - 1; z >= 0; z--) {
+        _td[z].textContent = '';
+        // console.log('td', _td[i]);
+      }
+
+      if ( dataCell ) {
+        dataCell.dataset[_data.group_id] = _data.name;
+
+        dataCell.dataset.group = JSON.stringify( {
+          group_id    : _data.group_id,
+          member_id   : _data.member_id,
+          provider_id : _data.provider_id,
+          name        : _data.name
+        });
+        dataCell.textContent = _data.name;
+        dataCell.dataset.query = JSON.stringify(_data.query);
+      }
+      table.appendChild(clone);
+    }
+
+  };
+  Table.prototype.modalProvider = function( data ) {
+    var table = this.table;
+
+
+    var _clone = table.querySelector('tbody>tr:last-child');
+
+    for (var i = data.length - 1; i >= 0; i--) {
+      var _data = data[i],
+          clone = _clone.cloneNode(true),
+          dataCell = clone.querySelector('.fr-thick:first-child');
+      
+      // очищаем ячейки
+      var _td    = clone.cells;
+      for (var z = _td.length - 1; z >= 0; z--) {
+        _td[z].textContent = '';
+        // console.log('td', _td[i]);
+      }
+
+      console.log( 'data', _data );
+      console.log( 'dataCell', _clone );
+
+      if ( dataCell ) {
+        dataCell.dataset[_data.provider_id] = _data.name;
+        dataCell.dataset.group = JSON.stringify( {
+          provider_id : _data.provider_id,
+          name        : _data.name
+        });
+        dataCell.textContent = _data.name;
+        dataCell.dataset.query = JSON.stringify(_data.query);
+      }
+      table.querySelector('tbody').appendChild(clone);
+    }
   };
 
   // Тут хранятся все таблички, через фабрику создаем новые таблички для расчёта
@@ -585,8 +656,20 @@ nCore.modules.table = (function(){
 
     nCore.modules.table.event.publish('calculateQuery', data);
   };
-
-
+  TableFactory.prototype.modalGroup = function(data) {
+    this.findAll();
+    // var tables = Object.keys(nCore.modules.table.factory.tables)[0]
+    for( var table in this.tables ){
+      this.tables[table].modalGroup(data);
+    }
+    
+  };
+  TableFactory.prototype.modalProvider = function(data) {
+    this.findAll();
+    for( var table in this.tables ){
+      this.tables[table].modalProvider(data);
+    }
+  };
 
   var nCoreTableEvent = {},
       maxCells = 0,

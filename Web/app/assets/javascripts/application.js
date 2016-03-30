@@ -1,3 +1,4 @@
+//= require nCore/shared/webcomponents.min
 //= require nCore/shared/jquery
 // require_tree .
 
@@ -14,6 +15,7 @@
 //=require nCore/shared/html2canvas.min
 //=require nCore/shared/base64
 //=require nCore/shared/autoComplete
+//=require nCore/shared/mui.min
 // require nCore/shared/es6-promise.min
 
 //=require nCore/core/grid

@@ -270,6 +270,25 @@ window.onload = (function( window, document, undefined) {
       console.error('[!] groups', data)
     });
   };
+  CoreModalProto.getJournals = function(){
+    var element = this.sourceElement,
+        url = "/groups/journal.json";
+
+    nCore.query.get( url )
+      .success(function (data) {
+        for (var i = data.length - 1; i >= 0; i--) {
+          var g  = data[i],
+          el     = document.createElement('option');
+          el.textContent = g['name'];
+          el.value       = g['value'];
+          // console.log(g, el, element);
+          element.appendChild(el);
+        };
+        console.log('GROUP: ', data);
+      }).error(function (data) {
+      console.error('[!] groups', data)
+    });
+  };
 
   CoreModalProto.getMembers = function(id){
     var element = this.selectedElement,
@@ -292,6 +311,27 @@ window.onload = (function( window, document, undefined) {
       console.error('[!] Members', data)
     });
   };
+  CoreModalProto.getProviders = function(){
+    var element = this.selectedElement,
+        url = "/documents/providers",
+        root = this;
+    this.clearTable();
+    this.selectedElement.parentNode.classList.remove('mui--hide');
+
+    nCore.query.get( url )
+      .success(function (data) {
+        console.log('members recv data:', data, element);
+        
+        for (var i = data.length - 1; i >= 0; i--) {
+          var d = data[i],
+              tmp = '<tr> <td width="5%"> <input type="checkbox"> </td><td data-provider-id="'+d._id+'"" >'+d.name+'</td></tr>';
+          element.innerHTML += tmp;
+        };
+
+      }).error(function (data) {
+      console.error('[!] Members', data)
+    });
+  };
 
   CoreModalProto.getSelectedType = function(){
     return this.typeElement.value;
@@ -301,7 +341,8 @@ window.onload = (function( window, document, undefined) {
     return this.sourceElement.value;
   };
 
-  CoreModalProto.getSelected = function(){
+  CoreModalProto.getSelected = function(useProvider){
+    var _provider = useProvider;
     var selected = this.selectedElement.querySelectorAll('input[type=checkbox]:checked'),
         array = [];
 
@@ -309,13 +350,18 @@ window.onload = (function( window, document, undefined) {
 
     for (var i = selected.length - 1; i >= 0; i--) {
       // console.log('parent', selected[i].parentNode.parentNode, 'last', selected[i].parentNode.parentNode.lastChild);
-      array.push({
+      var data = {
         group_id        : selected[i].parentNode.parentNode.lastChild.dataset.groupId,
         member_id       : selected[i].parentNode.parentNode.lastChild.dataset.memberId,
         provider_id     : selected[i].parentNode.parentNode.lastChild.dataset.providerId,
         name            : selected[i].parentNode.parentNode.lastChild.textContent,
-        query           : this.generateQuery( selected[i].parentNode.parentNode.lastChild.dataset.groupId )
-      });
+        query           : this.getSelectedSource() === 'provider' ? this.generateQueryProvider( selected[i].parentNode.parentNode.lastChild.dataset.providerId ) : this.generateQuery( selected[i].parentNode.parentNode.lastChild.dataset.groupId )
+      };
+      if ( _provider ) {
+        delete data['group_id'];
+        delete data['member_id'];
+      }
+      array.push(data);
     };
     return array;
     // console.log( 'getSelected', this.selectedElement,  );
@@ -337,7 +383,7 @@ window.onload = (function( window, document, undefined) {
     var keys = JSON.parse(nCore.storage[source]);
     for (var j = 0; j < keys.length; j++) {
       var option = document.createElement('option');
-      option.value = keys[j]._id;
+      option.value = keys[j].origin_name;
       option.text  = keys[j].russian_name;
       keys[j].autocomplete_url ? option.dataset.auto = keys[j].autocomplete_url : false;
 
@@ -351,6 +397,17 @@ window.onload = (function( window, document, undefined) {
           "criteria_condition" : "and",
           "source"             : this.criteria_source.value,
           "conditions"         : "group",
+          "origin_name"        : this.criteria_origin.value,
+          "value"              : ID
+        }],
+      "conditions":"and"}]
+  };
+  CoreModalProto.generateQueryProvider = function(ID){
+    return [
+        {"query":[{
+          "criteria_condition" : "and",
+          "source"             : this.criteria_source.value,
+          "conditions"         : "equal",
           "origin_name"        : this.criteria_origin.value,
           "value"              : ID
         }],
@@ -407,7 +464,11 @@ window.onload = (function( window, document, undefined) {
 
     this.submit.addEventListener('click', function(){
       console.log('submit click' );
-      nCore.document.event.publish('addGroupData', root.getSelected() );
+      if ( root.getSelectedSource() === 'provider' ) {
+        nCore.document.event.publish('addProviderData', root.getSelected(true) );
+      } else {
+        nCore.document.event.publish('addGroupData', root.getSelected() );
+      }
       mui.overlay('off');
     });
 
@@ -420,6 +481,7 @@ window.onload = (function( window, document, undefined) {
         case 'journal':
           root.clearSource();
           root.clearTable();
+          root.getJournals();
           break;
         default:
           root.clearSource();
@@ -431,8 +493,9 @@ window.onload = (function( window, document, undefined) {
 
     this.sourceElement.addEventListener('change', function( e ) {
       console.log( 'change group', root.getSelectedSource() );
-      // root.clearTable();
-      root.getMembers( root.getSelectedSource() );
+      
+      root.getSelectedSource() !== 'provider' ? root.getMembers( root.getSelectedSource() ) : root.getProviders();
+
     });
 
     // выбор справочника/поля для тиражирования
