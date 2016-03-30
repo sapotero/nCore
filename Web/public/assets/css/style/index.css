@@ -1910,7 +1910,13 @@ input[type="radio"].styled:checked label:after,
 }
 
 
-
+.fullWidth{
+  transition: 0.5s ease;
+  padding: 20px;
+}
+.notFullWidth{
+  transition: 0.5s ease;
+}
 
 /* LIST */
 .mdl-list {
@@ -2057,4 +2063,5 @@ input[type="radio"].styled:checked label:after,
   background: #E0E0E0;
   cursor: pointer;
 }
+
 /* LIST */

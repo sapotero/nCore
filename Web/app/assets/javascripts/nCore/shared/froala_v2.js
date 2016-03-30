@@ -5564,6 +5564,15 @@ $.FroalaEditor.LANGUAGE['ru'] = {
 
       var el = this.selection.element();
       var root_element = el.tagName === 'TD' ? el : nCore.core.findUpTag(el, 'td');
+
+      var doc = document.querySelector('#mainDocumentView');
+      
+      doc.classList.toggle('mui-col-md-8');
+      doc.classList.toggle('mui-col-md-offset-2');
+
+      doc.classList.toggle('mui-col-md-12');
+      doc.classList.toggle('fullWidth');
+      
       
       // console.log('90 -> ', el, root_element, root_element.innerHTML, root_element.outerHTML, root_element.querySelector('div.rotated') );
 
