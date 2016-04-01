@@ -351,6 +351,7 @@ nCore.events = (function () {
     console.log('data: ', JSON.parse(JSON.stringify( data ))  );
 
     nCore.query.post('documents/' + nCore.document.id + '/calculate', data).success(function (data) {
+      console.log( 'BEFORE insertCellData', data );
       nCore.modules.table.event.publish('insertCellData', data);
     }).error(function (data) {
       console.error('[!] calculateQuery -> post', data);
@@ -367,23 +368,24 @@ nCore.events = (function () {
   
   // вставка данных в таблицу
   nCore.modules.table.event.subscribe('insertCellData', function (data) {
+    var _data = data;
 
     var publish = new Promise( function(resolve, reject){
-      console.log( '[+++] insertCellData', data );
+      console.log( '[+++] insertCellData', _data );
 
-      if ( data ) {
+      if ( _data ) {
         try{
-          nCore.modules.table.factory.populate( data.tables );
-          nCore.modules.customCell.populate( data.customCells );
+          nCore.modules.table.factory.populate( _data.tables );
+          nCore.modules.customCell.populate( _data.customCells );
           
-          if ( data.hasOwnProperty('errors') && data.errors.length ) {
-            var data = {
+          if ( _data.hasOwnProperty('errors') && _data.errors.length ) {
+            var msg = {
               message: `Во время расчёта произошла ошибка. Проверьте условия`,
               timeout: 2000,
               actionHandler: function(){},
               actionText: ':('
             };
-            nCore.snackbar.showSnackbar(data);
+            nCore.snackbar.showSnackbar(msg);
           }
           resolve(true);
         } catch (error){
