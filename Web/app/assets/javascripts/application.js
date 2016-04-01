@@ -1,7 +1,9 @@
-//= require nCore/shared/webcomponents.min
+
 //= require nCore/shared/jquery
 // require_tree .
 
+
+// require nCore/shared/webcomponents.min
 
 //=require nCore/nCore
 
