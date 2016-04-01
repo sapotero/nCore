@@ -46,6 +46,11 @@ class Document
   # досутпные всем
   field :global,      type: Boolean, default: false
 
+  index ( { _id:  1 } )
+  index ( { name: 1 } )
+  
+  # default_scope order_by({_id: 1})
+
   def author
     # переделать на ошс?
     # Core::OshsMvd::Official.find( author_id ) unless author_id.blank?

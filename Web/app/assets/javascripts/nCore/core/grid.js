@@ -57,7 +57,7 @@ nCore.grid = (function(){
         direction = dataset.sortDirection;
 
     nCore.grid.order( param, direction );
-    nCore.grid.render(true);
+    nCore.grid.renderByType( nCore.grid.sideMenu.active );
   };
   Menu.prototype.changeView = function( dataset ){
     console.log( 'changeView dataset', dataset);
@@ -91,7 +91,7 @@ nCore.grid = (function(){
 
   var SideMenu = function(){
     this.elements = {};
-    this.active   = 'templates';
+    this.active   = 'all';
   };
   SideMenu.prototype.Constant = {
     ITEM   : 'mdl-list__item',
