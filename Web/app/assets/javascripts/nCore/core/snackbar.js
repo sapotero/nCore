@@ -112,9 +112,9 @@ nCore.snackbar = (function(){
         this.actionElement.removeEventListener('click', this.actionHandler);
       }
       this.actionHandler = undefined;
-      this.message = undefined;
+      this.message       = undefined;
       this.actionText = undefined;
-      this.active = false;
+      this.active     = false;
       this.checkQueue();
     }.bind(this), (this.Constant.ANIMATION_LENGTH));
   };

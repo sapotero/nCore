@@ -2055,7 +2055,7 @@ input[type="radio"].styled:checked label:after,
 
 .mdl-list__item:hover{
   transition: 0.25s ease;
-  background: #EEE;
+  background: #F5F5F5;
   cursor: pointer;
 }
 .mdl-list__item:active, .mdl-list__item:focus{
@@ -2065,3 +2065,15 @@ input[type="radio"].styled:checked label:after,
 }
 
 /* LIST */
+
+
+.mdl-list__item.active{
+  background: #EEE;
+  color: #2196F3;
+  transition: 0.25s ease;
+}
+
+.mdl-list__item.active>.mdl-list__item-primary-content > .material-icons.mdl-list__item-icon{
+  color: #2196F3;
+  transition: 0.25s ease;
+}

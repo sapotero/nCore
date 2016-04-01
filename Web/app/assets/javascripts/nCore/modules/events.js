@@ -368,13 +368,23 @@ nCore.events = (function () {
   // вставка данных в таблицу
   nCore.modules.table.event.subscribe('insertCellData', function (data) {
 
-    var publish = new Promise(function(resolve, reject){
-      console.log('[+++] insertCellData', data);
+    var publish = new Promise( function(resolve, reject){
+      console.log( '[+++] insertCellData', data );
 
-      if (data) {
+      if ( data ) {
         try{
           nCore.modules.table.factory.populate( data.tables );
           nCore.modules.customCell.populate( data.customCells );
+          
+          if ( data.hasOwnProperty('errors') && data.errors.length ) {
+            var data = {
+              message: `Во время расчёта произошла ошибка. Проверьте условия`,
+              timeout: 2000,
+              actionHandler: function(){},
+              actionText: ':('
+            };
+            nCore.snackbar.showSnackbar(data);
+          }
           resolve(true);
         } catch (error){
           reject(error);
