@@ -222,10 +222,11 @@ nCore.modules.table = (function(){
 
         // если не надо проверять, то добавим сразу
         if ( dataSettings[ item ] === false ){
-          _cellData.queryMonth = ___dataCell.dataset.queryMonth;
+          // _cellData.queryMonth = ___dataCell.dataset.queryMonth;
+          _cellData[ item ] = ___dataCell.dataset[ item ];
         } else {
           // перед добавлением проверим что стоит галка у свойства
-          if ( ___dataCell.dataset[ item ] == "true" ) {
+          if ( ___dataCell.dataset[ item ] ) {
             _cellData[ item ] = ___dataCell.dataset[ item ];
           }
         }
@@ -431,7 +432,7 @@ nCore.modules.table = (function(){
 
     console.groupEnd();
 
-    this.removeDataRow();
+    // this.removeDataRow();
   };
   Table.prototype.modalGroup = function( data ) {
     var table = this.table;
