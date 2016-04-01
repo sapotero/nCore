@@ -57,7 +57,8 @@ nCore.grid = (function(){
         direction = dataset.sortDirection;
 
     nCore.grid.order( param, direction );
-    nCore.grid.renderByType( nCore.grid.sideMenu.active );
+    nCore.grid.sideMenu.active !== 'all' ? nCore.grid.renderByType( nCore.grid.sideMenu.active ) : nCore.grid.render(true);
+    
   };
   Menu.prototype.changeView = function( dataset ){
     console.log( 'changeView dataset', dataset);
