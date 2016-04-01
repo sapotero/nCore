@@ -432,7 +432,7 @@ nCore.modules.table = (function(){
 
     console.groupEnd();
 
-    // this.removeDataRow();
+    this.removeDataRow();
   };
   Table.prototype.modalGroup = function( data ) {
     var table = this.table;
