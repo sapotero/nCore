@@ -651,8 +651,12 @@ nCore.modules.table = (function(){
 
 
     var data = {
-      data        : tables,
-      customCells : cells
+      tables : tables,
+      cells  : cells,
+      data: {
+        global   : nCore.format.global.calculateGlobal(),
+        document : {}
+      }
     };
 
     nCore.modules.table.event.publish('calculateQuery', data);

@@ -99,6 +99,7 @@ nCore.document = (function(){
     this.name        = data.elements.nCoreDocumnetName.value;
     this.description = data.elements.nCoreDocumnetDescription.value;
   };
+  
   Document.prototype.load = function( config ) {
     // console.log( 'load', config );
     this.id                = config._id;
@@ -151,7 +152,6 @@ nCore.document = (function(){
       console.log("ERROR renderCellSettings!", result);
     });
   };
-
   Document.prototype.loadByType = function(type){
 
     console.log('loadByType', type);

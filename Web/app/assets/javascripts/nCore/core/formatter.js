@@ -21,6 +21,8 @@ nCore.format = (function(){
     this.side   = {};
     this.flags  = {};
     this.query  = {};
+
+    return this;
   };
   Formatter.prototype.clear = function(){
     this.global = {};
@@ -65,7 +67,7 @@ nCore.format = (function(){
       global.providerSelected = nCore.document.providerSelected;
     });
 
-    return this;
+    return global;
   };
   Formatter.prototype.calculateFlags = function(){
     // console.log( 'calculateFlags', this.item );
@@ -78,7 +80,7 @@ nCore.format = (function(){
     this.flags = dup;
   };
   Formatter.prototype.customCellCalculateFlags = function(){
-    var item = document.querySelector( '#'+this.item );
+    var item = document.getElementById( this.item );
     var dup = Object.assign( {}, item.dataset );
     delete dup.query;
     delete dup.data;
@@ -86,74 +88,76 @@ nCore.format = (function(){
     this.flags = dup;
   };
   Formatter.prototype.customCellCalculate = function(){
-    var item = document.querySelector('#'+this.item),
+    var item = document.getElementById( this.item ),
         root = this;
 
       var keys = {};
 
-      // console.log( 'KEYS', keys );
+      console.log( 'item.dataset', item.dataset );
 
-      var _raw_query = JSON.parse( item.dataset.query );
-      // console.log( '_raw_query' );
+      if ( item.dataset.query ) {
+        var _raw_query = JSON.parse( item.dataset.query );
+        // console.log( '_raw_query' );
 
-      _raw_query.forEach( function( query, i ,queriesArray ){
-        try{
-          var cellQuery = query.query;
+        _raw_query.forEach( function( query, i ,queriesArray ){
+          try{
+            var cellQuery = query.query;
 
-          // console.log( 'query', query, cellQuery );
-          var conditions = query.conditions;
+            // console.log( 'query', query, cellQuery );
+            var conditions = query.conditions;
 
-          if ( cellQuery.length ) {
+            if ( cellQuery.length ) {
 
-            var tmp = {};
-            for (var g = 0; g < cellQuery.length; g++) {
-              var query = cellQuery[g];
+              var tmp = {};
+              for (var g = 0; g < cellQuery.length; g++) {
+                var query = cellQuery[g];
 
-              // console.log('queries', query);
-              // console.log('_sources', sources);
+                // console.log('queries', query);
+                // console.log('_sources', sources);
 
 
-              // queries.query.forEach( function( query, i, queryArray ){
+                // queries.query.forEach( function( query, i, queryArray ){
+                  
+                if ( !tmp.hasOwnProperty( query.source ) ) {
+                  tmp[ query.source ] = {
+                    'and': [],
+                    'or':  []
+                  };
+                }
+                tmp[ query.source ][ conditions ].push( query );
                 
-              if ( !tmp.hasOwnProperty( query.source ) ) {
-                tmp[ query.source ] = {
-                  'and': [],
-                  'or':  []
-                };
+                // });a
               }
-              tmp[ query.source ][ conditions ].push( query );
-              
-              // });a
+              // console.log( 'TMP:', tmp );
+
+              for( var tmp_key in tmp ){
+                var tmp_source = tmp_key;
+
+                if ( !keys.hasOwnProperty( tmp_source ) ) {
+                  keys[ tmp_source ] = {
+                    'and': [],
+                    'or':  []
+                  };
+                }
+
+                // console.log( 'tmp_key', tmp_key, keys[tmp_source] );
+
+                var tmp_and = tmp[tmp_key].and;
+                var tmp_or  = tmp[tmp_key].or;
+
+                if ( tmp_and.length ) {
+                  keys[tmp_source].and.push( tmp[tmp_key].and );
+                }
+                if ( tmp_or.length ) {
+                  keys[tmp_source].or.push( tmp[tmp_key].or );
+                }
+              };
             }
-            // console.log( 'TMP:', tmp );
-
-            for( var tmp_key in tmp ){
-              var tmp_source = tmp_key;
-
-              if ( !keys.hasOwnProperty( tmp_source ) ) {
-                keys[ tmp_source ] = {
-                  'and': [],
-                  'or':  []
-                };
-              }
-
-              // console.log( 'tmp_key', tmp_key, keys[tmp_source] );
-
-              var tmp_and = tmp[tmp_key].and;
-              var tmp_or  = tmp[tmp_key].or;
-
-              if ( tmp_and.length ) {
-                keys[tmp_source].and.push( tmp[tmp_key].and );
-              }
-              if ( tmp_or.length ) {
-                keys[tmp_source].or.push( tmp[tmp_key].or );
-              }
-            };
+          } catch(e){
+            console.error('JSON PARSE FAILS', e);
           }
-        } catch(e){
-          console.error('JSON PARSE FAILS', e);
-        }
-      });
+        });
+      }
       root.query = keys;
 
     return this;
@@ -227,7 +231,7 @@ nCore.format = (function(){
   };
   Formatter.prototype.resultTable = function(){
     return {
-      global : this.global,
+      // global : this.global,
       head   : this.head,
       side   : this.side,
       flags  : this.flags
@@ -235,7 +239,7 @@ nCore.format = (function(){
   };
   Formatter.prototype.resultCustom = function(){
     return {
-      global : this.global,
+      // global : this.global,
       query  : this.query,
       flags  : this.flags
     };
@@ -244,16 +248,18 @@ nCore.format = (function(){
     this.tableCellCalculate('head');
     this.tableCellCalculate('side');
     this.calculateFlags();
-    this.calculateGlobal();
+    // this.calculateGlobal();
     return this.resultTable();
   };
   Formatter.prototype.custom = function(){
     this.customCellCalculate();
     this.customCellCalculateFlags();
-    this.calculateGlobal();
+    // this.calculateGlobal();
     return this.resultCustom();
   };
+
   return {
-    convert: Formatter
+    convert : Formatter,
+    global  : new Formatter()
   };
 })();

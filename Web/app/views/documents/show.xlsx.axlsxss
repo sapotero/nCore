@@ -1,0 +1,128 @@
+wb = xlsx_package.workbook
+wb.add_worksheet( name: @document.name ) do |sheet|
+
+  style = sheet.styles.add_style(
+    border:   Axlsx::STYLE_THIN_BORDER,
+    fg_color: "#FF000000",
+    alignment: {
+      horizontal: :center,
+      vertical:   :center
+    }
+  )
+
+  doc  = Nokogiri::HTML( Base64.decode64(@document.body) )
+  tables = doc.css("table")
+
+  tables.map do |table|
+    rows = table.css("tr")
+    
+    merge_cells = []
+    max_cells   = 0
+
+
+    rows.map do |row|
+      cells = row.css("td")
+
+      if cells.count > max_cells
+        max_cells = cells.count
+      end
+    end
+
+    cell_index_offset = [];
+
+    rows.each_with_index do |row, row_index|
+      
+      last_index       = 0
+      data             = []
+      
+      colspan          = 0;
+      rowspan          = 0;
+
+      cells = row.css("td")
+
+      logger.debug "\nrow: #{row_index}"
+
+      cells.each_with_index do |cell, cell_index|
+        
+        logger.debug "-> cell: colspan: #{cell['colspan'] ? cell['colspan'] : 0} rowspan: #{cell['rowspan'] ? cell['rowspan'] : 0} | last_index: #{last_index} | row_index: #{row_index} | cell_index: #{cell_index}| cell_index_offset:#{cell_index_offset}  || #{cell.text} "
+        # unless cell_index_offset.empty?
+        #   _cell_index, _colspan = cell_index_offset.first
+
+        #   if _cell_index > cell_index
+        #     data << ''
+        #   else
+        #     cell_index_offset.shift
+        #     # data << cell.text
+        #   end
+
+        # end
+
+        
+        
+        colspan = cell["colspan"].to_i;
+        rowspan = cell["rowspan"].to_i;
+        
+        if colspan > 1
+          data << cell.text
+          # cell_index_offset.push([cell_index, colspan])
+          (colspan-1).times do
+            data << ''
+          end
+        else
+          data << cell.text
+        end
+
+
+        # мержим если есть colspan || rowspan
+        if colspan > 1
+          # logger.debug "#{cell_index}-#{row_index} : #{cell_index+colspan}-#{row_index}"
+          
+          # last_index  = last_index  == 0 && colspan == 0 ? 0 : last_index
+          # _last_index = last_index == 0 && cell_index != 0 ? cell_index-1 : last_index
+
+          merge_cells.push( Axlsx::cell_r(  last_index, row_index ) + ':' + Axlsx::cell_r(  last_index+colspan-1, row_index ) )
+          
+          if colspan
+            last_index += colspan
+          end
+        end
+
+        if rowspan > 1
+          cell_index_offset.push(rowspan + cell_index)
+        end
+        if rowspan > 1
+
+          merge_cells.push( Axlsx::cell_r( last_index+colspan, row_index) + ':' + Axlsx::cell_r(last_index+colspan, row_index + rowspan-1 ) )
+        end
+      end
+
+      cell_index_offset = []
+
+      sheet.add_row data, style: style
+      # logger.debug "colspan: #{colspan}, last_index: #{last_index}, cell: #{data}, row_index: #{row_index}"
+      logger.debug "data: #{data}"
+      # logger.debug "last_index: #{last_index} | rowspan: #{rowspan}"
+      # logger.debug "#{cell_index_offset}"
+      
+      
+      # merge_cells 
+      # cell_index_offset = []
+      
+    end
+
+    logger.debug "merge_cells: #{merge_cells}"
+
+    merge_cells.each do |cell|
+      sheet.merge_cells cell
+    end
+
+
+    # sheet.add_row ['test', 'test', 'test']
+    # sheet.add_row ['test+', 'test', 'test']
+    # sheet.merge_cells 'A7:A8'
+
+  end
+
+  # sheet.add_row ['test']
+
+end

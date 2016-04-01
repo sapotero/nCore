@@ -65,12 +65,13 @@ class DocumentsController < ApplicationController
                orientation:      'Landscape',
                show_as_html:      params.key?('debug')
       }
+      # format.xlsx
       format.xlsx do
-        render xlsx: :show, layout: false, filename: @document.name
+        render xlsx: :show, :layout => false, filename: @document.name
       end
 
       # for test
-      format.html { render :layout => false }
+      # format.html { render :layout => false }
     end
     
   end

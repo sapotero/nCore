@@ -405,9 +405,11 @@ nCore.events = (function () {
 
     // console.groupCollapsed("cellSelect");
     // console.dirxml('params: ', cell);
+    // 
+    
 
     nCore.document.showCellSettings = true;
-    var tab     = document.getElementsByClassName('criteriaSelector')[0], cellQuery;
+    var tab     = document.querySelector('.criteriaSelector'), cellQuery;
     var formula = document.getElementById('formulaGroupTab');
 
     nCore.modules.table.active = cell;
@@ -436,7 +438,6 @@ nCore.events = (function () {
         formula.appendChild( overlayFormula );
       }, 100);
     };
-
     render.removeOverlay = function() {
 
       overlayTab.classList.add('animatedSlow');
@@ -567,7 +568,8 @@ nCore.events = (function () {
             document.querySelector('.firstTimeCriteria').classList.remove('mui--hide');
           }
 
-          var monthSelector = document.querySelector('select[name="month"]');
+
+          var monthSelector = formula.querySelector('select[name="month"]');
           if ( monthSelector && parseInt(nCore.modules.table.active.dataset.queryMonth,10) ) {
             // console.log('++++', nCore.modules.table.active.dataset.queryMonth)
             monthSelector.value = nCore.modules.table.active.dataset.queryMonth;
@@ -578,10 +580,10 @@ nCore.events = (function () {
               monthSelector.selectedIndex = 0;
               monthSelector.value = 1;
               monthSelector.disabled = true;
-            };
+            }
           }
 
-          var formulaSelector = document.querySelector('[name="formula"]');
+          var formulaSelector = formula.querySelector('[name="formula"]');
           if ( formulaSelector && nCore.modules.table.active.dataset.formula ) {
             // console.log('++++', nCore.modules.table.active.dataset.formula)
             formulaSelector.value = nCore.modules.table.active.dataset.formula;
@@ -591,10 +593,10 @@ nCore.events = (function () {
               // console.log('----', nCore.modules.table.active.dataset)
               formulaSelector.value = '';
               formulaSelector.disabled = true;
-            };
+            }
           }
 
-          var defaultSelector = document.querySelector('select[name="default"]');
+          var defaultSelector = formula.querySelector('select[name="default"]');
           if ( defaultSelector && nCore.modules.table.active.dataset.queryDefault ) {
             // console.log('++++', nCore.modules.table.active.dataset.queryDefault)
             defaultSelector.value = nCore.modules.table.active.dataset.queryDefault;
@@ -605,22 +607,27 @@ nCore.events = (function () {
               defaultSelector.selectedIndex = 0;
               defaultSelector.value = 'empty';
               defaultSelector.disabled = true;
-            };
+            }
           }
 
-          var chosenOrigin = document.querySelector('[name="chosenOrigin"]');
+
+          var chosenOrigin = formula.querySelector('[name="chosenOrigin"]');
           if ( nCore.modules.table.active.dataset.chosenOrigin ) {
             // chosenOrigin.selectedIndex = -1;
+            
+            for ( var i = 0, l = chosenOrigin.options.length; i < l; i++ ){
+              chosenOrigin.options[i].selected = false;
+            }
             
             var array  = JSON.parse(nCore.modules.table.active.dataset.chosenOrigin),
                 values = [];
 
             for (var r = 0; r < array.length; r++) {
-              values.push( array[r].value );
-            };
+              values.push( array[r] );
+            }
             // console.log('values', values);
 
-            for ( var i = 0, l = chosenOrigin.options.length, o; i < l; i++ ){
+            for ( var i = 0, l = chosenOrigin.options.length; i < l; i++ ){
               var o = chosenOrigin.options[i];
 
               if ( values.indexOf( o.value ) != -1 ) {
@@ -636,15 +643,15 @@ nCore.events = (function () {
               // chosenOrigin.selectedIndex = null;
               chosenOrigin.value = null;
               chosenOrigin.disabled = true;
-            };
+            }
           }
         };
-        resolve(true)
-      }, 200); 
+        resolve(true);
+      }, 200);
     });
 
     render.promise.then(function(data) {
-      render.removeOverlay()
+      render.removeOverlay();
     }).catch(function(result) {
       console.log("ERROR renderCellSettings!", result);
     });
@@ -740,74 +747,76 @@ nCore.events = (function () {
   });
 
   nCore.modules.table.event.subscribe('cellFormulaChange', function () {
-    var formulaSettings      = document.querySelector('.formulaSettings'),
-        formulaSettingsItems = [].slice.call(formulaSettings.querySelectorAll('input'));
-    
-    // Обновляем все галки
-    for (var v = 0; v < formulaSettingsItems.length; v++) {
-      var checkbox = formulaSettingsItems[v];
-      nCore.modules.table.active.dataset[checkbox.name] = checkbox.checked;
-    };
-
-    // обновляем галку с месяцами
-    var monthSelector = formulaSettings.querySelector('[name="month"]');
-
-    if ( nCore.modules.table.active.dataset.useMonth === 'true' ) {
-      //console.log('nCore.modules.table.active.dataset.useMonth ++', nCore.modules.table.active.dataset);
-      nCore.modules.table.active.dataset.queryMonth = monthSelector.value;
-    } else {
-      //console.log('nCore.modules.table.active.dataset.useMonth --', nCore.modules.table.active.dataset);
-      delete nCore.modules.table.active.dataset.queryMonth
-      monthSelector.selectedIndex = 0;
-      monthSelector.disabled = true;
-    }
-
-    // обновляем галку с формулой
-    var formulaSelector = document.querySelector('[name="formula"]');
-
-    if ( nCore.modules.table.active.dataset.useFormula === 'true' ) {
-      //console.log('nCore.modules.table.active.dataset.useFormula ++', nCore.modules.table.active.dataset);
-      nCore.modules.table.active.dataset.formula = formulaSelector.value;
-    } else {
-      //console.log('nCore.modules.table.active.dataset.useFormula --', nCore.modules.table.active.dataset);
-      delete nCore.modules.table.active.dataset.formula
-      formulaSelector.value = '';
-      formulaSelector.disabled = true;
-    }
-
-    // обновляем галку с дефолтным значением
-    var defaultSelector = formulaSettings.querySelector('[name="default"]');
-
-    if ( nCore.modules.table.active.dataset.useDefault === 'true' ) {
-      //console.log('nCore.modules.table.active.dataset.useDefault ++', nCore.modules.table.active.dataset);
-      nCore.modules.table.active.dataset.queryDefault = defaultSelector.value;
-    } else {
-      //console.log('nCore.modules.table.active.dataset.useDefault --', nCore.modules.table.active.dataset);
-      delete nCore.modules.table.active.dataset.queryDefault
-      defaultSelector.selectedIndex = 0;
-      defaultSelector.disabled = true;
-    }
-
-    // обновляем источники
-    var chosenOrigin = formulaSettings.querySelector('[name="chosenOrigin"]');
-
-    if ( nCore.modules.table.active.dataset.useChosenOrigin === 'true' ) {
-      var tmp_array = [];
-      var origins = chosenOrigin.selectedOptions;
-      for (var i = 0; i < origins.length; i++) {
-        
-        tmp_array.push( origins[i].value )
+    if ( nCore.modules.table.active ) {
+      var formulaSettings      = document.querySelector('.formulaSettings'),
+          formulaSettingsItems = [].slice.call(formulaSettings.querySelectorAll('input'));
+      
+      // Обновляем все галки
+      for (var v = 0; v < formulaSettingsItems.length; v++) {
+        var checkbox = formulaSettingsItems[v];
+        nCore.modules.table.active.dataset[checkbox.name] = checkbox.checked;
       };
 
-      //console.log('nCore.modules.table.active.dataset.useChosenOrigin ++', chosenOrigin.selectedOptions);
-      nCore.modules.table.active.dataset.useChosenOrigin = true;
-      nCore.modules.table.active.dataset.chosenOrigin = JSON.stringify( tmp_array );
-    } else {
-      //console.log('nCore.modules.table.active.dataset.useChosenOrigin --', nCore.modules.table.active.dataset);
-      delete nCore.modules.table.active.dataset.useChosenOrigin
-      delete nCore.modules.table.active.dataset.chosenOrigin
-      chosenOrigin.selectedIndex = 0;
-      chosenOrigin.disabled = true;
+      // обновляем галку с месяцами
+      var monthSelector = formulaSettings.querySelector('[name="month"]');
+
+      if ( nCore.modules.table.active.dataset.useMonth === 'true' ) {
+        //console.log('nCore.modules.table.active.dataset.useMonth ++', nCore.modules.table.active.dataset);
+        nCore.modules.table.active.dataset.queryMonth = monthSelector.value;
+      } else {
+        //console.log('nCore.modules.table.active.dataset.useMonth --', nCore.modules.table.active.dataset);
+        delete nCore.modules.table.active.dataset.queryMonth
+        monthSelector.selectedIndex = 0;
+        monthSelector.disabled = true;
+      }
+
+      // обновляем галку с формулой
+      var formulaSelector = document.querySelector('[name="formula"]');
+
+      if ( nCore.modules.table.active.dataset.useFormula === 'true' ) {
+        //console.log('nCore.modules.table.active.dataset.useFormula ++', nCore.modules.table.active.dataset);
+        nCore.modules.table.active.dataset.formula = formulaSelector.value;
+      } else {
+        //console.log('nCore.modules.table.active.dataset.useFormula --', nCore.modules.table.active.dataset);
+        delete nCore.modules.table.active.dataset.formula
+        formulaSelector.value = '';
+        formulaSelector.disabled = true;
+      }
+
+      // обновляем галку с дефолтным значением
+      var defaultSelector = formulaSettings.querySelector('[name="default"]');
+
+      if ( nCore.modules.table.active.dataset.useDefault === 'true' ) {
+        //console.log('nCore.modules.table.active.dataset.useDefault ++', nCore.modules.table.active.dataset);
+        nCore.modules.table.active.dataset.queryDefault = defaultSelector.value;
+      } else {
+        //console.log('nCore.modules.table.active.dataset.useDefault --', nCore.modules.table.active.dataset);
+        delete nCore.modules.table.active.dataset.queryDefault
+        defaultSelector.selectedIndex = 0;
+        defaultSelector.disabled = true;
+      }
+
+      // обновляем источники
+      var chosenOrigin = formulaSettings.querySelector('[name="chosenOrigin"]');
+
+      if ( nCore.modules.table.active.dataset.useChosenOrigin === 'true' ) {
+        var tmp_array = [];
+        var origins = chosenOrigin.selectedOptions;
+        for (var i = 0; i < origins.length; i++) {
+          
+          tmp_array.push( origins[i].value )
+        };
+
+        //console.log('nCore.modules.table.active.dataset.useChosenOrigin ++', chosenOrigin.selectedOptions);
+        nCore.modules.table.active.dataset.useChosenOrigin = true;
+        nCore.modules.table.active.dataset.chosenOrigin = JSON.stringify( tmp_array );
+      } else {
+        //console.log('nCore.modules.table.active.dataset.useChosenOrigin --', nCore.modules.table.active.dataset);
+        delete nCore.modules.table.active.dataset.useChosenOrigin
+        delete nCore.modules.table.active.dataset.chosenOrigin
+        chosenOrigin.selectedIndex = 0;
+        chosenOrigin.disabled = true;
+      }
     }
   });
 

@@ -1,3 +1,4 @@
+'use strict';
 
 jQuery(function($) {
   if (typeof jQuery.fn.live == 'undefined' || !(jQuery.isFunction(jQuery.fn.live))) {
@@ -71,6 +72,7 @@ jQuery(function($) {
   $('.calculationCell').live('click', function(e){
     e.preventDefault();
     nCore.modules.table.event.publish('cellSelect', this );
+    nCore.modules.table.event.publish('cellFormulaClear' );
     return false;
   });
 
