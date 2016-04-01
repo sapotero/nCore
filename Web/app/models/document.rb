@@ -114,11 +114,31 @@ class Document
   end
 
   def calculate(data)
-    return Core::Reports::ElasticReport.find_or_initialize_by(report_id: self.id.to_s).calculate(data)
+    result = Core::Reports::ElasticReport.find_or_initialize_by(report_id: self.id.to_s).calculate(data)
+    notify_client
+    return result
   end
   
+  def continue_calculation
+    result = elastic_report.continue_calculation
+    notify_client
+    return result
+  end
+
+  def notify_client
+    # TO DO
+  end
+
   def elastic_report
     Core::Reports::ElasticReport.where(report_id: self.id.to_s).first
+  end
+
+  def finished?
+    elastic_report.finished?
+  end
+
+  def executed_percent
+    elastic_report.executed_percent
   end
 
   def populate( data )
