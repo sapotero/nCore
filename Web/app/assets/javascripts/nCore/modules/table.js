@@ -176,9 +176,10 @@ nCore.modules.table = (function(){
       includeThemesAp : true,
       group : true,
       formula : true,
-      queryDefault : true,
+      queryDefault : false,
       chosenOrigin : false,
       queryMonth : false
+      // useDefault : false
       }
     };
 
@@ -187,11 +188,11 @@ nCore.modules.table = (function(){
     for ( var item in dataSettings ) {
       if ( headCell.dataset.hasOwnProperty( item ) ) {
         // если не надо проверять, то добавим сразу
-        if ( dataSettings[ item ] == false ){
+        if ( dataSettings[ item ] === false ){
         _cell.dataset[ item ] = headCell.dataset[ item ];
         } else {
           // перед добавлением проверим что стоит галка у свойства
-          if ( headCell.dataset[ item ] == "true" ) {
+          if ( headCell.dataset[ item ] ) {
             _cell.dataset[ item ] = headCell.dataset[ item ];
           }
         }
@@ -430,7 +431,7 @@ nCore.modules.table = (function(){
 
     console.groupEnd();
 
-    this.removeDataRow();
+    // this.removeDataRow();
   };
   Table.prototype.modalGroup = function( data ) {
     var table = this.table;
