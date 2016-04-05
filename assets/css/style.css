@@ -1,3 +1,21 @@
+
+html,
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+html,
+body,
+input,
+textarea,
+buttons {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+}
+
+
 .core-snackbar {
   position: fixed;
   bottom: 0;
@@ -67,3 +85,18 @@
   opacity: 1;
   pointer-events: auto
 } 
+
+.core-progressbar{
+  position: fixed;
+  height:   20px;
+  width:    100%;
+  margin:   0px;
+  padding:  0px;
+}
+.core-progressbar-bar{
+  height:   20px;
+  width:    0%;
+  margin:   0px;
+  padding:  0px;
+  background-color: red;
+}

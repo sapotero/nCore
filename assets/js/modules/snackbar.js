@@ -1,6 +1,6 @@
 "use strict";
 
-core.snackbar = (function(){
+core.modules.snackbar = (function(){
 
   var Snackbar = function(element) {
 

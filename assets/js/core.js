@@ -284,13 +284,25 @@ core = (function(){
     this.modules  = {};
     this.debug    = true;
 
-    this.loadAll();
+    this.bindEvents();
+    // this.loadAll();
+  };
+
+  Core.prototype.bindEvents = function() {
+    this.events.subscribe("core::preloader:finish", function(){
+      console.log('core::preloader:finish');
+      
+      setTimeout(function(){
+        core.modules.progressbar.destroy();
+        core.events.remove("core::preloader:start");
+        core.events.remove("core::preloader:finish");
+      }, 5000);
+
+    });
   };
 
   Core.prototype.loadAll = function() {
-    
-    
-
+    this.events.publish("core::preloader:start");
   };
 
   return new Core();
