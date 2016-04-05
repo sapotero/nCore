@@ -1,7 +1,12 @@
 'use strict';
 
-var core = window.core || {};
-
 core.utils = (function(){
-  console.log( 'core.utils' );
+  var Utils = function(){
+    this.element = [];
+  };
+  Utils.prototype.start = function() {
+    console.log( 'Utils: start' );
+  };
+
+  return new Utils();
 })();

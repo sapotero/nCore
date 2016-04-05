@@ -1,3 +1,6 @@
 require('./core.js');
-require('./core/utils.js');
 require('./core/dom.js');
+require('./core/utils.js');
+require('./core/preloader.js');
+
+require('./modules/snackbar.js');

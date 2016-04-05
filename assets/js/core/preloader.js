@@ -1,7 +1,13 @@
 'use strict';
 
-var core = window.core || {};
-
 core.preloader = (function(){
-  console.log( 'core.core' );
+
+  var Preloader = function(){
+    this.element = [];
+  };
+  Preloader.prototype.start = function() {
+    console.log( 'Preloader: start' );
+  };
+
+  return new Preloader();
 })();

@@ -1,12 +1,12 @@
 var path = require('path');
 var webpack = require('webpack');
 var config = {
-  context: path.join(__dirname, 'app/assets/js'),
+  context: path.join(__dirname, './assets/js'),
   entry: {
     index: './application'
   },
   output: {
-    path: path.join(__dirname, 'app/assets/js/build'),
+    path: path.join(__dirname, './assets/build/'),
     filename: 'application.js'
   }
 };

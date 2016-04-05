@@ -1,7 +1,3 @@
-'use strict';
-
-var core = window.core || {};
-
 core = (function(){
 
   var Subscriber = function(fn, options, context) {
@@ -273,7 +269,11 @@ core = (function(){
     };
 
     return this.worker;
-  }
+  };
+
+  var Loader = function(){
+    console.log('loader ');
+  };
 
   var Core = function( config ){
     this.events   = new Mediator();
@@ -283,14 +283,14 @@ core = (function(){
     this.utils    = {};
     this.modules  = {};
     this.debug    = true;
+
+    this.loadAll();
   };
 
-  Core.prototype.loadModules = function(modules) {
-    var modules = modules || [ 'dom', 'preloader', 'utils' ];
-  };
+  Core.prototype.loadAll = function() {
+    
+    
 
-  Core.prototype.initialize = function() {
-    this.loadModules();
   };
 
   return new Core();

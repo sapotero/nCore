@@ -3,12 +3,18 @@
   
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <script type="text/javascript" src="assets/build/js/application.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <script type="text/javascript" src="assets/js/init.js"></script>
   </head>
   
   <body>
-    <div id="applicaton">
-      
+    <div id="core-application"></div>
+    
+    <div id="core-snackbar" class="core-js-snackbar core-snackbar">
+      <div class="core-snackbar__text"></div>
+      <button class="core-snackbar__action" type="button"></button>
     </div>
+
+    <script type="text/javascript" src="assets/build/application.js"></script>
   </body>
 </html>
