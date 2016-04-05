@@ -73,8 +73,9 @@ core.modules.progressbar = (function(){
 
   Progressbar.prototype.update = function() {
     this.count++;
-    this.percent = Math.round( this.total / this.count * 100 );
-    this.element.querySelector('.core-progressbar-bar').style.width = this.percent + '%';
+    this.percent = parseFloat( this.count / this.total );
+    this.element.querySelector('.core-progressbar-bar').style.width = this.percent * 100 + '%';
+    console.log( 'update', this.count, this.total, parseFloat( this.count / this.total )*100 );
   };
 
   var progress = new Progressbar();
