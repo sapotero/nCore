@@ -48,8 +48,11 @@
 	__webpack_require__(2);
 	__webpack_require__(3);
 	__webpack_require__(4);
+
 	__webpack_require__(5);
 	__webpack_require__(6);
+	__webpack_require__(7);
+	__webpack_require__(8);
 
 /***/ },
 /* 1 */
@@ -342,24 +345,35 @@
 	    this.debug    = true;
 
 	    this.bindEvents();
-	    // this.loadAll();
+	    // this.startAll();
 	  };
 
 	  Core.prototype.bindEvents = function() {
+
 	    this.events.subscribe("core::preloader:finish", function(){
 	      console.log('core::preloader:finish');
-	      
 	      setTimeout(function(){
 	        core.modules.progressbar.destroy();
 	        core.events.remove("core::preloader:start");
 	        core.events.remove("core::preloader:finish");
-	      }, 5000);
-
+	      }, 1000);
 	    });
+
+
 	  };
 
-	  Core.prototype.loadAll = function() {
-	    this.events.publish("core::preloader:start");
+	  Core.prototype.start = function(module) {
+	    this.events.publish( "core::start:" + module );
+	  };
+	  Core.prototype.destroy = function(module) {
+	    this.events.publish( "core::destroy:" + module );
+	  };
+
+	  Core.prototype.startAll = function() {
+	    this.events.publish("core::start:all");
+	  };
+	  Core.prototype.destroyAll = function() {
+	    this.events.publish("core::destroy:all");
 	  };
 
 	  return new Core();
@@ -399,13 +413,11 @@
 
 	  var manager = new DomManager();
 	  
-	  core.events.subscribe("dom:getElement", function( selector ){
-	    console.log( 'dom:getElement', selector );
-	    // return manager.root.querySelector( selector );
-	  });
-	  core.events.subscribe("getSnackbar", function( selector ){
-	    return manager.snackbar;
-	  });
+
+	  core.events.subscribe("core::start:all", function(){
+	    console.log('core::start:manager');
+	    manager.start();
+	  }, { priority: 0 });
 
 	  return manager;
 	})();
@@ -444,10 +456,18 @@
 	core.preloader = (function(){
 
 	  var Preloader = function(){
-	    this.element = [];
+	    this.modules = [];
 	  };
 	  Preloader.prototype.start = function() {
 	    console.log( 'Preloader: start' );
+	    this.modules = ['userInfo', 'userDocs'];
+	  };
+	  Preloader.prototype.stop = function() {
+	    console.log( 'Preloader: stop' );
+	  };
+	  Preloader.prototype.destroy = function() {
+	    console.log( 'Preloader: destroy' );
+	    delete this.modules;
 	  };
 
 	  return new Preloader();
@@ -455,6 +475,69 @@
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	core.modules.user = (function() {
+
+	  var User = function(){
+	    this.name = '';
+	  };
+	  User.prototype.start = function() {
+	    // console.log( 'User: start' );
+	  };
+	  User.prototype.stop = function() {
+	    // console.log( 'User: stop' );
+	  };
+	  User.prototype.destroy = function() {
+	    // console.log( 'User: destroy' );
+	  };
+
+	  var user = new User();
+
+	  core.events.subscribe("core::start:all", function(){
+	    console.log('core::start:user');
+	    user.start();
+	  });
+
+	  return user;
+	}());
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	core.modules.router = (function() {
+
+	  var Router = function(){
+	    this.name = '';
+	  };
+
+	  Router.prototype.start = function() {
+	    // console.log( 'Router: start' );
+	  };
+	  Router.prototype.stop = function() {
+	    // console.log( 'Router: stop' );
+	  };
+	  Router.prototype.destroy = function() {
+	    // console.log( 'Router: destroy' );
+	  };
+
+	  var router = new Router();
+
+	  core.events.subscribe("core::start:all", function(){
+	    console.log('core::start:router');
+	    router.start();
+	  });
+
+	  return router;
+	}());
+
+/***/ },
+/* 7 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -593,17 +676,24 @@
 	  };
 	  Snackbar.prototype.destroy = function() {
 	    console.log( 'Snackbar: destroy' );
-	    this.element = {};
+	    this.element.remove();
+	    delete this.element;
 	  };
 
+	  var snackbar = new Snackbar();
+
+	  core.events.subscribe("core::start:all", function(){
+	    console.log('core::start:snackbar');
+	    snackbar.start();
+	  });
 
 
-	  return new Snackbar();
+	  return snackbar;
 	})(); 
 
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -690,8 +780,8 @@
 
 	  var progress = new Progressbar();
 
-	  core.events.subscribe("core::preloader:start", function(){
-	    console.log('core::preloader:start');
+	  core.events.subscribe("core::start:all", function(){
+	    console.log('core::start:progress');
 	    progress.start();
 	  });
 

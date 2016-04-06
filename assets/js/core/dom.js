@@ -27,13 +27,11 @@ core.dom = (function(){
 
   var manager = new DomManager();
   
-  core.events.subscribe("dom:getElement", function( selector ){
-    console.log( 'dom:getElement', selector );
-    // return manager.root.querySelector( selector );
-  });
-  core.events.subscribe("getSnackbar", function( selector ){
-    return manager.snackbar;
-  });
+
+  core.events.subscribe("core::start:all", function(){
+    console.log('core::start:manager');
+    manager.start();
+  }, { priority: 0 });
 
   return manager;
 })();

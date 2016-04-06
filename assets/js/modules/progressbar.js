@@ -82,8 +82,8 @@ core.modules.progressbar = (function(){
 
   var progress = new Progressbar();
 
-  core.events.subscribe("core::preloader:start", function(){
-    console.log('core::preloader:start');
+  core.events.subscribe("core::start:all", function(){
+    console.log('core::start:progress');
     progress.start();
   });
 

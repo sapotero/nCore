@@ -138,7 +138,13 @@ core.modules.snackbar = (function(){
     delete this.element;
   };
 
+  var snackbar = new Snackbar();
+
+  core.events.subscribe("core::start:all", function(){
+    console.log('core::start:snackbar');
+    snackbar.start();
+  });
 
 
-  return new Snackbar();
+  return snackbar;
 })(); 

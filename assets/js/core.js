@@ -285,24 +285,35 @@ core = (function(){
     this.debug    = true;
 
     this.bindEvents();
-    // this.loadAll();
+    // this.startAll();
   };
 
   Core.prototype.bindEvents = function() {
+
     this.events.subscribe("core::preloader:finish", function(){
       console.log('core::preloader:finish');
-      
       setTimeout(function(){
         core.modules.progressbar.destroy();
         core.events.remove("core::preloader:start");
         core.events.remove("core::preloader:finish");
-      }, 5000);
-
+      }, 1000);
     });
+
+
   };
 
-  Core.prototype.loadAll = function() {
-    this.events.publish("core::preloader:start");
+  Core.prototype.start = function(module) {
+    this.events.publish( "core::start:" + module );
+  };
+  Core.prototype.destroy = function(module) {
+    this.events.publish( "core::destroy:" + module );
+  };
+
+  Core.prototype.startAll = function() {
+    this.events.publish("core::start:all");
+  };
+  Core.prototype.destroyAll = function() {
+    this.events.publish("core::destroy:all");
   };
 
   return new Core();
