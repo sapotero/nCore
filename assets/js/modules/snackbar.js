@@ -2,25 +2,11 @@
 
 core.modules.snackbar = (function(){
 
-  var Snackbar = function(element) {
+  var Snackbar = function() {
 
-    if ( !arguments.length ) {
-      element = core.dom.snackbar;
-    }
-
-    this.element       = core.dom.snackbar;
-    this.textElement   = this.element.querySelector('.' + this.cssClasses.MESSAGE);
-    this.actionElement = this.element.querySelector('.' + this.cssClasses.ACTION);
-
-    if (!this.textElement) {
-      console.error('There must be a message element for a Snackbar.');
-      return false;
-    }
-    
-    if (!this.actionElement) {
-      console.error('There must be an action element for a Snackbar.');
-      return false;
-    }
+    this.element       = {};
+    this.textElement   = {};
+    this.actionElement = {};
 
     this.active        = false;
     this.actionHandler = undefined;
@@ -29,19 +15,15 @@ core.modules.snackbar = (function(){
     this.queuedNotifications = [];
     this.setActionHidden(true);
   };
-
   Snackbar.prototype.Constant = {
     ANIMATION_LENGTH: 500
   };
-
   Snackbar.prototype.cssClasses = {
     SNACKBAR: 'core-snackbar',
     MESSAGE:  'core-snackbar__text',
     ACTION:   'core-snackbar__action',
     ACTIVE:   'core-snackbar--active'
   };
-
-
   Snackbar.prototype.displaySnackbar = function() {
     this.element.setAttribute('aria-hidden', 'true');
 
@@ -56,7 +38,6 @@ core.modules.snackbar = (function(){
     this.element.setAttribute('aria-hidden', 'false');
     setTimeout(this.cleanup.bind(this), this.timeout);
   };
-
   Snackbar.prototype.showSnackbar = function(data) {
     if (data === undefined) {
       console.error('Please provide a data object with at least a message to display.');
@@ -92,14 +73,11 @@ core.modules.snackbar = (function(){
       this.displaySnackbar();
     }
   };
-
   Snackbar.prototype.checkQueue = function() {
     if ( this.queuedNotifications.length > 0) {
       this.showSnackbar(this.queuedNotifications.shift());
     }
   };
-
-
   Snackbar.prototype.cleanup = function() {
     this.element.classList.remove(this.cssClasses.ACTIVE);
     setTimeout(function() {
@@ -117,14 +95,50 @@ core.modules.snackbar = (function(){
       this.checkQueue();
     }.bind(this), (this.Constant.ANIMATION_LENGTH));
   };
-
   Snackbar.prototype.setActionHidden = function(value) {
-    if (value) {
-      this.actionElement.setAttribute('aria-hidden', 'true');
-    } else {
-      this.actionElement.removeAttribute('aria-hidden');
+    console.log( this.actionElement != {}, this.actionElement, Object.keys(this.actionElement), !!Object.keys(this.actionElement) )
+    if ( Object.keys(this.actionElement).length ) {
+      value ? this.actionElement.setAttribute('aria-hidden', 'true') : this.actionElement.removeAttribute('aria-hidden');
     }
   };
+
+  Snackbar.prototype.start = function() {
+    console.log( 'Snackbar: start' );
+    
+    // <div id="core-snackbar" class="core-snackbar">
+    //   <div class="core-snackbar__text"></div>
+    //   <button class="core-snackbar__action" type="button"></button>
+    // </div>
+
+    var coreSnackbar = document.createElement("div");
+    coreSnackbar.id = 'core-snackbar';
+    coreSnackbar.classList.add('core-snackbar');
+    
+    var coreSnackbarText = document.createElement("div");
+    coreSnackbarText.classList.add('core-snackbar__text');
+    coreSnackbar.appendChild( coreSnackbarText );
+
+    var coreSnackbarButton = document.createElement("button");
+    coreSnackbarButton.classList.add('core-snackbar__action');
+    coreSnackbar.appendChild( coreSnackbarButton );
+
+    core.dom.snackbar = coreSnackbar;
+    core.dom.application.appendChild( coreSnackbar );
+    
+    this.element       = coreSnackbar;
+    this.textElement   = this.element.querySelector('.' + this.cssClasses.MESSAGE);
+    this.actionElement = this.element.querySelector('.' + this.cssClasses.ACTION);
+  };
+  Snackbar.prototype.stop = function() {
+    console.log( 'Snackbar: stop' );
+  };
+  Snackbar.prototype.destroy = function() {
+    console.log( 'Snackbar: destroy' );
+    this.element.remove();
+    delete this.element;
+  };
+
+
 
   return new Snackbar();
 })(); 

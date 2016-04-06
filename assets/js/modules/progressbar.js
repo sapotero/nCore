@@ -13,22 +13,30 @@ core.modules.progressbar = (function(){
     this.element = {};
   };
 
-  Progressbar.prototype.build = function() {
-      var bar = document.createElement('div');
-      bar.classList.add('core-progressbar-bar');
 
-      this.element = document.createElement('div');
-      this.element.id = 'core-progessbar';
-      this.element.classList.add('core-progressbar');
-      this.element.appendChild(bar);
-
-      core.dom.application.appendChild( this.element );
-
-      this.action();
+  Progressbar.prototype.start = function() {
+    this.build();
+    this.action();
+  };
+  Progressbar.prototype.stop = function() {
+    // this.build();
+    // this.action();
   };
   Progressbar.prototype.destroy = function() {
     this.element.remove();
     delete this.element;
+  };
+
+
+  Progressbar.prototype.build = function() {
+    var bar = document.createElement('div');
+    bar.classList.add('core-progressbar-bar');
+
+    this.element = document.createElement('div');
+    this.element.id = 'core-progessbar';
+    this.element.classList.add('core-progressbar');
+    this.element.appendChild(bar);
+    core.dom.application.appendChild( this.element );
   };
 
   Progressbar.prototype.action = function() {
@@ -39,7 +47,7 @@ core.modules.progressbar = (function(){
         function( resolve, reject ) {
           setTimeout( function(){
             resolve(true);
-          }, Math.random()*10000 + Math.random()*10000);
+          }, Math.random()*10000);
         }
       );
       promise.then(function(){
@@ -59,12 +67,6 @@ core.modules.progressbar = (function(){
     ).catch(function(e){
       throw new Error(e);
     });
-
-  };
-
-  Progressbar.prototype.start = function() {
-    this.build();
-    this.action();
   };
 
   Progressbar.prototype.finish = function() {
@@ -82,7 +84,7 @@ core.modules.progressbar = (function(){
 
   core.events.subscribe("core::preloader:start", function(){
     console.log('core::preloader:start');
-    progress.build();
+    progress.start();
   });
 
 

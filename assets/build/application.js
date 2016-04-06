@@ -375,13 +375,26 @@
 	core.dom = (function(){
 	  var DomManager = function(){
 	    this.root        = document;
-	    this.application = this.root.getElementById('core-application');
-	    this.snackbar    = this.root.getElementById('core-snackbar');
+	    this.application = {};
+	    this.snackbar    = {};
 
 	  };
 
 	  DomManager.prototype.start = function() {
 	    console.log( 'DomManager: start' );
+	    
+	    var application = document.createElement('div');
+	    application.id = 'core-application';
+	    this.application = application;
+
+	    this.root.body.appendChild( application );
+
+	  };
+	  DomManager.prototype.stop = function() {
+	    console.log( 'DomManager: stop' );
+	  };
+	  DomManager.prototype.destroy = function() {
+	    console.log( 'DomManager: destroy' );
 	  };
 
 	  var manager = new DomManager();
@@ -409,6 +422,13 @@
 	  };
 	  Utils.prototype.start = function() {
 	    console.log( 'Utils: start' );
+	  };
+	  Utils.prototype.stop = function() {
+	    console.log( 'Utils: stop' );
+	  };
+	  Utils.prototype.destroy = function() {
+	    console.log( 'Utils: destroy' );
+	    this.element = [];
 	  };
 
 	  return new Utils();
@@ -441,25 +461,11 @@
 
 	core.modules.snackbar = (function(){
 
-	  var Snackbar = function(element) {
+	  var Snackbar = function() {
 
-	    if ( !arguments.length ) {
-	      element = core.dom.snackbar;
-	    }
-
-	    this.element       = core.dom.snackbar;
-	    this.textElement   = this.element.querySelector('.' + this.cssClasses.MESSAGE);
-	    this.actionElement = this.element.querySelector('.' + this.cssClasses.ACTION);
-
-	    if (!this.textElement) {
-	      console.error('There must be a message element for a Snackbar.');
-	      return false;
-	    }
-	    
-	    if (!this.actionElement) {
-	      console.error('There must be an action element for a Snackbar.');
-	      return false;
-	    }
+	    this.element       = {};
+	    this.textElement   = {};
+	    this.actionElement = {};
 
 	    this.active        = false;
 	    this.actionHandler = undefined;
@@ -468,19 +474,15 @@
 	    this.queuedNotifications = [];
 	    this.setActionHidden(true);
 	  };
-
 	  Snackbar.prototype.Constant = {
 	    ANIMATION_LENGTH: 500
 	  };
-
 	  Snackbar.prototype.cssClasses = {
 	    SNACKBAR: 'core-snackbar',
 	    MESSAGE:  'core-snackbar__text',
 	    ACTION:   'core-snackbar__action',
 	    ACTIVE:   'core-snackbar--active'
 	  };
-
-
 	  Snackbar.prototype.displaySnackbar = function() {
 	    this.element.setAttribute('aria-hidden', 'true');
 
@@ -495,7 +497,6 @@
 	    this.element.setAttribute('aria-hidden', 'false');
 	    setTimeout(this.cleanup.bind(this), this.timeout);
 	  };
-
 	  Snackbar.prototype.showSnackbar = function(data) {
 	    if (data === undefined) {
 	      console.error('Please provide a data object with at least a message to display.');
@@ -531,14 +532,11 @@
 	      this.displaySnackbar();
 	    }
 	  };
-
 	  Snackbar.prototype.checkQueue = function() {
 	    if ( this.queuedNotifications.length > 0) {
 	      this.showSnackbar(this.queuedNotifications.shift());
 	    }
 	  };
-
-
 	  Snackbar.prototype.cleanup = function() {
 	    this.element.classList.remove(this.cssClasses.ACTIVE);
 	    setTimeout(function() {
@@ -556,14 +554,49 @@
 	      this.checkQueue();
 	    }.bind(this), (this.Constant.ANIMATION_LENGTH));
 	  };
-
 	  Snackbar.prototype.setActionHidden = function(value) {
-	    if (value) {
-	      this.actionElement.setAttribute('aria-hidden', 'true');
-	    } else {
-	      this.actionElement.removeAttribute('aria-hidden');
+	    console.log( this.actionElement != {}, this.actionElement, Object.keys(this.actionElement), !!Object.keys(this.actionElement) )
+	    if ( Object.keys(this.actionElement).length ) {
+	      value ? this.actionElement.setAttribute('aria-hidden', 'true') : this.actionElement.removeAttribute('aria-hidden');
 	    }
 	  };
+
+	  Snackbar.prototype.start = function() {
+	    console.log( 'Snackbar: start' );
+	    
+	    // <div id="core-snackbar" class="core-snackbar">
+	    //   <div class="core-snackbar__text"></div>
+	    //   <button class="core-snackbar__action" type="button"></button>
+	    // </div>
+
+	    var coreSnackbar = document.createElement("div");
+	    coreSnackbar.id = 'core-snackbar';
+	    coreSnackbar.classList.add('core-snackbar');
+	    
+	    var coreSnackbarText = document.createElement("div");
+	    coreSnackbarText.classList.add('core-snackbar__text');
+	    coreSnackbar.appendChild( coreSnackbarText );
+
+	    var coreSnackbarButton = document.createElement("button");
+	    coreSnackbarButton.classList.add('core-snackbar__action');
+	    coreSnackbar.appendChild( coreSnackbarButton );
+
+	    core.dom.snackbar = coreSnackbar;
+	    core.dom.application.appendChild( coreSnackbar );
+	    
+	    this.element       = coreSnackbar;
+	    this.textElement   = this.element.querySelector('.' + this.cssClasses.MESSAGE);
+	    this.actionElement = this.element.querySelector('.' + this.cssClasses.ACTION);
+	  };
+	  Snackbar.prototype.stop = function() {
+	    console.log( 'Snackbar: stop' );
+	  };
+	  Snackbar.prototype.destroy = function() {
+	    console.log( 'Snackbar: destroy' );
+	    this.element = {};
+	  };
+
+
 
 	  return new Snackbar();
 	})(); 
@@ -588,22 +621,30 @@
 	    this.element = {};
 	  };
 
-	  Progressbar.prototype.build = function() {
-	      var bar = document.createElement('div');
-	      bar.classList.add('core-progressbar-bar');
 
-	      this.element = document.createElement('div');
-	      this.element.id = 'core-progessbar';
-	      this.element.classList.add('core-progressbar');
-	      this.element.appendChild(bar);
-
-	      core.dom.application.appendChild( this.element );
-
-	      this.action();
+	  Progressbar.prototype.start = function() {
+	    this.build();
+	    this.action();
+	  };
+	  Progressbar.prototype.stop = function() {
+	    // this.build();
+	    // this.action();
 	  };
 	  Progressbar.prototype.destroy = function() {
 	    this.element.remove();
 	    delete this.element;
+	  };
+
+
+	  Progressbar.prototype.build = function() {
+	    var bar = document.createElement('div');
+	    bar.classList.add('core-progressbar-bar');
+
+	    this.element = document.createElement('div');
+	    this.element.id = 'core-progessbar';
+	    this.element.classList.add('core-progressbar');
+	    this.element.appendChild(bar);
+	    core.dom.application.appendChild( this.element );
 	  };
 
 	  Progressbar.prototype.action = function() {
@@ -614,7 +655,7 @@
 	        function( resolve, reject ) {
 	          setTimeout( function(){
 	            resolve(true);
-	          }, Math.random()*10000 + Math.random()*10000);
+	          }, Math.random()*10000);
 	        }
 	      );
 	      promise.then(function(){
@@ -634,12 +675,6 @@
 	    ).catch(function(e){
 	      throw new Error(e);
 	    });
-
-	  };
-
-	  Progressbar.prototype.start = function() {
-	    this.build();
-	    this.action();
 	  };
 
 	  Progressbar.prototype.finish = function() {
@@ -657,7 +692,7 @@
 
 	  core.events.subscribe("core::preloader:start", function(){
 	    console.log('core::preloader:start');
-	    progress.build();
+	    progress.start();
 	  });
 
 

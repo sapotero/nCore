@@ -7,6 +7,13 @@ core.utils = (function(){
   Utils.prototype.start = function() {
     console.log( 'Utils: start' );
   };
+  Utils.prototype.stop = function() {
+    console.log( 'Utils: stop' );
+  };
+  Utils.prototype.destroy = function() {
+    console.log( 'Utils: destroy' );
+    this.element = [];
+  };
 
   return new Utils();
 })();
