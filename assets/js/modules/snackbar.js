@@ -96,7 +96,6 @@ core.modules.snackbar = (function(){
     }.bind(this), (this.Constant.ANIMATION_LENGTH));
   };
   Snackbar.prototype.setActionHidden = function(value) {
-    console.log( this.actionElement != {}, this.actionElement, Object.keys(this.actionElement), !!Object.keys(this.actionElement) )
     if ( Object.keys(this.actionElement).length ) {
       value ? this.actionElement.setAttribute('aria-hidden', 'true') : this.actionElement.removeAttribute('aria-hidden');
     }
