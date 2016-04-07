@@ -7,8 +7,14 @@ var config = {
   },
   output: {
     path: path.join(__dirname, './assets/build/'),
-    filename: 'application.js'
-  }
+    filename: 'application.min.js'
+  },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true
+    })
+  ]
 };
 var compiler = webpack(config);
 compiler.run(function (err, stats) {
