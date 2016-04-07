@@ -42,7 +42,7 @@ core.modules.progressbar = (function(){
   Progressbar.prototype.action = function() {
     var bar = this;
 
-    for (var i = 50; i >= 0; i--) {
+    for (var i = 10; i >= 0; i--) {
       var promise = new Promise(
         function( resolve, reject ) {
           setTimeout( function(){
