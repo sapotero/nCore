@@ -5,6 +5,11 @@ core.modules.template = (function() {
     this.name = config.name || '';
     this.path = config.path || '';
     this.raw  = config.raw  || '';
+    return this;
+  };
+  Template.prototype.load = function() {
+    core.events.publish( "core::template:load", this.name );
+    return this;
   };
 
   var Templates = function(){
@@ -14,7 +19,7 @@ core.modules.template = (function() {
   Templates.prototype.Template = Template;
   
   Templates.prototype.add = function(name) {
-    this.templates[ name ] = new this.Template({ name: name });
+    this.templates[ name ] = new this.Template({ name: name }).load();
   };
 
   Templates.prototype.init = function() {

@@ -289,14 +289,19 @@ core = (function(){
   };
 
   Core.prototype.bindEvents = function() {
+    var core = this;
 
-    this.events.subscribe("core::preloader:finish", function(){
+    core.events.subscribe("core::preloader:finish", function(){
       console.log('core::preloader:finish');
       setTimeout(function(){
         core.modules.progressbar.destroy();
         core.events.remove("core::preloader:start");
         core.events.remove("core::preloader:finish");
       }, 1000);
+    });
+
+    core.events.subscribe( "core::template:load", function (template) {
+       core.worker.postMessage( [ 'template:load', template ] )
     });
 
 
