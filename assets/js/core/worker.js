@@ -29,15 +29,18 @@ onmessage = function(e) {
   };
 
   var Template = function () {
+    return this;
   }
-  Template.request = Request;
+  Template.prototype.request = Request;
 
   Template.prototype.load = function(tmp) {
-    console.log('tmp', tmp);
-    return new this.request({
+    console.log('tmp', tmp, this);
+    var request = new this.request({
       type : 'get',
-      url  : '/'+ tmp
-    }).send(
+      url  : '/assets/templates/' + tmp + '.html'
+    });
+
+    return request.send(
       function ( response ) {
         console.log( 'WORKER REQUEST: ', response );
       },
@@ -50,19 +53,28 @@ onmessage = function(e) {
   var Command = function(config) {
     this.action = config.action || '';
     this.data   = config.data   || '';
+    
     return this;
   }
   Command.prototype.template = Template;
+  Command.prototype.return   = postMessage
 
   Command.prototype.do = function() {
     if (this.action !== '') {
       var tmp = this.action.split(':');
       var module = tmp[0],
           action = tmp[1];
-      this[module][action].call(this, this.data);
+
+      // if ( this.hasOwnProperty(module) ) {
+        module = new this[module];
+        module[action].call(module, this.data);
+      // };
     };
   };
 
+  console.log('recv', e.data);
+
+  console.log();
   new Command({
     action : e.data[0],
     data   : e.data[1]
