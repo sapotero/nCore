@@ -264,8 +264,31 @@ core = (function(){
 
   var WebWorker = function(){
     this.worker = new Worker("assets/js/core/worker.js");
-    this.worker.onmessage = function( data ) {
-      console.log('FROM WORKER: ', data);
+    this.worker.onmessage = function( e ) {
+      console.log('FROM WORKER: ', e);
+      var data = e.data;
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          data[key];
+
+          switch (key) {
+            case 'template:loaded':
+              var templateName = Object.keys( data[key] )[0],
+                  data         = data[key][templateName];
+              
+              core.events.publish("core::template:loaded", {
+                name : templateName,
+                raw  : data
+              });
+              
+              break;
+            default:
+              console.log('default');
+              break;
+          }
+
+        }
+      }
     };
 
     return this.worker;

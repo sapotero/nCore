@@ -33,11 +33,20 @@ core.modules.template = (function() {
   };
 
   Templates.prototype.bindEvents = function() {
+    var templates = this;
+
     core.events.subscribe("core::templates:load::success", function ( tmp ){
       console.log( 'Load::',tmp );
     });
+    
     core.events.subscribe("core::templates:load::fails",   function ( e ){
       throw new Error(e);
+    });
+
+    core.events.subscribe("core::template:loaded", function (data) {
+       console.log('***', templates, templates.templates, templates.templates[data.name].raw);
+       templates.templates[data.name].raw = data.raw;
+       // templates.tempates[ data.name ].raw = data.data;
     });
   };
   

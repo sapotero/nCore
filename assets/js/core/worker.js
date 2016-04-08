@@ -3,18 +3,22 @@
 onmessage = function(e) {
   
   var Request = function (config) {
-    this.type = config.type.toUpperCase() || 'GET';
-    this.url  = config.url;
-    this.data = config.data || {};
+    this.template = config.template;
+    this.type     = config.type.toUpperCase() || 'GET';
+    this.url      = config.url;
+    this.data     = config.data || {};
     return this
   };
-  Request.prototype.send = function( callback, error ) {
+  Request.prototype.send = function( callback ) {
+    var root = this;
+
     var request = new XMLHttpRequest();
     request.open( this.type , this.url, true);
 
     request.onload = function() {
       if (this.status >= 200 && this.status < 400) {
         var response = this.response;
+        root.template.raw = response;
         callback( response );
       } else {
         callback( response );
@@ -22,32 +26,46 @@ onmessage = function(e) {
     };
 
     request.onerror = function() {
-      error(this);
+      callback(this);
     };
 
     request.send( this.data );
   };
 
   var Template = function () {
+    this.raw = {};
     return this;
   }
   Template.prototype.request = Request;
 
   Template.prototype.load = function(tmp) {
     console.log('tmp', tmp, this);
-    var request = new this.request({
-      type : 'get',
-      url  : '/assets/templates/' + tmp + '.html'
+    var template = this;
+
+    var request = new template.request({
+      type     : 'get',
+      url      : '/assets/templates/' + tmp + '.html',
+      template : template
     });
 
-    return request.send(
-      function ( response ) {
-        console.log( 'WORKER REQUEST: ', response );
-      },
-      function ( error ) {
-        throw new Error(error);
-      }
-    );
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      console.log( 'WORKER REQUEST: ', data, template );
+      
+      postMessage({
+        "template:loaded": {
+          "core-loading": data
+        }
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+    return this;
   };
 
   var Command = function(config) {
