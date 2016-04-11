@@ -48,7 +48,6 @@ core.modules.template = (function() {
 
     core.events.subscribe("core::template:loaded", function (data) {
       console.log('***', data.name, Object.keys(templates.templates).length, templates.toLoad.length);
-      templates.loaded++;
       
       templates.templates[data.name].raw = data.raw;
        
@@ -59,12 +58,19 @@ core.modules.template = (function() {
 
       console.log('templates -> bindEvents > core::template:loaded : ', moduleRoot + "::" + moduleName + ":template:ready");
       
-      // core.events.publish( moduleRoot + "::" + moduleName + ":template:ready", templates.templates[data.name] );
-       
+      core.events.publish( moduleRoot + "::" + moduleName + ":template:ready", templates.templates[data.name] );
+      templates.loaded++;
+
       if ( templates.loaded === templates.toLoad.length ) {
         core.events.publish("core::preloader:ready");
       }
        // templates.tempates[ data.name ].raw = data.data;
+    });
+
+    core.events.publish("");
+
+    core.events.subscribe("core::progressbar:template", function(){
+      core.events.publish("core::template:progressbar", templates.templates['core-progressbar']);
     });
 
     core.events.subscribe("core::template:start", function(){

@@ -327,9 +327,9 @@ core = (function(){
       
       setTimeout(function(){
         core.modules.progressbar.destroy();
-        core.events.remove("core::preloader:start");
-        core.events.remove("core::preloader:finish");
       }, 1000);
+
+      core.events.publish('core::router:start');
     });
 
     core.events.subscribe( "core::template:load", function (template) {
@@ -338,15 +338,7 @@ core = (function(){
 
     core.events.subscribe( "core::layout:template:ready", function (template) {
       // console.log('layout: ', template);
-      // 
-      var application = document.createElement('div');
-      application.id  = template.name;
-      application.classList.add( template.name );
-      application.innerHTML = template.raw;
-
-      core.dom.application = application;
-      
-      core.events.publish('core::dom:updateApplication', application);
+      core.events.publish('core::dom:build', template );
     });
 
   };

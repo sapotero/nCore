@@ -163,6 +163,10 @@ core.modules.router = (function() {
         return route;
       }
     }
+
+    if ( this.check() === false ) {
+      location.hash = '#reports';
+    }
   };
   Router.prototype.check =  function() {
     var url   = this.getUrl(),
@@ -216,7 +220,7 @@ core.modules.router = (function() {
 
   var router = new Router();
 
-  core.events.subscribe("core::start:all", function(){
+  core.events.subscribe("core::router:start", function(){
     console.log('core::start:router');
     router.start();
   });

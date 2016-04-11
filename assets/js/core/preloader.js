@@ -15,7 +15,7 @@ core.preloader = (function(){
 
     core.events.subscribe( "core::preloader:ready", function () {
       console.log("++ core::preloader:ready");
-      core.events.publish("core::start:progressbar");
+      core.events.publish("core::progressbar:build");
     });
 
   };
