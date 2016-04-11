@@ -8,13 +8,21 @@ var config = {
   output: {
     path: path.join(__dirname, './assets/build/'),
     filename: 'application.min.js'
+    // libraryTarget: "var",
+    // library: "core"
   },
-  // plugins: [
-  //   new webpack.optimize.UglifyJsPlugin({
-  //     include: /\.min\.js$/,
-  //     minimize: true
-  //   })
-  // ]
+  // externals: {
+  //   'core': 'core'
+  // }
+  plugins: [
+    // new webpack.optimize.UglifyJsPlugin({
+    //   include: /\.min\.js$/,
+    //   minimize: true
+    // }),
+    new webpack.optimize.AggressiveMergingPlugin({
+      moveToParents: true
+    })
+  ]
 };
 var compiler = webpack(config);
 compiler.run(function (err, stats) {

@@ -14,7 +14,8 @@ core.modules.template = (function() {
 
   var Templates = function(){
     this.templates = {};
-    this.ready    = false;
+    this.ready     = false;
+    this.toLoad    = ['core-loading'];
   };
   Templates.prototype.Template = Template;
   
@@ -24,9 +25,8 @@ core.modules.template = (function() {
 
   Templates.prototype.init = function() {
 
-    var templates = ['core-loading'];
-    for (var i = templates.length - 1; i >= 0; i--) {
-      this.add( templates[i] );
+    for (var i = this.toLoad.length - 1; i >= 0; i--) {
+      this.add( this.toLoad[i] );
     };
 
     core.events.publish( "core::templates:load", this.templates );
@@ -44,8 +44,13 @@ core.modules.template = (function() {
     });
 
     core.events.subscribe("core::template:loaded", function (data) {
-       console.log('***', templates, templates.templates, templates.templates[data.name].raw);
        templates.templates[data.name].raw = data.raw;
+       
+       console.log('***', Object.keys(templates.templates).length, templates.toLoad.length, Object.keys(templates.templates).length == templates.toLoad.length );
+       if ( Object.keys(templates.templates).length == templates.toLoad.length ) {
+         core.events.publish( "core::progressbar:template:ready", templates.templates[data.name] );
+         this.loaded = true;
+       }
        // templates.tempates[ data.name ].raw = data.data;
     });
   };

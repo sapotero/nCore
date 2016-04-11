@@ -3,10 +3,10 @@
 core.modules.router = (function() {
 
   function Route(path, callback, router) {
-    this.path = path;
+    this.path     = path;
     this.callback = callback;
-    this.router = router;
-    this.values = [];
+    this.router   = router;
+    this.values   = [];
   };
   Route.prototype.regex =  function() {
 
@@ -170,13 +170,10 @@ core.modules.router = (function() {
   Router.prototype.start = function() {
     
     this.update({
-      pathRoot : 'login',
+      pathRoot : '',
       routes   : {
-       'users'  : function(params) {
-          console.log('[users]: ', params);
-        },
-        'login' : function(params) {
-          console.log('[login]: ', params);
+       'reports'  : function(params) {
+          console.log('[reports]: ', params);
         }
       }
     });

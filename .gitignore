@@ -3,3 +3,4 @@ tmp/**
 .rspec
 public/
 node_modules/
+Web/

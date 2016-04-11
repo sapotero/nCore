@@ -146,4 +146,4 @@ core.modules.snackbar = (function(){
 
 
   return snackbar;
-})(); 
+})();

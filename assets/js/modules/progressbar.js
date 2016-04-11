@@ -1,22 +1,35 @@
 "use strict";
-
 core.modules.progressbar = (function(){
 
-  var Progressbar = function(modules) {
-    this.modules = modules || [];
+  var Progressbar = function() {
+    this.modules = [];
     this.total   = this.modules.length;
     this.count   = 0;
     this.percent = 0;
-    
+  
     this.ready   = false;
-
     this.element = {};
+    this.bindEvents();
   };
 
+  Progressbar.prototype.bindEvents = function() {
+    var progressbar = this;
+
+    core.events.subscribe("core::start:all", function(){
+      console.log('core::start:progress');
+      progressbar.start();
+    });
+
+    core.events.subscribe("core::progressbar:template:ready", function(template){
+      console.log('core::progressbar:template:ready', template );
+      progressbar.updateRoot( template.raw );
+      progressbar.action();
+    });
+    
+  };
 
   Progressbar.prototype.start = function() {
     this.build();
-    this.action();
   };
   Progressbar.prototype.stop = function() {
     // this.build();
@@ -27,42 +40,43 @@ core.modules.progressbar = (function(){
     delete this.element;
   };
 
-
   Progressbar.prototype.build = function() {
-    var bar = document.createElement('div');
-    bar.classList.add('core-progressbar-bar');
-
     this.element = document.createElement('div');
     this.element.id = 'core-progessbar';
     this.element.classList.add('core-progressbar');
-    this.element.appendChild(bar);
     core.dom.application.appendChild( this.element );
   };
 
   Progressbar.prototype.action = function() {
-    var bar = this;
+    var progressbar = this;
+    var modules = [ 'user', 'router', 'snackbar' ];
 
-    for (var i = 10; i >= 0; i--) {
+    for (var i = modules.length - 1; i >= 0; i--) {
+      var module = modules[i];
+
       var promise = new Promise(
         function( resolve, reject ) {
-          setTimeout( function(){
+          var moduleRaw = require('./' + module + '.js');
+          setTimeout(function(){
             resolve(true);
-          }, Math.random()*10000);
+          }, Math.random() * 500);
         }
       );
+
       promise.then(function(){
-        bar.update();
+        progressbar.updateProgress();
       }).catch(function(e){
         throw new Error(e);
       });
 
-      bar.modules.push( promise );
-    };
-    bar.total = bar.modules.length;
+      progressbar.modules.push( promise );
+    }
 
-    Promise.all( bar.modules ).then(
+    progressbar.total = progressbar.modules.length;
+
+    Promise.all( progressbar.modules ).then(
       function( values ) {
-        bar.finish();
+        progressbar.finish();
       }
     ).catch(function(e){
       throw new Error(e);
@@ -71,22 +85,23 @@ core.modules.progressbar = (function(){
 
   Progressbar.prototype.finish = function() {
     core.events.publish("core::preloader:finish");
+    this.element.classList.remove('fadeIn');
+    this.element.classList.add('fadeOut');
   };
 
-  Progressbar.prototype.update = function() {
+  Progressbar.prototype.updateProgress = function() {
     this.count++;
     this.percent = parseFloat( this.count / this.total );
     this.element.querySelector('.core-progressbar-bar').style.width = this.percent * 100 + '%';
-    console.log( 'update', this.count, this.total, parseFloat( this.count / this.total )*100 );
+    console.log( 'updateProgress', this.count, this.total, parseFloat( this.count / this.total )*100 );
+  };
+  Progressbar.prototype.updateRoot = function(html) {
+    this.element.innerHTML = html;
+    this.element.classList.add('animated');
+    this.element.classList.add('fadeIn');
   };
 
   var progress = new Progressbar();
-
-  core.events.subscribe("core::start:all", function(){
-    console.log('core::start:progress');
-    progress.start();
-  });
-
 
   return progress;
 })();
