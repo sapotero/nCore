@@ -6,17 +6,24 @@ core.dom = (function(){
     this.application = {};
     this.snackbar    = {};
 
+    this.bindEvents();
+  };
+
+  DomManager.prototype.bindEvents = function() {
+    var dom = this;
+
+    core.events.subscribe("core::start:all", function(){
+      console.log('core  > dom > bindEvents > core::start:all');
+      manager.start();
+    }, { priority: 0 });
+
+    core.events.subscribe("core::dom:updateApplication", function(application){
+      dom.root.body.appendChild(application);
+    }, { priority: 0 });
   };
 
   DomManager.prototype.start = function() {
     console.log( 'DomManager: start' );
-    
-    var application = document.createElement('div');
-    application.id = 'core-application';
-    this.application = application;
-
-    this.root.body.appendChild( application );
-
   };
   DomManager.prototype.stop = function() {
     console.log( 'DomManager: stop' );
@@ -26,12 +33,6 @@ core.dom = (function(){
   };
 
   var manager = new DomManager();
-  
-
-  core.events.subscribe("core::start:all", function(){
-    console.log('core::start:manager');
-    manager.start();
-  }, { priority: 0 });
 
   return manager;
 })();

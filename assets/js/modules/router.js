@@ -164,8 +164,30 @@ core.modules.router = (function() {
       }
     }
   };
+  Router.prototype.check =  function() {
+    var url   = this.getUrl(),
+        match = false;
+
+    for (var i in this.routes) {
+      var route = this.routes[i];
+      if (route.test(url)) {
+        match = true;
+      }
+    }
+    // console.log('router -> checkDefault', match);
+    return match === true ? route : false;
+  };
+
   Router.prototype.bindEvents = function() {
-    window.addEventListener('hashchange', this.run.bind(this) );
+    var router = this;
+
+    window.addEventListener('hashchange', router.run.bind(this) );
+
+    core.events.subscribe( "router::checkDefault", function (url) {
+      if ( router.check() === false ) {
+        location.hash = '#reports';
+      }
+    });
   };
   Router.prototype.start = function() {
     

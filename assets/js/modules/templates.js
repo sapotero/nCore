@@ -15,7 +15,10 @@ core.modules.template = (function() {
   var Templates = function(){
     this.templates = {};
     this.ready     = false;
-    this.toLoad    = ['core-progressbar', 'reports-index'];
+    this.loaded    = 0;
+    this.toLoad    = [ 'reports-index', 'core-progressbar', 'core-layout' ];
+
+    this.bindEvents();
   };
   Templates.prototype.Template = Template;
   
@@ -44,26 +47,40 @@ core.modules.template = (function() {
     });
 
     core.events.subscribe("core::template:loaded", function (data) {
-       console.log('***', data);
-       templates.templates[data.name].raw = data.raw;
-       
-       var dataNameParse = data.name.split('-');
-
-       var moduleRoot = dataNameParse[0],
-           moduleName = dataNameParse[1];
+      console.log('***', data.name, Object.keys(templates.templates).length, templates.toLoad.length);
+      templates.loaded++;
       
-       if ( Object.keys(templates.templates).length == templates.toLoad.length ) {
-         core.events.publish( moduleRoot + "::" + moduleName + ":template:ready", templates.templates[data.name] );
-         this.loaded = true;
-       }
+      templates.templates[data.name].raw = data.raw;
+       
+      var dataNameParse = data.name.split('-');
+
+      var moduleRoot = dataNameParse[0],
+          moduleName = dataNameParse[1];
+
+      console.log('templates -> bindEvents > core::template:loaded : ', moduleRoot + "::" + moduleName + ":template:ready");
+      
+      // core.events.publish( moduleRoot + "::" + moduleName + ":template:ready", templates.templates[data.name] );
+       
+      if ( templates.loaded === templates.toLoad.length ) {
+        core.events.publish("core::preloader:ready");
+      }
        // templates.tempates[ data.name ].raw = data.data;
+    });
+
+    core.events.subscribe("core::template:start", function(){
+      console.log('core::template:start');
+      templates.start();
+    });
+
+    core.events.subscribe("core::start:all", function(){
+      console.log('core::start:templates');
+      templates.start();
     });
   };
   
 
   Templates.prototype.start = function() {
     this.init();
-    this.bindEvents();
   };
 
   Templates.prototype.stop = function() {
@@ -75,11 +92,6 @@ core.modules.template = (function() {
   };
 
   var templates = new Templates();
-
-  core.events.subscribe("core::start:all", function(){
-    console.log('core::start:templates');
-    templates.start();
-  });
 
   return templates;
 }());

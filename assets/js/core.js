@@ -294,14 +294,9 @@ core = (function(){
     return this.worker;
   };
 
-  var Loader = function(){
-    console.log('loader ');
-  };
-
   var Core = function( config ){
     this.events   = new Mediator();
     this.worker   = new WebWorker();
-    this.loader   = new Loader();
     this.dom      = {};
     this.utils    = {};
     this.modules  = {};
@@ -324,14 +319,35 @@ core = (function(){
       }, 1000);
 
       core.modules.router.start();
-      location.hash = '#reports';
+      core.events.publish('router::checkDefault');
+    });
 
+    core.events.subscribe("core::progressbar:finish", function(){
+      console.log('core::progressbar:finish');
+      
+      setTimeout(function(){
+        core.modules.progressbar.destroy();
+        core.events.remove("core::preloader:start");
+        core.events.remove("core::preloader:finish");
+      }, 1000);
     });
 
     core.events.subscribe( "core::template:load", function (template) {
-       core.worker.postMessage( [ 'template:load', template ] )
+      core.worker.postMessage( [ 'template:load', template ] )
     });
 
+    core.events.subscribe( "core::layout:template:ready", function (template) {
+      // console.log('layout: ', template);
+      // 
+      var application = document.createElement('div');
+      application.id  = template.name;
+      application.classList.add( template.name );
+      application.innerHTML = template.raw;
+
+      core.dom.application = application;
+      
+      core.events.publish('core::dom:updateApplication', application);
+    });
 
   };
 
@@ -343,7 +359,8 @@ core = (function(){
   };
 
   Core.prototype.startAll = function() {
-    this.events.publish("core::start:all");
+    console.log('core::startAll');
+    core.events.publish("core::preloader:start");
   };
   Core.prototype.destroyAll = function() {
     this.events.publish("core::destroy:all");

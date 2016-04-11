@@ -19,22 +19,27 @@ core.modules.progressbar = (function(){
       console.log('core::start:progress');
       progressbar.start();
     });
+    core.events.subscribe("core::start:progressbar", function(){
+      console.log('core::start:progressbar');
+      progressbar.start();
+    });
 
     core.events.subscribe("core::progressbar:template:ready", function(template){
       console.log('core::progressbar:template:ready', template );
       progressbar.updateRoot( template.raw );
       progressbar.action();
     });
-    
   };
 
   Progressbar.prototype.start = function() {
     this.build();
   };
+
   Progressbar.prototype.stop = function() {
     // this.build();
     // this.action();
   };
+
   Progressbar.prototype.destroy = function() {
     this.element.remove();
     delete this.element;
@@ -44,7 +49,7 @@ core.modules.progressbar = (function(){
     this.element = document.createElement('div');
     this.element.id = 'core-progessbar';
     this.element.classList.add('core-progressbar');
-    core.dom.application.appendChild( this.element );
+    core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
   };
 
   Progressbar.prototype.action = function() {
@@ -84,7 +89,7 @@ core.modules.progressbar = (function(){
   };
 
   Progressbar.prototype.finish = function() {
-    core.events.publish("core::preloader:finish");
+    core.events.publish("core::progressbar:finish");
     this.element.classList.remove('fadeIn');
     this.element.classList.add('fadeOut');
   };

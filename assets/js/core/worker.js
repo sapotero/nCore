@@ -55,7 +55,7 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'WORKER REQUEST: ', tmp, data, template );
+      // console.log( 'WORKER REQUEST: ', tmp, data, template );
       
       var _data  = {};
       _data[tmp] = data;
