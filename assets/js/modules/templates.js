@@ -15,7 +15,7 @@ core.modules.template = (function() {
   var Templates = function(){
     this.templates = {};
     this.ready     = false;
-    this.toLoad    = ['core-loading'];
+    this.toLoad    = ['core-progressbar', 'reports-index'];
   };
   Templates.prototype.Template = Template;
   
@@ -44,11 +44,16 @@ core.modules.template = (function() {
     });
 
     core.events.subscribe("core::template:loaded", function (data) {
+       console.log('***', data);
        templates.templates[data.name].raw = data.raw;
        
-       console.log('***', Object.keys(templates.templates).length, templates.toLoad.length, Object.keys(templates.templates).length == templates.toLoad.length );
+       var dataNameParse = data.name.split('-');
+
+       var moduleRoot = dataNameParse[0],
+           moduleName = dataNameParse[1];
+      
        if ( Object.keys(templates.templates).length == templates.toLoad.length ) {
-         core.events.publish( "core::progressbar:template:ready", templates.templates[data.name] );
+         core.events.publish( moduleRoot + "::" + moduleName + ":template:ready", templates.templates[data.name] );
          this.loaded = true;
        }
        // templates.tempates[ data.name ].raw = data.data;

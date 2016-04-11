@@ -172,8 +172,13 @@ core.modules.router = (function() {
     this.update({
       pathRoot : '',
       routes   : {
-       'reports'  : function(params) {
+        reports : function(params) {
           console.log('[reports]: ', params);
+          core.modules.reports.start();
+        },
+        'reports/{id}' : function(params) {
+          console.log('[reports/{id}]: ', params);
+          core.modules.reports.show( params.id );
         }
       }
     });

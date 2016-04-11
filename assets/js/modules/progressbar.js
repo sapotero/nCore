@@ -49,7 +49,7 @@ core.modules.progressbar = (function(){
 
   Progressbar.prototype.action = function() {
     var progressbar = this;
-    var modules = [ 'user', 'router', 'snackbar' ];
+    var modules = [ 'user', 'router', 'snackbar', 'reports' ];
 
     for (var i = modules.length - 1; i >= 0; i--) {
       var module = modules[i];

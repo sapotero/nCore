@@ -55,12 +55,13 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'WORKER REQUEST: ', data, template );
+      console.log( 'WORKER REQUEST: ', tmp, data, template );
       
+      var _data  = {};
+      _data[tmp] = data;
+
       postMessage({
-        "template:loaded": {
-          "core-loading": data
-        }
+        "template:loaded": _data
       });
     }).catch(function (e) {
        throw new Error(e);
