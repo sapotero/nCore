@@ -269,8 +269,7 @@ core = (function(){
       var data = e.data;
       for (var key in data) {
         if (data.hasOwnProperty(key)) {
-          data[key];
-
+          // data[key];
           switch (key) {
             case 'template:loaded':
               var templateName = Object.keys( data[key] )[0],
@@ -281,6 +280,11 @@ core = (function(){
                 raw  : data
               });
               
+              break;
+            case 'reports:loaded':
+              core.events.publish("core::reports:loaded", {
+                raw: JSON.parse( data[key] )
+              });
               break;
             default:
               console.log('default');
@@ -335,6 +339,12 @@ core = (function(){
     core.events.subscribe( "core::template:load", function (template) {
       core.worker.postMessage( [ 'template:load', template ] )
     });
+
+    core.events.subscribe( "core::reports:load", function () {
+      core.worker.postMessage( [ 'reports:load', {} ] )
+    });
+
+    core.worker.postMessage( [ 'reports:load', {} ] )
 
     core.events.subscribe( "core::layout:template:ready", function (template) {
       // console.log('layout: ', template);

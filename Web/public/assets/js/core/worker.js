@@ -3,7 +3,7 @@
 onmessage = function(e) {
   
   var Request = function (config) {
-    this.template = config.template;
+    this.template = config.template || '';
     this.type     = config.type.toUpperCase() || 'GET';
     this.url      = config.url;
     this.data     = config.data || {};
@@ -18,7 +18,11 @@ onmessage = function(e) {
     request.onload = function() {
       if (this.status >= 200 && this.status < 400) {
         var response = this.response;
-        root.template.raw = response;
+        
+        if ( root.template ){
+          root.template.raw = response;
+        }
+        
         callback( response );
       } else {
         callback( response );
@@ -69,6 +73,38 @@ onmessage = function(e) {
     return this;
   };
 
+
+  var Reports = function(){
+    this.data = {};
+  };
+  Reports.prototype.request = Request;
+  Reports.prototype.add = function(config){
+    this.elements.push( new this.Report(config) );
+  };
+  Reports.prototype.load = function(data){
+    var data = [];
+
+    var request = new this.request({
+      type : 'GET',
+      url  : '/documents.json'
+    });
+
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      // console.log( 'Reports WORKER REQUEST: ', data );
+      postMessage({
+        "reports:loaded": data
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+  };
+
   var Command = function(config) {
     this.action = config.action || '';
     this.data   = config.data   || '';
@@ -76,6 +112,7 @@ onmessage = function(e) {
     return this;
   }
   Command.prototype.template = Template;
+  Command.prototype.reports  = Reports;
   Command.prototype.return   = postMessage
 
   Command.prototype.do = function() {
