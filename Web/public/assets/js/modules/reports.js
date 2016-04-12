@@ -14,6 +14,7 @@ core.modules.reports = (function(){
   };
 
   var Report = function(config){
+    this.element     = {};
     this._id         = config._id         || '';
     this.name        = config.name        || '';
     this.description = config.description || '';
@@ -23,62 +24,98 @@ core.modules.reports = (function(){
     this.globalQuery = {};
     this.settings    = new ReportSettings(config.settings);
   };
+  Report.prototype.init = function(){
+    core.events.remove("core::template:reports:editor");
+
+    this.bindEvents();
+    
+    console.log( 'Report -> init' );
+
+    this.element = document.createElement('div');
+    core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
+    core.events.publish("core::reports:editor:template");
+  };
+  Report.prototype.update = function(html){
+    console.log( 'Report -> update' );
+    this.element.innerHTML = html;
+    this.element.classList.add('animated');
+    this.element.classList.add('fadeIn');
+    this.render();
+  };
+  Report.prototype.load = function(){
+    console.log( 'Report -> bindEvents' );
+  };
+  Report.prototype.bindEvents = function(){
+    var report = this;
+    core.events.subscribe("core::template:reports:editor", function(template){
+      // console.log('core::template:reports:editor', template );
+      console.log( 'Report -> bindEvents -> loadTemplate' );
+      report.update( template.raw );
+    });
+    
+  };
+  Report.prototype.render = function(){
+    console.log( 'Report -> render', this );
+
+    var helper = {
+      '_id': {
+        text: function (params) {
+          return this._id || '-_id-';
+        }
+      },
+      'name': {
+        text: function (params) {
+          return this.name || '-name-';
+        }
+      },
+      'description': {
+        text: function (params) {
+          return this.description || '-description-';
+        }
+      },
+      'providerId': {
+        text: function (params) {
+          return this.providerId || '-providerId-';
+        }
+      },
+      'query': {
+        text: function (params) {
+          return this.query || '-query-';
+        }
+      },
+      'globalQuery': {
+        text: function (params) {
+          return this.globalQuery || '-globalQuery-';
+        }
+      }
+    };
+
+    Transparency.render( this.element.querySelector('#report'), this, helper );
+  };
+
+
+
+
 
   var Reports = function(){
     this.element   = {};
     this.documents = {};
-    
     this.bindEvents();
-    // this.init();
   };
   Reports.prototype.Report = Report;
-  
   Reports.prototype.init = function(){
     core.events.publish( "[ + ] core::reports:init" );
 
     this.element = document.createElement('div');
     core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
-    core.events.publish("core::reports:template");
-  };
-  Reports.prototype.update = function(html){
-    this.element.innerHTML = html;
-    this.element.classList.add('animated');
-    this.element.classList.add('fadeIn');
-  };
-  Reports.prototype.render = function(type, documents){
-    console.log( 'render -> type, documents', type, documents );
     
-    var helper = {
-      type: {
-        text: function (params) {
-          return this.type;
-        }
-      }
-    };
-    helper[type] = {
-        id: {
-          text: function (params) {
-            return this.id || '-id-';
-          }
-        },
-        name: {
-          text: function (params) {
-            return this.name || '-name-';
-          }
-        }
-    };
-
-    var config = {
-      type: type
-    };
-    config[type] = documents;
-    Transparency.render( this.element.querySelector('.'+type), config, helper );
+    core.events.publish("core::reports:template");
   };
   Reports.prototype.bindEvents = function(){
     var reports = this;
 
     core.events.subscribe("core::reports:loaded", function(rawData){
-      console.log( 'RAW REPORTS', rawData );
+      // console.log( 'RAW REPORTS', rawData );
       for (var type in rawData.raw ) {
         var data = rawData.raw[type];
 
@@ -111,23 +148,62 @@ core.modules.reports = (function(){
               providerSelected : _d.providerSelected
             }
           };
-          
           reports.add( type, report );
         }
-
-        reports.render(type, data);
       }
     });
     
     core.events.subscribe("core::template:reports", function(template){
-      console.log( 'core::template:reports -> ', template.raw );
-      reports.update( template.raw );
+      reports.updateRootElement( template.raw );
     });
+  };
+  Reports.prototype.updateRootElement = function(html){
+    this.element.innerHTML = html;
+    this.element.classList.add('animated');
+    this.element.classList.add('fadeIn');
+    this.render();
+  };
+  Reports.prototype.render = function(){
+    if ( !Object.keys(this.documents).length ){
+      return false;
+    }
 
+    for (var type in this.documents) {
+      // console.log( 'render -> type, documents', type,this.element.querySelector('.'+type),   this.documents[type] );
+      var helper = {
+        type: {
+          text: function (params) {
+            return this.type;
+          }
+        }
+      };
+      helper[type] = {
+          '_id': {
+            text: function (params) {
+              return this._id || '-id-';
+            }
+          },
+          name: {
+            text: function (params) {
+              return this.name || '-name-';
+            }
+          },
+          link: {
+            href: function (params) {
+              return '#reports/' + this._id;
+            }
+          }
+      };
+
+      var config = {
+        type: type
+      };
+      config[type] = this.documents[type];
+
+      Transparency.render( this.element.querySelector('.report-'+type), config, helper );
+    }
   };
-  Reports.prototype.clear = function(config) {
-    this.documents = {};
-  };
+
   Reports.prototype.add = function( type, config ) {
     // console.log( 'type, config',type, config );
 
@@ -137,8 +213,27 @@ core.modules.reports = (function(){
 
     this.documents[type].push( new this.Report(config) );
   };
+  Reports.prototype.clear = function(config) {
+    this.documents = {};
+  };
+  Reports.prototype.find = function(id) {
+    for (var type in this.documents) {
+      for (var i = this.documents[type].length - 1; i >= 0; i--) {
+        if( this.documents[type][i]._id === id ){
+          return this.documents[type][i];
+        }
+      }
+    }
+  };
+
   Reports.prototype.show = function(id) {
-    console.log( 'Reports: show -> ', id );
+    console.log( 'Reports: show -> ', id);
+    var report = this.find(id);
+    if ( report ) {
+      report.init();
+    } else {
+      throw new Error('template not found!');
+    }
   };
 
   Reports.prototype.start = function() {

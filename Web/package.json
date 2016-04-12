@@ -18,5 +18,8 @@
   "homepage": "https://github.com/sapotero/jSinatra#readme",
   "devDependencies": {
     "webpack": "^1.12.14"
+  },
+  "dependencies": {
+    "froala-editor": "^2.2.3"
   }
 }

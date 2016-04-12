@@ -200,10 +200,12 @@ core.modules.router = (function() {
       routes   : {
         reports : function(params) {
           console.log('[reports]: ', params);
+          core.events.publish("core::dom:application:clear");
           core.modules.reports.start();
         },
         'reports/{id}' : function(params) {
           console.log('[reports/{id}]: ', params);
+          core.events.publish("core::dom:application:clear");
           core.modules.reports.show( params.id );
         }
       }

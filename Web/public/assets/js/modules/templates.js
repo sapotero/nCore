@@ -16,7 +16,7 @@ core.modules.template = (function() {
     this.templates = {};
     this.ready     = false;
     this.loaded    = 0;
-    this.toLoad    = [ 'reports-index', 'core-progressbar', 'core-layout' ];
+    this.toLoad    = [ 'reports-show', 'reports-index', 'core-progressbar', 'core-layout' ];
 
     this.bindEvents();
   };
@@ -75,6 +75,10 @@ core.modules.template = (function() {
 
     core.events.subscribe("core::reports:template", function(){
       core.events.publish("core::template:reports", templates.templates['reports-index']);
+    });
+
+    core.events.subscribe("core::reports:editor:template", function(){
+      core.events.publish("core::template:reports:editor", templates.templates['reports-show']);
     });
 
     core.events.subscribe("core::template:start", function(){

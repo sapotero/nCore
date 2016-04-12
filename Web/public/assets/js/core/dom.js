@@ -24,6 +24,11 @@ core.dom = (function(){
     core.events.subscribe('core::dom:build', function(template){
       dom.build(template);
     });
+
+    core.events.subscribe('core::dom:application:clear', function(template){
+      // console.log( ' clear ->', dom.application );
+      dom.application.querySelector('.core-layout-application').innerHTML = '';
+    });
   };
   DomManager.prototype.build = function(template) {
     console.log( 'DomManager: build root', template );

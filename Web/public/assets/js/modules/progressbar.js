@@ -71,7 +71,7 @@ core.modules.progressbar = (function(){
           var moduleRaw = require('./' + module + '.js');
           setTimeout(function(){
             resolve(true);
-          }, Math.random() * 1000);
+          }, Math.random() * 500);
         }
       );
 
@@ -96,16 +96,26 @@ core.modules.progressbar = (function(){
   };
 
   Progressbar.prototype.finish = function() {
-    core.events.publish("core::progressbar:finish");
-    this.element.classList.remove('fadeIn');
-    this.element.classList.add('fadeOut');
+    var progressbar = this;
+
+    var destroy = new Promise(function( resolve, reject){
+      progressbar.element.classList.remove('fadeIn');
+      progressbar.element.classList.add('fadeOut');
+      setTimeout( resolve(true), 100 );
+    });
+
+    destroy.then(function(){
+      core.events.publish("core::progressbar:finish");
+    }).catch(function(e){
+      throw new Error(e);
+    });
   };
 
   Progressbar.prototype.updateProgress = function() {
     this.count++;
     this.percent = parseFloat( this.count / this.total );
     this.element.querySelector('.core-progressbar-bar').style.width = this.percent * 100 + '%';
-    console.log( 'updateProgress', this.count, this.total, parseFloat( this.count / this.total )*100 );
+    // console.log( 'updateProgress', this.count, this.total, parseFloat( this.count / this.total )*100 );
   };
   Progressbar.prototype.updateRoot = function(html) {
     this.element.innerHTML = html;

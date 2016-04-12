@@ -8,3 +8,6 @@ require('./modules/progressbar.js');
 
 require('./shared/transparency.js');
 require('./shared/mui.min.js');
+
+// require('./shared/froala.js')
+// require("imports?this=>window!./shared/jquery.js")

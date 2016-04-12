@@ -328,10 +328,13 @@ core = (function(){
 
     core.events.subscribe("core::progressbar:finish", function(){
       console.log('core::progressbar:finish');
+
+      core.events.remove("core::preloader:start");
+      core.events.remove("core::preloader:finish");
       
-      setTimeout(function(){
-        core.modules.progressbar.destroy();
-      }, 1000);
+      // setTimeout(function(){
+      core.modules.progressbar.destroy();
+      // }, 1000);
 
       core.events.publish('core::router:start');
     });
