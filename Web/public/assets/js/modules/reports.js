@@ -25,13 +25,54 @@ core.modules.reports = (function(){
   };
 
   var Reports = function(){
-    this.documents = [];
+    this.element   = {};
+    this.documents = {};
     
     this.bindEvents();
+    // this.init();
   };
   Reports.prototype.Report = Report;
+  
   Reports.prototype.init = function(){
-    core.events.publish( "core::reports:load" );
+    core.events.publish( "[ + ] core::reports:init" );
+
+    this.element = document.createElement('div');
+    core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
+    core.events.publish("core::reports:template");
+  };
+  Reports.prototype.update = function(html){
+    this.element.innerHTML = html;
+    this.element.classList.add('animated');
+    this.element.classList.add('fadeIn');
+  };
+  Reports.prototype.render = function(type, documents){
+    console.log( 'render -> type, documents', type, documents );
+    
+    var helper = {
+      type: {
+        text: function (params) {
+          return this.type;
+        }
+      }
+    };
+    helper[type] = {
+        id: {
+          text: function (params) {
+            return this.id || '-id-';
+          }
+        },
+        name: {
+          text: function (params) {
+            return this.name || '-name-';
+          }
+        }
+    };
+
+    var config = {
+      type: type
+    };
+    config[type] = documents;
+    Transparency.render( this.element.querySelector('.'+type), config, helper );
   };
   Reports.prototype.bindEvents = function(){
     var reports = this;
@@ -74,14 +115,21 @@ core.modules.reports = (function(){
           reports.add( type, report );
         }
 
+        reports.render(type, data);
       }
     });
+    
+    core.events.subscribe("core::template:reports", function(template){
+      console.log( 'core::template:reports -> ', template.raw );
+      reports.update( template.raw );
+    });
+
   };
   Reports.prototype.clear = function(config) {
     this.documents = {};
   };
   Reports.prototype.add = function( type, config ) {
-    console.log( 'type, config',type, config );
+    // console.log( 'type, config',type, config );
 
     if ( !this.documents.hasOwnProperty(type) ) {
       this.documents[type] = [];

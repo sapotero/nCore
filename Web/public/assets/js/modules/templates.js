@@ -73,6 +73,10 @@ core.modules.template = (function() {
       core.events.publish("core::template:progressbar", templates.templates['core-progressbar']);
     });
 
+    core.events.subscribe("core::reports:template", function(){
+      core.events.publish("core::template:reports", templates.templates['reports-index']);
+    });
+
     core.events.subscribe("core::template:start", function(){
       console.log('core::template:start');
       templates.start();
