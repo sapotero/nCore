@@ -1,0 +1,137 @@
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeOut {
+  animation-name: fadeOut;
+}
+.fadeIn {
+  animation-name: fadeIn;
+}
+.animated {
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+
+
+html,
+body {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+}
+
+html,
+body,
+input,
+textarea,
+buttons {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+}
+
+
+.core-snackbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  cursor: default;
+  background-color: #424242;
+  z-index: 3;
+  display: block;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  will-change: transform;
+  -webkit-transform: translate(-50%, 80px);
+  transform: translate(-50%, 80px);
+  transition: transform .5s ease-in-out;
+  transition: transform .5s ease-in-out, -webkit-transform .5s ease-in-out;
+  pointer-events: none;
+  width: 50%;
+  min-height: 48px;
+  max-height: 80px
+}
+
+.core-snackbar--active {
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+  transition: transform .5s ease;
+  transition: transform .5s ease, -webkit-transform .5s ease
+}
+.core-snackbar__text {
+  padding: 14px 12px 14px 24px;
+  vertical-align: middle;
+  color: #fff;
+  float: left
+}
+.core-snackbar__action {
+  background: 0 0;
+  border: none;
+  color: #ff4081;
+  float: right;
+  padding: 14px 24px 14px 12px;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0;
+  overflow: hidden;
+  outline: none;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  align-self: center
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+}
+.core-snackbar__action::-moz-focus-inner {
+  border: 0
+}
+.core-snackbar__action:not([aria-hidden]) {
+  opacity: 1;
+  pointer-events: auto
+} 
+
+.core-progessbar-container {
+  height: 100%;
+}
+.core-progressbar{
+  position: fixed;
+  height:   20px;
+  width:    100%;
+  margin:   0px;
+  padding:  0px;
+}
+.core-progressbar-bar{
+  height:   20px;
+  width:    0%;
+  margin:   0px;
+  padding:  0px;
+  background-color: red;
+}

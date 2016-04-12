@@ -7,24 +7,26 @@
     <title></title>
 
     <!-- <%= stylesheet_link_tag "application", media: "all" %> -->
-
-    <link href="assets/css/mui.min.css" rel="stylesheet">
-    <link href="assets/css/fr.css" rel="stylesheet">
+    <!-- <link href="assets/css/fr.css" rel="stylesheet">
     <link href="assets/css/select2.css" rel="stylesheet">
     <link href="assets/css/style/index.css" rel="stylesheet" id="nCoreThemeRoller">
     <link href="assets/css/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/css/menu.css" rel="stylesheet">
-
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <link href="assets/css/menu.css" rel="stylesheet"> -->
+    <!-- <link href="assets/css/f.css" rel="stylesheet"> -->
 
     <meta name="theme-color" content="#9CC2CE">
     
-    <link href="assets/css/f.css" rel="stylesheet">
+    <link href="assets/css/mui.css"   rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <script type="text/javascript" src="assets/js/init.js"></script>
+    
+
+    
 
   </head>
   <body class="hide-sidedrawer">
 
-    <div id="sidedrawer" class="mui--no-user-select">
+<!--     <div id="sidedrawer" class="mui--no-user-select">
       <div id="sidedrawer-brand" class="mui--appbar-line-height mui--text-title">
         <div class="mui--text-center">
           <i class=" mui--text-black fa fa-stack-overflow">
@@ -55,9 +57,9 @@
             </strong>
           </li>
       </ul>
-    </div>
+    </div> -->
 
-    <header id="header">
+<!--     <header id="header">
       <nav id="appbar" class="mui-container-fluid mui-appbar" style="z-index: 5">
         <table width="100%">
           <tbody>
@@ -87,9 +89,9 @@
                     </div>
                   </div>
 
-                  <!-- <button class="appbar-user-menu-button mui--hidden-sm mui--hidden-xs">
+                  <button class="appbar-user-menu-button mui--hidden-sm mui--hidden-xs">
                     <i class="fa fa-cog"></i>
-                  </button> -->
+                  </button>
                   <button class="appbar-user-menu-button mui--hidden-sm mui--hidden-xs">
                     <i class="material-icons remove" style="position: relative; top: 6px;">mail</i>
                   </button>
@@ -109,9 +111,9 @@
         </table>
       </nav>
     </header>
-    <div class="loader loaderTop" id="loaderProgress"></div>
+    <div class="loader loaderTop" id="loaderProgress"></div> -->
     
-    <!-- load here -->
+
     <!-- <div class="mui-row">
       <div class="mui-col-lg-2"></div>
       <div class="mui-col-lg-8"></div>
@@ -119,11 +121,11 @@
     </div> -->
     
     
-    <div id="toolbarClone"><div class="fr-toolbarz fr-toolbar"></div></div>
-    <div id="content-wrapper"></div>
+    <!-- <div id="toolbarClone"><div class="fr-toolbarz fr-toolbar"></div></div>
+    <div id="content-wrapper"></div> -->
 
     <!-- тут показываем всплывающие уведомляшки -->
-    <div id="mui-snackbar" class="mui-js-snackbar mui-snackbar">
+    <!-- <div id="mui-snackbar" class="mui-js-snackbar mui-snackbar">
       <div class="mui-snackbar__text"></div>
       <button class="mui-snackbar__action" type="button"></button>
     </div>
@@ -159,8 +161,8 @@
         </div>
 
       </div>
-    </div>
-
-    <%= javascript_include_tag "application" %>
+    </div> -->
+    
+    <script type="text/javascript" src="assets/build/application.min.js"></script>
   </body>
 </html>
