@@ -142,6 +142,7 @@ Snackbar.prototype.bindEvents = function() {
 
     core.events.subscribe("core::snackbar:start", function(){
       console.log('Snackbar <- core::snackbar:start');
+      core.events.publish( "core::preloader:task:ready" );
     });
 
   });

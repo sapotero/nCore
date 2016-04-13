@@ -113,6 +113,7 @@ Progressbar.prototype.bindEvents = function() {
 
     core.events.subscribe("core::progressbar:start", function(){
       console.log('Progressbar <- core::progressbar:start');
+      core.events.publish( "core::preloader:task:ready" );
     });
 
     core.events.subscribe("core::progressbar:build", function(template){

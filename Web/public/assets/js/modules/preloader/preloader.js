@@ -15,20 +15,20 @@ Preloader.prototype.bindEvents = function() {
 
   document.addEventListener('DOMContentLoaded', function(){
     core.events.subscribe( "core::preloader:start", function () {
-      console.log( "preloader <-core::preloader:start" );
+      console.log( "Preloader <-core::preloader:start" );
       preloader.start();
     });
 
     core.events.subscribe( "core::preloader:finish", function () {
-      console.log( "preloader <-core::preloader:finish" );
+      console.log( "Preloader <-core::preloader:finish" );
       // core.events.publish("core::template:start");
     });
 
     core.events.subscribe( "core::preloader:task:ready", function () {
-      console.log("preloader <- core::preloader:ready");
-      preloader.count++;
+      console.log("* Preloader <- core::preloader:ready\n\n");
+      preloader.loaded++;
       
-      if (preloader.count === preloader.total) {
+      if (preloader.loaded === preloader.total) {
         core.events.publish("core::progressbar:finish");
       }
     });
@@ -41,13 +41,13 @@ Preloader.prototype.start = function() {
     
     var tasks = this.tasks[type];
 
-    this.count += tasks.count;
+    this.total += tasks.length;
 
-    console.log( type, tasks );
+    // console.log( type, tasks );
 
     for (var i = tasks.length - 1; i >= 0; i--) {
-      console.log( `Preloader -> core::${tasks[i]}:start` );
-      core.events.publish( `core::${tasks[i]}:start` );
+      console.log( `Preloader -> core::${tasks[i]}:${type}` );
+      core.events.publish( `core::${tasks[i]}:${type}` );
     }
   }
 };

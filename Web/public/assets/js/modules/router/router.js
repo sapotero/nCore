@@ -161,13 +161,16 @@ Router.prototype.bindEvents = function() {
   window.addEventListener('hashchange', router.run.bind(this) );
 
   document.addEventListener('DOMContentLoaded', function(){
+    
     core.events.subscribe( "router::checkDefault", function (url) {
       if ( router.check() === false ) {
         location.hash = '#reports';
       }
     });
+
     core.events.subscribe("core::router:start", function(){
       console.log('Router <- core::router:start');
+      core.events.publish( "core::preloader:task:ready" );
     });
 
   });

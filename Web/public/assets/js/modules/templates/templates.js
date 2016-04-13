@@ -79,10 +79,6 @@ Templates.prototype.bindEvents = function() {
       core.events.publish("core::template:reports:editor", templates.templates['reports-show']);
     });
 
-    core.events.subscribe("core::templates:start", function(){
-      console.log('Templates <- core::templates:start');
-    });
-
     core.events.subscribe("core::template:start", function(){
       console.log('core::template:start');
       templates.start();
@@ -91,6 +87,11 @@ Templates.prototype.bindEvents = function() {
     core.events.subscribe("core::start:all", function(){
       console.log('core::start:templates');
       templates.start();
+    });
+
+    core.events.subscribe("core::templates:start", function(){
+      console.log('Templates <- core::templates:start');
+      core.events.publish( "core::preloader:task:ready" );
     });
   });
 };

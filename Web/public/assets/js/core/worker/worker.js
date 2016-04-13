@@ -81,7 +81,7 @@ onmessage = function(e) {
   Reports.prototype.add = function(config){
     this.elements.push( new this.Report(config) );
   };
-  Reports.prototype.all = function(data){
+  Reports.prototype.load = function(data){
     var data = [];
 
     var request = new this.request({
@@ -127,6 +127,57 @@ onmessage = function(e) {
        throw new Error(e);
     });
   };
+   var Criterias = function(){};
+   Criterias.prototype.request = Request;
+   Criterias.prototype.load = function() {
+    var data = [];
+
+    var request = new this.request({
+      type : 'GET',
+      url  : '/documents.json'
+    });
+
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      // console.log( 'Reports WORKER REQUEST: ', data );
+      postMessage({
+        "criterias:loaded": data
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+  };
+  
+  var CriteriaKeys = function(){};
+  CriteriaKeys.prototype.request = Request;
+  CriteriaKeys.prototype.load = function() {
+    var data = [];
+
+    var request = new this.request({
+      type : 'GET',
+      url  : '/documents.json'
+    });
+
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      // console.log( 'Reports WORKER REQUEST: ', data );
+      postMessage({
+        "criteriaKeys:loaded": data
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+  };
 
   var Command = function(config) {
     this.action = config.action || '';
@@ -134,9 +185,11 @@ onmessage = function(e) {
     
     return this;
   }
-  Command.prototype.template = Template;
-  Command.prototype.reports  = Reports;
-  Command.prototype.return   = postMessage
+  Command.prototype.template     = Template;
+  Command.prototype.reports      = Reports;
+  Command.prototype.return       = postMessage;
+  Command.prototype.criterias    = Criterias;
+  Command.prototype.criteriaKeys = CriteriaKeys;
 
   Command.prototype.do = function() {
     if (this.action !== '') {
@@ -144,6 +197,7 @@ onmessage = function(e) {
       var module = tmp[0],
           action = tmp[1];
 
+      // console.log( 'module == ', module, action);
       // if ( this.hasOwnProperty(module) ) {
         module = new this[module];
         module[action].call(module, this.data);
@@ -151,7 +205,7 @@ onmessage = function(e) {
     };
   };
 
-  console.log('recv', e.data);
+  console.log('Worker <- ', e.data);
 
   console.log();
   new Command({
