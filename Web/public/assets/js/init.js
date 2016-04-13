@@ -1,5 +1,5 @@
 'use strict';
 var core = core || {};
-document.addEventListener("DOMContentLoaded", function(event) {
+window.onload  = function(){
   core.startAll();
-});
+};

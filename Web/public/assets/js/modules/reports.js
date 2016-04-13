@@ -28,6 +28,8 @@ core.modules.reports = (function(){
 
     this.detachEvents();
     this.attachEvents();
+    this.destroyEditor();
+    
     
     console.log( 'Report -> init' );
 
@@ -50,6 +52,43 @@ core.modules.reports = (function(){
     core.events.remove("core::template:reports:editor");
     core.events.remove("core::report:loaded");
   };
+  Report.prototype.destroyEditor = function() {
+    if ($('div#paper').data('froala.editor')) {
+      $('div#paper').froalaEditor('destroy');
+    }
+  };
+
+  Report.prototype.loadEditor = function(body) {
+    var html = core.utils.Base64.decode(body);
+
+    var initialize = new Promise(function(resolve, reject) {
+      window.jQuery('div#paper').froalaEditor({
+        toolbarButtons   : ['file-o', 'floppy-o', 'adjust', 'phone',  'textRotate', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
+        language         : 'ru',
+        charCounterCount : false,
+        toolbarSticky    : false
+      });
+      resolve(true);
+    });
+
+    initialize.then(function(editor) {
+      $('div#paper').froalaEditor('html.set', (html ? html : '<p>') + '<p>');
+    }).then(function(editor) {
+      // var parent = document.querySelector('.fr-wrapper').parentNode;
+      // parent.removeChild( document.querySelector('.fr-wrapper').nextSibling ) ;
+      // return editor;
+    }).catch(function(result) {
+
+      console.log("ERROR!", result);
+    });
+
+  };
+  Report.prototype.loadEditors = function(body) {
+    var html = core.utils.Base64.decode(body);
+    console.log( 'decoded:', html );
+  }
+
+
   Report.prototype.attachEvents = function(){
     var report = this;
     
@@ -57,9 +96,8 @@ core.modules.reports = (function(){
       report.update( template.raw );
     });
     
-    core.events.subscribe("core::report:loaded", function(report){
-      console.log( "core::report:loaded", report );
-      // report.update( template.raw );
+    core.events.subscribe("core::report:loaded", function(data){
+      report.loadEditor( data.raw.body );
     });
     
   };
