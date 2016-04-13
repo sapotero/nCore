@@ -286,6 +286,11 @@ core = (function(){
                 raw: JSON.parse( data[key] )
               });
               break;
+            case 'report:loaded':
+              core.events.publish("core::report:loaded", {
+                raw: JSON.parse( data[key] )
+              });
+              break;
             default:
               console.log('default');
               break;
@@ -343,16 +348,23 @@ core = (function(){
       core.worker.postMessage( [ 'template:load', template ] )
     });
 
+    // загрузка всех отчетов
     core.events.subscribe( "core::reports:load", function () {
-      core.worker.postMessage( [ 'reports:load', {} ] )
+      core.worker.postMessage( [ 'reports:all', {} ] )
     });
 
-    core.worker.postMessage( [ 'reports:load', {} ] )
+    // загрузка отчета по id
+    core.events.subscribe( "core::report:load", function (id) {
+      core.worker.postMessage( [ 'reports:id', id ] )
+    });
+    
 
     core.events.subscribe( "core::layout:template:ready", function (template) {
       // console.log('layout: ', template);
       core.events.publish('core::dom:build', template );
     });
+
+    core.worker.postMessage( [ 'reports:all', {} ] );
 
   };
 

@@ -25,15 +25,16 @@ core.modules.reports = (function(){
     this.settings    = new ReportSettings(config.settings);
   };
   Report.prototype.init = function(){
-    core.events.remove("core::template:reports:editor");
 
-    this.bindEvents();
+    this.detachEvents();
+    this.attachEvents();
     
     console.log( 'Report -> init' );
 
     this.element = document.createElement('div');
     core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
     core.events.publish("core::reports:editor:template");
+    core.events.publish("core::report:load", this._id );
   };
   Report.prototype.update = function(html){
     console.log( 'Report -> update' );
@@ -45,12 +46,20 @@ core.modules.reports = (function(){
   Report.prototype.load = function(){
     console.log( 'Report -> bindEvents' );
   };
-  Report.prototype.bindEvents = function(){
+  Report.prototype.detachEvents = function(){
+    core.events.remove("core::template:reports:editor");
+    core.events.remove("core::report:loaded");
+  };
+  Report.prototype.attachEvents = function(){
     var report = this;
+    
     core.events.subscribe("core::template:reports:editor", function(template){
-      // console.log('core::template:reports:editor', template );
-      console.log( 'Report -> bindEvents -> loadTemplate' );
       report.update( template.raw );
+    });
+    
+    core.events.subscribe("core::report:loaded", function(report){
+      console.log( "core::report:loaded", report );
+      // report.update( template.raw );
     });
     
   };

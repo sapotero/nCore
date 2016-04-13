@@ -81,7 +81,7 @@ onmessage = function(e) {
   Reports.prototype.add = function(config){
     this.elements.push( new this.Report(config) );
   };
-  Reports.prototype.load = function(data){
+  Reports.prototype.all = function(data){
     var data = [];
 
     var request = new this.request({
@@ -99,6 +99,29 @@ onmessage = function(e) {
       // console.log( 'Reports WORKER REQUEST: ', data );
       postMessage({
         "reports:loaded": data
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+  };
+  Reports.prototype.id = function(id){
+    var data = [];
+
+    var request = new this.request({
+      type : 'GET',
+      url  : '/documents/' + id + '.json'
+    });
+
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      // console.log( 'Reports WORKER REQUEST: ', data );
+      postMessage({
+        "report:loaded": data
       });
     }).catch(function (e) {
        throw new Error(e);
