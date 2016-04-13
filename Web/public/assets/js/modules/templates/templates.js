@@ -1,43 +1,41 @@
-'use strict';
+var Template = function(config){
+  this.name = config.name || '';
+  this.path = config.path || '';
+  this.raw  = config.raw  || '';
+  return this;
+};
+Template.prototype.load = function() {
+  core.events.publish( "core::template:load", this.name );
+  return this;
+};
 
-core.modules.template = (function() {
-  var Template = function(config){
-    this.name = config.name || '';
-    this.path = config.path || '';
-    this.raw  = config.raw  || '';
-    return this;
-  };
-  Template.prototype.load = function() {
-    core.events.publish( "core::template:load", this.name );
-    return this;
-  };
+var Templates = function(){
+  this.templates = {};
+  this.ready     = false;
+  this.loaded    = 0;
+  this.toLoad    = [ 'reports-show', 'reports-index', 'core-progressbar', 'core-layout' ];
 
-  var Templates = function(){
-    this.templates = {};
-    this.ready     = false;
-    this.loaded    = 0;
-    this.toLoad    = [ 'reports-show', 'reports-index', 'core-progressbar', 'core-layout' ];
+  this.bindEvents();
+};
+Templates.prototype.Template = Template;
 
-    this.bindEvents();
-  };
-  Templates.prototype.Template = Template;
-  
-  Templates.prototype.add = function(name) {
-    this.templates[ name ] = new this.Template({ name: name }).load();
-  };
+Templates.prototype.add = function(name) {
+  this.templates[ name ] = new this.Template({ name: name }).load();
+};
 
-  Templates.prototype.init = function() {
+Templates.prototype.init = function() {
 
-    for (var i = this.toLoad.length - 1; i >= 0; i--) {
-      this.add( this.toLoad[i] );
-    };
-
-    core.events.publish( "core::templates:load", this.templates );
+  for (var i = this.toLoad.length - 1; i >= 0; i--) {
+    this.add( this.toLoad[i] );
   };
 
-  Templates.prototype.bindEvents = function() {
-    var templates = this;
+  core.events.publish( "core::templates:load", this.templates );
+};
 
+Templates.prototype.bindEvents = function() {
+  var templates = this;
+
+  document.addEventListener('DOMContentLoaded', function(){
     core.events.subscribe("core::templates:load::success", function ( tmp ){
       console.log( 'Load::',tmp );
     });
@@ -81,6 +79,10 @@ core.modules.template = (function() {
       core.events.publish("core::template:reports:editor", templates.templates['reports-show']);
     });
 
+    core.events.subscribe("core::templates:start", function(){
+      console.log('Templates <- core::templates:start');
+    });
+
     core.events.subscribe("core::template:start", function(){
       console.log('core::template:start');
       templates.start();
@@ -90,22 +92,20 @@ core.modules.template = (function() {
       console.log('core::start:templates');
       templates.start();
     });
-  };
-  
+  });
+};
 
-  Templates.prototype.start = function() {
-    this.init();
-  };
 
-  Templates.prototype.stop = function() {
-    // console.log( 'Templates: stop' );
-  };
+Templates.prototype.start = function() {
+  this.init();
+};
 
-  Templates.prototype.destroy = function() {
-    // console.log( 'Templates: destroy' );
-  };
+Templates.prototype.stop = function() {
+  // console.log( 'Templates: stop' );
+};
 
-  var templates = new Templates();
+Templates.prototype.destroy = function() {
+  // console.log( 'Templates: destroy' );
+};
 
-  return templates;
-}());
+module.exports = Templates

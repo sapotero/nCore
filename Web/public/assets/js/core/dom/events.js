@@ -20,4 +20,4 @@ module.exports = function(){
       // dom.application.querySelector('.core-layout-application').innerHTML = '';
     });
   }, false);
-}(window.core);
+}(window);

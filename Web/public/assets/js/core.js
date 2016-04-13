@@ -5,8 +5,12 @@ core = (function(){
       WebWorker = require('./core/webworker/webworker'),
       Utils     = require('./core/utils/utils'),
       Dom       = require('./core/dom/dom'),
-
-      Preloader = require('./modules/preloader/preloader');
+      
+      Preloader   = require('./modules/preloader/preloader'),
+      Router      = require('./modules/router/router'),
+      Snackbar    = require('./modules/snackbar/snackbar'),
+      Templates    = require('./modules/templates/templates'),
+      Progressbar = require('./modules/progressbar/progressbar');
 
   var Core = function( config ){
     this.events   = new Mediator();
@@ -14,7 +18,11 @@ core = (function(){
     this.utils    = new Utils();
     this.dom      = new Dom();
     this.modules  = {
-      preloader : new Preloader()
+      preloader   : new Preloader(),
+      router      : new Router(),
+      snackbar    : new Snackbar(),
+      templates   : new Templates(),
+      progressbar : new Progressbar()
     };
     this.debug    = true;
 
@@ -29,7 +37,7 @@ core = (function(){
     // this.events.publish( "core::start:" + module );
     this.events.publish("core::preloader:start")
   };
-  
+
   Core.prototype.destroy = function(module) {
     this.events.publish( "core::destroy:" + module );
   };
