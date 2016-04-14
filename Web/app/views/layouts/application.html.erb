@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
-    <title></title>
+    <title> new_core index page </title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,21 +10,37 @@
     
     <link href="assets/css/font-awesome.min.css" rel="stylesheet">
     <link href="assets/css/mui.css"   rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-    <link href="assets/css/fr.css"    rel="stylesheet">
+    <link href="assets/css/css/style.css" rel="stylesheet">
+    <!-- <link href="assets/css/fr.css"    rel="stylesheet"> -->
     
     <link rel="import" href="assets/templates/elements/layout.html">
+    <link rel="import" href="assets/templates/elements/header.html">
     <link rel="import" href="assets/templates/elements/progressbar.html">
 
-    <script type="text/javascript" src="assets/js/init.js"></script>
+    <script type="text/javascript">
+      'use strict';
+      var core = core || {};
+      window.onload  = function(){
+        core.global = {
+          user : {
+            id   : '<%= current_user._id %>',
+            name : '<%= current_user.official_name %>',
+          },
+          provider: {
+            id   : '<%= current_user.provider._id %>',
+            name : '<%= current_user.provider.name %>',
+          }
+        }
+        core.startAll();
+      };
+    </script>
   
   </head>
   
   <body class="hide-sidedrawer">
 
-    <!-- <core-layout></core-layout> -->
-    
     <script type="text/javascript" src="assets/build/application.min.js"></script>
+
     <!-- <script type="text/javascript" src="assets/build/jquery.js"></script> -->
     <!-- <script type="text/javascript" src="assets/build/froala.js"></script> -->
     <!-- <script type="text/javascript" src="assets/build/webcomponents.js"></script> -->
