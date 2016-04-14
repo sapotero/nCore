@@ -97,7 +97,6 @@ Channel.prototype.publish = function(data) {
       subscriber, l,
       subsBefore,subsAfter;
 
-  
   for(x, y; x < y; x++) {
     
     shouldCall = false;
@@ -111,14 +110,12 @@ Channel.prototype.publish = function(data) {
           shouldCall = true;
         }
       }else{
-        
         shouldCall = true;
       }
     }
 
     
     if (shouldCall) {
-      
       if (subscriber.options && subscriber.options.calls !== undefined) {
         
         subscriber.options.calls--;

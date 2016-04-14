@@ -10,19 +10,35 @@ var Dom = function(){
 
 Dom.prototype.bindEvents = function() {
   var dom = this;
-  require('./events');
-};
-Dom.prototype.build = function(template) {
-  console.log( 'Dom: build root', template );
   
-  var element = document.createElement('div');
-  element.id = template.name;
-  element.innerHTML = template.raw;
+  document.addEventListener('DOMContentLoaded', function(){ 
+    core.events.subscribe("core:start:all", function(){
+      console.log('core  > dom > bindEvents > core:start:all');
+      manager.start();
+    }, { priority: 0 });
 
+    core.events.subscribe("core:dom:updateApplication", function(application){
+      dom.root.body.appendChild(application);
+    }, { priority: 0 });
+
+    core.events.subscribe('core:dom:application:clear', function(template){
+      console.log( ' clear ->', dom.application );
+    });
+
+    core.events.subscribe('core:dom:build:application', function(template){
+      console.log( 'Dom <- core:dom:build:application' );
+      dom.build();
+    });
+  }, false);
+};
+Dom.prototype.build = function() {
+  console.log( 'Dom :: build application' );
+  
+  var element = document.createElement('core-layout');
   this.application = element;
   this.root.body.appendChild(element);
 
-  core.events.publish("core::start:progressbar");
+  core.events.publish("core:dom:build:ready");
 };
 Dom.prototype.start = function() {
   console.log( 'Dom: start' );

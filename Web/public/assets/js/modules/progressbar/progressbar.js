@@ -28,7 +28,7 @@ Progressbar.prototype.destroy = function() {
 };
 
 Progressbar.prototype.update = function(template) {
-  // console.log('core::progressbar:update', template);
+  // console.log('core:progressbar:update', template);
   this.element.innerHTML = template.raw;
   this.element.classList.add('animated');
   this.element.classList.add('fadeIn');
@@ -36,7 +36,7 @@ Progressbar.prototype.update = function(template) {
 Progressbar.prototype.build = function(template) {
   this.element = document.createElement('div');
   core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
-  core.events.publish("core::progressbar:template");
+  core.events.publish("core:progressbar:template");
 };
 
 Progressbar.prototype.action = function() {
@@ -85,7 +85,7 @@ Progressbar.prototype.finish = function() {
   });
 
   destroy.then(function(){
-    core.events.publish("core::progressbar:finish");
+    core.events.publish("core:progressbar:finish");
   }).catch(function(e){
     throw new Error(e);
   });
@@ -106,23 +106,23 @@ Progressbar.prototype.bindEvents = function() {
   var progressbar = this;
 
   document.addEventListener('DOMContentLoaded', function(){
-    core.events.subscribe("core::start:progressbar", function(){
-      console.log('core::start:progressbar');
+    core.events.subscribe("core:start:progressbar", function(){
+      console.log('core:start:progressbar');
       // progressbar.start();
     });
 
-    core.events.subscribe("core::progressbar:start", function(){
-      console.log('Progressbar <- core::progressbar:start');
-      core.events.publish( "core::preloader:task:ready" );
+    core.events.subscribe("core:progressbar:start", function(){
+      console.log('Progressbar <- core:progressbar:start');
+      core.events.publish( "core:preloader:task:ready" );
     });
 
-    core.events.subscribe("core::progressbar:build", function(template){
-      console.log('core::progressbar:template');
+    core.events.subscribe("core:progressbar:build", function(template){
+      console.log('core:progressbar:template');
       progressbar.start();
     });
 
-    core.events.subscribe("core::template:progressbar", function(template){
-      console.log('core::template:progressbar', template);
+    core.events.subscribe("core:template:progressbar", function(template){
+      console.log('core:template:progressbar', template);
       progressbar.update(template);
       progressbar.action();
     });

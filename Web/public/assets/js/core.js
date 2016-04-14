@@ -32,23 +32,29 @@ core = (function(){
   Core.prototype.bindEvents = function() {
     require('./core/events');
   };
+  Core.prototype.loadCustomElements = function(elements){
+    console.log( 'Core :: loadCustomElements', elements );
+  };
 
   Core.prototype.start = function(module) {
-    // this.events.publish( "core::start:" + module );
-    this.events.publish("core::preloader:start")
+    // this.events.publish( "core:start:" + module );
+    this.events.publish("core:preloader:start")
   };
 
   Core.prototype.destroy = function(module) {
-    this.events.publish( "core::destroy:" + module );
+    this.events.publish( "core:destroy:" + module );
+  };
+  Core.prototype.build = function(module) {
+    
   };
 
   Core.prototype.startAll = function() {
-    console.log('core::startAll');
-    this.events.publish("core::preloader:start")
-    // setTimeout( core.events.publish("core::preloader:start"), 100 );
+    console.log('core:startAll');
+    this.events.publish("core:dom:build:application")
+    // setTimeout( core.events.publish("core:preloader:start"), 100 );
   };
   Core.prototype.destroyAll = function() {
-    this.events.publish("core::destroy:all");
+    this.events.publish("core:destroy:all");
   };
 
   return new Core();

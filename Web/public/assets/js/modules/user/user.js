@@ -17,8 +17,8 @@ core.modules.user = (function() {
 
   var user = new User();
 
-  core.events.subscribe("core::start:all", function(){
-    console.log('core::start:user');
+  core.events.subscribe("core:start:all", function(){
+    console.log('core:start:user');
     user.start();
   });
 

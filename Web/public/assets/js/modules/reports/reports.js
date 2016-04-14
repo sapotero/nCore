@@ -35,8 +35,8 @@ core.modules.reports = (function(){
 
     this.element = document.createElement('div');
     core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
-    core.events.publish("core::reports:editor:template");
-    core.events.publish("core::report:load", this._id );
+    core.events.publish("core:reports:editor:template");
+    core.events.publish("core:report:load", this._id );
   };
   Report.prototype.update = function(html){
     console.log( 'Report -> update' );
@@ -49,8 +49,8 @@ core.modules.reports = (function(){
     console.log( 'Report -> bindEvents' );
   };
   Report.prototype.detachEvents = function(){
-    core.events.remove("core::template:reports:editor");
-    core.events.remove("core::report:loaded");
+    core.events.remove("core:template:reports:editor");
+    core.events.remove("core:report:loaded");
   };
   Report.prototype.destroyEditor = function() {
     if ($('div#paper').data('froala.editor')) {
@@ -92,11 +92,11 @@ core.modules.reports = (function(){
   Report.prototype.attachEvents = function(){
     var report = this;
     
-    core.events.subscribe("core::template:reports:editor", function(template){
+    core.events.subscribe("core:template:reports:editor", function(template){
       report.update( template.raw );
     });
     
-    core.events.subscribe("core::report:loaded", function(data){
+    core.events.subscribe("core:report:loaded", function(data){
       report.loadEditor( data.raw.body );
     });
     
@@ -151,17 +151,17 @@ core.modules.reports = (function(){
   };
   Reports.prototype.Report = Report;
   Reports.prototype.init = function(){
-    core.events.publish( "[ + ] core::reports:init" );
+    core.events.publish( "[ + ] core:reports:init" );
 
     this.element = document.createElement('div');
     core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
     
-    core.events.publish("core::reports:template");
+    core.events.publish("core:reports:template");
   };
   Reports.prototype.bindEvents = function(){
     var reports = this;
 
-    core.events.subscribe("core::reports:loaded", function(rawData){
+    core.events.subscribe("core:reports:loaded", function(rawData){
       // console.log( 'RAW REPORTS', rawData );
       for (var type in rawData.raw ) {
         var data = rawData.raw[type];
@@ -200,7 +200,7 @@ core.modules.reports = (function(){
       }
     });
     
-    core.events.subscribe("core::template:reports", function(template){
+    core.events.subscribe("core:template:reports", function(template){
       reports.updateRootElement( template.raw );
     });
   };

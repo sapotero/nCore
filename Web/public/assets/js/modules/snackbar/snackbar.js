@@ -140,9 +140,9 @@ Snackbar.prototype.bindEvents = function() {
   var snackbar = this;
   document.addEventListener('DOMContentLoaded', function(){
 
-    core.events.subscribe("core::snackbar:start", function(){
-      console.log('Snackbar <- core::snackbar:start');
-      core.events.publish( "core::preloader:task:ready" );
+    core.events.subscribe("core:snackbar:start", function(){
+      console.log('Snackbar <- core:snackbar:start');
+      core.events.publish( "core:preloader:task:ready" );
     });
 
   });

@@ -1,0 +1,87 @@
+<template id="item">
+  <style> @import "assets/css/mui.css"; </style>
+  <div class="mui--z1 core-progressbar">
+    <div class="mui-textfield">
+      <input type="text">
+    </div>
+    <label class="float: left">LABEL</label>
+  </div>
+
+</template>
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc              = document,
+      thisDoc              = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate         = thisDoc.querySelector('template#item').content,
+      CoreProgressbarProto = Object.create(HTMLElement.prototype);
+  
+  CoreProgressbarProto.createdCallback = function(){
+    this.initialize();
+  };
+
+  CoreProgressbarProto.attributeChangedCallback = function( attr, oldVal, newVal) {
+    switch( attr ){
+      case 'source':
+        this.setSource( newVal );
+        break;
+      case 'origin':
+        this.setOrigin( newVal );
+        break;
+      case 'criteria':
+        this.setCriteria( newVal );
+        break;
+      case 'value':
+        this.setValue( newVal );
+        break;
+      case 'criteria-conditions':
+        this.setCriteriaConditions( newVal );
+        break;
+      default:
+        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        break;
+
+    };
+  };
+  CoreProgressbarProto.create = function() {
+    console.log('** core-progressbar :: create');
+
+    var shadowRoot = this.createShadowRoot(),
+        item = thatDoc.importNode(itemTemplate, true);
+    shadowRoot.appendChild(item);
+  };
+
+  CoreProgressbarProto.initialize = function(){
+    this.source             = this.getAttribute('source');
+    this.origin             = this.getAttribute('origin');
+    this.value              = this.getAttribute('value');
+    this.conditions         = this.getAttribute('conditions');
+    this.criteriaConditions = this.getAttribute('criteria-conditions');
+    
+    console.log( '** core-progressbar :: initialize', this);
+    this.create();
+
+  };
+
+  CoreProgressbarProto.setSource = function(data){
+    this.source = data;
+  };
+  CoreProgressbarProto.setOrigin = function(data){
+    this.origin = data;
+  };
+  CoreProgressbarProto.setValue = function(data){
+    this.value = data;
+  };
+  CoreProgressbarProto.setConditions = function(data){
+    this.conditions = data;
+  };
+  CoreProgressbarProto.setCriteriaConditions = function(data){
+    this.criteriaConditions = data;
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-progressbar', {
+    prototype: CoreProgressbarProto
+  });
+
+})(window, document);
+</script>

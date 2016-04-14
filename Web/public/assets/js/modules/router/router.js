@@ -138,12 +138,12 @@ Router.prototype.start = function() {
     routes   : {
       reports : function(params) {
         console.log('[reports]: ', params);
-        core.events.publish("core::dom:application:clear");
+        core.events.publish("core:dom:application:clear");
         core.modules.reports.start();
       },
       'reports/{id}' : function(params) {
         console.log('[reports/{id}]: ', params);
-        core.events.publish("core::dom:application:clear");
+        core.events.publish("core:dom:application:clear");
         core.modules.reports.show( params.id );
       }
     }
@@ -162,15 +162,15 @@ Router.prototype.bindEvents = function() {
 
   document.addEventListener('DOMContentLoaded', function(){
     
-    core.events.subscribe( "router::checkDefault", function (url) {
+    core.events.subscribe( "router:checkDefault", function (url) {
       if ( router.check() === false ) {
         location.hash = '#reports';
       }
     });
 
-    core.events.subscribe("core::router:start", function(){
-      console.log('Router <- core::router:start');
-      core.events.publish( "core::preloader:task:ready" );
+    core.events.subscribe("core:router:start", function(){
+      console.log('Router <- core:router:start');
+      core.events.publish( "core:preloader:task:ready" );
     });
 
   });

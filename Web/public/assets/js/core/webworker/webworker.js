@@ -11,28 +11,28 @@ var WebWorker = function(){
             var templateName = Object.keys( data[key] )[0],
                 data         = data[key][templateName];
             
-            core.events.publish("core::template:loaded", {
+            core.events.publish("core:template:loaded", {
               name : templateName,
               raw  : data
             });
             
             break;
           case 'reports:loaded':
-            // core.events.publish("core::reports:loaded", {
+            // core.events.publish("core:reports:loaded", {
             //   raw: JSON.parse( data[key] )
             // });
-            core.events.publish("core::criteriaKeys:loaded", JSON.parse( data[key] ) );
+            core.events.publish("core:criteriaKeys:loaded", JSON.parse( data[key] ) );
             break;
           case 'report:loaded':
-            core.events.publish("core::report:loaded", {
+            core.events.publish("core:report:loaded", {
               raw: JSON.parse( data[key] )
             });
             break;
           case 'criterias:loaded':
-            core.events.publish("core::criterias:loaded", JSON.parse( data[key] ) );
+            core.events.publish("core:criterias:loaded", JSON.parse( data[key] ) );
             break;
           case 'criteriaKeys:loaded':
-            core.events.publish("core::criteriaKeys:loaded", JSON.parse( data[key] ) );
+            core.events.publish("core:criteriaKeys:loaded", JSON.parse( data[key] ) );
             break;
 
 

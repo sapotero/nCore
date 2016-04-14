@@ -1,0 +1,54 @@
+<template>
+
+  <style> @import "assets/css/mui.css"; </style>
+  
+  <div class="core-layout">
+    <core-progressbar></core-progressbar>
+
+    <div class="header"></div>
+    <div class="left-overlay-menu"></div>
+    <div class="right-overlay-menu"></div>
+    <div class="application"></div>
+  </div>
+  
+
+</template>
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc      = document,
+      thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate = thisDoc.querySelector('template').content,
+      LayoutProto  = Object.create(HTMLElement.prototype);
+  
+  LayoutProto.createdCallback = function(){
+    this.initialize();
+  };
+
+  LayoutProto.attributeChangedCallback = function( attr, oldVal, newVal) {
+    switch( attr ){
+      default:
+        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        break;
+    };
+  };
+  LayoutProto.create = function() {
+    console.log('** core-layout :: create');
+
+    var shadowRoot = this.createShadowRoot(),
+        item = thatDoc.importNode(itemTemplate, true);
+    shadowRoot.appendChild(item);
+  };
+
+  LayoutProto.initialize = function(){
+    console.log( '** core-layout :: initialize', this);
+    this.create();
+
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-layout', {
+    prototype: LayoutProto
+  });
+
+})(window, document);
+</script>
