@@ -1,0 +1,26 @@
+.report-card.mdl-card {
+  width: 256px;
+  height: 256px;
+}
+.report-card > .mdl-card__actions {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.report-card > .mdl-card__title {
+  align-items: flex-start;
+}
+.report-card > .mdl-card__title > h4 {
+  margin-top: 0;
+}
+.report-card > .mdl-card__actions {
+  display: flex;
+  box-sizing:border-box;
+  align-items: center;
+}
+.report-card > .mdl-card__actions > .material-icons {
+  padding-right: 10px;
+}
+/*.report-card > .mdl-card__title,
+.report-card > .mdl-card__actions,
+.report-card > .mdl-card__actions > .mdl-button {
+  color: #fff;
+}*/

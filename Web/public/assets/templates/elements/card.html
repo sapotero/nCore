@@ -1,0 +1,90 @@
+<template id="core-card">
+
+  <style> @import "assets/css/css/mdl.css"; </style>
+  <style> @import "assets/css/css/style.css"; </style>
+  <style> @import "assets/css/elements/card.css"; </style>
+  <style> @import "assets/css/animate.css"; </style>
+  
+  <div class="report-card mdl-card mdl-shadow--2dp mdl-card--border">
+    
+    <div class="mdl-card__title mdl-card--expand">
+      <h4 class="mdl-card__title-text">
+        Featured event:<br>
+        May 24, 2016<br>
+        7-11pm
+      </h4>
+    </div>
+    
+    <div class="mdl-card__actions mdl-card--border">
+      <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+        Add to Calendar
+      </a>
+      <div class="mdl-layout-spacer"></div>
+      <i class="material-icons">event</i>
+    </div>
+
+    <div class="mdl-card__supporting-text"> support text</div>
+  </div>
+  
+
+</template>
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc      = document,
+      thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate = thisDoc.querySelector('template#core-card').content,
+      CardProto  = Object.create(HTMLElement.prototype);
+  
+  CardProto.createdCallback = function(){
+    this.initialize();
+  };
+      
+
+  CardProto.addElement = function( element ){
+    this[ element ] = document.createElement( 'core-' + element );
+    this.application.appendChild( this[ element ] );
+  };
+  CardProto.removeElement = function(element){
+    this[ element ].remove()
+    delete this[ element ];
+  };
+
+  CardProto.attributeChangedCallback = function( attr, oldVal, newVal) {
+    switch( attr ){
+      default:
+        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        break;
+    };
+  };
+  CardProto.create = function() {
+    console.log('** core-card :: create');
+
+    var shadowRoot = this.createShadowRoot(),
+        item       = thatDoc.importNode( itemTemplate, true );
+    shadowRoot.appendChild( item );
+
+    this.root = shadowRoot;
+    this.layout           = this.root.querySelector('.core-card');
+    this.header           = this.root.querySelector('.header');
+    this.application      = this.root.querySelector('.application');
+  };
+
+  CardProto.initialize = function(){
+    console.log( '** core-card :: initialize', this);
+
+    this.root             = {};
+    this.layout           = {};
+    this.header           = {};
+    this.application      = {};
+
+    this.create();
+
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-card', {
+    prototype: CardProto
+  });
+
+})(window, document);
+</script>

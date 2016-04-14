@@ -1,9 +1,8 @@
-<template id="core-header">
+<template id="core-application">
 
   <style> @import "assets/css/css/mdl.css"; </style>
-  <style> @import "assets/css/elements/header.css"; </style>
+  <style> @import "assets/css/elements/application.css"; </style>
   <style> @import "assets/css/animate.css"; </style>
-  <style> @import "assets/css/font-awesome.min.css"; </style>
   
   
 <!-- Uses a header that scrolls with the text, rather than staying
@@ -35,8 +34,12 @@
           <a class="mdl-navigation__link" href="">Link _draw</a>
         </nav>
       </div>
-      <main class="mdl-layout__content">
-        <div class="page-content"><!-- Your content goes here --></div>
+      <main class="mdl-layout__content" style="padding: 20px;">
+        <div class="page-content">
+        
+        <core-card></core-card>
+
+        </div>
       </main>
     </div>
   </div>
@@ -48,7 +51,7 @@
 window.onload = (function( window, document, undefined) {
   var thatDoc      = document,
       thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
-      itemTemplate = thisDoc.querySelector('template#core-header').content,
+      itemTemplate = thisDoc.querySelector('template#core-application').content,
       HeaderProto  = Object.create(HTMLElement.prototype);
   
   HeaderProto.createdCallback = function(){
@@ -73,7 +76,7 @@ window.onload = (function( window, document, undefined) {
     };
   };
   HeaderProto.create = function() {
-    console.log('** core-header :: create');
+    console.log('** core-application :: create');
 
     var shadowRoot = this.createShadowRoot(),
         item       = thatDoc.importNode( itemTemplate, true );
@@ -85,7 +88,7 @@ window.onload = (function( window, document, undefined) {
   };
 
   HeaderProto.initialize = function(){
-    console.log( '** core-header :: initialize', this);
+    console.log( '** core-application :: initialize', this);
 
     this.root      = {};
     this.element   = {};
@@ -509,7 +512,7 @@ window.onload = (function( window, document, undefined) {
 
 
 
-  window.CoreSelect = thatDoc.registerElement('core-header', {
+  window.CoreSelect = thatDoc.registerElement('core-application', {
     prototype: HeaderProto
   });
 
