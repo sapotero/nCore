@@ -19,15 +19,13 @@ module.exports = function(){
 
     core.events.subscribe("core:dom:build:ready", function(){
       console.log('Core <- core:dom:build:ready');
-      core.events.publish("core:preloader:start")
-    });
-
-    core.events.subscribe("core:progressbar:finish", function(){
-      console.log('Core <- core:progressbar:finish');
+      core.events.publish("core:dom:attach:progressbar");
+      core.events.publish("core:preloader:start");
     });
 
     core.events.subscribe("core:preloader:finish", function(){
       console.log('Core <- core:preloader:finish');
+      core.events.publish("core:dom:remove:progressbar");
     });
 
     core.events.subscribe( "core:template:load", function (template) {

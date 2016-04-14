@@ -17,7 +17,7 @@ Dom.prototype.bindEvents = function() {
       manager.start();
     }, { priority: 0 });
 
-    core.events.subscribe("core:dom:updateApplication", function(application){
+    core.events.subscribe('core:dom:updateApplication', function(application){
       dom.root.body.appendChild(application);
     }, { priority: 0 });
 
@@ -29,6 +29,18 @@ Dom.prototype.bindEvents = function() {
       console.log( 'Dom <- core:dom:build:application' );
       dom.build();
     });
+
+    core.events.subscribe('core:dom:attach:progressbar', function(template){
+      dom.application.addElement('progressbar');
+    });
+    core.events.subscribe('core:dom:remove:progressbar', function(template){
+      dom.application.removeElement('progressbar');
+    });
+
+    core.events.subscribe('core:dom:progressbar:update', function(percent){
+      dom.application.progressbar.setAttribute('percent', percent);
+    });
+
   }, false);
 };
 Dom.prototype.build = function() {

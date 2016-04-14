@@ -1,10 +1,10 @@
-<template>
+<template id="core-layout">
 
   <style> @import "assets/css/mui.css"; </style>
+  <style> @import "assets/css/elements/layout.css"; </style>
+  <style> @import "assets/css/animate.css"; </style>
   
-  <div class="core-layout">
-    <core-progressbar></core-progressbar>
-
+  <div class="core-layout animated fadeIn">
     <div class="header"></div>
     <div class="left-overlay-menu"></div>
     <div class="right-overlay-menu"></div>
@@ -18,11 +18,21 @@
 window.onload = (function( window, document, undefined) {
   var thatDoc      = document,
       thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
-      itemTemplate = thisDoc.querySelector('template').content,
+      itemTemplate = thisDoc.querySelector('template#core-layout').content,
       LayoutProto  = Object.create(HTMLElement.prototype);
   
   LayoutProto.createdCallback = function(){
     this.initialize();
+  };
+      
+
+  LayoutProto.addElement = function( element ){
+    this[ element ] = document.createElement( 'core-' + element );
+    this.application.appendChild( this[ element ] );
+  };
+  LayoutProto.removeElement = function(element){
+    this[ element ].remove()
+    delete this[ element ];
   };
 
   LayoutProto.attributeChangedCallback = function( attr, oldVal, newVal) {
@@ -36,12 +46,29 @@ window.onload = (function( window, document, undefined) {
     console.log('** core-layout :: create');
 
     var shadowRoot = this.createShadowRoot(),
-        item = thatDoc.importNode(itemTemplate, true);
-    shadowRoot.appendChild(item);
+        item       = thatDoc.importNode( itemTemplate, true );
+    shadowRoot.appendChild( item );
+
+    this.root = shadowRoot;
+
+    this.layout           = this.root.querySelector('.core-layout');
+    this.header           = this.root.querySelector('.header');
+    this.leftOverlayMenu  = this.root.querySelector('.left-overlay-menu');
+    this.rightOverlayMenu = this.root.querySelector('.right-overlay-menu');
+    this.application      = this.root.querySelector('.application');
   };
 
   LayoutProto.initialize = function(){
     console.log( '** core-layout :: initialize', this);
+    
+    this.shadowRoot       = {};
+    this.root             = {};
+    this.layout           = {};
+    this.header           = {};
+    this.leftOverlayMenu  = {};
+    this.rightOverlayMenu = {};
+    this.application      = {};
+
     this.create();
 
   };

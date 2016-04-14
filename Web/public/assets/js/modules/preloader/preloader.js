@@ -3,13 +3,12 @@
 var Preloader = function(){
   this.tasks  = {
     start  : [ 'progressbar', 'router', 'templates', 'snackbar'/*'reports',*/ ],
-    load   : [ 'reports', 'criterias', 'criteriaKeys', 'custom' ],
+    load   : [ 'reports', 'criterias', 'criteriaKeys' ],
   };
-  this.total  = 0;
-  this.loaded = 0;
-
+  this.total   = 0;
+  this.loaded  = 0;
+  this.percent = 0;
   this.element = {};
-
   this.bindEvents();
 };
 Preloader.prototype.bindEvents = function() {
@@ -22,10 +21,14 @@ Preloader.prototype.bindEvents = function() {
     });
 
     core.events.subscribe( "core:preloader:task:ready", function () {
-      console.log("* Preloader <- core:preloader:ready\n\n");
+      console.log("* Preloader <- core:preloader:ready | " + `${parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 )}` +"\n\n");
       preloader.loaded++;
       
-      if (preloader.loaded === preloader.total) {
+      preloader.percent = Math.round( (preloader.loaded/preloader.total*100) / 10) * 10;
+      // console.log( "core:dom:progressbar:update", preloader.percent );
+      core.events.publish( "core:dom:progressbar:update", preloader.percent );
+
+      if ( parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 ) ) {
         core.events.publish("core:preloader:finish");
       }
     });
@@ -36,13 +39,11 @@ Preloader.prototype.start = function() {
   console.log( 'Preloader: start' );
 
   for (var type in this.tasks) {
-    
+    this.total += this.tasks[type].length;
+  }
+
+  for (var type in this.tasks) {
     var tasks = this.tasks[type];
-
-    this.total += tasks.length;
-
-    // console.log( type, tasks );
-
     for (var i = tasks.length - 1; i >= 0; i--) {
       console.log( `Preloader -> core:${tasks[i]}:${type}` );
       core.events.publish( `core:${tasks[i]}:${type}` );
@@ -62,12 +63,7 @@ Preloader.prototype.destroy = function() {
 
 Preloader.prototype.build = function() {
   var preloader = this;
-
-  this.element = document.createElement('core-loader');
-  core.events.publish("core:dom:attachElement", {
-    element  : preloader.element,
-    position : '.application-layout'
-  });
+  core.events.publish( "core:dom:attach:progressbar" );
 };
 
 module.exports = Preloader;

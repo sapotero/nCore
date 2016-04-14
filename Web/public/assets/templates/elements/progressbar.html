@@ -1,10 +1,11 @@
-<template id="item">
+<template id="progressbar">
+  
   <style> @import "assets/css/mui.css"; </style>
+  <style> @import "assets/css/elements/progressbar.css"; </style>
+  <style> @import "assets/css/animate.css"; </style>
+
   <div class="mui--z1 core-progressbar">
-    <div class="mui-textfield">
-      <input type="text">
-    </div>
-    <label class="float: left">LABEL</label>
+    <div class="bar animated percent"></div>
   </div>
 
 </template>
@@ -13,7 +14,7 @@
 window.onload = (function( window, document, undefined) {
   var thatDoc              = document,
       thisDoc              = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
-      itemTemplate         = thisDoc.querySelector('template#item').content,
+      itemTemplate         = thisDoc.querySelector('template#progressbar').content,
       CoreProgressbarProto = Object.create(HTMLElement.prototype);
   
   CoreProgressbarProto.createdCallback = function(){
@@ -22,20 +23,9 @@ window.onload = (function( window, document, undefined) {
 
   CoreProgressbarProto.attributeChangedCallback = function( attr, oldVal, newVal) {
     switch( attr ){
-      case 'source':
-        this.setSource( newVal );
-        break;
-      case 'origin':
-        this.setOrigin( newVal );
-        break;
-      case 'criteria':
-        this.setCriteria( newVal );
-        break;
-      case 'value':
-        this.setValue( newVal );
-        break;
-      case 'criteria-conditions':
-        this.setCriteriaConditions( newVal );
+      case 'percent':
+        // console.log('percent changed');
+        this.setPercent( newVal, oldVal );
         break;
       default:
         console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
@@ -49,35 +39,27 @@ window.onload = (function( window, document, undefined) {
     var shadowRoot = this.createShadowRoot(),
         item = thatDoc.importNode(itemTemplate, true);
     shadowRoot.appendChild(item);
+
+    this.root = shadowRoot;
+    this.bar  = shadowRoot.querySelector('.bar');
   };
 
   CoreProgressbarProto.initialize = function(){
-    this.source             = this.getAttribute('source');
-    this.origin             = this.getAttribute('origin');
-    this.value              = this.getAttribute('value');
-    this.conditions         = this.getAttribute('conditions');
-    this.criteriaConditions = this.getAttribute('criteria-conditions');
-    
+    this.percent = this.getAttribute('percent') || 0;
+    this.root = {};
+    this.bar  = {};
+
     console.log( '** core-progressbar :: initialize', this);
     this.create();
 
   };
 
-  CoreProgressbarProto.setSource = function(data){
-    this.source = data;
+  CoreProgressbarProto.setPercent = function(newPercent, oldPercent){
+    this.percent = newPercent;
+    this.bar.classList.toggle( 'percent-' + newPercent);
+    this.bar.classList.toggle( 'percent-' + oldPercent);
   };
-  CoreProgressbarProto.setOrigin = function(data){
-    this.origin = data;
-  };
-  CoreProgressbarProto.setValue = function(data){
-    this.value = data;
-  };
-  CoreProgressbarProto.setConditions = function(data){
-    this.conditions = data;
-  };
-  CoreProgressbarProto.setCriteriaConditions = function(data){
-    this.criteriaConditions = data;
-  };
+
 
   window.CoreSelect = thatDoc.registerElement('core-progressbar', {
     prototype: CoreProgressbarProto

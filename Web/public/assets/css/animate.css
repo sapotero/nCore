@@ -1,0 +1,64 @@
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.percent-0 {
+  transition: 0.1s ease;
+}
+.percent-10 {
+  width: 10%;
+}
+.percent-20 {
+  width: 20%;
+}
+.percent-30 {
+  width: 30%;
+}
+.percent-40 {
+  width: 40%;
+}
+.percent-50 {
+  width: 50%;
+}
+.percent-60 {
+  width: 60%;
+}
+.percent-70 {
+  width: 70%;
+}
+.percent-80 {
+  width: 80%;
+}
+.percent-90 {
+  width: 90%;
+}
+.percent-100 {
+  width: 100%;
+}
+
+
+.fadeOut {
+  animation-name: fadeOut;
+}
+.fadeIn {
+  animation-name: fadeIn;
+}
+.animated {
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}

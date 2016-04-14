@@ -1,35 +1,3 @@
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.fadeOut {
-  animation-name: fadeOut;
-}
-.fadeIn {
-  animation-name: fadeIn;
-}
-.animated {
-  animation-duration: 0.5s;
-  animation-fill-mode: both;
-}
-
-
-
 html,
 body {
   margin: 0px;
