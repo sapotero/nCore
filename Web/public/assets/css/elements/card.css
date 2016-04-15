@@ -1,6 +1,21 @@
+.report-card-full{
+  margin: 0px;
+  padding: 8px;
+
+  width: 100%;
+  min-width: 256px;
+  /*max-width: 2560px;*/
+  height: 100%;
+  min-height: 256px;
+  /*max-height: 2560px;*/
+}
 .report-card.mdl-card {
-  width: 256px;
-  height: 256px;
+  width: 100%;
+  /*min-width: 256px;*/
+  /*max-width: 2560px;*/
+  height: 100%;
+  /*min-height: 256px;*/
+  /*max-height: 2560px;*/
 }
 .report-card > .mdl-card__actions {
   border-color: rgba(255, 255, 255, 0.2);
@@ -8,9 +23,17 @@
 .report-card > .mdl-card__title {
   align-items: flex-start;
 }
+
 .report-card > .mdl-card__title > h4 {
   margin-top: 0;
 }
+.report-card > .mdl-card__title {
+  color: #fff;
+  height: 236px;
+  background: url('../../../assets/img/doc.png') ;
+  background-repeat: no-repeat;
+}
+
 .report-card > .mdl-card__actions {
   display: flex;
   box-sizing:border-box;
@@ -19,8 +42,3 @@
 .report-card > .mdl-card__actions > .material-icons {
   padding-right: 10px;
 }
-/*.report-card > .mdl-card__title,
-.report-card > .mdl-card__actions,
-.report-card > .mdl-card__actions > .mdl-button {
-  color: #fff;
-}*/

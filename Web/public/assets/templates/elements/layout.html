@@ -1,6 +1,7 @@
 <template id="core-layout">
 
   <style> @import "assets/css/css/mdl.css"; </style>
+  <style> @import "assets/css/css/font.css"; </style>
   <style> @import "assets/css/elements/layout.css"; </style>
   <style> @import "assets/css/animate.css"; </style>
   
@@ -21,16 +22,8 @@ window.onload = (function( window, document, undefined) {
   LayoutProto.createdCallback = function(){
     this.initialize();
   };
-      
 
-  LayoutProto.addElement = function( element ){
-    this[ element ] = document.createElement( 'core-' + element );
-    this.application.appendChild( this[ element ] );
-  };
-  LayoutProto.removeElement = function(element){
-    this[ element ].remove()
-    delete this[ element ];
-  };
+
 
   LayoutProto.attributeChangedCallback = function( attr, oldVal, newVal) {
     switch( attr ){
@@ -47,10 +40,29 @@ window.onload = (function( window, document, undefined) {
     shadowRoot.appendChild( item );
 
     this.root = shadowRoot;
-    this.layout           = this.root.querySelector('.core-layout');
-    this.header           = this.root.querySelector('.header');
-    this.application      = this.root.querySelector('.application');
+
+    this.layout      = this.root.querySelector('.core-layout');
+    this.application = this.root.querySelector('.application');
+    // this.application = document.createElement('core-application');
+    
+    // this.layout.appendChild( this.application );
+    
+    // this.header           = this.root.querySelector('.header');
   };
+
+  LayoutProto.addElement = function( element ){
+    console.log( this.application, this.application.content, element );
+    this.application.addElement( element );
+  };
+  
+  LayoutProto.removeElement = function(element){
+    this.application.removeElement( element );
+  };
+
+  LayoutProto.updateProgress = function(percent){
+    this.application.updateProgress( percent );
+  };
+
 
   LayoutProto.initialize = function(){
     console.log( '** core-layout :: initialize', this);

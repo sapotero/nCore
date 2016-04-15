@@ -1,0 +1,129 @@
+<template id="core-menu">
+
+  <style> @import "assets/css/css/mdl.css"; </style>
+  <style> @import "assets/css/css/font.css"; </style>
+  <style> @import "assets/css/elements/menu.css"; </style>
+  <style> @import "assets/css/animate.css"; </style>
+
+  <ul class="menu-list mdl-list mdl-shadow--3dp mdl-cell--hide-phone">
+  </ul>
+  
+
+</template>
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc      = document,
+      thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate = thisDoc.querySelector('template#core-menu').content,
+      MenuProto    = Object.create(HTMLElement.prototype);
+  
+  MenuProto.createdCallback = function(){
+    this.initialize();
+  };
+
+
+  MenuProto.addElement = function( element ){
+    this[ element ] = document.createElement( 'core-' + element );
+    this.application.appendChild( this[ element ] );
+  };
+  MenuProto.removeElement = function(element){
+    this[ element ].remove()
+    delete this[ element ];
+  };
+
+  MenuProto.attributeChangedCallback = function( attr, oldVal, newVal) {
+    switch( attr ){
+      default:
+        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        break;
+    };
+  };
+  MenuProto.create = function() {
+    console.log('** core-menu :: create');
+
+    var shadowRoot = this.createShadowRoot(),
+        item       = thatDoc.importNode( itemTemplate, true );
+    shadowRoot.appendChild( item );
+
+    this.root = shadowRoot;
+    this.menu = this.root.querySelector('.menu-list');
+  };
+
+  MenuProto.add = function( config ) {
+    console.log( '** core-menu :: add', config );
+
+    var element = document.createElement('li');
+    element.className = "menu-item mdl-list__item mdl-list__item--two-line";
+    element.innerHTML = this.menuItemProto;
+    element.querySelector('.document-name').textContent = config.name;
+    element.querySelector('.mdl-list__item-avatar').textContent = config.icon;
+    element.querySelector('.mdl-list__item-sub-title').textContent = config.count;
+    
+    this.menu.appendChild( element );
+    
+    var elements = this.elements;
+    element.addEventListener( 'click', function (event) {
+      
+      for(var i = 0, length1 = elements.length; i < length1; i++){
+        var _element = elements[i];
+
+        _element.classList.remove('mdl-color--grey-200');
+        if ( this == _element) {
+          _element.classList.add('mdl-color--grey-200');
+        }
+      };
+    });
+
+    this.elements.push( element );
+
+  };
+
+  MenuProto.initialize = function(){
+    console.log( '** core-menu :: initialize', this);
+
+    this.root     = {};
+    this.menu     = {};
+    this.elements = [];
+
+    this.menuItemProto = `
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-avatar"></i>
+        <span class="document-name"></span>
+        <span class="mdl-list__item-sub-title"></span>
+      </span>`;
+
+
+    this.create();
+    this.default();
+  };
+  MenuProto.default = function(){
+    var defaultMenu = [
+      {
+        "icon"  : "person",
+        "name"  : "Документы",
+        "count" : "100 документов",
+      },
+      {
+        "icon"  : "person",
+        "name"  : "Документы",
+        "count" : "100 документов",
+      },
+      {
+        "icon"  : "person",
+        "name"  : "Документы",
+        "count" : "100 документов",
+      }
+    ];
+
+    for(var i = 0, length1 = defaultMenu.length; i < length1; i++){
+      this.add( defaultMenu[i] );
+    }
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-menu', {
+    prototype: MenuProto
+  });
+
+})(window, document);
+</script>

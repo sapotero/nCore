@@ -1,0 +1,11 @@
+.menu-list {
+  width: 300px;
+}
+
+.menu-item:hover {
+  cursor: pointer;
+  background-color: #FAFAFA;
+}
+.menu-item {
+  transition: 0.3s ease;
+}
