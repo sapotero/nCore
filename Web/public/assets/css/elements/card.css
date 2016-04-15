@@ -9,12 +9,13 @@
   min-height: 256px;
   /*max-height: 2560px;*/
 }
+
 .report-card.mdl-card {
-  width: 100%;
-  /*min-width: 256px;*/
+  /*width: 100%;*/
+  width: 256px;
   /*max-width: 2560px;*/
-  height: 100%;
-  /*min-height: 256px;*/
+  /*height: 100%;*/
+  height: 256px;
   /*max-height: 2560px;*/
 }
 .report-card > .mdl-card__actions {
@@ -32,6 +33,9 @@
   height: 236px;
   background: url('../../../assets/img/doc.png') ;
   background-repeat: no-repeat;
+}
+.report-card > .mdl-card__title:hover {
+  cursor: pointer;
 }
 
 .report-card > .mdl-card__actions {

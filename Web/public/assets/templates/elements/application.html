@@ -36,31 +36,16 @@
       </div>
       <main class="mdl-layout__content" style="padding: 20px;">
         <div class="page-content">
-        
-        <div class="mdl-grid">
-          <div class="mdl-cell mdl-cell--2-col">
-            <core-menu></core-menu>
-          </div>
-          <div class="mdl-cell mdl-cell--10-col">
-            
-            <div class="mdl-grid">
-
-              <core-card></core-card>
-              <core-card></core-card>
-              <core-card></core-card>
-              <core-card></core-card>
-              <core-card></core-card>
-              <core-card></core-card>
-              <core-card></core-card>
-              
-
-
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--2-col">
+              <core-menu></core-menu>
             </div>
-            
-            
+            <div class="mdl-cell mdl-cell--10-col">
+              <div class="mdl-grid documentCards">
+                <!-- <core-card id="1231" ></core-card> -->
+              </div>
+            </div>
           </div>
-        </div>
-
         </div>
       </main>
     </div>
@@ -105,17 +90,36 @@ window.onload = (function( window, document, undefined) {
     shadowRoot.appendChild( item );
 
     this.root = shadowRoot;
-    this.element = this.root.querySelector('#layout');
+    this.element  = this.root.querySelector('#layout');
+    this.documentCardRoot = this.root.querySelector('.documentCards');
     this.materialize();
   };
+
+  ApplicationProto.addDocumentCard = function() {
+     // <core-card id="1231" ></core-card>
+     var card = document.createElement('core-card');
+     card.setAttribute( 'id', Math.round( Math.random()*10 ) );
+
+     this.documentCardRoot.appendChild( card );
+     this.documentCards.push( card );
+
+  }
 
   ApplicationProto.initialize = function(){
     console.log( '** core-application :: initialize', this);
 
-    this.root      = {};
-    this.element   = {};
+    this.root    = {};
+    this.element = {};
 
+    this.documentCardRoot = {};
+    this.documentCards    = [];
+
+    
     this.create();
+    
+    for(var i = 0, length1 = 10; i < length1; i++){
+      this.addDocumentCard();
+    }
   };
 
   ApplicationProto.materialize = function(){

@@ -5,22 +5,19 @@
   <style> @import "assets/css/elements/card.css"; </style>
   <style> @import "assets/css/animate.css"; </style>
   
-  <div class="report-card-full mdl-cell mdl-cell--3-col mdl-cell--12-col-phone mdl-card ">
+  <div class="report-card-full mdl-cell mdl-cell--3-col mdl-cell--12-col-phone mdl-card">
     <div class="report-card mdl-card--border mdl-shadow--2dp">
-      
-      <div class="mdl-card__title mdl-card--expand">
-        
-        <h4 class="mdl-card__title-text"></h4>
 
+      <div class="mdl-card__title mdl-card--expand">
+        <h4 class="mdl-card__title-text"></h4>
         <div class="mdl-card__subtitle-text">
-          <!-- subtitle text -->
         </div>
       </div>
 
       <div class="mdl-card__supporting-text">
         document name
       </div>
-      
+
       <!-- <div class="mdl-card__actions mdl-card--border">
         <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
           Добавить
@@ -32,15 +29,12 @@
       <div class="mdl-card__supporting-text"> date current </div>
 
       <div class="mdl-card__menu">
-        <!-- <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
           <i class="material-icons">share</i>
-        </button> -->
+        </button>
       </div>
-
     </div>
   </div>
-  
-
 </template>
 
 <script>
@@ -52,25 +46,21 @@ window.onload = (function( window, document, undefined) {
   
   CardProto.createdCallback = function(){
     this.initialize();
-  };
-      
-
-  CardProto.addElement = function( element ){
-    this[ element ] = document.createElement( 'core-' + element );
-    this.application.appendChild( this[ element ] );
-  };
-  CardProto.removeElement = function(element){
-    this[ element ].remove()
-    delete this[ element ];
+    this.bindEvents();
   };
 
   CardProto.attributeChangedCallback = function( attr, oldVal, newVal) {
     switch( attr ){
+      case 'id':
+        // console.log('ID attr, oldVal, newVal: ',attr, oldVal, newVal);
+        this.setId( newVal );
+        break;
       default:
         console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
         break;
     };
   };
+
   CardProto.create = function() {
     console.log('** core-card :: create');
 
@@ -78,22 +68,33 @@ window.onload = (function( window, document, undefined) {
         item       = thatDoc.importNode( itemTemplate, true );
     shadowRoot.appendChild( item );
 
-    this.root = shadowRoot;
-    this.layout           = this.root.querySelector('.core-card');
-    this.header           = this.root.querySelector('.header');
-    this.application      = this.root.querySelector('.application');
+    this.root   = shadowRoot;
+    this.layout = this.root.querySelector('.mdl-card');
   };
 
   CardProto.initialize = function(){
     console.log( '** core-card :: initialize', this);
-
-    this.root             = {};
-    this.layout           = {};
-    this.header           = {};
-    this.application      = {};
-
+    this.root   = {};
+    this.layout = {};
+    this.id     = this.getAttribute('id');
     this.create();
+  };
 
+  CardProto.show = function(event){
+    
+    // console.log( 'card -> click', this, this.id, event );
+    location.hash = `#reports/${this.id}`;
+    
+    // console.log( `#reports/${this.id}` );
+    // core.events.publish( 'core:router:reports:show', this.id );
+  };
+
+  CardProto.setId = function(id) {
+    this.id = id;
+  };
+
+  CardProto.bindEvents = function() {
+    this.layout.addEventListener( 'click', this.show.bind(this) );
   };
 
   window.CoreSelect = thatDoc.registerElement('core-card', {

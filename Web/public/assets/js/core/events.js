@@ -26,6 +26,7 @@ module.exports = function(){
     core.events.subscribe("core:preloader:finish", function(){
       console.log('Core <- core:preloader:finish');
       core.events.publish("core:dom:remove:progressbar");
+      core.events.publish("core:router:update");
     });
 
     core.events.subscribe( "core:template:load", function (template) {

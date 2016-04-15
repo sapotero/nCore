@@ -38,14 +38,14 @@ core = (function(){
 
   Core.prototype.start = function(module) {
     // this.events.publish( "core:start:" + module );
-    this.events.publish("core:preloader:start")
+    // this.events.publish("core:preloader:start")
   };
 
   Core.prototype.destroy = function(module) {
     this.events.publish( "core:destroy:" + module );
   };
+  
   Core.prototype.build = function(module) {
-    
   };
 
   Core.prototype.startAll = function() {

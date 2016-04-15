@@ -2,7 +2,7 @@
 
 var Preloader = function(){
   this.tasks  = {
-    start  : [ 'progressbar', 'router', 'templates', 'snackbar'/*'reports',*/ ],
+    start  : [ 'progressbar', 'router', 'snackbar' /* 'reports', 'templates' */ ],
     load   : [ 'reports', 'criterias', 'criteriaKeys' ],
   };
   this.total   = 0;
@@ -21,8 +21,8 @@ Preloader.prototype.bindEvents = function() {
     });
 
     core.events.subscribe( "core:preloader:task:ready", function () {
-      console.log("* Preloader <- core:preloader:ready | " + `${parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 )}` +"\n\n");
       preloader.loaded++;
+      console.log("* Preloader <- core:preloader:ready | " + `${parseInt( preloader.loaded, 10 )} ${parseInt( preloader.total, 10 )}` +  ` | ${parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 )}` +"\n\n");
       
       preloader.percent = Math.round( (preloader.loaded/preloader.total*100) / 10) * 10;
       // console.log( "core:dom:progressbar:update", preloader.percent );

@@ -18,35 +18,8 @@ function Router() {
   };
   this.bindEvents();
 };
-Router.prototype.Route = Route;
-Router.prototype.update = function(options) {
-  options = options || {};
 
-  if (options.type){
-    this.setType(options.type)
-  }
-  if (options.path){
-    this.setPath(options.path)
-  }
-  if (options.pathRoot){
-    this.setPathRoot(options.pathRoot)
-  }
-  if (options.hash){
-    this.setHash(options.hash)
-  }
-  if (options.context){
-    this.setContext(options.context)
-  }
-  if (options.handler){
-    this.setHandler(options.handler)
-  }
-  if (options.routes) {
-    var route;
-    for (route in options.routes) {
-      this.add(route, options.routes[route]);
-    }
-  }
-};
+Router.prototype.Route = Route;
 Router.prototype.add =  function(route, callback) {
   this.routes.push(new this.Route(route, callback, this));
   return this;
@@ -117,6 +90,7 @@ Router.prototype.run =  function() {
     location.hash = '#reports';
   }
 };
+
 Router.prototype.check =  function() {
   var url   = this.getUrl(),
       match = false;
@@ -131,20 +105,52 @@ Router.prototype.check =  function() {
   return match === true ? route : false;
 };
 
+Router.prototype.update = function(options) {
+  options = options || {};
+
+  if ( options.type ){
+    this.setType(options.type)
+  }
+  if ( options.path ){
+    this.setPath(options.path)
+  }
+  if ( options.pathRoot ){
+    this.setPathRoot(options.pathRoot)
+  }
+  if ( options.hash ){
+    this.setHash(options.hash)
+  }
+  if ( options.context ){
+    this.setContext(options.context)
+  }
+  if ( options.handler ){
+    this.setHandler(options.handler)
+  }
+  if ( options.routes ){
+    var route;
+    for (route in options.routes) {
+      this.add(route, options.routes[route]);
+    }
+  }
+};
+
+Router.prototype.hashChange = function(){
+   window.addEventListener('hashchange', this.run.bind(this) );
+};
+
 Router.prototype.start = function() {
-  
   this.update({
     pathRoot : '',
     routes   : {
       reports : function(params) {
         console.log('[reports]: ', params);
-        core.events.publish("core:dom:application:clear");
-        core.modules.reports.start();
+        // core.events.publish("core:dom:application:clear");
+        // core.modules.reports.start();
       },
       'reports/{id}' : function(params) {
         console.log('[reports/{id}]: ', params);
-        core.events.publish("core:dom:application:clear");
-        core.modules.reports.show( params.id );
+        // core.events.publish("core:dom:application:clear");
+        // core.modules.reports.show( params.id );
       }
     }
   });
@@ -158,21 +164,23 @@ Router.prototype.destroy = function() {
 };
 Router.prototype.bindEvents = function() {
   var router = this;
-  window.addEventListener('hashchange', router.run.bind(this) );
-
   document.addEventListener('DOMContentLoaded', function(){
     
-    core.events.subscribe( "router:checkDefault", function (url) {
-      if ( router.check() === false ) {
-        location.hash = '#reports';
-      }
+    core.events.subscribe( 'core:router:reports:show', function (id) {
+      console.log( 'Router <- core:router:reports:show', id );
+      location.hash = id;
     });
 
     core.events.subscribe("core:router:start", function(){
       console.log('Router <- core:router:start');
+      router.hashChange();
       core.events.publish( "core:preloader:task:ready" );
     });
 
+    core.events.subscribe("core:router:update", function(){
+      console.log('Router <- core:router:update');
+      router.start();
+    });
   });
 };
 
