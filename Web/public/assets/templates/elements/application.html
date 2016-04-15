@@ -3,6 +3,8 @@
   <style> @import "assets/css/css/mdl.css"; </style>
   <style> @import "assets/css/elements/application.css"; </style>
   <style> @import "assets/css/animate.css"; </style>
+  <style> @import "assets/css/css/froala.css"; </style>
+  <style> @import "assets/css/css/font.css"; </style>
   
   
 <!-- Uses a header that scrolls with the text, rather than staying
@@ -41,6 +43,11 @@
               <core-menu></core-menu>
             </div>
             <div class="mdl-cell mdl-cell--10-col">
+              
+              <div class="editor">
+                test
+              </div>
+
               <div class="mdl-grid documentCards">
                 <!-- <core-card id="1231" ></core-card> -->
               </div>
@@ -90,9 +97,12 @@ window.onload = (function( window, document, undefined) {
     shadowRoot.appendChild( item );
 
     this.root = shadowRoot;
-    this.element  = this.root.querySelector('#layout');
+    this.element = this.root.querySelector('#layout');
+    this.editor  = this.root.querySelector('.editor');
     this.documentCardRoot = this.root.querySelector('.documentCards');
     this.materialize();
+
+    $( this.editor ).froalaEditor();
   };
 
   ApplicationProto.addDocumentCard = function() {

@@ -1,14 +1,14 @@
-<template id="core-layout">
+<template id="core-report">
 
   <style> @import "assets/css/css/mdl.css"; </style>
   <style> @import "assets/css/css/font.css"; </style>
   <style> @import "assets/css/elements/layout.css"; </style>
   <style> @import "assets/css/animate.css"; </style>
   
-  <div class="core-layout animated fadeIn">
-    <core-application class="application"></core-application>
+  <div class="core-report">
+    
+
   </div>
-  
 
 </template>
 
@@ -16,12 +16,14 @@
 window.onload = (function( window, document, undefined) {
   var thatDoc      = document,
       thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
-      itemTemplate = thisDoc.querySelector('template#core-layout').content,
+      itemTemplate = thisDoc.querySelector('template#core-report').content,
       LayoutProto  = Object.create(HTMLElement.prototype);
   
   LayoutProto.createdCallback = function(){
     this.initialize();
   };
+
+
 
   LayoutProto.attributeChangedCallback = function( attr, oldVal, newVal) {
     switch( attr ){
@@ -31,7 +33,7 @@ window.onload = (function( window, document, undefined) {
     };
   };
   LayoutProto.create = function() {
-    console.log('** core-layout :: create');
+    console.log('** core-report :: create');
 
     var shadowRoot = this.createShadowRoot(),
         item       = thatDoc.importNode( itemTemplate, true );
@@ -39,13 +41,8 @@ window.onload = (function( window, document, undefined) {
 
     this.root = shadowRoot;
 
-    this.layout      = this.root.querySelector('.core-layout');
+    this.layout      = this.root.querySelector('.core-report');
     this.application = this.root.querySelector('.application');
-    // this.application = document.createElement('core-application');
-    
-    // this.layout.appendChild( this.application );
-    
-    // this.header           = this.root.querySelector('.header');
   };
 
   LayoutProto.addElement = function( element ){
@@ -63,7 +60,7 @@ window.onload = (function( window, document, undefined) {
 
 
   LayoutProto.initialize = function(){
-    console.log( '** core-layout :: initialize', this);
+    console.log( '** core-report :: initialize', this);
 
     this.root             = {};
     this.layout           = {};
@@ -74,7 +71,7 @@ window.onload = (function( window, document, undefined) {
 
   };
 
-  window.CoreSelect = thatDoc.registerElement('core-layout', {
+  window.CoreSelect = thatDoc.registerElement('core-report', {
     prototype: LayoutProto
   });
 
