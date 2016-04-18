@@ -2,7 +2,7 @@
 
 var Preloader = function(){
   this.tasks  = {
-    start  : [ 'progressbar', 'router', 'snackbar' /* 'reports', 'templates' */ ],
+    start  : [ 'progressbar', 'router', 'snackbar'/*'reports' ,'templates' */ ],
     load   : [ 'reports', 'criterias', 'criteriaKeys' ],
   };
   this.total   = 0;

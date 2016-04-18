@@ -26,11 +26,11 @@
         <i class="material-icons">event</i>
       </div> -->
 
-      <div class="mdl-card__supporting-text"> date current </div>
+      <div class="mdl-card__supporting-text mdl-card__supporting-text-date"> date current </div>
 
-      <div class="mdl-card__menu">
+      <div class="mdl-card__menu mdl-card__menu-hide">
         <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-          <i class="material-icons">share</i>
+          <i class="material-icons">star</i>
         </button>
       </div>
     </div>
@@ -55,6 +55,18 @@ window.onload = (function( window, document, undefined) {
         // console.log('ID attr, oldVal, newVal: ',attr, oldVal, newVal);
         this.setId( newVal );
         break;
+      case 'template':
+        // console.log('ID attr, oldVal, newVal: ',attr, oldVal, newVal);
+        this.setTemplate( !!newVal );
+        break;
+      case 'update':
+        // console.log('ID attr, oldVal, newVal: ',attr, oldVal, newVal);
+        this.setUpdated( newVal );
+        break;
+      case 'name':
+        // console.log('ID attr, oldVal, newVal: ',attr, oldVal, newVal);
+        this.setName( newVal );
+        break;
       default:
         console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
         break;
@@ -62,7 +74,7 @@ window.onload = (function( window, document, undefined) {
   };
 
   CardProto.create = function() {
-    console.log('** core-card :: create');
+    // console.log('** core-card :: create');
 
     var shadowRoot = this.createShadowRoot(),
         item       = thatDoc.importNode( itemTemplate, true );
@@ -73,16 +85,21 @@ window.onload = (function( window, document, undefined) {
   };
 
   CardProto.initialize = function(){
-    console.log( '** core-card :: initialize', this);
-    this.root   = {};
-    this.layout = {};
-    this.id     = this.getAttribute('id');
+    // console.log( '** core-card :: initialize', this);
+    this.root       = {};
+    this.layout     = {};
+    
+    this.id         = this.getAttribute('id');
+    this.isTemplate = false;
+    this.name       = "";
+    this.updated    = {};
+
     this.create();
+    // this.bindEvents();
   };
 
   CardProto.show = function(event){
-    
-    // console.log( 'card -> click', this, this.id, event );
+    // console.log( 'card -> click', this );
     location.hash = `#reports/${this.id}`;
     
     // console.log( `#reports/${this.id}` );
@@ -91,6 +108,21 @@ window.onload = (function( window, document, undefined) {
 
   CardProto.setId = function(id) {
     this.id = id;
+  };
+  CardProto.setUpdated = function(updated) {
+    this.updated = updated;
+
+    this.layout.querySelector('.mdl-card__supporting-text-date').textContent = new Date(Date.parse( this.updated )).toLocaleString();
+  };
+
+  CardProto.setName = function(name) {
+    this.name = name;
+    this.layout.querySelector('.mdl-card__supporting-text').textContent = this.name;
+  };
+  
+  CardProto.setTemplate = function(bool) {
+    this.isTemplate = bool;
+    this.layout.querySelector('.mdl-card__menu').classList.remove('mdl-card__menu-hide');
   };
 
   CardProto.bindEvents = function() {

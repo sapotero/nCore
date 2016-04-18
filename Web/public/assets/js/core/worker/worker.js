@@ -96,9 +96,10 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      // console.log( 'Reports WORKER REQUEST: ', data );
+      var _data = JSON.parse(data);
+      // console.log( 'Reports WORKER REQUEST: ', _data );
       postMessage({
-        "reports:loaded": data
+        "reports:loaded": _data
       });
     }).catch(function (e) {
        throw new Error(e);
@@ -196,12 +197,9 @@ onmessage = function(e) {
       var tmp = this.action.split(':');
       var module = tmp[0],
           action = tmp[1];
-
-      // console.log( 'module == ', module, action);
-      // if ( this.hasOwnProperty(module) ) {
-        module = new this[module];
-        module[action].call(module, this.data);
-      // };
+      
+      module = new this[module];
+      module[action].call(module, this.data);
     };
   };
 
@@ -212,6 +210,4 @@ onmessage = function(e) {
     action : e.data[0],
     data   : e.data[1]
   }).do();
-
-  // postMessage( e.data );
 };

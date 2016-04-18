@@ -142,3 +142,13 @@ buttons {
   padding:  0px;
   background-color: red;
 }
+
+#editor{
+  top: 84px;
+  left: calc(16.6% + 32px);
+  position: fixed;
+  height: 100%;
+  width: calc(68.3333333333% - 24px);
+  z-index: 0;
+  /*display: none;*/
+}

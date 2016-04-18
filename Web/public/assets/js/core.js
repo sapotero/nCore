@@ -9,8 +9,9 @@ core = (function(){
       Preloader   = require('./modules/preloader/preloader'),
       Router      = require('./modules/router/router'),
       Snackbar    = require('./modules/snackbar/snackbar'),
-      Templates    = require('./modules/templates/templates'),
-      Progressbar = require('./modules/progressbar/progressbar');
+      Templates   = require('./modules/templates/templates'),
+      Progressbar = require('./modules/progressbar/progressbar'),
+      Reports     = require('./modules/reports/reports');
 
   var Core = function( config ){
     this.events   = new Mediator();
@@ -22,7 +23,8 @@ core = (function(){
       router      : new Router(),
       snackbar    : new Snackbar(),
       templates   : new Templates(),
-      progressbar : new Progressbar()
+      progressbar : new Progressbar(),
+      reports     : new Reports()
     };
     this.debug    = true;
 

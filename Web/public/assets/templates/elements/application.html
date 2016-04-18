@@ -43,11 +43,6 @@
               <core-menu></core-menu>
             </div>
             <div class="mdl-cell mdl-cell--10-col">
-              
-              <div class="editor">
-                test
-              </div>
-
               <div class="mdl-grid documentCards">
                 <!-- <core-card id="1231" ></core-card> -->
               </div>
@@ -102,16 +97,38 @@ window.onload = (function( window, document, undefined) {
     this.documentCardRoot = this.root.querySelector('.documentCards');
     this.materialize();
 
-    $( this.editor ).froalaEditor();
+    // $( this.editor ).froalaEditor();
   };
 
-  ApplicationProto.addDocumentCard = function() {
-     // <core-card id="1231" ></core-card>
-     var card = document.createElement('core-card');
-     card.setAttribute( 'id', Math.round( Math.random()*10 ) );
+  ApplicationProto.addDocumentCard = function(data) {
+    // <core-card id="1231" ></core-card>
+    var type   = data.type;
+    var report = data.report;
 
-     this.documentCardRoot.appendChild( card );
-     this.documentCards.push( card );
+    // console.log( 'ApplicationProto.data', type, report );
+    
+    var card = document.createElement('core-card');
+    
+    if ( report._id ) {
+      card.setAttribute( 'id', report._id );
+    }
+
+    if ( report.settings.isTemplate ) {
+      card.setAttribute( 'template', report.settings.isTemplate );
+    }
+
+    if ( report.name ) {
+      card.setAttribute( 'name', report.name );
+    }
+
+    if ( report.update_at ) {
+      card.setAttribute( 'update', report.update_at );
+    }
+
+    
+
+    this.documentCardRoot.appendChild( card );
+    this.documentCards.push( card );
 
   }
 
@@ -126,10 +143,23 @@ window.onload = (function( window, document, undefined) {
 
     
     this.create();
-    
-    for(var i = 0, length1 = 10; i < length1; i++){
-      this.addDocumentCard();
-    }
+    this.addCards();
+    this.bindEvents();
+    // for(var i = 0, length1 = 10; i < length1; i++){
+    //   this.addDocumentCard();
+    // }
+  };
+
+  ApplicationProto.bindEvents = function(){
+    var app = this;
+
+    core.events.subscribe("core:card:add", function (data) {
+       app.addDocumentCard(data);
+    });
+  };
+
+  ApplicationProto.addCards = function(){
+    core.events.publish("core:cards:load");
   };
 
   ApplicationProto.materialize = function(){

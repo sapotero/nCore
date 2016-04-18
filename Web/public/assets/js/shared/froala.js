@@ -3,55 +3,58 @@
  * License https://froala.com/wysiwyg-editor/terms/
  * Copyright 2014-2016 Froala Labs
  */
+
+var globalEditor = {};
+
 ! function (a) {
   "function" == typeof define && define.amd ? define(["jquery"], a) : "object" == typeof module && module.exports ? module.exports = function (b, c) {
     return void 0 === c && (c = "undefined" != typeof window ? require("jquery") : require("jquery")(b)), a(c), c
   } : a(jQuery)
-}(function (a) {
+}(function (jQuery) {
   "use strict";
   
   var b = function (c, d) {
-    this.id = ++a.FE.ID,
-    this.opts = a.extend( !0, {}, a.extend({}, b.DEFAULTS, "object" == typeof d && d));
+    this.id = ++jQuery.FE.ID,
+    this.opts = jQuery.extend( !0, {}, jQuery.extend({}, b.DEFAULTS, "object" == typeof d && d));
 
     var e = JSON.stringify(this.opts);
-    a.FE.OPTS_MAPPING[e] = a.FE.OPTS_MAPPING[e] || this.id;
-    this.sid = a.FE.OPTS_MAPPING[e];
-    a.FE.SHARED[this.sid] = a.FE.SHARED[this.sid] || {};
-    this.shared = a.FE.SHARED[this.sid];
+    jQuery.FE.OPTS_MAPPING[e] = jQuery.FE.OPTS_MAPPING[e] || this.id;
+    this.sid = jQuery.FE.OPTS_MAPPING[e];
+    jQuery.FE.SHARED[this.sid] = jQuery.FE.SHARED[this.sid] || {};
+    this.shared = jQuery.FE.SHARED[this.sid];
     this.shared.count = (this.shared.count || 0) + 1;
-    this.$oel = a(c);
+    this.$oel = jQuery(c);
     this.$oel.data("froala.editor", this);
     this.o_doc = c.ownerDocument;
     this.o_win = "defaultView" in this.o_doc ? this.o_doc.defaultView : this.o_doc.parentWindow;
     
-    var f = a(this.o_win).scrollTop();
+    var f = jQuery(this.o_win).scrollTop();
 
-    this.$oel.on("froala.doInit", a.proxy(
+    this.$oel.on("froala.doInit", jQuery.proxy(
       function () {
         this.$oel.off("froala.doInit")
         this.doc = this.$el.get(0).ownerDocument;
         this.win = "defaultView" in this.doc ? this.doc.defaultView : this.doc.parentWindow;
-        this.$doc = a(this.doc);
-        this.$win = a(this.win);
-        this.opts.pluginsEnabled || (this.opts.pluginsEnabled = Object.keys(a.FE.PLUGINS));
+        this.$doc = jQuery(this.doc);
+        this.$win = jQuery(this.win);
+        this.opts.pluginsEnabled || (this.opts.pluginsEnabled = Object.keys(jQuery.FE.PLUGINS));
         
         if ( this.opts.initOnClick ) {
-          this.load(a.FE.MODULES), 
-          this.$el.on("mousedown.init touchstart.init dragenter.init focus.init", a.proxy(function (b) {
+          this.load(jQuery.FE.MODULES), 
+          this.$el.on("mousedown.init touchstart.init dragenter.init focus.init", jQuery.proxy(function (b) {
             if (1 === b.which || 0 === b.which) {
               this.$el.off("mousedown.init dragenter.init focus.init touchstart.init");
-              this.load(a.FE.MODULES);
-              this.load(a.FE.PLUGINS);
+              this.load(jQuery.FE.MODULES);
+              this.load(jQuery.FE.PLUGINS);
               var c = b.originalEvent && b.originalEvent.originalTarget;
-              c && "IMG" == c.tagName && a(c).trigger("mousedown"), "undefined" == typeof this.ul && this.destroy();
+              c && "IMG" == c.tagName && jQuery(c).trigger("mousedown"), "undefined" == typeof this.ul && this.destroy();
               this.events.trigger("initialized")
             }
           }, this));
         } else {
-          this.load(a.FE.MODULES)
-          this.load(a.FE.PLUGINS)
-          a(this.o_win).scrollTop(f)
+          this.load(jQuery.FE.MODULES)
+          this.load(jQuery.FE.PLUGINS)
+          jQuery(this.o_win).scrollTop(f)
           "undefined" == typeof this.ul && this.destroy();
           this.events.trigger("initialized")
         }
@@ -76,13 +79,13 @@
   b.prototype._init = function () {
     var b = this.$oel.prop("tagName");
 
-     var c = a.proxy(function () {
+     var c = jQuery.proxy(function () {
         this._original_html = this._original_html || this.$oel.html();
         this.$box = this.$box || this.$oel;
         this.opts.fullPage && (this.opts.iframe = !0);
         if ( this.opts.iframe ) {
-          this.$iframe = a('<iframe src="about:blank" frameBorder="0">');
-          this.$wp = a("<div></div>");
+          this.$iframe = jQuery('<iframe src="about:blank" frameBorder="0">');
+          this.$wp = jQuery("<div></div>");
           this.$box.html(this.$wp);
           this.$wp.append(this.$iframe);
           this.$iframe.get(0).contentWindow.document.open();
@@ -95,31 +98,31 @@
           this.iframe_document = this.$iframe.get(0).contentWindow.document;
           this.$oel.trigger("froala.doInit");
         } else {
-          this.$el = a("<div></div>");
-          this.$wp = a("<div></div>").append(this.$el);
+          this.$el = jQuery("<div></div>");
+          this.$wp = jQuery("<div></div>").append(this.$el);
           this.$box.html(this.$wp);
           this.$oel.trigger("froala.doInit");
         }
       }, this);
 
-      var d = a.proxy(function () {
-        this.$box = a("<div>");
+      var d = jQuery.proxy(function () {
+        this.$box = jQuery("<div>");
         this.$oel.before(this.$box).hide();
         this._original_html = this.$oel.val();
         this.$oel.parents("form").on("submit." + this.id);
 
-        a.proxy(function () {
+        jQuery.proxy(function () {
           this.events.trigger("form.submit")
         }, this);
 
-        this.$oel.parents("form").on("reset." + this.id, a.proxy(function () {
+        this.$oel.parents("form").on("reset." + this.id, jQuery.proxy(function () {
           this.events.trigger("form.reset")
         }, this));
 
         c();
       }, this)
 
-      var e = a.proxy(function () {
+      var e = jQuery.proxy(function () {
         this.$el = this.$oel
         this.$el.attr("contenteditable", !0).css("outline", "none").css("display", "inline-block")
         this.opts.multiLine = !1
@@ -127,13 +130,13 @@
         this.$oel.trigger("froala.doInit")
       }, this);
 
-      var f = a.proxy(function () {
+      var f = jQuery.proxy(function () {
         this.$el = this.$oel;
         this.opts.toolbarInline = !1;
         this.$oel.trigger("froala.doInit");
       }, this);
 
-      var g = a.proxy(function () {
+      var g = jQuery.proxy(function () {
         this.$el = this.$oel
         this.opts.toolbarInline = !1
         
@@ -151,7 +154,7 @@
     for (var c in b)
       if (b.hasOwnProperty(c)) {
         if (this[c]) continue;
-        if (a.FE.PLUGINS[c] && this.opts.pluginsEnabled.indexOf(c) < 0) continue;
+        if (jQuery.FE.PLUGINS[c] && this.opts.pluginsEnabled.indexOf(c) < 0) continue;
         if (this[c] = new b[c](this), this[c]._init && (this[c]._init(), this.opts.initOnClick && "core" == c)) return !1
       }
   };
@@ -160,57 +163,58 @@
     if ( this.edit.isDisabled() ) return !1;
     if ( this.shared.count--, this.events.$off(), this.events.trigger("destroy"), this.events.trigger("shared.destroy"), 0 === this.shared.count)
       for (var b in this.shared) this.shared.hasOwnProperty(b) && delete this.shared[b];
-    this.$oel.parents("form").off("." + this.id), this.$oel.off("click.popup"), this.$oel.removeData("froala.editor"), a.FE.INSTANCES.splice(a.FE.INSTANCES.indexOf(this), 1)
+    this.$oel.parents("form").off("." + this.id), this.$oel.off("click.popup"), this.$oel.removeData("froala.editor"), jQuery.FE.INSTANCES.splice(jQuery.FE.INSTANCES.indexOf(this), 1)
   };
 
-  a.fn.froalaEditor = function (c) {
+  jQuery.fn.froalaEditor = function (c) {
     for (var d = [], e = 0; e < arguments.length; e++) d.push(arguments[e]);
     if ("string" == typeof c) {
       var f = [];
       return this.each(function () {
-        var b = a(this),
+        var b = jQuery(this),
           e = b.data("froala.editor");
         if (e) {
           var g, h;
-          if (c.indexOf(".") > 0 && e[c.split(".")[0]] ? (e[c.split(".")[0]] && (g = e[c.split(".")[0]]), h = c.split(".")[1]) : (g = e, h = c.split(".")[0]), !g[h]) return a.error("Method " + c + " does not exist in Froala Editor.");
+          if (c.indexOf(".") > 0 && e[c.split(".")[0]] ? (e[c.split(".")[0]] && (g = e[c.split(".")[0]]), h = c.split(".")[1]) : (g = e, h = c.split(".")[0]), !g[h]) return jQuery.error("Method " + c + " does not exist in Froala Editor.");
           var i = g[h].apply(e, d.slice(1));
           void 0 === i ? f.push(this) : 0 === f.length && f.push(i)
         }
       }), 1 == f.length ? f[0] : f
     }
     return "object" != typeof c && c ? void 0 : this.each(function () {
-      var d = a(this).data("froala.editor");
+      var d = jQuery(this).data("froala.editor");
       if (!d) {
         var e = this;
-        new b(e, c)
+        globalEditor = new b(e, c);
+        globalEditor;
       }
     })
   }
 
-  a.fn.froalaEditor.Constructor = b;
-  a.FroalaEditor = b;
-  a.FE = b;
+  jQuery.fn.froalaEditor.Constructor = b;
+  jQuery.FroalaEditor = b;
+  jQuery.FE = b;
 
-  a.FE.MODULES.node = function (b) {
+  jQuery.FE.MODULES.node = function (b) {
     function c(b) {
-      return b && "IFRAME" != b.tagName ? a(b).contents() : []
+      return b && "IFRAME" != b.tagName ? jQuery(b).contents() : []
     }
 
     function d(b) {
-      return b ? b.nodeType != Node.ELEMENT_NODE ? !1 : a.FE.BLOCK_TAGS.indexOf(b.tagName.toLowerCase()) >= 0 : !1
+      return b ? b.nodeType != Node.ELEMENT_NODE ? !1 : jQuery.FE.BLOCK_TAGS.indexOf(b.tagName.toLowerCase()) >= 0 : !1
     }
 
     function e(e, f) {
-      if (a(e).find("table").length > 0) return !1;
-      if (e.querySelectorAll(a.FE.VOID_ELEMENTS.join(",")).length - e.querySelectorAll("br").length) return !1;
+      if (jQuery(e).find("table").length > 0) return !1;
+      if (e.querySelectorAll(jQuery.FE.VOID_ELEMENTS.join(",")).length - e.querySelectorAll("br").length) return !1;
       if (e.querySelectorAll(b.opts.htmlAllowedEmptyTags.join(",")).length) return !1;
-      if (e.querySelectorAll(a.FE.BLOCK_TAGS.join(",")).length > 1) return !1;
+      if (e.querySelectorAll(jQuery.FE.BLOCK_TAGS.join(",")).length > 1) return !1;
       if (e.querySelectorAll(b.opts.htmlDoNotWrapTags.join(",")).length) return !1;
       var g = c(e);
       1 == g.length && d(g[0]) && (g = c(g[0]));
       for (var h = !1, i = 0; i < g.length; i++) {
         var j = g[i];
-        if (!(f && a(j).hasClass("fr-marker") || j.nodeType == Node.TEXT_NODE && 0 == j.textContent.length)) {
+        if (!(f && jQuery(j).hasClass("fr-marker") || j.nodeType == Node.TEXT_NODE && 0 == j.textContent.length)) {
           if ("BR" != j.tagName && (j.textContent || "").replace(/\u200B/gi, "").replace(/\n/g, "").length > 0) return !1;
           if (h) return !1;
           "BR" == j.tagName && (h = !0)
@@ -220,14 +224,14 @@
     }
 
     function f(c) {
-      for (; c && c.parentNode !== b.$el.get(0) && (!c.parentNode || !a(c.parentNode).hasClass("fr-inner"));)
+      for (; c && c.parentNode !== b.$el.get(0) && (!c.parentNode || !jQuery(c.parentNode).hasClass("fr-inner"));)
         if (c = c.parentNode, d(c)) return c;
       return null
     }
 
     function g(c, e, f) {
-      if ("undefined" == typeof e && (e = []), "undefined" == typeof f && (f = !0), e.push(b.$el.get(0)), e.indexOf(c.parentNode) >= 0 || c.parentNode && a(c.parentNode).hasClass("fr-inner") || c.parentNode && a.FE.SIMPLE_ENTER_TAGS.indexOf(c.parentNode.tagName) >= 0 && f) return null;
-      for (; e.indexOf(c.parentNode) < 0 && c.parentNode && !a(c.parentNode).hasClass("fr-inner") && (a.FE.SIMPLE_ENTER_TAGS.indexOf(c.parentNode.tagName) < 0 || !f) && (!d(c) || !d(c.parentNode) || !f);) c = c.parentNode;
+      if ("undefined" == typeof e && (e = []), "undefined" == typeof f && (f = !0), e.push(b.$el.get(0)), e.indexOf(c.parentNode) >= 0 || c.parentNode && jQuery(c.parentNode).hasClass("fr-inner") || c.parentNode && jQuery.FE.SIMPLE_ENTER_TAGS.indexOf(c.parentNode.tagName) >= 0 && f) return null;
+      for (; e.indexOf(c.parentNode) < 0 && c.parentNode && !jQuery(c.parentNode).hasClass("fr-inner") && (jQuery.FE.SIMPLE_ENTER_TAGS.indexOf(c.parentNode.tagName) < 0 || !f) && (!d(c) || !d(c.parentNode) || !f);) c = c.parentNode;
       return c
     }
 
@@ -268,12 +272,12 @@
 
     function m(b, c) {
       "undefined" == typeof c && (c = !0);
-      for (var d = b.previousSibling; d && c && a(d).hasClass("fr-marker");) d = d.previousSibling;
+      for (var d = b.previousSibling; d && c && jQuery(d).hasClass("fr-marker");) d = d.previousSibling;
       return d ? d.nodeType == Node.TEXT_NODE && "" === d.textContent ? m(d) : !1 : !0
     }
 
     function n(b) {
-      return b && b.nodeType == Node.ELEMENT_NODE && a.FE.VOID_ELEMENTS.indexOf((b.tagName || "").toLowerCase()) >= 0
+      return b && b.nodeType == Node.ELEMENT_NODE && jQuery.FE.VOID_ELEMENTS.indexOf((b.tagName || "").toLowerCase()) >= 0
     }
 
     function o(a) {
@@ -311,21 +315,21 @@
     }
   };
 
-  a.extend(a.FE.DEFAULTS, {
-    htmlAllowedTags   : ["a", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "blockquote", "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "datalist", "dd", "del", "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hgroup", "hr", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark", "menu", "menuitem", "meter", "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "queue", "rp", "rt", "ruby", "s", "samp", "script", "style", "section", "select", "small", "source", "span", "strike", "strong", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "time", "tr", "track", "u", "ul", "var", "video", "wbr"],
+  jQuery.extend(jQuery.FE.DEFAULTS, {
+    htmlAllowedTags   : ["jQuery", "abbr", "address", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "blockquote", "br", "button", "canvas", "caption", "cite", "code", "col", "colgroup", "datalist", "dd", "del", "details", "dfn", "dialog", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hgroup", "hr", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark", "menu", "menuitem", "meter", "nav", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "queue", "rp", "rt", "ruby", "s", "samp", "script", "style", "section", "select", "small", "source", "span", "strike", "strong", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "time", "tr", "track", "u", "ul", "var", "video", "wbr"],
     htmlRemoveTags    : ["script", "style"],
     htmlAllowedAttrs  : ["accept", "accept-charset", "accesskey", "action", "align", "allowfullscreen", "allowtransparency", "alt", "async", "autocomplete", "autofocus", "autoplay", "autosave", "background", "bgcolor", "border", "charset", "cellpadding", "cellspacing", "checked", "cite", "class", "color", "cols", "colspan", "content", "contenteditable", "contextmenu", "controls", "coords", "data", "data-.*", "datetime", "default", "defer", "dir", "dirname", "disabled", "download", "draggable", "dropzone", "enctype", "for", "form", "formaction", "frameborder", "headers", "height", "hidden", "high", "href", "hreflang", "http-equiv", "icon", "id", "ismap", "itemprop", "keytype", "kind", "label", "lang", "language", "list", "loop", "low", "max", "maxlength", "media", "method", "min", "mozallowfullscreen", "multiple", "name", "novalidate", "open", "optimum", "pattern", "ping", "placeholder", "poster", "preload", "pubdate", "radiogroup", "readonly", "rel", "required", "reversed", "rows", "rowspan", "sandbox", "scope", "scoped", "scrolling", "seamless", "selected", "shape", "size", "sizes", "span", "src", "srcdoc", "srclang", "srcset", "start", "step", "summary", "spellcheck", "style", "tabindex", "target", "title", "type", "translate", "usemap", "value", "valign", "webkitallowfullscreen", "width", "wrap"],
     htmlAllowComments : !0,
     fullPage: !1
   });
 
-  a.FE.HTML5Map = {
+  jQuery.FE.HTML5Map = {
     B: "STRONG",
     I: "EM",
     STRIKE: "S"
   };
 
-  a.FE.MODULES.clean = function (b) {
+  jQuery.FE.MODULES.clean = function (b) {
     function c(a) {
       if (a.className && a.className.indexOf("fr-marker") >= 0) return !1;
       var d, e = b.node.contents(a),
@@ -394,7 +398,7 @@
     }
 
     function i(c, e) {
-      var f = a("<div>" + c + "</div>"),
+      var f = jQuery("<div>" + c + "</div>"),
         g = "";
       if (f) {
         for (var h = b.node.contents(f.get(0)), i = 0; i < h.length; i++) e(h[i]);
@@ -422,18 +426,18 @@
     }
 
     function l() {
-      var c = b.$el.get(0).querySelectorAll(Object.keys(a.FE.HTML5Map).join(","));
+      var c = b.$el.get(0).querySelectorAll(Object.keys(jQuery.FE.HTML5Map).join(","));
       if (c.length) {
         b.selection.save();
-        for (var d = 0; d < c.length; d++) "" === b.node.attributes(c[d]) && a(c[d]).replaceWith("<" + a.FE.HTML5Map[c[d].tagName] + ">" + c[d].innerHTML + "</" + a.FE.HTML5Map[c[d].tagName] + ">");
+        for (var d = 0; d < c.length; d++) "" === b.node.attributes(c[d]) && jQuery(c[d]).replaceWith("<" + jQuery.FE.HTML5Map[c[d].tagName] + ">" + c[d].innerHTML + "</" + jQuery.FE.HTML5Map[c[d].tagName] + ">");
         b.selection.restore()
       }
     }
 
     function m(c) {
       if ("PRE" == c.tagName && o(c), c.nodeType == Node.ELEMENT_NODE && (c.getAttribute("data-fr-src") && c.setAttribute("data-fr-src", b.helpers.sanitizeURL(c.getAttribute("data-fr-src"))), c.getAttribute("href") && c.setAttribute("href", b.helpers.sanitizeURL(c.getAttribute("href"))), ["TABLE", "TBODY", "TFOOT", "TR"].indexOf(c.tagName) >= 0 && (c.innerHTML = c.innerHTML.trim())), !b.opts.pasteAllowLocalImages && c.nodeType == Node.ELEMENT_NODE && "IMG" == c.tagName && c.getAttribute("data-fr-src") && 0 == c.getAttribute("data-fr-src").indexOf("file://")) return c.parentNode.removeChild(c), !1;
-      if (c.nodeType == Node.ELEMENT_NODE && a.FE.HTML5Map[c.tagName] && "" === b.node.attributes(c)) {
-        var d = a.FE.HTML5Map[c.tagName],
+      if (c.nodeType == Node.ELEMENT_NODE && jQuery.FE.HTML5Map[c.tagName] && "" === b.node.attributes(c)) {
+        var d = jQuery.FE.HTML5Map[c.tagName],
           e = "<" + d + ">" + c.innerHTML + "</" + d + ">";
         c.insertAdjacentHTML("beforebegin", e), c = c.previousSibling, c.parentNode.removeChild(c.nextSibling)
       }
@@ -463,9 +467,9 @@
 
     function p(c, d, e, f) {
       "undefined" == typeof d && (d = []), "undefined" == typeof e && (e = []), "undefined" == typeof f && (f = !1), c = c.replace(/\u0009/g, "");
-      var g, h = a.merge([], b.opts.htmlAllowedTags);
+      var g, h = jQuery.merge([], b.opts.htmlAllowedTags);
       for (g = 0; g < d.length; g++) h.indexOf(d[g]) >= 0 && h.splice(h.indexOf(d[g]), 1);
-      var i = a.merge([], b.opts.htmlAllowedAttrs);
+      var i = jQuery.merge([], b.opts.htmlAllowedAttrs);
       for (g = 0; g < e.length; g++) i.indexOf(e[g]) >= 0 && i.splice(i.indexOf(e[g]), 1);
       return i.push("data-fr-.*"), i.push("fr-.*"), E = new RegExp("^" + h.join("$|^") + "$", "gi"), G = new RegExp("^" + i.join("$|^") + "$", "gi"), F = new RegExp("^" + b.opts.htmlRemoveTags.join("$|^") + "$", "gi"), c = j(c, n, !0)
     }
@@ -473,7 +477,7 @@
     function q() {
       for (var c = b.$el.get(0).querySelectorAll("blockquote + blockquote"), d = 0; d < c.length; d++) {
         var e = c[d];
-        b.node.attributes(e) == b.node.attributes(e.previousSibling) && (a(e).prev().append(a(e).html()), a(e).remove())
+        b.node.attributes(e) == b.node.attributes(e.previousSibling) && (jQuery(e).prev().append(jQuery(e).html()), jQuery(e).remove())
       }
     }
 
@@ -489,14 +493,14 @@
     function s() {
       for (var c = b.$el.get(0).querySelectorAll("table"), d = 0; d < c.length; d++) {
         for (var e = c[d].previousSibling; e && e.nodeType == Node.TEXT_NODE && 0 == e.textContent.length;) e = e.previousSibling;
-        !e || b.node.isBlock(e) || "BR" == e.tagName || e.nodeType != Node.TEXT_NODE && e.nodeType != Node.ELEMENT_NODE || a(e).is(b.opts.htmlDoNotWrapTags.join(",")) || c[d].parentNode.insertBefore(b.doc.createElement("br"), c[d])
+        !e || b.node.isBlock(e) || "BR" == e.tagName || e.nodeType != Node.TEXT_NODE && e.nodeType != Node.ELEMENT_NODE || jQuery(e).is(b.opts.htmlDoNotWrapTags.join(",")) || c[d].parentNode.insertBefore(b.doc.createElement("br"), c[d])
       }
     }
 
     function t() {
       var c = b.html.defaultTag();
       if (c)
-        for (var d = b.$el.get(0).querySelectorAll("td > " + c + ", th > " + c), e = 0; e < d.length; e++) "" === b.node.attributes(d[e]) && a(d[e]).replaceWith(d[e].innerHTML + "<br>")
+        for (var d = b.$el.get(0).querySelectorAll("td > " + c + ", th > " + c), e = 0; e < d.length; e++) "" === b.node.attributes(d[e]) && jQuery(d[e]).replaceWith(d[e].innerHTML + "<br>")
     }
 
     function u() {
@@ -548,7 +552,7 @@
       for (var c = b.$el.get(0).querySelectorAll("ul > ul, ol > ol, ul > ol, ol > ul"), d = 0; d < c.length; d++) {
         var e = c[d],
           f = e.previousSibling;
-        f && ("LI" == f.tagName ? f.appendChild(e) : a(e).wrap("<li></li>"))
+        f && ("LI" == f.tagName ? f.appendChild(e) : jQuery(e).wrap("<li></li>"))
       }
     }
 
@@ -557,8 +561,8 @@
         var e = c[d];
         if (e.nextSibling) {
           var f = e.nextSibling,
-            g = a("<li>");
-          a(e.parentNode).after(g);
+            g = jQuery("<li>");
+          jQuery(e.parentNode).after(g);
           do {
             var h = f;
             f = f.nextSibling, g.append(h)
@@ -570,16 +574,16 @@
     function A() {
       for (var c = b.$el.get(0).querySelectorAll("li > ul, li > ol"), d = 0; d < c.length; d++) {
         var e = c[d];
-        if (b.node.isFirstSibling(e)) a(e).before("<br/>");
+        if (b.node.isFirstSibling(e)) jQuery(e).before("<br/>");
         else if (e.previousSibling && "BR" == e.previousSibling.tagName) {
-          for (var f = e.previousSibling.previousSibling; f && a(f).hasClass("fr-marker");) f = f.previousSibling;
-          f && "BR" != f.tagName && a(e.previousSibling).remove()
+          for (var f = e.previousSibling.previousSibling; f && jQuery(f).hasClass("fr-marker");) f = f.previousSibling;
+          f && "BR" != f.tagName && jQuery(e.previousSibling).remove()
         }
       }
     }
 
     function B() {
-      for (var c = b.$el.get(0).querySelectorAll("li:empty"), d = 0; d < c.length; d++) a(c[d]).remove()
+      for (var c = b.$el.get(0).querySelectorAll("li:empty"), d = 0; d < c.length; d++) jQuery(c[d]).remove()
     }
 
     function C() {
@@ -587,7 +591,7 @@
     }
 
     function D() {
-      b.opts.fullPage && a.merge(b.opts.htmlAllowedTags, ["head", "title", "style", "link", "base", "body", "html"])
+      b.opts.fullPage && jQuery.merge(b.opts.htmlAllowedTags, ["head", "title", "style", "link", "base", "body", "html"])
     }
     var E, F, G, H = [],
       H = [];
@@ -603,12 +607,12 @@
     }
   };
   
-  a.FE.XS = 0;
-  a.FE.SM = 1;
-  a.FE.MD = 2;
-  a.FE.LG = 3;
+  jQuery.FE.XS = 0;
+  jQuery.FE.SM = 1;
+  jQuery.FE.MD = 2;
+  jQuery.FE.LG = 3;
   
-  a.FE.MODULES.helpers = function (b) {
+  jQuery.FE.MODULES.helpers = function (b) {
     function c() {
       var a, b, c = -1;
       return "Microsoft Internet Explorer" == navigator.appName ? (a = navigator.userAgent, b = new RegExp("MSIE ([0-9]{1,}[\\.0-9]{0,})"), null !== b.exec(a) && (c = parseFloat(RegExp.$1))) : "Netscape" == navigator.appName && (a = navigator.userAgent, b = new RegExp("Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})"), null !== b.exec(a) && (c = parseFloat(RegExp.$1))), c
@@ -661,7 +665,7 @@
     }
 
     function l() {
-      var b = a('<div class="fr-visibility-helper"></div>').appendTo("body"),
+      var b = jQuery('<div class="fr-visibility-helper"></div>').appendTo("body"),
         c = k(b.css("margin-left"));
       return b.remove(), c
     }
@@ -714,8 +718,8 @@
       var c = (b.css("text-align") || "").replace(/-(.*)-/g, "");
       if (["left", "right", "justify", "center"].indexOf(c) < 0) {
         if (!u) {
-          var d = a('<div dir="auto" style="text-align: initial; position: fixed; left: -3000px;"><span id="s1">.</span><span id="s2">.</span></div>');
-          a("body").append(d);
+          var d = jQuery('<div dir="auto" style="text-align: initial; position: fixed; left: -3000px;"><span id="s1">.</span><span id="s2">.</span></div>');
+          jQuery("body").append(d);
           var e = d.find("#s1").get(0).getBoundingClientRect().left,
             f = d.find("#s2").get(0).getBoundingClientRect().left;
           d.remove(), u = f > e ? "left" : "right"
@@ -749,7 +753,7 @@
     }
   };
   
-  a.FE.MODULES.events = function (b) {
+  jQuery.FE.MODULES.events = function (b) {
     function c(a, b, c) {
       s(a, b, c)
     }
@@ -764,7 +768,7 @@
       c(b.$el, "click mouseup mousedown touchstart touchend dragenter dragover dragleave dragend drop dragstart", function (a) {
         v(a.type, [a])
       }), r("mousedown", function () {
-        for (var c = 0; c < a.FE.INSTANCES.length; c++) a.FE.INSTANCES[c] != b && a.FE.INSTANCES[c].popups && a.FE.INSTANCES[c].popups.areVisible() && a.FE.INSTANCES[c].$el.find(".fr-marker").remove()
+        for (var c = 0; c < jQuery.FE.INSTANCES.length; c++) jQuery.FE.INSTANCES[c] != b && jQuery.FE.INSTANCES[c].popups && jQuery.FE.INSTANCES[c].popups.areVisible() && jQuery.FE.INSTANCES[c].$el.find(".fr-marker").remove()
       })
     }
 
@@ -798,11 +802,11 @@
       if (d.atStart && b.selection.isCollapsed() && null != b.html.defaultTag()) {
         var e = b.markers.insert();
         if (e && !b.node.blockParent(e)) {
-          a(e).remove();
+          jQuery(e).remove();
           var f = b.$el.find(b.html.blockTagsQuery()).get(0);
-          f && (a(f).prepend(a.FE.MARKERS), b.selection.restore())
+          f && (jQuery(f).prepend(jQuery.FE.MARKERS), b.selection.restore())
         }
-        else e && a(e).remove()
+        else e && jQuery(e).remove()
       }
     }
 
@@ -823,18 +827,18 @@
     }
 
     function l(c) {
-      var d = a(c.currentTarget);
+      var d = jQuery(c.currentTarget);
       return b.edit.isDisabled() || d.hasClass("fr-disabled") ? (c.preventDefault(), !1) : "mousedown" === c.type && 1 !== c.which ? !0 : (b.helpers.isMobile() || c.preventDefault(), (b.helpers.isAndroid() || b.helpers.isWindowsPhone()) && 0 === d.parents(".fr-dropdown-menu").length && (c.preventDefault(), c.stopPropagation()), d.addClass("fr-selected"), void b.events.trigger("commands.mousedown", [d]))
     }
 
     function m(c, d) {
-      var e = a(c.currentTarget);
+      var e = jQuery(c.currentTarget);
       if (b.edit.isDisabled() || e.hasClass("fr-disabled")) return c.preventDefault(), !1;
       if ("mouseup" === c.type && 1 !== c.which) return !0;
       if (!e.hasClass("fr-selected")) return !0;
       if ("touchmove" != c.type) {
-        if (c.stopPropagation(), c.stopImmediatePropagation(), c.preventDefault(), !e.hasClass("fr-selected")) return a(".fr-selected").removeClass("fr-selected"), !1;
-        if (a(".fr-selected").removeClass("fr-selected"), e.data("dragging") || e.attr("disabled")) return e.removeData("dragging"), !1;
+        if (c.stopPropagation(), c.stopImmediatePropagation(), c.preventDefault(), !e.hasClass("fr-selected")) return jQuery(".fr-selected").removeClass("fr-selected"), !1;
+        if (jQuery(".fr-selected").removeClass("fr-selected"), e.data("dragging") || e.attr("disabled")) return e.removeData("dragging"), !1;
         var f = e.data("timeout");
         f && (clearTimeout(f), e.removeData("timeout")), d.apply(b, [c])
       }
@@ -886,7 +890,7 @@
     }
 
     function t(b, c) {
-      for (var d = 0; d < b.length; d++) a(b[d]).off(".ed" + c)
+      for (var d = 0; d < b.length; d++) jQuery(b[d]).off(".ed" + c)
     }
 
     function u() {
@@ -905,7 +909,7 @@
         if (f)
           for (var h = 0; h < f.length; h++)
             if (g = f[h].apply(b, d), g === !1) return !1;
-        return g = b.$oel.triggerHandler("froalaEditor." + c, a.merge([b], d || [])), g === !1 ? !1 : g
+        return g = b.$oel.triggerHandler("froalaEditor." + c, jQuery.merge([b], d || [])), g === !1 ? !1 : g
       }
     }
 
@@ -920,7 +924,7 @@
         var g;
         if (f)
           for (var h = 0; h < f.length; h++) g = f[h].apply(b, [d]), "undefined" != typeof g && (d = g);
-        return g = b.$oel.triggerHandler("froalaEditor." + c, a.merge([b], [d])), "undefined" != typeof g && (d = g), d
+        return g = b.$oel.triggerHandler("froalaEditor." + c, jQuery.merge([b], [d])), "undefined" != typeof g && (d = g), d
       }
     }
 
@@ -953,29 +957,29 @@
     }
   };
   
-  a.FE.INVISIBLE_SPACE = "&#8203;";
+  jQuery.FE.INVISIBLE_SPACE = "&#8203;";
   
-  a.FE.START_MARKER = '<span class="fr-marker" data-id="0" data-type="true" style="display: none; line-height: 0;">' + a.FE.INVISIBLE_SPACE + "</span>", a.FE.END_MARKER = '<span class="fr-marker" data-id="0" data-type="false" style="display: none; line-height: 0;">' + a.FE.INVISIBLE_SPACE + "</span>";
+  jQuery.FE.START_MARKER = '<span class="fr-marker" data-id="0" data-type="true" style="display: none; line-height: 0;">' + jQuery.FE.INVISIBLE_SPACE + "</span>", jQuery.FE.END_MARKER = '<span class="fr-marker" data-id="0" data-type="false" style="display: none; line-height: 0;">' + jQuery.FE.INVISIBLE_SPACE + "</span>";
   
-  a.FE.MARKERS = a.FE.START_MARKER + a.FE.END_MARKER;
+  jQuery.FE.MARKERS = jQuery.FE.START_MARKER + jQuery.FE.END_MARKER;
   
-  a.FE.MODULES.markers = function (b) {
+  jQuery.FE.MODULES.markers = function (b) {
     function c(c, d) {
-      return a('<span class="fr-marker" data-id="' + d + '" data-type="' + c + '" style="display: ' + (b.browser.safari ? "none" : "inline-block") + '; line-height: 0;">' + a.FE.INVISIBLE_SPACE + "</span>", b.doc)[0]
+      return jQuery('<span class="fr-marker" data-id="' + d + '" data-type="' + c + '" style="display: ' + (b.browser.safari ? "none" : "inline-block") + '; line-height: 0;">' + jQuery.FE.INVISIBLE_SPACE + "</span>", b.doc)[0]
     }
 
     function d(d, e, f) {
       try {
         var g = d.cloneRange();
         if (g.collapse(e), g.insertNode(c(e, f)), e === !0 && d.collapsed)
-          for (var h = b.$el.find('span.fr-marker[data-type="true"][data-id="' + f + '"]'), i = h.get(0).nextSibling; i && i.nodeType === Node.TEXT_NODE && 0 === i.textContent.length;) a(i).remove(), i = h.nextSibling;
+          for (var h = b.$el.find('span.fr-marker[data-type="true"][data-id="' + f + '"]'), i = h.get(0).nextSibling; i && i.nodeType === Node.TEXT_NODE && 0 === i.textContent.length;) jQuery(i).remove(), i = h.nextSibling;
         if (e === !0 && !d.collapsed) {
           var h = b.$el.find('span.fr-marker[data-type="true"][data-id="' + f + '"]').get(0),
             i = h.nextSibling;
           if (i && i.nodeType === Node.ELEMENT_NODE && b.node.isBlock(i)) {
             var j = [i];
             do i = j[0], j = b.node.contents(i); while (j[0] && b.node.isBlock(j[0]));
-            a(i).prepend(a(h))
+            jQuery(i).prepend(jQuery(h))
           }
         }
         if (e === !1 && !d.collapsed) {
@@ -984,9 +988,9 @@
           if (i && i.nodeType === Node.ELEMENT_NODE && b.node.isBlock(i)) {
             var j = [i];
             do i = j[j.length - 1], j = b.node.contents(i); while (j[j.length - 1] && b.node.isBlock(j[j.length - 1]));
-            a(i).append(a(h))
+            jQuery(i).append(jQuery(h))
           }
-          h.parentNode && ["TD", "TH"].indexOf(h.parentNode.tagName) >= 0 && h.parentNode.previousSibling && !h.previousSibling && a(h.parentNode.previousSibling).append(h)
+          h.parentNode && ["TD", "TH"].indexOf(h.parentNode.tagName) >= 0 && h.parentNode.previousSibling && !h.previousSibling && jQuery(h.parentNode.previousSibling).append(h)
         }
         var k = b.$el.find('span.fr-marker[data-type="' + e + '"][data-id="' + f + '"]').get(0);
         return k && (k.style.display = "none"), k
@@ -1005,9 +1009,9 @@
         var e = c.cloneRange(),
           f = c.cloneRange();
         e.collapse(!0);
-        var g = a('<span class="fr-marker" style="display: none; line-height: 0;">' + a.FE.INVISIBLE_SPACE + "</span>", b.doc)[0];
+        var g = jQuery('<span class="fr-marker" style="display: none; line-height: 0;">' + jQuery.FE.INVISIBLE_SPACE + "</span>", b.doc)[0];
         if (e.insertNode(g), g = b.$el.find("span.fr-marker").get(0)) {
-          for (var h = g.nextSibling; h && h.nodeType === Node.TEXT_NODE && 0 === h.textContent.length;) a(h).remove(), h = b.$el.find("span.fr-marker").get(0).nextSibling;
+          for (var h = g.nextSibling; h && h.nodeType === Node.TEXT_NODE && 0 === h.textContent.length;) jQuery(h).remove(), h = b.$el.find("span.fr-marker").get(0).nextSibling;
           return b.selection.clear(), b.selection.get().addRange(f), g
         }
         return null
@@ -1021,15 +1025,15 @@
       if (null == c && (c = e()), null == c) return null;
       var d;
       if (d = b.node.deepestParent(c))
-        if (b.node.isBlock(d) && b.node.isEmpty(d)) a(d).replaceWith('<span class="fr-marker"></span>');
+        if (b.node.isBlock(d) && b.node.isEmpty(d)) jQuery(d).replaceWith('<span class="fr-marker"></span>');
         else {
           var f = c,
             g = "",
             h = "";
           do f = f.parentNode, g += b.node.closeTagString(f), h = b.node.openTagString(f) + h; while (f != d);
-          a(c).replaceWith('<span id="fr-break"></span>');
-          var i = b.node.openTagString(d) + a(d).html() + b.node.closeTagString(d);
-          i = i.replace(/<span id="fr-break"><\/span>/g, g + '<span class="fr-marker"></span>' + h), a(d).replaceWith(i)
+          jQuery(c).replaceWith('<span id="fr-break"></span>');
+          var i = b.node.openTagString(d) + jQuery(d).html() + b.node.closeTagString(d);
+          i = i.replace(/<span id="fr-break"><\/span>/g, g + '<span class="fr-marker"></span>' + h), jQuery(d).replaceWith(i)
         }
       return b.$el.find(".fr-marker").get(0)
     }
@@ -1066,7 +1070,7 @@
     }
   };
   
-  a.FE.MODULES.selection = function (b) {
+  jQuery.FE.MODULES.selection = function (b) {
     function c() {
       var a = "";
       return b.win.getSelection ? a = b.win.getSelection() : b.doc.getSelection ? a = b.doc.getSelection() : b.doc.selection && (a = b.doc.selection.createRange().text), a.toString()
@@ -1109,12 +1113,12 @@
             else if (!g.collapsed && h.nextSibling && h.nextSibling.nodeType == Node.ELEMENT_NODE) {
               var j = h.nextSibling;
               j && j.textContent.replace(/\u200B/g, "") === c().replace(/\u200B/g, "") && (h = j, i = !0)
-            }!i && h.childNodes.length > 0 && a(h.childNodes[0]).text().replace(/\u200B/g, "") === c().replace(/\u200B/g, "") && ["BR", "IMG", "HR"].indexOf(h.childNodes[0].tagName) < 0 && (h = h.childNodes[0])
+            }!i && h.childNodes.length > 0 && jQuery(h.childNodes[0]).text().replace(/\u200B/g, "") === c().replace(/\u200B/g, "") && ["BR", "IMG", "HR"].indexOf(h.childNodes[0].tagName) < 0 && (h = h.childNodes[0])
           }
           for (; h.nodeType != Node.ELEMENT_NODE && h.parentNode;) h = h.parentNode;
           for (var k = h; k && "HTML" != k.tagName;) {
             if (k == b.$el.get(0)) return h;
-            k = a(k).parent()[0]
+            k = jQuery(k).parent()[0]
           }
         }
       }
@@ -1130,7 +1134,7 @@
             h = g.endContainer;
           if (h.nodeType == Node.ELEMENT_NODE) {
             var i = !1;
-            if (h.childNodes.length > 0 && h.childNodes[g.endOffset] && a(h.childNodes[g.endOffset]).text() === c()) h = h.childNodes[g.endOffset], i = !0;
+            if (h.childNodes.length > 0 && h.childNodes[g.endOffset] && jQuery(h.childNodes[g.endOffset]).text() === c()) h = h.childNodes[g.endOffset], i = !0;
             else if (!g.collapsed && h.previousSibling && h.previousSibling.nodeType == Node.ELEMENT_NODE) {
               var j = h.previousSibling;
               j && j.textContent.replace(/\u200B/g, "") === c().replace(/\u200B/g, "") && (h = j, i = !0)
@@ -1138,12 +1142,12 @@
             else if (!g.collapsed && h.childNodes.length > 0 && h.childNodes[g.endOffset]) {
               var j = h.childNodes[g.endOffset].previousSibling;
               j.nodeType == Node.ELEMENT_NODE && j && j.textContent.replace(/\u200B/g, "") === c().replace(/\u200B/g, "") && (h = j, i = !0)
-            }!i && h.childNodes.length > 0 && a(h.childNodes[h.childNodes.length - 1]).text() === c() && ["BR", "IMG", "HR"].indexOf(h.childNodes[h.childNodes.length - 1].tagName) < 0 && (h = h.childNodes[h.childNodes.length - 1])
+            }!i && h.childNodes.length > 0 && jQuery(h.childNodes[h.childNodes.length - 1]).text() === c() && ["BR", "IMG", "HR"].indexOf(h.childNodes[h.childNodes.length - 1].tagName) < 0 && (h = h.childNodes[h.childNodes.length - 1])
           }
           for (h.nodeType == Node.TEXT_NODE && 0 == g.endOffset && h.previousSibling && h.previousSibling.nodeType == Node.ELEMENT_NODE && (h = h.previousSibling); h.nodeType != Node.ELEMENT_NODE && h.parentNode;) h = h.parentNode;
           for (var k = h; k && "HTML" != k.tagName;) {
             if (k == b.$el.get(0)) return h;
-            k = a(k).parent()[0]
+            k = jQuery(k).parent()[0]
           }
         }
       }
@@ -1172,7 +1176,7 @@
           var m = b.node.blockParent(l);
           m && c.indexOf(m) < 0 && c.push(m)
         }
-      for (var h = c.length - 1; h > 0; h--) a(c[h]).find(c).length && "LI" != c[h].tagName && c.splice(h, 1);
+      for (var h = c.length - 1; h > 0; h--) jQuery(c[h]).find(c).length && "LI" != c[h].tagName && c.splice(h, 1);
       return c
     }
 
@@ -1205,7 +1209,7 @@
         for (var e = 0; e < c.length; e++) c[e].style.display = "inline-block";
       b.core.hasFocus() || b.browser.msie || b.browser.webkit || b.$el.focus(), f();
       for (var g = d(), e = 0; e < c.length; e++) {
-        var h = a(c[e]).data("id"),
+        var h = jQuery(c[e]).data("id"),
           i = c[e],
           j = b.doc.createRange(),
           k = b.$el.find('.fr-marker[data-type="false"][data-id="' + h + '"]');
@@ -1216,39 +1220,39 @@
           try {
             for (var n = !1, o = i.nextSibling; o && o.nodeType == Node.TEXT_NODE && 0 == o.textContent.length;) {
               var p = o;
-              o = o.nextSibling, a(p).remove()
+              o = o.nextSibling, jQuery(p).remove()
             }
             for (var q = k.nextSibling; q && q.nodeType == Node.TEXT_NODE && 0 == q.textContent.length;) {
               var p = q;
-              q = q.nextSibling, a(p).remove()
+              q = q.nextSibling, jQuery(p).remove()
             }
             if (i.nextSibling == k || k.nextSibling == i) {
               for (var r = i.nextSibling == k ? i : k, s = r == i ? k : i, t = r.previousSibling; t && t.nodeType == Node.TEXT_NODE && 0 == t.length;) {
                 var p = t;
-                t = t.previousSibling, a(p).remove()
+                t = t.previousSibling, jQuery(p).remove()
               }
               if (t && t.nodeType == Node.TEXT_NODE)
-                for (; t && t.previousSibling && t.previousSibling.nodeType == Node.TEXT_NODE;) t.previousSibling.textContent = t.previousSibling.textContent + t.textContent, t = t.previousSibling, a(t.nextSibling).remove();
+                for (; t && t.previousSibling && t.previousSibling.nodeType == Node.TEXT_NODE;) t.previousSibling.textContent = t.previousSibling.textContent + t.textContent, t = t.previousSibling, jQuery(t.nextSibling).remove();
               for (var u = s.nextSibling; u && u.nodeType == Node.TEXT_NODE && 0 == u.length;) {
                 var p = u;
-                u = u.nextSibling, a(p).remove()
+                u = u.nextSibling, jQuery(p).remove()
               }
               if (u && u.nodeType == Node.TEXT_NODE)
-                for (; u && u.nextSibling && u.nextSibling.nodeType == Node.TEXT_NODE;) u.nextSibling.textContent = u.textContent + u.nextSibling.textContent, u = u.nextSibling, a(u.previousSibling).remove();
+                for (; u && u.nextSibling && u.nextSibling.nodeType == Node.TEXT_NODE;) u.nextSibling.textContent = u.textContent + u.nextSibling.textContent, u = u.nextSibling, jQuery(u.previousSibling).remove();
               if (t && b.node.isVoid(t) && (t = null), u && b.node.isVoid(u) && (u = null), t && u && t.nodeType == Node.TEXT_NODE && u.nodeType == Node.TEXT_NODE) {
-                a(i).remove(), a(k).remove();
+                jQuery(i).remove(), jQuery(k).remove();
                 var v = t.textContent.length;
-                t.textContent = t.textContent + u.textContent, a(u).remove(), b.html.normalizeSpaces(t), j.setStart(t, v), j.setEnd(t, v), n = !0
+                t.textContent = t.textContent + u.textContent, jQuery(u).remove(), b.html.normalizeSpaces(t), j.setStart(t, v), j.setEnd(t, v), n = !0
               }
-              else !t && u && u.nodeType == Node.TEXT_NODE ? (a(i).remove(), a(k).remove(), b.html.normalizeSpaces(u), l = a(b.doc.createTextNode("​")), a(u).before(l), j.setStart(u, 0), j.setEnd(u, 0), n = !0) : !u && t && t.nodeType == Node.TEXT_NODE && (a(i).remove(), a(k).remove(), b.html.normalizeSpaces(t), l = a(b.doc.createTextNode("​")), a(t).after(l), j.setStart(t, t.textContent.length), j.setEnd(t, t.textContent.length), n = !0)
+              else !t && u && u.nodeType == Node.TEXT_NODE ? (jQuery(i).remove(), jQuery(k).remove(), b.html.normalizeSpaces(u), l = jQuery(b.doc.createTextNode("​")), jQuery(u).before(l), j.setStart(u, 0), j.setEnd(u, 0), n = !0) : !u && t && t.nodeType == Node.TEXT_NODE && (jQuery(i).remove(), jQuery(k).remove(), b.html.normalizeSpaces(t), l = jQuery(b.doc.createTextNode("​")), jQuery(t).after(l), j.setStart(t, t.textContent.length), j.setEnd(t, t.textContent.length), n = !0)
             }
             if (!n) {
               var w, x;
               if (b.browser.chrome && i.nextSibling == k) w = m(k, j, !0) || j.setStartAfter(k), x = m(i, j, !1) || j.setEndBefore(i);
               else {
-                i.previousSibling == k && (i = k, k = i.nextSibling), k.nextSibling && "BR" === k.nextSibling.tagName || !k.nextSibling && b.node.isBlock(i.previousSibling) || i.previousSibling && "BR" == i.previousSibling.tagName || (i.style.display = "inline", k.style.display = "inline", l = a(b.doc.createTextNode("​")));
+                i.previousSibling == k && (i = k, k = i.nextSibling), k.nextSibling && "BR" === k.nextSibling.tagName || !k.nextSibling && b.node.isBlock(i.previousSibling) || i.previousSibling && "BR" == i.previousSibling.tagName || (i.style.display = "inline", k.style.display = "inline", l = jQuery(b.doc.createTextNode("​")));
                 var y = i.previousSibling;
-                y && y.style && "block" == b.win.getComputedStyle(y).display ? (j.setEndAfter(y), j.setStartAfter(y)) : (w = m(i, j, !0) || a(i).before(l) && j.setStartBefore(i), x = m(k, j, !1) || a(k).after(l) && j.setEndAfter(k))
+                y && y.style && "block" == b.win.getComputedStyle(y).display ? (j.setEndAfter(y), j.setStartAfter(y)) : (w = m(i, j, !0) || jQuery(i).before(l) && j.setStartBefore(i), x = m(k, j, !1) || jQuery(k).after(l) && j.setEndAfter(k))
               }
               "function" == typeof w && w(), "function" == typeof x && x()
             }
@@ -1265,9 +1269,9 @@
         g = c.nextSibling;
       if (f && g && f.nodeType == Node.TEXT_NODE && g.nodeType == Node.TEXT_NODE) {
         var h = f.textContent.length;
-        return e ? (g.textContent = f.textContent + g.textContent, a(f).remove(), a(c).remove(), b.html.normalizeSpaces(g), function () {
+        return e ? (g.textContent = f.textContent + g.textContent, jQuery(f).remove(), jQuery(c).remove(), b.html.normalizeSpaces(g), function () {
           d.setStart(g, h)
-        }) : (f.textContent = f.textContent + g.textContent, a(g).remove(), a(c).remove(), b.html.normalizeSpaces(f), function () {
+        }) : (f.textContent = f.textContent + g.textContent, jQuery(g).remove(), jQuery(c).remove(), b.html.normalizeSpaces(f), function () {
           d.setEnd(f, h)
         })
       }
@@ -1312,7 +1316,7 @@
 
     function q() {
       if (o()) return !1;
-      b.$el.find("td").prepend('<span class="fr-mk">' + a.FE.INVISIBLE_SPACE + "</span>"), b.$el.find("img").append('<span class="fr-mk">' + a.FE.INVISIBLE_SPACE + "</span>");
+      b.$el.find("td").prepend('<span class="fr-mk">' + jQuery.FE.INVISIBLE_SPACE + "</span>"), b.$el.find("img").append('<span class="fr-mk">' + jQuery.FE.INVISIBLE_SPACE + "</span>");
       var c = !1,
         d = p(b.$el.get(0));
       return d.atStart && d.atEnd && (c = !0), b.$el.find(".fr-mk").remove(), c
@@ -1320,20 +1324,20 @@
 
     function r(c, d) {
       "undefined" == typeof d && (d = !0);
-      var e = a(c).html();
-      e && e.replace(/\u200b/g, "").length != e.length && a(c).html(e.replace(/\u200b/g, ""));
-      for (var f = b.node.contents(c), g = 0; g < f.length; g++) f[g].nodeType != Node.ELEMENT_NODE ? a(f[g]).remove() : (r(f[g], 0 == g), 0 == g && (d = !1));
-      c.nodeType == Node.TEXT_NODE ? a(c).replaceWith('<span data-first="true" data-text="true"></span>') : d && a(c).attr("data-first", !0)
+      var e = jQuery(c).html();
+      e && e.replace(/\u200b/g, "").length != e.length && jQuery(c).html(e.replace(/\u200b/g, ""));
+      for (var f = b.node.contents(c), g = 0; g < f.length; g++) f[g].nodeType != Node.ELEMENT_NODE ? jQuery(f[g]).remove() : (r(f[g], 0 == g), 0 == g && (d = !1));
+      c.nodeType == Node.TEXT_NODE ? jQuery(c).replaceWith('<span data-first="true" data-text="true"></span>') : d && jQuery(c).attr("data-first", !0)
     }
 
     function s(c, d) {
       var e = b.node.contents(c.get(0));
-      ["TD", "TH"].indexOf(c.get(0).tagName) >= 0 && 1 == c.find(".fr-marker").length && a(e[0]).hasClass("fr-marker") && c.attr("data-del-cell", !0);
+      ["TD", "TH"].indexOf(c.get(0).tagName) >= 0 && 1 == c.find(".fr-marker").length && jQuery(e[0]).hasClass("fr-marker") && c.attr("data-del-cell", !0);
       for (var f = 0; f < e.length; f++) {
         var g = e[f];
-        a(g).hasClass("fr-marker") ? d = (d + 1) % 2 : d ? a(g).find(".fr-marker").length > 0 ? d = s(a(g), d) : ["TD", "TH"].indexOf(g.tagName) < 0 && !a(g).hasClass("fr-inner") ? !b.opts.keepFormatOnDelete || d > 1 || b.$el.find("[data-first]").length > 0 ? a(g).remove() : r(g) : a(g).hasClass("fr-inner") ? 0 == a(g).find(".fr-inner").length ? a(g).html("<br>") : a(g).find(".fr-inner").filter(function () {
-          return 0 == a(this).find("fr-inner").length
-        }).html("<br>") : (a(g).empty(), a(g).attr("data-del-cell", !0)) : a(g).find(".fr-marker").length > 0 && (d = s(a(g), d))
+        jQuery(g).hasClass("fr-marker") ? d = (d + 1) % 2 : d ? jQuery(g).find(".fr-marker").length > 0 ? d = s(jQuery(g), d) : ["TD", "TH"].indexOf(g.tagName) < 0 && !jQuery(g).hasClass("fr-inner") ? !b.opts.keepFormatOnDelete || d > 1 || b.$el.find("[data-first]").length > 0 ? jQuery(g).remove() : r(g) : jQuery(g).hasClass("fr-inner") ? 0 == jQuery(g).find(".fr-inner").length ? jQuery(g).html("<br>") : jQuery(g).find(".fr-inner").filter(function () {
+          return 0 == jQuery(this).find("fr-inner").length
+        }).html("<br>") : (jQuery(g).empty(), jQuery(g).attr("data-del-cell", !0)) : jQuery(g).find(".fr-marker").length > 0 && (d = s(jQuery(g), d))
       }
       return d
     }
@@ -1356,56 +1360,56 @@
           for (var c = b.previousSibling; c && c.nodeType == Node.TEXT_NODE && 0 == c.textContent.length;) {
             var d = c,
               c = c.previousSibling;
-            a(d).remove()
+            jQuery(d).remove()
           }
           return c
         }, d = function (b) {
           for (var c = b.nextSibling; c && c.nodeType == Node.TEXT_NODE && 0 == c.textContent.length;) {
             var d = c,
               c = c.nextSibling;
-            a(d).remove()
+            jQuery(d).remove()
           }
           return c
         }, e = b.$el.find('.fr-marker[data-type="true"]'), f = 0; f < e.length; f++)
-        for (var g = e[f]; !c(g) && !b.node.isBlock(g.parentNode) && !b.$el.is(i.parentNode);) a(g.parentNode).before(g);
+        for (var g = e[f]; !c(g) && !b.node.isBlock(g.parentNode) && !b.$el.is(i.parentNode);) jQuery(g.parentNode).before(g);
       for (var h = b.$el.find('.fr-marker[data-type="false"]'), f = 0; f < h.length; f++) {
-        for (var i = h[f]; !d(i) && !b.node.isBlock(i.parentNode) && !b.$el.is(i.parentNode);) a(i.parentNode).after(i);
-        i.parentNode && b.node.isBlock(i.parentNode) && b.node.isEmpty(i.parentNode) && !b.$el.is(i.parentNode) && a(i.parentNode).after(i)
+        for (var i = h[f]; !d(i) && !b.node.isBlock(i.parentNode) && !b.$el.is(i.parentNode);) jQuery(i.parentNode).after(i);
+        i.parentNode && b.node.isBlock(i.parentNode) && b.node.isEmpty(i.parentNode) && !b.$el.is(i.parentNode) && jQuery(i.parentNode).after(i)
       }
       if (n()) {
         s(b.$el, 0);
         var j = b.$el.find('[data-first="true"]');
-        if (j.length) b.$el.find(".fr-marker").remove(), j.append(a.FE.INVISIBLE_SPACE + a.FE.MARKERS).removeAttr("data-first"), j.attr("data-text") && j.replaceWith(j.html());
+        if (j.length) b.$el.find(".fr-marker").remove(), j.append(jQuery.FE.INVISIBLE_SPACE + jQuery.FE.MARKERS).removeAttr("data-first"), j.attr("data-text") && j.replaceWith(j.html());
         else {
           b.$el.find("table").filter(function () {
-            var b = a(this).find("[data-del-cell]").length > 0 && a(this).find("[data-del-cell]").length == a(this).find("td, th").length;
+            var b = jQuery(this).find("[data-del-cell]").length > 0 && jQuery(this).find("[data-del-cell]").length == jQuery(this).find("td, th").length;
             return b
           }).remove(), b.$el.find("[data-del-cell]").removeAttr("data-del-cell");
           for (var e = b.$el.find('.fr-marker[data-type="true"]'), f = 0; f < e.length; f++) {
             var m = e[f],
               p = m.nextSibling,
-              q = b.$el.find('.fr-marker[data-type="false"][data-id="' + a(m).data("id") + '"]').get(0);
+              q = b.$el.find('.fr-marker[data-type="false"][data-id="' + jQuery(m).data("id") + '"]').get(0);
             if (q) {
               if (p && p == q);
               else if (m) {
                 var r = b.node.blockParent(m),
                   t = b.node.blockParent(q);
-                if (a(m).after(q), r == t);
+                if (jQuery(m).after(q), r == t);
                 else if (null == r) {
                   var u = b.node.deepestParent(m);
-                  u ? (a(u).after(a(t).html()), a(t).remove()) : 0 == a(t).parentsUntil(b.$el, "table").length && (a(m).next().after(a(t).html()), a(t).remove())
+                  u ? (jQuery(u).after(jQuery(t).html()), jQuery(t).remove()) : 0 == jQuery(t).parentsUntil(b.$el, "table").length && (jQuery(m).next().after(jQuery(t).html()), jQuery(t).remove())
                 }
-                else if (null == t && 0 == a(r).parentsUntil(b.$el, "table").length) {
+                else if (null == t && 0 == jQuery(r).parentsUntil(b.$el, "table").length) {
                   for (var p = r; !p.nextSibling && p.parentNode != b.$el.get(0);) p = p.parentNode;
                   for (p = p.nextSibling; p && "BR" != p.tagName;) {
                     var v = p.nextSibling;
-                    a(r).append(p), p = v
+                    jQuery(r).append(p), p = v
                   }
                 }
-                else 0 == a(r).parentsUntil(b.$el, "table").length && 0 == a(t).parentsUntil(b.$el, "table").length && (a(r).append(a(t).html()), a(t).remove())
+                else 0 == jQuery(r).parentsUntil(b.$el, "table").length && 0 == jQuery(t).parentsUntil(b.$el, "table").length && (jQuery(r).append(jQuery(t).html()), jQuery(t).remove())
               }
             }
-            else q = a(m).clone().attr("data-type", !1), a(m).after(q)
+            else q = jQuery(m).clone().attr("data-type", !1), jQuery(m).after(q)
           }
         }
       }
@@ -1413,25 +1417,25 @@
     }
 
     function v(c) {
-      if (a(c).find(".fr-marker").length > 0) return !1;
+      if (jQuery(c).find(".fr-marker").length > 0) return !1;
       for (var d = b.node.contents(c); d.length && b.node.isBlock(d[0]);) c = d[0], d = b.node.contents(c);
-      a(c).prepend(a.FE.MARKERS)
+      jQuery(c).prepend(jQuery.FE.MARKERS)
     }
 
     function w(c) {
-      if (a(c).find(".fr-marker").length > 0) return !1;
+      if (jQuery(c).find(".fr-marker").length > 0) return !1;
       for (var d = b.node.contents(c); d.length && b.node.isBlock(d[d.length - 1]);) c = d[d.length - 1], d = b.node.contents(c);
-      a(c).append(a.FE.MARKERS)
+      jQuery(c).append(jQuery.FE.MARKERS)
     }
 
     function x(c) {
       for (var d = c.previousSibling; d && d.nodeType == Node.TEXT_NODE && 0 == d.textContent.length;) d = d.previousSibling;
-      return d ? (b.node.isBlock(d) ? w(d) : "BR" == d.tagName ? a(d).before(a.FE.MARKERS) : a(d).after(a.FE.MARKERS), !0) : !1
+      return d ? (b.node.isBlock(d) ? w(d) : "BR" == d.tagName ? jQuery(d).before(jQuery.FE.MARKERS) : jQuery(d).after(jQuery.FE.MARKERS), !0) : !1
     }
 
     function y(c) {
       for (var d = c.nextSibling; d && d.nodeType == Node.TEXT_NODE && 0 == d.textContent.length;) d = d.nextSibling;
-      return d ? (b.node.isBlock(d) ? v(d) : a(d).before(a.FE.MARKERS), !0) : !1
+      return d ? (b.node.isBlock(d) ? v(d) : jQuery(d).before(jQuery.FE.MARKERS), !0) : !1
     }
     return {
       text: c,
@@ -1456,21 +1460,21 @@
     }
   };
   
-  a.FE.UNICODE_NBSP = String.fromCharCode(160)
+  jQuery.FE.UNICODE_NBSP = String.fromCharCode(160)
 
-  a.FE.VOID_ELEMENTS = ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr"], a.FE.BLOCK_TAGS = ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "ul", "ol", "li", "table", "td", "th", "thead", "tfoot", "tbody", "tr", "hr", "dl", "dt", "dd", "form"], a.extend(a.FE.DEFAULTS, {
-    htmlAllowedEmptyTags: ["textarea", "a", "iframe", "object", "video", "style", "script", ".fa", ".fr-emoticon"],
+  jQuery.FE.VOID_ELEMENTS = ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr"], jQuery.FE.BLOCK_TAGS = ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "ul", "ol", "li", "table", "td", "th", "thead", "tfoot", "tbody", "tr", "hr", "dl", "dt", "dd", "form"], jQuery.extend(jQuery.FE.DEFAULTS, {
+    htmlAllowedEmptyTags: ["textarea", "jQuery", "iframe", "object", "video", "style", "script", ".fa", ".fr-emoticon"],
     htmlDoNotWrapTags: ["script", "style"],
     htmlSimpleAmpersand: !1
   });
-  a.FE.MODULES.html = function (b) {
+  jQuery.FE.MODULES.html = function (b) {
     function c() {
-      return b.opts.enter == a.FE.ENTER_P ? "p" : b.opts.enter == a.FE.ENTER_DIV ? "div" : b.opts.enter == a.FE.ENTER_BR ? null : void 0
+      return b.opts.enter == jQuery.FE.ENTER_P ? "p" : b.opts.enter == jQuery.FE.ENTER_DIV ? "div" : b.opts.enter == jQuery.FE.ENTER_BR ? null : void 0
     }
 
     function d() {
       for (var c = [], d = b.$el.get(0).querySelectorAll(f()), e = 0; e < d.length; e++)
-        if (!(d[e].querySelectorAll(a.FE.VOID_ELEMENTS.join(",")).length > 0 || d[e].querySelectorAll(b.opts.htmlAllowedEmptyTags.join(",")).length > 0 || d[e].querySelectorAll(f()).length > 0)) {
+        if (!(d[e].querySelectorAll(jQuery.FE.VOID_ELEMENTS.join(",")).length > 0 || d[e].querySelectorAll(b.opts.htmlAllowedEmptyTags.join(",")).length > 0 || d[e].querySelectorAll(f()).length > 0)) {
           for (var g = b.node.contents(d[e]), h = !1, i = 0; i < g.length; i++)
             if (g[i].nodeType != Node.COMMENT_NODE && g[i].textContent && g[i].textContent.replace(/\u200B/g, "").replace(/\n/g, "").length > 0) {
               h = !0;
@@ -1482,20 +1486,20 @@
     }
 
     function e() {
-      return a.FE.BLOCK_TAGS.join(":empty, ") + ":empty"
+      return jQuery.FE.BLOCK_TAGS.join(":empty, ") + ":empty"
     }
 
     function f() {
-      return a.FE.BLOCK_TAGS.join(", ")
+      return jQuery.FE.BLOCK_TAGS.join(", ")
     }
 
     function g(c) {
-      var d = a.merge([], a.FE.VOID_ELEMENTS);
-      d = a.merge(d, b.opts.htmlAllowedEmptyTags), "undefined" == typeof c && (d = a.merge(d, a.FE.BLOCK_TAGS));
+      var d = jQuery.merge([], jQuery.FE.VOID_ELEMENTS);
+      d = jQuery.merge(d, b.opts.htmlAllowedEmptyTags), "undefined" == typeof c && (d = jQuery.merge(d, jQuery.FE.BLOCK_TAGS));
       var e, f;
       do {
         f = !1, e = b.$el.get(0).querySelectorAll("*:empty:not(" + d.join("):not(") + "):not(.fr-marker)");
-        for (var g = 0; g < e.length; g++)(0 === e[g].attributes.length || "undefined" != typeof e[g].getAttribute("href")) && (a(e[g]).remove(), f = !0);
+        for (var g = 0; g < e.length; g++)(0 === e[g].attributes.length || "undefined" != typeof e[g].getAttribute("href")) && (jQuery(e[g]).remove(), f = !0);
         e = b.$el.get(0).querySelectorAll("*:empty:not(" + d.join("):not(") + "):not(.fr-marker)")
       } while (e.length && f)
     }
@@ -1505,38 +1509,38 @@
       if (e && (f = 'div class="fr-temp-div"'), f)
         for (var g = b.node.contents(d.get(0)), h = null, i = 0; i < g.length; i++) {
           var j = g[i];
-          if (j.nodeType == Node.ELEMENT_NODE && (b.node.isBlock(j) || a(j).is(b.opts.htmlDoNotWrapTags.join(",")) && !a(j).hasClass("fr-marker"))) h = null;
+          if (j.nodeType == Node.ELEMENT_NODE && (b.node.isBlock(j) || jQuery(j).is(b.opts.htmlDoNotWrapTags.join(",")) && !jQuery(j).hasClass("fr-marker"))) h = null;
           else if (j.nodeType != Node.ELEMENT_NODE && j.nodeType != Node.TEXT_NODE) h = null;
           else if (j.nodeType == Node.ELEMENT_NODE && "BR" == j.tagName)
-            if (null == h) e ? a(j).replaceWith("<" + f + ' data-empty="true"><br></div>') : a(j).replaceWith("<" + f + "><br></" + f + ">");
+            if (null == h) e ? jQuery(j).replaceWith("<" + f + ' data-empty="true"><br></div>') : jQuery(j).replaceWith("<" + f + "><br></" + f + ">");
             else {
-              a(j).remove();
+              jQuery(j).remove();
               for (var k = b.node.contents(h), l = !1, m = 0; m < k.length; m++)
-                if (!a(k[m]).hasClass("fr-marker") && (k[m].nodeType != Node.TEXT_NODE || 0 !== k[m].textContent.replace(/ /g, "").length)) {
+                if (!jQuery(k[m]).hasClass("fr-marker") && (k[m].nodeType != Node.TEXT_NODE || 0 !== k[m].textContent.replace(/ /g, "").length)) {
                   l = !0;
                   break
                 }
               l === !1 && (h.append("<br>"), h.data("empty", !0)), h = null
             }
-          else j.nodeType == Node.TEXT_NODE && 0 == a(j).text().trim().length ? a(j).remove() : (null == h && (h = a("<" + f + ">"), a(j).before(h)), j.nodeType == Node.TEXT_NODE && a(j).text().trim().length > 0 ? (h.append(a(j).clone()), a(j).remove()) : h.append(a(j)))
+          else j.nodeType == Node.TEXT_NODE && 0 == jQuery(j).text().trim().length ? jQuery(j).remove() : (null == h && (h = jQuery("<" + f + ">"), jQuery(j).before(h)), j.nodeType == Node.TEXT_NODE && jQuery(j).text().trim().length > 0 ? (h.append(jQuery(j).clone()), jQuery(j).remove()) : h.append(jQuery(j)))
         }
     }
 
     function i(c, d, e, f) {
       return b.$wp ? ("undefined" == typeof c && (c = !1), "undefined" == typeof d && (d = !1), "undefined" == typeof e && (e = !1), "undefined" == typeof f && (f = !1), h(b.$el, c), f && b.$el.find(".fr-inner").each(function () {
-        h(a(this), c)
+        h(jQuery(this), c)
       }), d && b.$el.find("td, th").each(function () {
-        h(a(this), c)
+        h(jQuery(this), c)
       }), void(e && b.$el.find("blockquote").each(function () {
-        h(a(this), c)
+        h(jQuery(this), c)
       }))) : !1
     }
 
     function j() {
       b.$el.find("div.fr-temp-div").each(function () {
-        a(this).data("empty") || "LI" == this.parentNode.tagName ? a(this).replaceWith(a(this).html()) : a(this).replaceWith(a(this).html() + "<br>")
+        jQuery(this).data("empty") || "LI" == this.parentNode.tagName ? jQuery(this).replaceWith(jQuery(this).html()) : jQuery(this).replaceWith(jQuery(this).html() + "<br>")
       }), b.$el.find(".fr-temp-div").removeClass("fr-temp-div").filter(function () {
-        return "" == a(this).attr("class")
+        return "" == jQuery(this).attr("class")
       }).removeAttr("class")
     }
 
@@ -1571,12 +1575,12 @@
         else if (c.nodeType == Node.TEXT_NODE && c.textContent.length > 0) {
         var f = c.previousSibling,
           g = c.nextSibling;
-        if (n(f) && n(g) && 0 === c.textContent.trim().length && b.opts.enter != a.FE.ENTER_BR) a(c).remove();
+        if (n(f) && n(g) && 0 === c.textContent.trim().length && b.opts.enter != jQuery.FE.ENTER_BR) jQuery(c).remove();
         else {
           var h = c.textContent;
-          h = h.replace(new RegExp(a.FE.UNICODE_NBSP, "g"), " ");
-          for (var i = "", j = 0; j < h.length; j++) i += 32 != h.charCodeAt(j) || 0 !== j && 32 != i.charCodeAt(j - 1) ? h[j] : a.FE.UNICODE_NBSP;
-          c.nextSibling || (i = i.replace(/ $/, a.FE.UNICODE_NBSP)), !c.previousSibling || b.node.isVoid(c.previousSibling) || b.node.isBlock(c.previousSibling) || (i = i.replace(/^\u00A0([^ $])/, " $1")), i = i.replace(/([^ \u00A0])\u00A0([^ \u00A0])/g, "$1 $2"), c.textContent != i && (c.textContent = i)
+          h = h.replace(new RegExp(jQuery.FE.UNICODE_NBSP, "g"), " ");
+          for (var i = "", j = 0; j < h.length; j++) i += 32 != h.charCodeAt(j) || 0 !== j && 32 != i.charCodeAt(j - 1) ? h[j] : jQuery.FE.UNICODE_NBSP;
+          c.nextSibling || (i = i.replace(/ $/, jQuery.FE.UNICODE_NBSP)), !c.previousSibling || b.node.isVoid(c.previousSibling) || b.node.isBlock(c.previousSibling) || (i = i.replace(/^\u00A0([^ $])/, " $1")), i = i.replace(/([^ \u00A0])\u00A0([^ \u00A0])/g, "$1 $2"), c.textContent != i && (c.textContent = i)
         }
       }
     }
@@ -1584,7 +1588,7 @@
     function p(c) {
       if ("undefined" == typeof c && (c = b.$el.get(0)), c.nodeType == Node.ELEMENT_NODE && ["STYLE", "SCRIPT", "HEAD"].indexOf(c.tagName) < 0) {
         for (var d = b.node.contents(c), e = d.length - 1; e >= 0; e--)
-          if (!a(d[e]).hasClass("fr-marker")) {
+          if (!jQuery(d[e]).hasClass("fr-marker")) {
             var f = p(d[e]);
             if (1 == f) return !0
           }
@@ -1594,9 +1598,9 @@
           h = c.nextSibling;
         if (n(g) && n(h) && 0 === c.textContent.trim().length) return !0;
         var i = c.textContent;
-        i = i.replace(new RegExp(a.FE.UNICODE_NBSP, "g"), " ");
-        for (var j = "", k = 0; k < i.length; k++) j += 32 != i.charCodeAt(k) || 0 !== k && 32 != j.charCodeAt(k - 1) ? i[k] : a.FE.UNICODE_NBSP;
-        if (c.nextSibling || (j = j.replace(/ $/, a.FE.UNICODE_NBSP)), c.previousSibling && !b.node.isVoid(c.previousSibling) && (j = j.replace(/^\u00A0([^ $])/, " $1")), j = j.replace(/([^ \u00A0])\u00A0([^ \u00A0])/g, "$1 $2"), c.textContent != j) return !0
+        i = i.replace(new RegExp(jQuery.FE.UNICODE_NBSP, "g"), " ");
+        for (var j = "", k = 0; k < i.length; k++) j += 32 != i.charCodeAt(k) || 0 !== k && 32 != j.charCodeAt(k - 1) ? i[k] : jQuery.FE.UNICODE_NBSP;
+        if (c.nextSibling || (j = j.replace(/ $/, jQuery.FE.UNICODE_NBSP)), c.previousSibling && !b.node.isVoid(c.previousSibling) && (j = j.replace(/^\u00A0([^ $])/, " $1")), j = j.replace(/([^ \u00A0])\u00A0([^ \u00A0])/g, "$1 $2"), c.textContent != j) return !0
       }
       return !1
     }
@@ -1623,7 +1627,7 @@
     }
 
     function u() {
-      b.core.isEmpty() && (null != c() ? 0 === b.$el.get(0).querySelectorAll(f()).length && 0 === b.$el.get(0).querySelectorAll(b.opts.htmlDoNotWrapTags.join(",")).length && (b.core.hasFocus() ? (b.$el.html("<" + c() + ">" + a.FE.MARKERS + "<br/></" + c() + ">"), b.selection.restore()) : b.$el.html("<" + c() + "><br/></" + c() + ">")) : 0 === b.$el.get(0).querySelectorAll("*:not(.fr-marker):not(br)").length && (b.core.hasFocus() ? (b.$el.html(a.FE.MARKERS + "<br/>"), b.selection.restore()) : b.$el.html("<br/>")))
+      b.core.isEmpty() && (null != c() ? 0 === b.$el.get(0).querySelectorAll(f()).length && 0 === b.$el.get(0).querySelectorAll(b.opts.htmlDoNotWrapTags.join(",")).length && (b.core.hasFocus() ? (b.$el.html("<" + c() + ">" + jQuery.FE.MARKERS + "<br/></" + c() + ">"), b.selection.restore()) : b.$el.html("<" + c() + "><br/></" + c() + ">")) : 0 === b.$el.get(0).querySelectorAll("*:not(.fr-marker):not(br)").length && (b.core.hasFocus() ? (b.$el.html(jQuery.FE.MARKERS + "<br/>"), b.selection.restore()) : b.$el.html("<br/>")))
     }
 
     function v(a, b) {
@@ -1631,7 +1635,7 @@
     }
 
     function w(c, d) {
-      var e = a("<div " + (q(c, "<" + d + "([^>]*?)>", 1) || "") + ">");
+      var e = jQuery("<div " + (q(c, "<" + d + "([^>]*?)>", 1) || "") + ">");
       return b.node.rawAttributes(e.get(0))
     }
 
@@ -1713,19 +1717,19 @@
 
     function A() {
       var c = function (c, d) {
-          for (; d && (d.nodeType == Node.TEXT_NODE || !b.node.isBlock(d));) d && d.nodeType != Node.TEXT_NODE && a(c).wrapInner(b.node.openTagString(d) + b.node.closeTagString(d)), d = d.parentNode;
+          for (; d && (d.nodeType == Node.TEXT_NODE || !b.node.isBlock(d));) d && d.nodeType != Node.TEXT_NODE && jQuery(c).wrapInner(b.node.openTagString(d) + b.node.closeTagString(d)), d = d.parentNode;
           d && c.innerHTML == d.innerHTML && (c.innerHTML = d.outerHTML)
         },
         d = function () {
           var c, d = null;
-          return b.win.getSelection ? (c = b.win.getSelection(), c && c.rangeCount && (d = c.getRangeAt(0).commonAncestorContainer, d.nodeType != Node.ELEMENT_NODE && (d = d.parentNode))) : (c = b.doc.selection) && "Control" != c.type && (d = c.createRange().parentElement()), null != d && (a.inArray(b.$el.get(0), a(d).parents()) >= 0 || d == b.$el.get(0)) ? d : null
+          return b.win.getSelection ? (c = b.win.getSelection(), c && c.rangeCount && (d = c.getRangeAt(0).commonAncestorContainer, d.nodeType != Node.ELEMENT_NODE && (d = d.parentNode))) : (c = b.doc.selection) && "Control" != c.type && (d = c.createRange().parentElement()), null != d && (jQuery.inArray(b.$el.get(0), jQuery(d).parents()) >= 0 || d == b.$el.get(0)) ? d : null
         },
         e = "";
       if ("undefined" != typeof b.win.getSelection) {
         b.browser.mozilla && (b.selection.save(), b.$el.find('.fr-marker[data-type="false"]').length > 1 && (b.$el.find('.fr-marker[data-type="false"][data-id="0"]').remove(), b.$el.find('.fr-marker[data-type="false"]:last').attr("data-id", "0"), b.$el.find(".fr-marker").not('[data-id="0"]').remove()), b.selection.restore());
         for (var f = b.selection.ranges(), g = 0; g < f.length; g++) {
           var h = document.createElement("div");
-          h.appendChild(f[g].cloneContents()), c(h, d()), a(h).find(".fr-element").length > 0 && (h = b.$el.get(0)), e += h.innerHTML
+          h.appendChild(f[g].cloneContents()), c(h, d()), jQuery(h).find(".fr-element").length > 0 && (h = b.$el.get(0)), e += h.innerHTML
         }
       }
       else "undefined" != typeof b.doc.selection && "Text" == b.doc.selection.type && (e = b.doc.selection.createRange().htmlText);
@@ -1733,7 +1737,7 @@
     }
 
     function B(b) {
-      var c = a("<div>").html(b);
+      var c = jQuery("<div>").html(b);
       return c.find(f()).length > 0
     }
 
@@ -1757,9 +1761,9 @@
         if ((B(f) || e) && (h = b.node.deepestParent(g))) {
           var g = b.markers.split();
           if (!g) return !1;
-          a(g).replaceWith(f)
+          jQuery(g).replaceWith(f)
         }
-        else a(g).replaceWith(f)
+        else jQuery(g).replaceWith(f)
       }
       t(), b.events.trigger("html.inserted")
     }
@@ -1774,7 +1778,7 @@
           var h = e[g];
           if (d != h) {
             var i = h.textContent;
-            0 === h.children.length && 1 === i.length && 8203 == i.charCodeAt(0) && (a(h).remove(), f = !0)
+            0 === h.children.length && 1 === i.length && 8203 == i.charCodeAt(0) && (jQuery(h).remove(), f = !0)
           }
         }
       } while (f)
@@ -1814,14 +1818,14 @@
     }
   };
   
-  a.extend(a.FE.DEFAULTS, {
+  jQuery.extend(jQuery.FE.DEFAULTS, {
     height: null,
     heightMax: null,
     heightMin: null,
     width: null
   });
 
-  a.FE.MODULES.size = function (a) {
+  jQuery.FE.MODULES.size = function (a) {
     function b() {
       a.opts.height && a.$el.css("minHeight", a.opts.height - a.helpers.getPX(a.$el.css("padding-top")) - a.helpers.getPX(a.$el.css("padding-bottom"))), a.$iframe.height(a.$el.outerHeight(!0))
     }
@@ -1840,17 +1844,17 @@
     }
   };
 
-  a.extend(a.FE.DEFAULTS, {
+  jQuery.extend(jQuery.FE.DEFAULTS, {
     language: null
   });
-  a.FE.LANGUAGE = {};
-  a.FE.MODULES.language = function (b) {
+  jQuery.FE.LANGUAGE = {};
+  jQuery.FE.MODULES.language = function (b) {
     function c(a) {
       return e && e.translation[a] ? e.translation[a] : a
     }
 
     function d() {
-      a.FE.LANGUAGE && (e = a.FE.LANGUAGE[b.opts.language]), e && e.direction && (b.opts.direction = e.direction)
+      jQuery.FE.LANGUAGE && (e = jQuery.FE.LANGUAGE[b.opts.language]), e && e.direction && (b.opts.direction = e.direction)
     }
     var e;
     return {
@@ -1858,16 +1862,16 @@
       translate: c
     }
   };
-  a.extend(a.FE.DEFAULTS, {
+  jQuery.extend(jQuery.FE.DEFAULTS, {
     placeholderText: "Type something"
   });
   
-  a.FE.MODULES.placeholder = function (b) {
+  jQuery.FE.MODULES.placeholder = function (b) {
     function c() {
       b.$placeholder || g();
       var c = 0,
         d = b.node.contents(b.$el.get(0));
-      d.length && d[0].nodeType == Node.ELEMENT_NODE ? (b.opts.toolbarInline || (c = b.helpers.getPX(a(d[0]).css("margin-top"))), b.$placeholder.css("font-size", a(d[0]).css("font-size")), b.$placeholder.css("line-height", a(d[0]).css("line-height"))) : (b.$placeholder.css("font-size", b.$el.css("font-size")), b.$placeholder.css("line-height", b.$el.css("line-height"))), b.$wp.addClass("show-placeholder"), b.$placeholder.css("margin-top", Math.max(b.helpers.getPX(b.$el.css("margin-top")), c)).text(b.language.translate(b.opts.placeholderText || b.$oel.attr("placeholder") || ""))
+      d.length && d[0].nodeType == Node.ELEMENT_NODE ? (b.opts.toolbarInline || (c = b.helpers.getPX(jQuery(d[0]).css("margin-top"))), b.$placeholder.css("font-size", jQuery(d[0]).css("font-size")), b.$placeholder.css("line-height", jQuery(d[0]).css("line-height"))) : (b.$placeholder.css("font-size", b.$el.css("font-size")), b.$placeholder.css("line-height", b.$el.css("line-height"))), b.$wp.addClass("show-placeholder"), b.$placeholder.css("margin-top", Math.max(b.helpers.getPX(b.$el.css("margin-top")), c)).text(b.language.translate(b.opts.placeholderText || b.$oel.attr("placeholder") || ""))
     }
 
     function d() {
@@ -1883,7 +1887,7 @@
     }
 
     function g() {
-      b.$placeholder = a('<span class="fr-placeholder"></span>'), b.$wp.append(b.$placeholder)
+      b.$placeholder = jQuery('<span class="fr-placeholder"></span>'), b.$wp.append(b.$placeholder)
     }
 
     function h() {
@@ -1897,7 +1901,7 @@
       isVisible: e
     }
   };
-  a.FE.MODULES.edit = function (a) {
+  jQuery.FE.MODULES.edit = function (a) {
     function b() {
       if (a.browser.mozilla) try {
         a.doc.execCommand("enableObjectResizing", !1, "false"), a.doc.execCommand("enableInlineTableEditing", !1, "false")
@@ -1906,11 +1910,11 @@
     }
 
     function c() {
-      a.$wp ? (a.$el.attr("contenteditable", !0), a.$el.removeClass("fr-disabled"), a.$tb && a.$tb.removeClass("fr-disabled"), b()) : a.$el.is("a") && a.$el.attr("contenteditable", !0), f = !1
+      a.$wp ? (a.$el.attr("contenteditable", !0), a.$el.removeClass("fr-disabled"), a.$tb && a.$tb.removeClass("fr-disabled"), b()) : a.$el.is("jQuery") && a.$el.attr("contenteditable", !0), f = !1
     }
 
     function d() {
-      a.$wp ? (a.$el.attr("contenteditable", !1), a.$el.addClass("fr-disabled"), a.$tb && a.$tb.addClass("fr-disabled")) : a.$el.is("a") && a.$el.attr("contenteditable", !1), f = !0
+      a.$wp ? (a.$el.attr("contenteditable", !1), a.$el.addClass("fr-disabled"), a.$tb && a.$tb.addClass("fr-disabled")) : a.$el.is("jQuery") && a.$el.attr("contenteditable", !1), f = !0
     }
 
     function e() {
@@ -1925,7 +1929,7 @@
     }
   };
 
-  a.extend(a.FE.DEFAULTS, {
+  jQuery.extend(jQuery.FE.DEFAULTS, {
     editorClass: null,
     typingTimer: 500,
     iframe: !1,
@@ -1941,7 +1945,7 @@
     keepFormatOnDelete: !1,
     theme: null
   });
-  a.FE.MODULES.core = function (b) {
+  jQuery.FE.MODULES.core = function (b) {
     function c(a) {
       b.opts.iframe && b.$head.append('<style data-fr-style="true">' + a + "</style>")
     }
@@ -2000,7 +2004,7 @@
     }
 
     function l() {
-      if (a.FE.INSTANCES.push(b), g(), b.$wp) {
+      if (jQuery.FE.INSTANCES.push(b), g(), b.$wp) {
         e(), b.html.set(b._original_html), b.$el.attr("spellcheck", b.opts.spellcheck), b.helpers.isMobile() && (b.$el.attr("autocomplete", b.opts.spellcheck ? "on" : "off"), b.$el.attr("autocorrect", b.opts.spellcheck ? "on" : "off"), b.$el.attr("autocapitalize", b.opts.spellcheck ? "on" : "off")), b.opts.disableRightClick && b.events.$on(b.$el, "contextmenu", function (a) {
           return 2 == a.button ? !1 : void 0
         });
@@ -2028,7 +2032,7 @@
       sameInstance: k
     }
   };
-  a.FE.COMMANDS = {
+  jQuery.FE.COMMANDS = {
     bold: {
       title: "Bold",
       refresh: function (a) {
@@ -2094,15 +2098,15 @@
       undo: !1
     }
   };
-  a.FE.RegisterCommand = function (b, c) {
-    a.FE.COMMANDS[b] = c
+  jQuery.FE.RegisterCommand = function (b, c) {
+    jQuery.FE.COMMANDS[b] = c
   };
-  a.FE.MODULES.commands = function (b) {
+  jQuery.FE.MODULES.commands = function (b) {
     function c(c, d) {
-      if (b.events.trigger("commands.before", a.merge([c], d || [])) !== !1) {
-        var e = a.FE.COMMANDS[c] && a.FE.COMMANDS[c].callback || k[c],
+      if (b.events.trigger("commands.before", jQuery.merge([c], d || [])) !== !1) {
+        var e = jQuery.FE.COMMANDS[c] && jQuery.FE.COMMANDS[c].callback || k[c],
           f = !0;
-        a.FE.COMMANDS[c] && "undefined" != typeof a.FE.COMMANDS[c].focus && (f = a.FE.COMMANDS[c].focus), b.core.hasFocus() || !f || b.popups.areVisible() || b.events.focus(!0), a.FE.COMMANDS[c] && a.FE.COMMANDS[c].undo !== !1 && b.undo.saveStep(), e && e.apply(b, a.merge([c], d || [])), b.events.trigger("commands.after", a.merge([c], d || [])), a.FE.COMMANDS[c] && a.FE.COMMANDS[c].undo !== !1 && b.undo.saveStep()
+        jQuery.FE.COMMANDS[c] && "undefined" != typeof jQuery.FE.COMMANDS[c].focus && (f = jQuery.FE.COMMANDS[c].focus), b.core.hasFocus() || !f || b.popups.areVisible() || b.events.focus(!0), jQuery.FE.COMMANDS[c] && jQuery.FE.COMMANDS[c].undo !== !1 && b.undo.saveStep(), e && e.apply(b, jQuery.merge([c], d || [])), b.events.trigger("commands.after", jQuery.merge([c], d || [])), jQuery.FE.COMMANDS[c] && jQuery.FE.COMMANDS[c].undo !== !1 && b.undo.saveStep()
       }
     }
 
@@ -2110,20 +2114,20 @@
       if (b.selection.isCollapsed() && b.doc.queryCommandState(c) === !1) {
         b.markers.insert();
         var e = b.$el.find(".fr-marker");
-        e.replaceWith("<" + d + ">" + a.FE.INVISIBLE_SPACE + a.FE.MARKERS + "</" + d + ">"), b.selection.restore()
+        e.replaceWith("<" + d + ">" + jQuery.FE.INVISIBLE_SPACE + jQuery.FE.MARKERS + "</" + d + ">"), b.selection.restore()
       }
       else {
         var f = b.selection.element();
-        if (b.selection.isCollapsed() && b.doc.queryCommandState(c) === !0 && f.tagName == d.toUpperCase() && 0 === (f.textContent || "").replace(/\u200B/g, "").length) a(f).replaceWith(a.FE.MARKERS), b.selection.restore();
+        if (b.selection.isCollapsed() && b.doc.queryCommandState(c) === !0 && f.tagName == d.toUpperCase() && 0 === (f.textContent || "").replace(/\u200B/g, "").length) jQuery(f).replaceWith(jQuery.FE.MARKERS), b.selection.restore();
         else {
           var g = b.$el.find("span"),
             h = !1;
           b.doc.queryCommandState(c) !== !1 || b.browser.chrome || (b.selection.save(), h = !0), b.browser.mozilla && b.$el.find(".fr-marker").css("display", "inline-block"), b.doc.execCommand(c, !1, !1), h && b.selection.restore();
           var i = b.$el.find("span[style]").not(g).filter(function () {
-            return a(this).attr("style").indexOf("font-weight: normal") >= 0
+            return jQuery(this).attr("style").indexOf("font-weight: normal") >= 0
           });
           i.length && (b.selection.save(), i.each(function () {
-            a(this).replaceWith(a(this).html())
+            jQuery(this).replaceWith(jQuery(this).html())
           }), b.selection.restore()), b.clean.toHTML5()
         }
       }
@@ -2133,7 +2137,7 @@
       b.selection.save(), b.html.wrap(!0, !0, !0, !0), b.selection.restore();
       for (var d = b.selection.blocks(), e = 0; e < d.length; e++)
         if ("LI" != d[e].tagName && "LI" != d[e].parentNode.tagName) {
-          var f = a(d[e]),
+          var f = jQuery(d[e]),
             g = "rtl" == b.opts.direction || "rtl" == f.css("direction") ? "margin-right" : "margin-left",
             h = b.helpers.getPX(f.css(g));
           f.css(g, Math.max(h + 20 * c, 0) || ""), f.removeClass("fr-temp-div")
@@ -2146,21 +2150,21 @@
         return a.attr("style").indexOf("font-size") >= 0
       };
       b.$el.find("[style]").each(function () {
-        var b = a(this);
+        var b = jQuery(this);
         c(b) && (b.attr("data-font-size", b.css("font-size")), b.css("font-size", ""))
       })
     }
 
     function g() {
       b.$el.find("[data-font-size]").each(function () {
-        var b = a(this);
+        var b = jQuery(this);
         b.css("font-size", b.attr("data-font-size")), b.removeAttr("data-font-size")
       })
     }
 
     function h() {
       b.$el.find("span").each(function () {
-        "" === b.node.attributes(this) && a(this).replaceWith(a(this).html())
+        "" === b.node.attributes(this) && jQuery(this).replaceWith(jQuery(this).html())
       })
     }
 
@@ -2168,18 +2172,18 @@
       if (b.selection.isCollapsed()) {
         b.markers.insert();
         var e = b.$el.find(".fr-marker");
-        e.replaceWith('<span style="' + c + ": " + d + ';">' + a.FE.INVISIBLE_SPACE + a.FE.MARKERS + "</span>"), b.selection.restore()
+        e.replaceWith('<span style="' + c + ": " + d + ';">' + jQuery.FE.INVISIBLE_SPACE + jQuery.FE.MARKERS + "</span>"), b.selection.restore()
       }
       else {
         f(), b.doc.execCommand("fontSize", !1, 4), b.selection.save(), g();
         for (var i, j = function (b) {
-            var d = a(b);
+            var d = jQuery(b);
             d.css(c, ""), "" === d.attr("style") && d.replaceWith(d.html())
           }, k = function () {
-            return 0 === a(this).attr("style").indexOf(c + ":") || a(this).attr("style").indexOf(";" + c + ":") >= 0 || a(this).attr("style").indexOf("; " + c + ":") >= 0
+            return 0 === jQuery(this).attr("style").indexOf(c + ":") || jQuery(this).attr("style").indexOf(";" + c + ":") >= 0 || jQuery(this).attr("style").indexOf("; " + c + ":") >= 0
           }; b.$el.find("font").length > 0;) {
           var l = b.$el.find("font:first"),
-            m = a('<span class="fr-just" style="' + c + ": " + d + ';">' + l.html() + "</span>");
+            m = jQuery('<span class="fr-just" style="' + c + ": " + d + ';">' + l.html() + "</span>");
           l.replaceWith(m);
           var n = m.find("span");
           for (i = n.length - 1; i >= 0; i--) j(n[i]);
@@ -2200,13 +2204,13 @@
         b.html.cleanEmptyTags(), h();
         var w = b.$el.find(".fr-just + .fr-just");
         for (i = 0; i < w.length; i++) {
-          var x = a(w[i]);
+          var x = jQuery(w[i]);
           x.prepend(x.prev().html()), x.prev().remove()
         }
         b.$el.find(".fr-marker + .fr-just").each(function () {
-          a(this).prepend(a(this).prev())
+          jQuery(this).prepend(jQuery(this).prev())
         }), b.$el.find(".fr-just + .fr-marker").each(function () {
-          a(this).append(a(this).next())
+          jQuery(this).append(jQuery(this).next())
         }), b.$el.find(".fr-just").removeAttr("class"), b.selection.restore()
       }
     }
@@ -2259,7 +2263,7 @@
           if (b.browser.msie || b.browser.edge) {
             var c = function (c) {
               b.commands.applyProperty(c, "#123456"), b.selection.save(), b.$el.find("span:not(.fr-marker)").each(function (d, e) {
-                var f = a(e),
+                var f = jQuery(e),
                   g = f.css(c);
                 ("#123456" === g || "#123456" === b.helpers.RGBToHex(g)) && f.replaceWith(f.html())
               }), b.selection.restore()
@@ -2274,12 +2278,12 @@
       },
       l = {};
     for (var m in k) k.hasOwnProperty(m) && (l[m] = j(m));
-    return a.extend(l, {
+    return jQuery.extend(l, {
       exec: c,
       applyProperty: i
     })
   };
-  a.FE.MODULES.cursorLists = function (b) {
+  jQuery.FE.MODULES.cursorLists = function (b) {
     function c(a) {
       for (var b = a;
         "LI" != b.tagName;) b = b.parentNode;
@@ -2300,60 +2304,60 @@
         for (var k = "", l = "", m = e.parentNode; !b.node.isList(m) && m.parentNode && "LI" !== m.parentNode.tagName;) k = b.node.openTagString(m) + k, l += b.node.closeTagString(m), m = m.parentNode;
         k = b.node.openTagString(m) + k, l += b.node.closeTagString(m);
         var n = "";
-        for (n = m.parentNode && "LI" == m.parentNode.tagName ? l + "<li>" + a.FE.MARKERS + "<br>" + k : j ? l + "<" + j + ">" + a.FE.MARKERS + "<br></" + j + ">" + k : l + a.FE.MARKERS + "<br>" + k, a(g).html('<span id="fr-break"></span>');
+        for (n = m.parentNode && "LI" == m.parentNode.tagName ? l + "<li>" + jQuery.FE.MARKERS + "<br>" + k : j ? l + "<" + j + ">" + jQuery.FE.MARKERS + "<br></" + j + ">" + k : l + jQuery.FE.MARKERS + "<br>" + k, jQuery(g).html('<span id="fr-break"></span>');
           ["UL", "OL"].indexOf(m.tagName) < 0 || m.parentNode && "LI" === m.parentNode.tagName;) m = m.parentNode;
-        var o = b.node.openTagString(m) + a(m).html() + b.node.closeTagString(m);
-        o = o.replace(/<span id="fr-break"><\/span>/g, n), a(m).replaceWith(o), b.$el.find("li:empty").remove()
+        var o = b.node.openTagString(m) + jQuery(m).html() + b.node.closeTagString(m);
+        o = o.replace(/<span id="fr-break"><\/span>/g, n), jQuery(m).replaceWith(o), b.$el.find("li:empty").remove()
       }
-      else i && h || !b.node.isEmpty(g, !0) ? (a(g).before("<li><br></li>"), a(e).remove()) : i ? (f = d(g), f.parentNode && "LI" == f.parentNode.tagName ? a(f.parentNode).after("<li>" + a.FE.MARKERS + "<br></li>") : j ? a(f).after("<" + j + ">" + a.FE.MARKERS + "<br></" + j + ">") : a(f).after(a.FE.MARKERS + "<br>"), a(g).remove()) : (f = d(g), f.parentNode && "LI" == f.parentNode.tagName ? a(f.parentNode).before("<li>" + a.FE.MARKERS + "<br></li>") : j ? a(f).before("<" + j + ">" + a.FE.MARKERS + "<br></" + j + ">") : a(f).before(a.FE.MARKERS + "<br>"), a(g).remove())
+      else i && h || !b.node.isEmpty(g, !0) ? (jQuery(g).before("<li><br></li>"), jQuery(e).remove()) : i ? (f = d(g), f.parentNode && "LI" == f.parentNode.tagName ? jQuery(f.parentNode).after("<li>" + jQuery.FE.MARKERS + "<br></li>") : j ? jQuery(f).after("<" + j + ">" + jQuery.FE.MARKERS + "<br></" + j + ">") : jQuery(f).after(jQuery.FE.MARKERS + "<br>"), jQuery(g).remove()) : (f = d(g), f.parentNode && "LI" == f.parentNode.tagName ? jQuery(f.parentNode).before("<li>" + jQuery.FE.MARKERS + "<br></li>") : j ? jQuery(f).before("<" + j + ">" + jQuery.FE.MARKERS + "<br></" + j + ">") : jQuery(f).before(jQuery.FE.MARKERS + "<br>"), jQuery(g).remove())
     }
 
     function f(d) {
       for (var e = c(d), f = "", g = d, h = "", i = ""; g != e;) {
         g = g.parentNode;
         var j = "A" == g.tagName && b.cursor.isAtEnd(d, g) ? "fr-to-remove" : "";
-        h = b.node.openTagString(a(g).clone().addClass(j).get(0)) + h, i = b.node.closeTagString(g) + i
+        h = b.node.openTagString(jQuery(g).clone().addClass(j).get(0)) + h, i = b.node.closeTagString(g) + i
       }
-      f = i + f + h + a.FE.MARKERS, a(d).replaceWith('<span id="fr-break"></span>');
-      var k = b.node.openTagString(e) + a(e).html() + b.node.closeTagString(e);
-      k = k.replace(/<span id="fr-break"><\/span>/g, f), a(e).replaceWith(k)
+      f = i + f + h + jQuery.FE.MARKERS, jQuery(d).replaceWith('<span id="fr-break"></span>');
+      var k = b.node.openTagString(e) + jQuery(e).html() + b.node.closeTagString(e);
+      k = k.replace(/<span id="fr-break"><\/span>/g, f), jQuery(e).replaceWith(k)
     }
 
     function g(d) {
-      for (var e = c(d), f = a.FE.MARKERS, g = d; g != e;) {
+      for (var e = c(d), f = jQuery.FE.MARKERS, g = d; g != e;) {
         g = g.parentNode;
         var h = "A" == g.tagName && b.cursor.isAtEnd(d, g) ? "fr-to-remove" : "";
-        f = b.node.openTagString(a(g).clone().addClass(h).get(0)) + f + b.node.closeTagString(g)
+        f = b.node.openTagString(jQuery(g).clone().addClass(h).get(0)) + f + b.node.closeTagString(g)
       }
-      a(d).remove(), a(e).after(f)
+      jQuery(d).remove(), jQuery(e).after(f)
     }
 
     function h(e) {
       var f = c(e),
         g = f.previousSibling;
       if (g) {
-        g = a(g).find(b.html.blockTagsQuery()).get(-1) || g, a(e).replaceWith(a.FE.MARKERS);
+        g = jQuery(g).find(b.html.blockTagsQuery()).get(-1) || g, jQuery(e).replaceWith(jQuery.FE.MARKERS);
         var h = b.node.contents(g);
-        h.length && "BR" == h[h.length - 1].tagName && a(h[h.length - 1]).remove(), a(f).find(b.html.blockTagsQuery()).not("ol, ul, table").each(function () {
-          this.parentNode == f && a(this).replaceWith(a(this).html() + (b.node.isEmpty(this) ? "" : "<br>"))
+        h.length && "BR" == h[h.length - 1].tagName && jQuery(h[h.length - 1]).remove(), jQuery(f).find(b.html.blockTagsQuery()).not("ol, ul, table").each(function () {
+          this.parentNode == f && jQuery(this).replaceWith(jQuery(this).html() + (b.node.isEmpty(this) ? "" : "<br>"))
         });
-        for (var i, j = b.node.contents(f)[0]; j && !b.node.isList(j);) i = j.nextSibling, a(g).append(j), j = i;
-        for (g = f.previousSibling; j;) i = j.nextSibling, a(g).append(j), j = i;
-        a(f).remove()
+        for (var i, j = b.node.contents(f)[0]; j && !b.node.isList(j);) i = j.nextSibling, jQuery(g).append(j), j = i;
+        for (g = f.previousSibling; j;) i = j.nextSibling, jQuery(g).append(j), j = i;
+        jQuery(f).remove()
       }
       else {
         var k = d(f);
-        if (a(e).replaceWith(a.FE.MARKERS), k.parentNode && "LI" == k.parentNode.tagName) {
+        if (jQuery(e).replaceWith(jQuery.FE.MARKERS), k.parentNode && "LI" == k.parentNode.tagName) {
           var l = k.previousSibling;
-          b.node.isBlock(l) ? (a(f).find(b.html.blockTagsQuery()).not("ol, ul, table").each(function () {
-            this.parentNode == f && a(this).replaceWith(a(this).html() + (b.node.isEmpty(this) ? "" : "<br>"))
-          }), a(l).append(a(f).html())) : a(k).before(a(f).html())
+          b.node.isBlock(l) ? (jQuery(f).find(b.html.blockTagsQuery()).not("ol, ul, table").each(function () {
+            this.parentNode == f && jQuery(this).replaceWith(jQuery(this).html() + (b.node.isEmpty(this) ? "" : "<br>"))
+          }), jQuery(l).append(jQuery(f).html())) : jQuery(k).before(jQuery(f).html())
         }
         else {
           var m = b.html.defaultTag();
-          m && 0 === a(f).find(b.html.blockTagsQuery()).length ? a(k).before("<" + m + ">" + a(f).html() + "</" + m + ">") : a(k).before(a(f).html())
+          m && 0 === jQuery(f).find(b.html.blockTagsQuery()).length ? jQuery(k).before("<" + m + ">" + jQuery(f).html() + "</" + m + ">") : jQuery(k).before(jQuery(f).html())
         }
-        a(f).remove(), 0 === a(k).find("li").length && a(k).remove()
+        jQuery(f).remove(), 0 === jQuery(k).find("li").length && jQuery(k).remove()
       }
     }
 
@@ -2361,19 +2365,19 @@
       var e, f = c(d),
         g = f.nextSibling;
       if (g) {
-        e = b.node.contents(g), e.length && "BR" == e[0].tagName && a(e[0]).remove(), a(g).find(b.html.blockTagsQuery()).not("ol, ul, table").each(function () {
-          this.parentNode == g && a(this).replaceWith(a(this).html() + (b.node.isEmpty(this) ? "" : "<br>"))
+        e = b.node.contents(g), e.length && "BR" == e[0].tagName && jQuery(e[0]).remove(), jQuery(g).find(b.html.blockTagsQuery()).not("ol, ul, table").each(function () {
+          this.parentNode == g && jQuery(this).replaceWith(jQuery(this).html() + (b.node.isEmpty(this) ? "" : "<br>"))
         });
-        for (var h, i = d, j = b.node.contents(g)[0]; j && !b.node.isList(j);) h = j.nextSibling, a(i).after(j), i = j, j = h;
-        for (; j;) h = j.nextSibling, a(f).append(j), j = h;
-        a(d).replaceWith(a.FE.MARKERS), a(g).remove()
+        for (var h, i = d, j = b.node.contents(g)[0]; j && !b.node.isList(j);) h = j.nextSibling, jQuery(i).after(j), i = j, j = h;
+        for (; j;) h = j.nextSibling, jQuery(f).append(j), j = h;
+        jQuery(d).replaceWith(jQuery.FE.MARKERS), jQuery(g).remove()
       }
       else {
         for (var k = f; !k.nextSibling && k != b.$el.get(0);) k = k.parentNode;
         if (k == b.$el.get(0)) return !1;
-        if (k = k.nextSibling, b.node.isBlock(k)) a.FE.NO_DELETE_TAGS.indexOf(k.tagName) < 0 && (a(d).replaceWith(a.FE.MARKERS), e = b.node.contents(f), e.length && "BR" == e[e.length - 1].tagName && a(e[e.length - 1]).remove(), a(f).append(a(k).html()), a(k).remove());
+        if (k = k.nextSibling, b.node.isBlock(k)) jQuery.FE.NO_DELETE_TAGS.indexOf(k.tagName) < 0 && (jQuery(d).replaceWith(jQuery.FE.MARKERS), e = b.node.contents(f), e.length && "BR" == e[e.length - 1].tagName && jQuery(e[e.length - 1]).remove(), jQuery(f).append(jQuery(k).html()), jQuery(k).remove());
         else
-          for (e = b.node.contents(f), e.length && "BR" == e[e.length - 1].tagName && a(e[e.length - 1]).remove(), a(d).replaceWith(a.FE.MARKERS); k && !b.node.isBlock(k) && "BR" != k.tagName;) a(f).append(a(k)), k = k.nextSibling
+          for (e = b.node.contents(f), e.length && "BR" == e[e.length - 1].tagName && jQuery(e[e.length - 1]).remove(), jQuery(d).replaceWith(jQuery.FE.MARKERS); k && !b.node.isBlock(k) && "BR" != k.tagName;) jQuery(f).append(jQuery(k)), k = k.nextSibling
       }
     }
     return {
@@ -2384,9 +2388,9 @@
       _del: i
     }
   };
-  a.FE.NO_DELETE_TAGS = ["TH", "TD", "TABLE", "FORM"];
-  a.FE.SIMPLE_ENTER_TAGS = ["TH", "TD", "LI", "DL", "DT", "FORM"];
-  a.FE.MODULES.cursor = function (b) {
+  jQuery.FE.NO_DELETE_TAGS = ["TH", "TD", "TABLE", "FORM"];
+  jQuery.FE.SIMPLE_ENTER_TAGS = ["TH", "TD", "LI", "DL", "DT", "FORM"];
+  jQuery.FE.MODULES.cursor = function (b) {
     function c(a) {
       return a ? b.node.isBlock(a) ? !0 : a.nextSibling ? !1 : c(a.parentNode) : !1
     }
@@ -2404,29 +2408,29 @@
     }
 
     function g(c) {
-      return a(c).parentsUntil(b.$el, "LI").length > 0 && 0 === a(c).parentsUntil("LI", "TABLE").length
+      return jQuery(c).parentsUntil(b.$el, "LI").length > 0 && 0 === jQuery(c).parentsUntil("LI", "TABLE").length
     }
 
     function h(c) {
-      var d = a(c).parentsUntil(b.$el, "BLOCKQUOTE").length > 0,
+      var d = jQuery(c).parentsUntil(b.$el, "BLOCKQUOTE").length > 0,
         e = b.node.deepestParent(c, [], !d);
       if (e && "BLOCKQUOTE" == e.tagName) {
-        var f = b.node.deepestParent(c, [a(c).parentsUntil(b.$el, "BLOCKQUOTE").get(0)]);
+        var f = b.node.deepestParent(c, [jQuery(c).parentsUntil(b.$el, "BLOCKQUOTE").get(0)]);
         f && f.previousSibling && (e = f)
       }
       if (null !== e) {
         var g, h = e.previousSibling;
-        if (b.node.isBlock(e) && b.node.isEditable(e) && h && a.FE.NO_DELETE_TAGS.indexOf(h.tagName) < 0 && b.node.isEditable(h))
+        if (b.node.isBlock(e) && b.node.isEditable(e) && h && jQuery.FE.NO_DELETE_TAGS.indexOf(h.tagName) < 0 && b.node.isEditable(h))
           if (b.node.isBlock(h))
-            if (b.node.isEmpty(h) && !b.node.isList(h)) a(h).remove();
+            if (b.node.isEmpty(h) && !b.node.isList(h)) jQuery(h).remove();
             else {
-              if (b.node.isList(h) && (h = a(h).find("li:last").get(0)), g = b.node.contents(h), g.length && "BR" == g[g.length - 1].tagName && a(g[g.length - 1]).remove(), "BLOCKQUOTE" == h.tagName && "BLOCKQUOTE" != e.tagName)
+              if (b.node.isList(h) && (h = jQuery(h).find("li:last").get(0)), g = b.node.contents(h), g.length && "BR" == g[g.length - 1].tagName && jQuery(g[g.length - 1]).remove(), "BLOCKQUOTE" == h.tagName && "BLOCKQUOTE" != e.tagName)
                 for (g = b.node.contents(h); g.length && b.node.isBlock(g[g.length - 1]);) h = g[g.length - 1], g = b.node.contents(h);
               else if ("BLOCKQUOTE" != h.tagName && "BLOCKQUOTE" == e.tagName)
                 for (g = b.node.contents(e); g.length && b.node.isBlock(g[0]);) e = g[0], g = b.node.contents(e);
-              a(c).replaceWith(a.FE.MARKERS), a(h).append(b.node.isEmpty(e) ? a.FE.MARKERS : e.innerHTML), a(e).remove()
+              jQuery(c).replaceWith(jQuery.FE.MARKERS), jQuery(h).append(b.node.isEmpty(e) ? jQuery.FE.MARKERS : e.innerHTML), jQuery(e).remove()
             }
-        else a(c).replaceWith(a.FE.MARKERS), "BLOCKQUOTE" == e.tagName && h.nodeType == Node.ELEMENT_NODE ? a(h).remove() : (a(h).after(b.node.isEmpty(e) ? "" : a(e).html()), a(e).remove(), "BR" == h.tagName && a(h).remove())
+        else jQuery(c).replaceWith(jQuery.FE.MARKERS), "BLOCKQUOTE" == e.tagName && h.nodeType == Node.ELEMENT_NODE ? jQuery(h).remove() : (jQuery(h).after(b.node.isEmpty(e) ? "" : jQuery(e).html()), jQuery(e).remove(), "BR" == h.tagName && jQuery(h).remove())
       }
     }
 
@@ -2438,28 +2442,28 @@
         for (e = b.node.contents(d); d.nodeType != Node.TEXT_NODE && e.length && b.node.isEditable(d);) d = e[e.length - 1], e = b.node.contents(d);
         if (d.nodeType == Node.TEXT_NODE) {
           if (b.helpers.isIOS()) return !0;
-          a(d).after(a.FE.MARKERS);
+          jQuery(d).after(jQuery.FE.MARKERS);
           var f = d.textContent,
             g = f.length - 1;
           if (b.opts.tabSpaces && f.length >= b.opts.tabSpaces) {
             var h = f.substr(f.length - b.opts.tabSpaces, f.length - 1);
-            0 == h.replace(/ /g, "").replace(new RegExp(a.FE.UNICODE_NBSP, "g"), "").length && (g = f.length - b.opts.tabSpaces)
+            0 == h.replace(/ /g, "").replace(new RegExp(jQuery.FE.UNICODE_NBSP, "g"), "").length && (g = f.length - b.opts.tabSpaces)
           }
           d.textContent = f.substring(0, g), d.textContent.length && 55357 == d.textContent.charCodeAt(d.textContent.length - 1) && (d.textContent = d.textContent.substr(0, d.textContent.length - 1)), 0 == d.textContent.length && d.parentNode.removeChild(d)
         }
-        else b.events.trigger("node.remove", [a(d)]) !== !1 && (a(d).after(a.FE.MARKERS), a(d).remove())
+        else b.events.trigger("node.remove", [jQuery(d)]) !== !1 && (jQuery(d).after(jQuery.FE.MARKERS), jQuery(d).remove())
       }
-      else if (a.FE.NO_DELETE_TAGS.indexOf(d.tagName) < 0 && b.node.isEditable(d))
-        if (b.node.isEmpty(d) && !b.node.isList(d)) a(d).remove(), a(c).replaceWith(a.FE.MARKERS);
+      else if (jQuery.FE.NO_DELETE_TAGS.indexOf(d.tagName) < 0 && b.node.isEditable(d))
+        if (b.node.isEmpty(d) && !b.node.isList(d)) jQuery(d).remove(), jQuery(c).replaceWith(jQuery.FE.MARKERS);
         else {
-          for (b.node.isList(d) && (d = a(d).find("li:last").get(0)), e = b.node.contents(d), e && "BR" == e[e.length - 1].tagName && a(e[e.length - 1]).remove(), e = b.node.contents(d); e && b.node.isBlock(e[e.length - 1]);) d = e[e.length - 1], e = b.node.contents(d);
-          a(d).append(a.FE.MARKERS);
+          for (b.node.isList(d) && (d = jQuery(d).find("li:last").get(0)), e = b.node.contents(d), e && "BR" == e[e.length - 1].tagName && jQuery(e[e.length - 1]).remove(), e = b.node.contents(d); e && b.node.isBlock(e[e.length - 1]);) d = e[e.length - 1], e = b.node.contents(d);
+          jQuery(d).append(jQuery.FE.MARKERS);
           for (var i = c; !i.previousSibling;) i = i.parentNode;
           for (; i && "BR" !== i.tagName && !b.node.isBlock(i);) {
             var j = i;
-            i = i.nextSibling, a(d).append(j)
+            i = i.nextSibling, jQuery(d).append(j)
           }
-          i && "BR" == i.tagName && a(i).remove(), a(c).remove()
+          i && "BR" == i.tagName && jQuery(i).remove(), jQuery(c).remove()
         }
     }
 
@@ -2471,43 +2475,43 @@
       var k = j.previousSibling;
       if (k) {
         var l = k.textContent;
-        l && l.length && 8203 == l.charCodeAt(l.length - 1) && (1 == l.length ? a(k).remove() : (k.textContent = k.textContent.substr(0, l.length - 1), k.textContent.length && 55357 == k.textContent.charCodeAt(k.textContent.length - 1) && (k.textContent = k.textContent.substr(0, k.textContent.length - 1))))
+        l && l.length && 8203 == l.charCodeAt(l.length - 1) && (1 == l.length ? jQuery(k).remove() : (k.textContent = k.textContent.substr(0, l.length - 1), k.textContent.length && 55357 == k.textContent.charCodeAt(k.textContent.length - 1) && (k.textContent = k.textContent.substr(0, k.textContent.length - 1))))
       }
-      return c(j) ? f = i(j) : d(j) ? g(j) && e(j, a(j).parents("li:first").get(0)) ? b.cursorLists._backspace(j) : h(j) : f = i(j), a(j).remove(), b.$el.find("blockquote:empty").remove(), b.html.fillEmptyBlocks(), b.html.cleanEmptyTags(), b.clean.quotes(), b.clean.lists(), b.html.normalizeSpaces(), b.selection.restore(), f
+      return c(j) ? f = i(j) : d(j) ? g(j) && e(j, jQuery(j).parents("li:first").get(0)) ? b.cursorLists._backspace(j) : h(j) : f = i(j), jQuery(j).remove(), b.$el.find("blockquote:empty").remove(), b.html.fillEmptyBlocks(), b.html.cleanEmptyTags(), b.clean.quotes(), b.clean.lists(), b.html.normalizeSpaces(), b.selection.restore(), f
     }
 
     function k(c) {
-      var d = a(c).parentsUntil(b.$el, "BLOCKQUOTE").length > 0,
+      var d = jQuery(c).parentsUntil(b.$el, "BLOCKQUOTE").length > 0,
         e = b.node.deepestParent(c, [], !d);
       if (e && "BLOCKQUOTE" == e.tagName) {
-        var f = b.node.deepestParent(c, [a(c).parentsUntil(b.$el, "BLOCKQUOTE").get(0)]);
+        var f = b.node.deepestParent(c, [jQuery(c).parentsUntil(b.$el, "BLOCKQUOTE").get(0)]);
         f && f.nextSibling && (e = f)
       }
       if (null !== e) {
         var g, h = e.nextSibling;
-        if (b.node.isBlock(e) && b.node.isEditable(e) && h && a.FE.NO_DELETE_TAGS.indexOf(h.tagName) < 0)
+        if (b.node.isBlock(e) && b.node.isEditable(e) && h && jQuery.FE.NO_DELETE_TAGS.indexOf(h.tagName) < 0)
           if (b.node.isBlock(h) && b.node.isEditable(h))
             if (b.node.isList(h))
-              if (b.node.isEmpty(e, !0)) a(e).remove(), a(h).find("li:first").prepend(a.FE.MARKERS);
+              if (b.node.isEmpty(e, !0)) jQuery(e).remove(), jQuery(h).find("li:first").prepend(jQuery.FE.MARKERS);
               else {
-                var i = a(h).find("li:first");
-                "BLOCKQUOTE" == e.tagName && (g = b.node.contents(e), g.length && b.node.isBlock(g[g.length - 1]) && (e = g[g.length - 1])), 0 === i.find("ul, ol").length && (a(c).replaceWith(a.FE.MARKERS), i.find(b.html.blockTagsQuery()).not("ol, ul, table").each(function () {
-                  this.parentNode == i.get(0) && a(this).replaceWith(a(this).html() + (b.node.isEmpty(this) ? "" : "<br>"))
-                }), a(e).append(b.node.contents(i.get(0))), i.remove(), 0 === a(h).find("li").length && a(h).remove())
+                var i = jQuery(h).find("li:first");
+                "BLOCKQUOTE" == e.tagName && (g = b.node.contents(e), g.length && b.node.isBlock(g[g.length - 1]) && (e = g[g.length - 1])), 0 === i.find("ul, ol").length && (jQuery(c).replaceWith(jQuery.FE.MARKERS), i.find(b.html.blockTagsQuery()).not("ol, ul, table").each(function () {
+                  this.parentNode == i.get(0) && jQuery(this).replaceWith(jQuery(this).html() + (b.node.isEmpty(this) ? "" : "<br>"))
+                }), jQuery(e).append(b.node.contents(i.get(0))), i.remove(), 0 === jQuery(h).find("li").length && jQuery(h).remove())
               }
         else {
-          if (g = b.node.contents(h), g.length && "BR" == g[0].tagName && a(g[0]).remove(), "BLOCKQUOTE" != h.tagName && "BLOCKQUOTE" == e.tagName)
+          if (g = b.node.contents(h), g.length && "BR" == g[0].tagName && jQuery(g[0]).remove(), "BLOCKQUOTE" != h.tagName && "BLOCKQUOTE" == e.tagName)
             for (g = b.node.contents(e); g.length && b.node.isBlock(g[g.length - 1]);) e = g[g.length - 1], g = b.node.contents(e);
           else if ("BLOCKQUOTE" == h.tagName && "BLOCKQUOTE" != e.tagName)
             for (g = b.node.contents(h); g.length && b.node.isBlock(g[0]);) h = g[0], g = b.node.contents(h);
-          a(c).replaceWith(a.FE.MARKERS), a(e).append(h.innerHTML), a(h).remove()
+          jQuery(c).replaceWith(jQuery.FE.MARKERS), jQuery(e).append(h.innerHTML), jQuery(h).remove()
         }
         else {
-          for (a(c).replaceWith(a.FE.MARKERS); h && "BR" !== h.tagName && !b.node.isBlock(h) && b.node.isEditable(h);) {
+          for (jQuery(c).replaceWith(jQuery.FE.MARKERS); h && "BR" !== h.tagName && !b.node.isBlock(h) && b.node.isEditable(h);) {
             var j = h;
-            h = h.nextSibling, a(e).append(j)
+            h = h.nextSibling, jQuery(e).append(j)
           }
-          h && "BR" == h.tagName && b.node.isEditable(h) && a(h).remove()
+          h && "BR" == h.tagName && b.node.isEditable(h) && jQuery(h).remove()
         }
       }
     }
@@ -2517,34 +2521,34 @@
       if (e = e.nextSibling, "BR" == e.tagName && b.node.isEditable(e))
         if (e.nextSibling) {
           if (b.node.isBlock(e.nextSibling) && b.node.isEditable(e.nextSibling)) {
-            if (!(a.FE.NO_DELETE_TAGS.indexOf(e.nextSibling.tagName) < 0)) return;
-            e = e.nextSibling, a(e.previousSibling).remove()
+            if (!(jQuery.FE.NO_DELETE_TAGS.indexOf(e.nextSibling.tagName) < 0)) return;
+            e = e.nextSibling, jQuery(e.previousSibling).remove()
           }
         }
         else if (c(e)) {
         if (g(d)) b.cursorLists._del(d);
         else {
           var f = b.node.deepestParent(e);
-          f && (a(e).remove(), k(d))
+          f && (jQuery(e).remove(), k(d))
         }
         return
       }
       var h;
       if (!b.node.isBlock(e) && b.node.isEditable(e)) {
         for (h = b.node.contents(e); e.nodeType != Node.TEXT_NODE && h.length && b.node.isEditable(e);) e = h[0], h = b.node.contents(e);
-        e.nodeType == Node.TEXT_NODE ? (a(e).before(a.FE.MARKERS), e.textContent.length && 55357 == e.textContent.charCodeAt(0) ? e.textContent = e.textContent.substring(2, e.textContent.length) : e.textContent = e.textContent.substring(1, e.textContent.length)) : b.events.trigger("node.remove", [a(e)]) !== !1 && (a(e).before(a.FE.MARKERS), a(e).remove()), a(d).remove()
+        e.nodeType == Node.TEXT_NODE ? (jQuery(e).before(jQuery.FE.MARKERS), e.textContent.length && 55357 == e.textContent.charCodeAt(0) ? e.textContent = e.textContent.substring(2, e.textContent.length) : e.textContent = e.textContent.substring(1, e.textContent.length)) : b.events.trigger("node.remove", [jQuery(e)]) !== !1 && (jQuery(e).before(jQuery.FE.MARKERS), jQuery(e).remove()), jQuery(d).remove()
       }
-      else if (a.FE.NO_DELETE_TAGS.indexOf(e.tagName) < 0)
-        if (b.node.isList(e)) d.previousSibling ? (a(e).find("li:first").prepend(d), b.cursorLists._backspace(d)) : (a(e).find("li:first").prepend(a.FE.MARKERS), a(d).remove());
-        else if (h = b.node.contents(e), h && "BR" == h[0].tagName && a(h[0]).remove(), h && "BLOCKQUOTE" == e.tagName) {
+      else if (jQuery.FE.NO_DELETE_TAGS.indexOf(e.tagName) < 0)
+        if (b.node.isList(e)) d.previousSibling ? (jQuery(e).find("li:first").prepend(d), b.cursorLists._backspace(d)) : (jQuery(e).find("li:first").prepend(jQuery.FE.MARKERS), jQuery(d).remove());
+        else if (h = b.node.contents(e), h && "BR" == h[0].tagName && jQuery(h[0]).remove(), h && "BLOCKQUOTE" == e.tagName) {
         var i = h[0];
-        for (a(d).before(a.FE.MARKERS); i && "BR" != i.tagName;) {
+        for (jQuery(d).before(jQuery.FE.MARKERS); i && "BR" != i.tagName;) {
           var j = i;
-          i = i.nextSibling, a(d).before(j)
+          i = i.nextSibling, jQuery(d).before(j)
         }
-        i && "BR" == i.tagName && a(i).remove()
+        i && "BR" == i.tagName && jQuery(i).remove()
       }
-      else a(d).after(a(e).html()).after(a.FE.MARKERS), a(e).remove()
+      else jQuery(d).after(jQuery(e).html()).after(jQuery.FE.MARKERS), jQuery(e).remove()
     }
 
     function m() {
@@ -2552,27 +2556,27 @@
       if (!e) return !1;
       if (b.$el.get(0).normalize(), c(e))
         if (g(e))
-          if (0 === a(e).parents("li:first").find("ul, ol").length) b.cursorLists._del(e);
+          if (0 === jQuery(e).parents("li:first").find("ul, ol").length) b.cursorLists._del(e);
           else {
-            var f = a(e).parents("li:first").find("ul:first, ol:first").find("li:first");
+            var f = jQuery(e).parents("li:first").find("ul:first, ol:first").find("li:first");
             f = f.find(b.html.blockTagsQuery()).get(-1) || f, f.prepend(e), b.cursorLists._backspace(e)
           }
       else k(e);
       else l(d(e) ? e : e);
-      a(e).remove(), b.$el.find("blockquote:empty").remove(), b.html.fillEmptyBlocks(), b.html.cleanEmptyTags(), b.clean.quotes(), b.clean.lists(), b.html.normalizeSpaces(), b.selection.restore()
+      jQuery(e).remove(), b.$el.find("blockquote:empty").remove(), b.html.fillEmptyBlocks(), b.html.cleanEmptyTags(), b.clean.quotes(), b.clean.lists(), b.html.normalizeSpaces(), b.selection.restore()
     }
 
     function n() {
       b.$el.find(".fr-to-remove").each(function () {
         for (var c = b.node.contents(this), d = 0; d < c.length; d++) c[d].nodeType == Node.TEXT_NODE && (c[d].textContent = c[d].textContent.replace(/\u200B/g, ""));
-        a(this).replaceWith(this.innerHTML)
+        jQuery(this).replaceWith(this.innerHTML)
       })
     }
 
     function o(c, d, e) {
       var g, h = b.node.deepestParent(c, [], !e);
-      if (h && "BLOCKQUOTE" == h.tagName) return f(c, h) ? (g = b.html.defaultTag(), g ? a(h).after("<" + g + ">" + a.FE.MARKERS + "<br></" + g + ">") : a(h).after(a.FE.MARKERS + "<br>"), a(c).remove(), !1) : (q(c, d, e), !1);
-      if (null == h) a(c).replaceWith("<br/>" + a.FE.MARKERS + "<br/>");
+      if (h && "BLOCKQUOTE" == h.tagName) return f(c, h) ? (g = b.html.defaultTag(), g ? jQuery(h).after("<" + g + ">" + jQuery.FE.MARKERS + "<br></" + g + ">") : jQuery(h).after(jQuery.FE.MARKERS + "<br>"), jQuery(c).remove(), !1) : (q(c, d, e), !1);
+      if (null == h) jQuery(c).replaceWith("<br/>" + jQuery.FE.MARKERS + "<br/>");
       else {
         var i = c,
           j = "";
@@ -2582,18 +2586,18 @@
         g = b.html.defaultTag();
         var m = "",
           n = "";
-        g && b.node.isBlock(h) && (m = "<" + g + ">", n = "</" + g + ">", h.tagName == g.toUpperCase() && (m = b.node.openTagString(a(h).clone().removeAttr("id").get(0))));
+        g && b.node.isBlock(h) && (m = "<" + g + ">", n = "</" + g + ">", h.tagName == g.toUpperCase() && (m = b.node.openTagString(jQuery(h).clone().removeAttr("id").get(0))));
         do
           if (i = i.parentNode, !d || i != h || d && !b.node.isBlock(h))
             if (k += b.node.closeTagString(i), i == h && b.node.isBlock(h)) l = m + l;
             else {
               var o = "A" == i.tagName && f(c, i) ? "fr-to-remove" : "";
-              l = b.node.openTagString(a(i).clone().addClass(o).get(0)) + l
+              l = b.node.openTagString(jQuery(i).clone().addClass(o).get(0)) + l
             }
         while (i != h);
-        j = k + j + l + (c.parentNode == h && b.node.isBlock(h) ? "" : a.FE.INVISIBLE_SPACE) + a.FE.MARKERS, b.node.isBlock(h) && !a(h).find("*:last").is("br") && a(h).append("<br/>"), a(c).after('<span id="fr-break"></span>'), a(c).remove(), h.nextSibling && !b.node.isBlock(h.nextSibling) || b.node.isBlock(h) || a(h).after("<br>");
+        j = k + j + l + (c.parentNode == h && b.node.isBlock(h) ? "" : jQuery.FE.INVISIBLE_SPACE) + jQuery.FE.MARKERS, b.node.isBlock(h) && !jQuery(h).find("*:last").is("br") && jQuery(h).append("<br/>"), jQuery(c).after('<span id="fr-break"></span>'), jQuery(c).remove(), h.nextSibling && !b.node.isBlock(h.nextSibling) || b.node.isBlock(h) || jQuery(h).after("<br>");
         var p;
-        p = !d && b.node.isBlock(h) ? b.node.openTagString(h) + a(h).html() + n : b.node.openTagString(h) + a(h).html() + b.node.closeTagString(h), p = p.replace(/<span id="fr-break"><\/span>/g, j), a(h).replaceWith(p)
+        p = !d && b.node.isBlock(h) ? b.node.openTagString(h) + jQuery(h).html() + n : b.node.openTagString(h) + jQuery(h).html() + b.node.closeTagString(h), p = p.replace(/<span id="fr-break"><\/span>/g, j), jQuery(h).replaceWith(p)
       }
     }
 
@@ -2602,26 +2606,26 @@
       if (h && "BLOCKQUOTE" == h.tagName) {
         if (e(c, h)) {
           var i = b.html.defaultTag();
-          return i ? a(h).before("<" + i + ">" + a.FE.MARKERS + "<br></" + i + ">") : a(h).before(a.FE.MARKERS + "<br>"), a(c).remove(), !1
+          return i ? jQuery(h).before("<" + i + ">" + jQuery.FE.MARKERS + "<br></" + i + ">") : jQuery(h).before(jQuery.FE.MARKERS + "<br>"), jQuery(c).remove(), !1
         }
         f(c, h) ? o(c, d, !0) : q(c, d, !0)
       }
-      if (null == h) a(c).replaceWith("<br>" + a.FE.MARKERS);
+      if (null == h) jQuery(c).replaceWith("<br>" + jQuery.FE.MARKERS);
       else {
         if (b.node.isBlock(h))
-          if (d) a(c).remove(), a(h).prepend("<br>" + a.FE.MARKERS);
+          if (d) jQuery(c).remove(), jQuery(h).prepend("<br>" + jQuery.FE.MARKERS);
           else {
             if (b.node.isEmpty(h, !0)) return o(c, d, g);
-            a(h).before(b.node.openTagString(a(h).clone().removeAttr("id").get(0)) + "<br>" + b.node.closeTagString(h))
+            jQuery(h).before(b.node.openTagString(jQuery(h).clone().removeAttr("id").get(0)) + "<br>" + b.node.closeTagString(h))
           }
-        else a(h).before("<br>");
-        a(c).remove()
+        else jQuery(h).before("<br>");
+        jQuery(c).remove()
       }
     }
 
     function q(c, d, g) {
       var h = b.node.deepestParent(c, [], !g);
-      if (null == h) b.html.defaultTag() && c.parentNode === b.$el.get(0) ? a(c).replaceWith("<" + b.html.defaultTag() + ">" + a.FE.MARKERS + "<br></" + b.html.defaultTag() + ">") : ((!c.nextSibling || b.node.isBlock(c.nextSibling)) && a(c).after("<br>"), a(c).replaceWith("<br>" + a.FE.MARKERS));
+      if (null == h) b.html.defaultTag() && c.parentNode === b.$el.get(0) ? jQuery(c).replaceWith("<" + b.html.defaultTag() + ">" + jQuery.FE.MARKERS + "<br></" + b.html.defaultTag() + ">") : ((!c.nextSibling || b.node.isBlock(c.nextSibling)) && jQuery(c).after("<br>"), jQuery(c).replaceWith("<br>" + jQuery.FE.MARKERS));
       else {
         var i = c,
           j = "";
@@ -2630,22 +2634,22 @@
           l = "";
         do {
           var m = i;
-          if (i = i.parentNode, "BLOCKQUOTE" == h.tagName && b.node.isEmpty(m) && !a(m).hasClass("fr-marker") && a(m).find(c).length > 0 && a(m).after(c), ("BLOCKQUOTE" != h.tagName || !f(c, i) && !e(c, i)) && (!d || i != h || d && !b.node.isBlock(h))) {
+          if (i = i.parentNode, "BLOCKQUOTE" == h.tagName && b.node.isEmpty(m) && !jQuery(m).hasClass("fr-marker") && jQuery(m).find(c).length > 0 && jQuery(m).after(c), ("BLOCKQUOTE" != h.tagName || !f(c, i) && !e(c, i)) && (!d || i != h || d && !b.node.isBlock(h))) {
             k += b.node.closeTagString(i);
             var n = "A" == i.tagName && f(c, i) ? "fr-to-remove" : "";
-            l = b.node.openTagString(a(i).clone().addClass(n).removeAttr("id").get(0)) + l
+            l = b.node.openTagString(jQuery(i).clone().addClass(n).removeAttr("id").get(0)) + l
           }
         } while (i != h);
         var o = h == c.parentNode && b.node.isBlock(h) || c.nextSibling;
         if ("BLOCKQUOTE" == h.tagName) {
-          c.previousSibling && b.node.isBlock(c.previousSibling) && c.nextSibling && "BR" == c.nextSibling.tagName && (a(c.nextSibling).after(c), c.nextSibling && "BR" == c.nextSibling.tagName && a(c.nextSibling).remove());
+          c.previousSibling && b.node.isBlock(c.previousSibling) && c.nextSibling && "BR" == c.nextSibling.tagName && (jQuery(c.nextSibling).after(c), c.nextSibling && "BR" == c.nextSibling.tagName && jQuery(c.nextSibling).remove());
           var p = b.html.defaultTag();
-          j = k + j + (p ? "<" + p + ">" : "") + a.FE.MARKERS + "<br>" + (p ? "</" + p + ">" : "") + l
+          j = k + j + (p ? "<" + p + ">" : "") + jQuery.FE.MARKERS + "<br>" + (p ? "</" + p + ">" : "") + l
         }
-        else j = k + j + l + (o ? "" : a.FE.INVISIBLE_SPACE) + a.FE.MARKERS;
-        a(c).replaceWith('<span id="fr-break"></span>');
-        var q = b.node.openTagString(h) + a(h).html() + b.node.closeTagString(h);
-        q = q.replace(/<span id="fr-break"><\/span>/g, j), a(h).replaceWith(q)
+        else j = k + j + l + (o ? "" : jQuery.FE.INVISIBLE_SPACE) + jQuery.FE.MARKERS;
+        jQuery(c).replaceWith('<span id="fr-break"></span>');
+        var q = b.node.openTagString(h) + jQuery(h).html() + b.node.closeTagString(h);
+        q = q.replace(/<span id="fr-break"><\/span>/g, j), jQuery(h).replaceWith(q)
       }
     }
 
@@ -2654,7 +2658,7 @@
       if (!f) return !0;
       b.$el.get(0).normalize();
       var h = !1;
-      a(f).parentsUntil(b.$el, "BLOCKQUOTE").length > 0 && (e = !1, h = !0), a(f).parentsUntil(b.$el, "TD, TH").length && (h = !1), c(f) ? !g(f) || e || h ? o(f, e, h) : b.cursorLists._endEnter(f) : d(f) ? !g(f) || e || h ? p(f, e, h) : b.cursorLists._startEnter(f) : !g(f) || e || h ? q(f, e, h) : b.cursorLists._middleEnter(f), n(), b.html.fillEmptyBlocks(), b.html.cleanEmptyTags(), b.clean.lists(), b.html.normalizeSpaces(), b.selection.restore()
+      jQuery(f).parentsUntil(b.$el, "BLOCKQUOTE").length > 0 && (e = !1, h = !0), jQuery(f).parentsUntil(b.$el, "TD, TH").length && (h = !1), c(f) ? !g(f) || e || h ? o(f, e, h) : b.cursorLists._endEnter(f) : d(f) ? !g(f) || e || h ? p(f, e, h) : b.cursorLists._startEnter(f) : !g(f) || e || h ? q(f, e, h) : b.cursorLists._middleEnter(f), n(), b.html.fillEmptyBlocks(), b.html.cleanEmptyTags(), b.clean.lists(), b.html.normalizeSpaces(), b.selection.restore()
     }
     return {
       enter: r,
@@ -2663,7 +2667,7 @@
       isAtEnd: f
     }
   };
-  a.FE.MODULES.data = function (a) {
+  jQuery.FE.MODULES.data = function (a) {
     function b(a) {
       return a
     }
@@ -2697,7 +2701,8 @@
     }
 
     function h() {
-      return a.$box ? (a.$box.append(n(b(n("kTDD4spmKD1klaMB1C7A5RA1G3RA10YA5qhrjuvnmE1D3FD2bcG-7noHE6B2JB4C3xXA8WF6F-10RG2C3G3B-21zZE3C3H3xCA16NC4DC1f1hOF1MB3B-21whzQH5UA2WB10kc1C2F4D3XC2YD4D1C4F3GF2eJ2lfcD-13HF1IE1TC11TC7WE4TA4d1A2YA6XA4d1A3yCG2qmB-13GF4A1B1KH1HD2fzfbeQC3TD9VE4wd1H2A20A2B-22ujB3nBG2A13jBC10D3C2HD5D1H1KB11uD-16uWF2D4A3F-7C9D-17c1E4D4B3d1D2CA6B2B-13qlwzJF2NC2C-13E-11ND1A3xqUA8UE6bsrrF-7C-22ia1D2CF2H1E2akCD2OE1HH1dlKA6PA5jcyfzB-22cXB4f1C3qvdiC4gjGG2H2gklC3D-16wJC1UG4dgaWE2D5G4g1I2H3B7vkqrxH1H2EC9C3E4gdgzKF1OA1A5PF5C4WWC3VA6XA4e1E3YA2YA5HE4oGH4F2H2IB10D3D2NC5G1B1qWA9PD6PG5fQA13A10XA4C4A3e1H2BA17kC-22cmOB1lmoA2fyhcptwWA3RA8A-13xB-11nf1I3f1B7GB3aD3pavFC10D5gLF2OG1LSB2D9E7fQC1F4F3wpSB5XD3NkklhhaE-11naKA9BnIA6D1F5bQA3A10c1QC6Kjkvitc2B6BE3AF3E2DA6A4JD2IC1jgA-64MB11D6C4==")))), j = a.$box.find("> div:last"), k = j.find("> a"), void("rtl" == a.opts.direction && j.css("left", "auto").css("right", 0))) : !1
+      return true
+      // return jQuery.$box ? (jQuery.$box.append(n(b(n("kTDD4spmKD1klaMB1C7A5RA1G3RA10YA5qhrjuvnmE1D3FD2bcG-7noHE6B2JB4C3xXA8WF6F-10RG2C3G3B-21zZE3C3H3xCA16NC4DC1f1hOF1MB3B-21whzQH5UA2WB10kc1C2F4D3XC2YD4D1C4F3GF2eJ2lfcD-13HF1IE1TC11TC7WE4TA4d1A2YA6XA4d1A3yCG2qmB-13GF4A1B1KH1HD2fzfbeQC3TD9VE4wd1H2A20A2B-22ujB3nBG2A13jBC10D3C2HD5D1H1KB11uD-16uWF2D4A3F-7C9D-17c1E4D4B3d1D2CA6B2B-13qlwzJF2NC2C-13E-11ND1A3xqUA8UE6bsrrF-7C-22ia1D2CF2H1E2akCD2OE1HH1dlKA6PA5jcyfzB-22cXB4f1C3qvdiC4gjGG2H2gklC3D-16wJC1UG4dgaWE2D5G4g1I2H3B7vkqrxH1H2EC9C3E4gdgzKF1OA1A5PF5C4WWC3VA6XA4e1E3YA2YA5HE4oGH4F2H2IB10D3D2NC5G1B1qWA9PD6PG5fQA13A10XA4C4A3e1H2BA17kC-22cmOB1lmoA2fyhcptwWA3RA8A-13xB-11nf1I3f1B7GB3aD3pavFC10D5gLF2OG1LSB2D9E7fQC1F4F3wpSB5XD3NkklhhaE-11naKA9BnIA6D1F5bQA3A10c1QC6Kjkvitc2B6BE3AF3E2DA6A4JD2IC1jgA-64MB11D6C4==")))), j = jQuery.$box.find("> div:last"), k = j.find("> jQuery"), void("rtl" == jQuery.opts.direction && j.css("left", "auto").css("right", 0))) : !1
     }
 
     function i() {
@@ -2726,10 +2731,10 @@
       _init: i
     }
   };
-  a.FE.ENTER_P = 0;
-  a.FE.ENTER_DIV = 1;
-  a.FE.ENTER_BR = 2;
-  a.FE.KEYCODE = {
+  jQuery.FE.ENTER_P = 0;
+  jQuery.FE.ENTER_DIV = 1;
+  jQuery.FE.ENTER_BR = 2;
+  jQuery.FE.KEYCODE = {
     BACKSPACE: 8,
     TAB: 9,
     ENTER: 13,
@@ -2807,19 +2812,19 @@
     BACKSLASH: 220,
     CLOSE_SQUARE_BRACKET: 221
   };
-  a.extend(a.FE.DEFAULTS, {
-    enter: a.FE.ENTER_P,
+  jQuery.extend(jQuery.FE.DEFAULTS, {
+    enter: jQuery.FE.ENTER_P,
     multiLine: !0,
     tabSpaces: 0
   });
-  a.FE.MODULES.keys = function (b) {
+  jQuery.FE.MODULES.keys = function (b) {
     function c() {
       if (b.helpers.isIOS()) {
         var c = navigator.userAgent.match("CriOS"),
           d = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent);
         if (!c && !d) {
-          var e = a(b.o_win).scrollTop();
-          b.events.disableBlur(), b.selection.save(), b.$el.blur(), b.selection.restore(), b.events.enableBlur(), a(b.o_win).scrollTop(e)
+          var e = jQuery(b.o_win).scrollTop();
+          b.events.disableBlur(), b.selection.save(), b.$el.blur(), b.selection.restore(), b.events.enableBlur(), jQuery(b.o_win).scrollTop(e)
         }
       }
     }
@@ -2846,7 +2851,7 @@
         var d = b.$el.find(".fr-marker").get(0),
           e = d.previousSibling,
           f = d.nextSibling;
-        !f && d.parentNode && "A" == d.parentNode.tagName ? (a(d).parent().after("&nbsp;" + a.FE.MARKERS), a(d).remove()) : (e && e.nodeType == Node.TEXT_NODE && 1 == e.textContent.length && 160 == e.textContent.charCodeAt(0) ? a(e).after(" ") : a(d).before("&nbsp;"), a(d).replaceWith(a.FE.MARKERS)), b.selection.restore()
+        !f && d.parentNode && "A" == d.parentNode.tagName ? (jQuery(d).parent().after("&nbsp;" + jQuery.FE.MARKERS), jQuery(d).remove()) : (e && e.nodeType == Node.TEXT_NODE && 1 == e.textContent.length && 160 == e.textContent.charCodeAt(0) ? jQuery(e).after(" ") : jQuery(d).before("&nbsp;"), jQuery(d).replaceWith(jQuery.FE.MARKERS)), b.selection.restore()
       }
     }
 
@@ -2862,7 +2867,7 @@
     function j() {
       b.selection.isFull() && setTimeout(function () {
         var c = b.html.defaultTag();
-        c ? b.$el.html("<" + c + ">" + a.FE.MARKERS + "<br/></" + c + ">") : b.$el.html(a.FE.MARKERS + "<br/>"), b.selection.restore(), b.placeholder.refresh(), b.button.bulkRefresh(), b.undo.saveStep()
+        c ? b.$el.html("<" + c + ">" + jQuery.FE.MARKERS + "<br/></" + c + ">") : b.$el.html(jQuery.FE.MARKERS + "<br/>"), b.selection.restore(), b.placeholder.refresh(), b.button.bulkRefresh(), b.undo.saveStep()
       }, 0)
     }
 
@@ -2891,31 +2896,31 @@
       if (229 === i) return A = !0, !0;
       A = !1;
       var j = s(i) && !r(c),
-        l = i == a.FE.KEYCODE.BACKSPACE || i == a.FE.KEYCODE.DELETE;
+        l = i == jQuery.FE.KEYCODE.BACKSPACE || i == jQuery.FE.KEYCODE.DELETE;
       if (b.selection.isFull() && !b.opts.keepFormatOnDelete || l && b.placeholder.isVisible() && b.opts.keepFormatOnDelete) {
         if (j || l) {
           var m = b.html.defaultTag();
-          m ? b.$el.html("<" + m + ">" + a.FE.MARKERS + "<br/></" + m + ">") : b.$el.html(a.FE.MARKERS + "<br/>")
+          m ? b.$el.html("<" + m + ">" + jQuery.FE.MARKERS + "<br/></" + m + ">") : b.$el.html(jQuery.FE.MARKERS + "<br/>")
         }
         b.selection.restore()
       }
-      i == a.FE.KEYCODE.ENTER ? c.shiftKey ? e(c) : d(c) : i != a.FE.KEYCODE.BACKSPACE || r(c) || c.altKey ? i != a.FE.KEYCODE.DELETE || r(c) || c.altKey ? i == a.FE.KEYCODE.SPACE ? h(c) : i == a.FE.KEYCODE.TAB ? k(c) : r(c) || !s(c.which) || b.selection.isCollapsed() || b.selection.remove() : g(c) : f(c), b.events.enableBlur()
+      i == jQuery.FE.KEYCODE.ENTER ? c.shiftKey ? e(c) : d(c) : i != jQuery.FE.KEYCODE.BACKSPACE || r(c) || c.altKey ? i != jQuery.FE.KEYCODE.DELETE || r(c) || c.altKey ? i == jQuery.FE.KEYCODE.SPACE ? h(c) : i == jQuery.FE.KEYCODE.TAB ? k(c) : r(c) || !s(c.which) || b.selection.isCollapsed() || b.selection.remove() : g(c) : f(c), b.events.enableBlur()
     }
 
     function o(c) {
-      for (var d = 0; d < c.length; d++) c[d].nodeType == Node.TEXT_NODE && /\u200B/gi.test(c[d].textContent) ? (c[d].textContent = c[d].textContent.replace(/\u200B/gi, ""), 0 === c[d].textContent.length && a(c[d]).remove()) : c[d].nodeType == Node.ELEMENT_NODE && "IFRAME" != c[d].nodeType && o(b.node.contents(c[d]))
+      for (var d = 0; d < c.length; d++) c[d].nodeType == Node.TEXT_NODE && /\u200B/gi.test(c[d].textContent) ? (c[d].textContent = c[d].textContent.replace(/\u200B/gi, ""), 0 === c[d].textContent.length && jQuery(c[d]).remove()) : c[d].nodeType == Node.ELEMENT_NODE && "IFRAME" != c[d].nodeType && o(b.node.contents(c[d]))
     }
 
     function p() {
       if (!b.$wp) return !0;
       var c;
-      b.opts.height || b.opts.heightMax ? (c = b.position.getBoundingRect().top, b.helpers.isIOS() && (c -= a(b.o_win).scrollTop()), b.opts.iframe && (c += b.$iframe.offset().top), c > b.$wp.offset().top - a(b.o_win).scrollTop() + b.$wp.height() - 20 && b.$wp.scrollTop(c + b.$wp.scrollTop() - (b.$wp.height() + b.$wp.offset().top) + a(b.o_win).scrollTop() + 20)) : (c = b.position.getBoundingRect().top, b.helpers.isIOS() && (c -= a(b.o_win).scrollTop()), b.opts.iframe && (c += b.$iframe.offset().top), c > b.o_win.innerHeight - 20 && a(b.o_win).scrollTop(c + a(b.o_win).scrollTop() - b.o_win.innerHeight + 20), c = b.position.getBoundingRect().top, b.helpers.isIOS() && (c -= a(b.o_win).scrollTop()), b.opts.iframe && (c += b.$iframe.offset().top), c < b.$tb.height() + 20 && a(b.o_win).scrollTop(c + a(b.o_win).scrollTop() - b.$tb.height() - 20))
+      b.opts.height || b.opts.heightMax ? (c = b.position.getBoundingRect().top, b.helpers.isIOS() && (c -= jQuery(b.o_win).scrollTop()), b.opts.iframe && (c += b.$iframe.offset().top), c > b.$wp.offset().top - jQuery(b.o_win).scrollTop() + b.$wp.height() - 20 && b.$wp.scrollTop(c + b.$wp.scrollTop() - (b.$wp.height() + b.$wp.offset().top) + jQuery(b.o_win).scrollTop() + 20)) : (c = b.position.getBoundingRect().top, b.helpers.isIOS() && (c -= jQuery(b.o_win).scrollTop()), b.opts.iframe && (c += b.$iframe.offset().top), c > b.o_win.innerHeight - 20 && jQuery(b.o_win).scrollTop(c + jQuery(b.o_win).scrollTop() - b.o_win.innerHeight + 20), c = b.position.getBoundingRect().top, b.helpers.isIOS() && (c -= jQuery(b.o_win).scrollTop()), b.opts.iframe && (c += b.$iframe.offset().top), c < b.$tb.height() + 20 && jQuery(b.o_win).scrollTop(c + jQuery(b.o_win).scrollTop() - b.$tb.height() - 20))
     }
 
     function q(c) {
       if (A) return !1;
       if (!b.selection.isCollapsed()) return !0;
-      !c || c.which != a.FE.KEYCODE.ENTER && c.which != a.FE.KEYCODE.BACKSPACE || c.which == a.FE.KEYCODE.BACKSPACE && x || p();
+      !c || c.which != jQuery.FE.KEYCODE.ENTER && c.which != jQuery.FE.KEYCODE.BACKSPACE || c.which == jQuery.FE.KEYCODE.BACKSPACE && x || p();
       var d = b.$el.find(b.html.blockTagsQuery());
       d.push(b.$el.get(0));
       for (var e = [], f = 0; f < d.length; f++)
@@ -2926,12 +2931,12 @@
           j = i.previousSibling,
           k = i.nextSibling,
           l = b.node.blockParent(i) || b.$el.get(0);
-        j && l && "BR" != j.tagName && !b.node.isBlock(j) && !k && a(l).text().replace(/\u200B/g, "").length > 0 && a(j).text().length > 0 && (b.selection.save(),
-          a(i).remove(), b.selection.restore())
+        j && l && "BR" != j.tagName && !b.node.isBlock(j) && !k && jQuery(l).text().replace(/\u200B/g, "").length > 0 && jQuery(j).text().length > 0 && (b.selection.save(),
+          jQuery(i).remove(), b.selection.restore())
       }
       var m = function (b) {
           if (!b) return !1;
-          var c = a(b).html();
+          var c = jQuery(b).html();
           return c = c.replace(/<span[^>]*? class\s*=\s*["']?fr-marker["']?[^>]+>\u200b<\/span>/gi, ""), c && /\u200B/.test(c) && c.replace(/\u200B/gi, "").length > 0 ? !0 : !1
         },
         n = function (a) {
@@ -2939,7 +2944,7 @@
           return !b.helpers.isIOS() || 0 === ((a.textContent || "").match(c) || []).length
         },
         q = b.selection.element();
-      m(q) && 0 === a(q).find("li").length && !a(q).hasClass("fr-marker") && "IFRAME" != q.tagName && n(q) && (b.selection.save(), o(b.node.contents(q)), b.selection.restore()), !b.browser.mozilla && b.html.doNormalize() && (b.selection.save(), b.html.normalizeSpaces(), b.selection.restore())
+      m(q) && 0 === jQuery(q).find("li").length && !jQuery(q).hasClass("fr-marker") && "IFRAME" != q.tagName && n(q) && (b.selection.save(), o(b.node.contents(q)), b.selection.restore()), !b.browser.mozilla && b.html.doNormalize() && (b.selection.save(), b.html.normalizeSpaces(), b.selection.restore())
     }
 
     function r(a) {
@@ -2951,30 +2956,30 @@
     }
 
     function s(c) {
-      if (c >= a.FE.KEYCODE.ZERO && c <= a.FE.KEYCODE.NINE) return !0;
-      if (c >= a.FE.KEYCODE.NUM_ZERO && c <= a.FE.KEYCODE.NUM_MULTIPLY) return !0;
-      if (c >= a.FE.KEYCODE.A && c <= a.FE.KEYCODE.Z) return !0;
+      if (c >= jQuery.FE.KEYCODE.ZERO && c <= jQuery.FE.KEYCODE.NINE) return !0;
+      if (c >= jQuery.FE.KEYCODE.NUM_ZERO && c <= jQuery.FE.KEYCODE.NUM_MULTIPLY) return !0;
+      if (c >= jQuery.FE.KEYCODE.A && c <= jQuery.FE.KEYCODE.Z) return !0;
       if (b.browser.webkit && 0 === c) return !0;
       switch (c) {
-      case a.FE.KEYCODE.SPACE:
-      case a.FE.KEYCODE.QUESTION_MARK:
-      case a.FE.KEYCODE.NUM_PLUS:
-      case a.FE.KEYCODE.NUM_MINUS:
-      case a.FE.KEYCODE.NUM_PERIOD:
-      case a.FE.KEYCODE.NUM_DIVISION:
-      case a.FE.KEYCODE.SEMICOLON:
-      case a.FE.KEYCODE.FF_SEMICOLON:
-      case a.FE.KEYCODE.DASH:
-      case a.FE.KEYCODE.EQUALS:
-      case a.FE.KEYCODE.FF_EQUALS:
-      case a.FE.KEYCODE.COMMA:
-      case a.FE.KEYCODE.PERIOD:
-      case a.FE.KEYCODE.SLASH:
-      case a.FE.KEYCODE.APOSTROPHE:
-      case a.FE.KEYCODE.SINGLE_QUOTE:
-      case a.FE.KEYCODE.OPEN_SQUARE_BRACKET:
-      case a.FE.KEYCODE.BACKSLASH:
-      case a.FE.KEYCODE.CLOSE_SQUARE_BRACKET:
+      case jQuery.FE.KEYCODE.SPACE:
+      case jQuery.FE.KEYCODE.QUESTION_MARK:
+      case jQuery.FE.KEYCODE.NUM_PLUS:
+      case jQuery.FE.KEYCODE.NUM_MINUS:
+      case jQuery.FE.KEYCODE.NUM_PERIOD:
+      case jQuery.FE.KEYCODE.NUM_DIVISION:
+      case jQuery.FE.KEYCODE.SEMICOLON:
+      case jQuery.FE.KEYCODE.FF_SEMICOLON:
+      case jQuery.FE.KEYCODE.DASH:
+      case jQuery.FE.KEYCODE.EQUALS:
+      case jQuery.FE.KEYCODE.FF_EQUALS:
+      case jQuery.FE.KEYCODE.COMMA:
+      case jQuery.FE.KEYCODE.PERIOD:
+      case jQuery.FE.KEYCODE.SLASH:
+      case jQuery.FE.KEYCODE.APOSTROPHE:
+      case jQuery.FE.KEYCODE.SINGLE_QUOTE:
+      case jQuery.FE.KEYCODE.OPEN_SQUARE_BRACKET:
+      case jQuery.FE.KEYCODE.BACKSLASH:
+      case jQuery.FE.KEYCODE.CLOSE_SQUARE_BRACKET:
         return !0;
       default:
         return !1
@@ -3015,15 +3020,15 @@
       isIME: m
     }
   };
-  a.extend(a.FE.DEFAULTS, {
+  jQuery.extend(jQuery.FE.DEFAULTS, {
     pastePlain: !1,
     pasteDeniedTags: ["colgroup", "col"],
     pasteDeniedAttrs: ["class", "id", "style"],
     pasteAllowLocalImages: !1
   });
-  a.FE.MODULES.paste = function (b) {
+  jQuery.FE.MODULES.paste = function (b) {
     function c(c) {
-      a.FE.copied_html = b.html.getSelected(), a.FE.copied_text = a("<div>").html(a.FE.copied_html).text(), "cut" == c.type && (b.undo.saveStep(), setTimeout(function () {
+      jQuery.FE.copied_html = b.html.getSelected(), jQuery.FE.copied_text = jQuery("<div>").html(jQuery.FE.copied_html).text(), "cut" == c.type && (b.undo.saveStep(), setTimeout(function () {
         b.html.wrap(), b.events.focus(), b.undo.saveStep()
       }, 0))
     }
@@ -3044,7 +3049,7 @@
     }
 
     function e() {
-      b.selection.save(), b.events.disableBlur(), m = null, n ? n.html("") : (n = a('<div contenteditable="true" style="position: fixed; top: 0; left: -9999px; height: 100%; width: 0; z-index: 9999; line-height: 140%;" tabindex="-1"></div>'), b.$box.after(n)), n.focus(), b.win.setTimeout(h, 1)
+      b.selection.save(), b.events.disableBlur(), m = null, n ? n.html("") : (n = jQuery('<div contenteditable="true" style="position: fixed; top: 0; left: -9999px; height: 100%; width: 0; z-index: 9999; line-height: 140%;" tabindex="-1"></div>'), b.$box.after(n)), n.focus(), b.win.setTimeout(h, 1)
     }
 
     function f(c) {
@@ -3057,26 +3062,26 @@
       var g;
       do g = c, c = c.replace(/<[^\/>][^>]*><\/[^>]+>/gi, ""); while (c != g);
       c = c.replace(/<lilevel([^1])([^>]*)>/gi, '<li data-indent="true"$2>'), c = c.replace(/<lilevel1([^>]*)>/gi, "<li$1>"), c = b.clean.html(c, b.opts.pasteDeniedTags, b.opts.pasteDeniedAttrs), c = c.replace(/<a>(.[^<]+)<\/a>/gi, "$1");
-      var h = a("<div>").html(c);
+      var h = jQuery("<div>").html(c);
       return h.find("li[data-indent]").each(function (b, c) {
-        var d = a(c);
+        var d = jQuery(c);
         if (d.prev("li").length > 0) {
           var e = d.prev("li").find("> ul, > ol");
-          0 === e.length && (e = a("ul"), d.prev("li").append(e)), e.append(c)
+          0 === e.length && (e = jQuery("ul"), d.prev("li").append(e)), e.append(c)
         }
         else d.removeAttr("data-indent")
       }), b.html.cleanBlankSpaces(h.get(0)), c = h.html()
     }
 
     function g(c) {
-      var d = a("<div>").html(c);
+      var d = jQuery("<div>").html(c);
       d.find("p, div, h1, h2, h3, h4, h5, h6, pre, blockquote").each(function (c, d) {
-        a(d).replaceWith("<" + (b.html.defaultTag() || "DIV") + ">" + a(d).html() + "</" + (b.html.defaultTag() || "DIV") + ">")
-      }), a(d.find("*").not("p, div, h1, h2, h3, h4, h5, h6, pre, blockquote, ul, ol, li, table, tbody, thead, tr, td, br, img").get().reverse()).each(function () {
-        a(this).replaceWith(a(this).html())
+        jQuery(d).replaceWith("<" + (b.html.defaultTag() || "DIV") + ">" + jQuery(d).html() + "</" + (b.html.defaultTag() || "DIV") + ">")
+      }), jQuery(d.find("*").not("p, div, h1, h2, h3, h4, h5, h6, pre, blockquote, ul, ol, li, table, tbody, thead, tr, td, br, img").get().reverse()).each(function () {
+        jQuery(this).replaceWith(jQuery(this).html())
       });
       var e = function (c) {
-        for (var d = b.node.contents(c), f = 0; f < d.length; f++) 3 != d[f].nodeType && 1 != d[f].nodeType ? a(d[f]).remove() : e(d[f])
+        for (var d = b.node.contents(c), f = 0; f < d.length; f++) 3 != d[f].nodeType && 1 != d[f].nodeType ? jQuery(d[f]).remove() : e(d[f])
       };
       return e(d.get(0)), d.html()
     }
@@ -3086,12 +3091,12 @@
       var c = b.snapshot.get();
       null === m && (m = n.html(), b.selection.restore(), b.events.enableBlur());
       var d = b.events.chainTrigger("paste.beforeCleanup", m);
-      if ("string" == typeof d && (m = d), m.indexOf("<body") >= 0 && (m = m.replace(/[.\s\S\w\W<>]*<body[^>]*>([.\s\S\w\W<>]*)<\/body>[.\s\S\w\W<>]*/g, "$1")), m.indexOf('id="docs-internal-guid') >= 0 && (m = m.replace(/^.* id="docs-internal-guid[^>]*>(.*)<\/b>.*$/, "$1")), m.match(/(class=\"?Mso|style=\"[^\"]*\bmso\-|w:WordDocument)/gi) ? (m = m.replace(/^\n*/g, "").replace(/^ /g, ""), 0 === m.indexOf("<colgroup>") && (m = "<table>" + m + "</table>"), m = f(m), m = j(m)) : (b.opts.htmlAllowComments = !1, m = b.clean.html(m, b.opts.pasteDeniedTags, b.opts.pasteDeniedAttrs), b.opts.htmlAllowComments = !0, m = j(m), m = m.replace(/\r|\n|\t/g, ""), a.FE.copied_text && a("<div>").html(m).text().replace(/(\u00A0)/gi, " ").replace(/\r|\n/gi, "") == a.FE.copied_text.replace(/(\u00A0)/gi, " ").replace(/\r|\n/gi, "") && (m = a.FE.copied_html), m = m.replace(/^ */g, "").replace(/ *$/g, "")), b.opts.pastePlain && (m = g(m)), d = b.events.chainTrigger("paste.afterCleanup", m), "string" == typeof d && (m = d), "" !== m) {
-        var e = a("<div>").html(m);
+      if ("string" == typeof d && (m = d), m.indexOf("<body") >= 0 && (m = m.replace(/[.\s\S\w\W<>]*<body[^>]*>([.\s\S\w\W<>]*)<\/body>[.\s\S\w\W<>]*/g, "$1")), m.indexOf('id="docs-internal-guid') >= 0 && (m = m.replace(/^.* id="docs-internal-guid[^>]*>(.*)<\/b>.*$/, "$1")), m.match(/(class=\"?Mso|style=\"[^\"]*\bmso\-|w:WordDocument)/gi) ? (m = m.replace(/^\n*/g, "").replace(/^ /g, ""), 0 === m.indexOf("<colgroup>") && (m = "<table>" + m + "</table>"), m = f(m), m = j(m)) : (b.opts.htmlAllowComments = !1, m = b.clean.html(m, b.opts.pasteDeniedTags, b.opts.pasteDeniedAttrs), b.opts.htmlAllowComments = !0, m = j(m), m = m.replace(/\r|\n|\t/g, ""), jQuery.FE.copied_text && jQuery("<div>").html(m).text().replace(/(\u00A0)/gi, " ").replace(/\r|\n/gi, "") == jQuery.FE.copied_text.replace(/(\u00A0)/gi, " ").replace(/\r|\n/gi, "") && (m = jQuery.FE.copied_html), m = m.replace(/^ */g, "").replace(/ *$/g, "")), b.opts.pastePlain && (m = g(m)), d = b.events.chainTrigger("paste.afterCleanup", m), "string" == typeof d && (m = d), "" !== m) {
+        var e = jQuery("<div>").html(m);
         b.html.normalizeSpaces(e.get(0)), e.find("span").each(function () {
-          0 == this.attributes.length && a(this).replaceWith(this.innerHTML)
+          0 == this.attributes.length && jQuery(this).replaceWith(this.innerHTML)
         }), e.find("br").each(function () {
-          this.previousSibling && b.node.isBlock(this.previousSibling) && a(this).remove()
+          this.previousSibling && b.node.isBlock(this.previousSibling) && jQuery(this).remove()
         }), m = e.html(), b.html.insert(m, !0)
       }
       i(), b.undo.saveStep(c), b.undo.saveStep()
@@ -3102,17 +3107,17 @@
     }
 
     function j(b) {
-      for (var c, d = a("<div>").html(b), e = d.find("*:empty:not(br, img, td, th)"); e.length;) {
-        for (c = 0; c < e.length; c++) a(e[c]).remove();
+      for (var c, d = jQuery("<div>").html(b), e = d.find("*:empty:not(br, img, td, th)"); e.length;) {
+        for (c = 0; c < e.length; c++) jQuery(e[c]).remove();
         e = d.find("*:empty:not(br, img, td, th)")
       }
       for (var f = d.find("> div:not([style]), td > div, th > div, li > div"); f.length;) {
-        var g = a(f[f.length - 1]);
+        var g = jQuery(f[f.length - 1]);
         g.replaceWith(g.html() + "<br>"), f = d.find("> div:not([style]), td > div, th > div, li > div")
       }
       for (f = d.find("div:not([style])"); f.length;) {
         for (c = 0; c < f.length; c++) {
-          var h = a(f[c]),
+          var h = jQuery(f[c]),
             i = h.html().replace(/\u0009/gi, "").trim();
           h.replaceWith(i)
         }
@@ -3133,7 +3138,7 @@
       _init: k
     }
   };
-  a.FE.MODULES.tooltip = function (b) {
+  jQuery.FE.MODULES.tooltip = function (b) {
     function c() {
       b.$tooltip && b.$tooltip.removeClass("fr-visible").css("left", "-3000px")
     }
@@ -3142,21 +3147,21 @@
       if (c.data("title") || c.data("title", c.attr("title")), !c.data("title")) return !1;
       b.$tooltip || f(), c.removeAttr("title"), b.$tooltip.text(c.data("title")), b.$tooltip.addClass("fr-visible");
       var e = c.offset().left + (c.outerWidth() - b.$tooltip.outerWidth()) / 2;
-      0 > e && (e = 0), e + b.$tooltip.outerWidth() > a(b.o_win).width() && (e = a(b.o_win).width() - b.$tooltip.outerWidth()), "undefined" == typeof d && (d = b.opts.toolbarBottom);
+      0 > e && (e = 0), e + b.$tooltip.outerWidth() > jQuery(b.o_win).width() && (e = jQuery(b.o_win).width() - b.$tooltip.outerWidth()), "undefined" == typeof d && (d = b.opts.toolbarBottom);
       var g = d ? c.offset().top - b.$tooltip.height() : c.offset().top + c.outerHeight();
       b.$tooltip.css("left", e), b.$tooltip.css("top", g)
     }
 
     function e(e, f, g) {
       b.helpers.isMobile() || (b.events.$on(e, "mouseenter", f, function (b) {
-        a(b.currentTarget).hasClass("fr-disabled") || d(a(b.currentTarget), g)
+        jQuery(b.currentTarget).hasClass("fr-disabled") || d(jQuery(b.currentTarget), g)
       }, !0), b.events.$on(e, "mouseleave " + b._mousedown + " " + b._mouseup, f, function (a) {
         c()
       }, !0))
     }
 
     function f() {
-      b.helpers.isMobile() || (b.shared.$tooltip ? b.$tooltip = b.shared.$tooltip : (b.shared.$tooltip = a('<div class="fr-tooltip"></div>'), b.$tooltip = b.shared.$tooltip, b.opts.theme && b.$tooltip.addClass(b.opts.theme + "-theme"), a(b.o_doc).find("body").append(b.$tooltip)), b.events.on("shared.destroy", function () {
+      b.helpers.isMobile() || (b.shared.$tooltip ? b.$tooltip = b.shared.$tooltip : (b.shared.$tooltip = jQuery('<div class="fr-tooltip"></div>'), b.$tooltip = b.shared.$tooltip, b.opts.theme && b.$tooltip.addClass(b.opts.theme + "-theme"), jQuery(b.o_doc).find("body").append(b.$tooltip)), b.events.on("shared.destroy", function () {
         b.$tooltip.html("").removeData().remove()
       }, !0))
     }
@@ -3166,68 +3171,68 @@
       bind: e
     }
   };
-  a.FE.ICON_DEFAULT_TEMPLATE = "font_awesome", a.FE.ICON_TEMPLATES = {
+  jQuery.FE.ICON_DEFAULT_TEMPLATE = "font_awesome", jQuery.FE.ICON_TEMPLATES = {
     font_awesome: '<i class="material-icons">[NAME]</i>',
     text: '<span style="text-align: center;">[NAME]</span>',
     image: "<img src=[SRC] alt=[ALT] />"
   };
-  a.FE.ICONS = {
+  jQuery.FE.ICONS = {
     bold: {
       NAME: "format_bold"
     },
     italic: {
-      NAME: "italic"
+      NAME: "format_italic"
     },
     underline: {
-      NAME: "underline"
+      NAME: "format_underline"
     },
     strikeThrough: {
-      NAME: "strikethrough"
+      NAME: "format_strikethrough"
     },
     subscript: {
-      NAME: "subscript"
+      NAME: "format_subscript"
     },
     superscript: {
-      NAME: "superscript"
+      NAME: "format_superscript"
     },
     color: {
-      NAME: "tint"
+      NAME: "format_tint"
     },
     outdent: {
-      NAME: "outdent"
+      NAME: "format_indent_decrease"
     },
     indent: {
-      NAME: "indent"
+      NAME: "format_indent_increase"
     },
     undo: {
-      NAME: "rotate-left"
+      NAME: "undo"
     },
     redo: {
-      NAME: "rotate-right"
+      NAME: "redo"
     },
     insertHR: {
-      NAME: "minus"
+      NAME: "remove"
     },
     clearFormatting: {
-      NAME: "eraser"
+      NAME: "format_clear"
     },
     selectAll: {
-      NAME: "mouse-pointer"
+      NAME: "font_download"
     }
   };
-  a.FE.DefineIconTemplate = function (b, c) {
-    a.FE.ICON_TEMPLATES[b] = c
+  jQuery.FE.DefineIconTemplate = function (b, c) {
+    jQuery.FE.ICON_TEMPLATES[b] = c
   };
-  a.FE.DefineIcon = function (b, c) {
-    a.FE.ICONS[b] = c
+  jQuery.FE.DefineIcon = function (b, c) {
+    jQuery.FE.ICONS[b] = c
   };
-  a.FE.MODULES.icon = function (b) {
+  jQuery.FE.MODULES.icon = function (b) {
     function c(b) {
       var c = null,
-        d = a.FE.ICONS[b];
+        d = jQuery.FE.ICONS[b];
       if ("undefined" != typeof d) {
-        var e = d.template || a.FE.ICON_DEFAULT_TEMPLATE;
-        e && (e = a.FE.ICON_TEMPLATES[e]) && (c = e.replace(/\[([a-zA-Z]*)\]/g, function (a, c) {
+        var e = d.template || jQuery.FE.ICON_DEFAULT_TEMPLATE;
+        e && (e = jQuery.FE.ICON_TEMPLATES[e]) && (c = e.replace(/\[([a-zA-Z]*)\]/g, function (a, c) {
           return "NAME" == c ? d[c] || b : d[c]
         }))
       }
@@ -3237,45 +3242,46 @@
       create: c
     }
   };
-  a.FE.MODULES.button = function (b) {
+  jQuery.FE.MODULES.button = function (b) {
     function c(c) {
-      var d = a(c.currentTarget),
+      var d = jQuery(c.currentTarget),
         e = d.next(),
         f = d.hasClass("fr-active"),
-        g = (b.helpers.isMobile(), a(".fr-dropdown.fr-active").not(d)),
+        g = (b.helpers.isMobile(), jQuery(".fr-dropdown.fr-active").not(d)),
         h = d.parents(".fr-toolbar, .fr-popup").data("instance") || b;
       if (h.helpers.isIOS() && 0 == h.$el.get(0).querySelectorAll(".fr-marker").length && (h.selection.save(), h.selection.clear(), h.selection.restore()), !f) {
         var i = d.data("cmd");
-        e.find(".fr-command").removeClass("fr-active"), a.FE.COMMANDS[i] && a.FE.COMMANDS[i].refreshOnShow && a.FE.COMMANDS[i].refreshOnShow.apply(h, [d, e]), e.css("left", d.offset().left - d.parent().offset().left - ("rtl" == b.opts.direction ? e.width() - d.outerWidth() : 0)), b.opts.toolbarBottom ? e.css("bottom", b.$tb.height() - d.position().top) : e.css("top", d.position().top + d.outerHeight())
+        e.find(".fr-command").removeClass("fr-active"), jQuery.FE.COMMANDS[i] && jQuery.FE.COMMANDS[i].refreshOnShow && jQuery.FE.COMMANDS[i].refreshOnShow.apply(h, [d, e]), e.css("left", d.offset().left - d.parent().offset().left - ("rtl" == b.opts.direction ? e.width() - d.outerWidth() : 0)), b.opts.toolbarBottom ? e.css("bottom", b.$tb.height() - d.position().top) : e.css("top", d.position().top + d.outerHeight())
       }
       d.addClass("fr-blink").toggleClass("fr-active"), setTimeout(function () {
         d.removeClass("fr-blink")
-      }, 300), e.offset().left + e.outerWidth() > a(b.opts.scrollableContainer).offset().left + a(b.opts.scrollableContainer).outerWidth() && e.css("margin-left", -(e.offset().left + e.outerWidth() - a(b.opts.scrollableContainer).offset().left - a(b.opts.scrollableContainer).outerWidth())), g.removeClass("fr-active"), g.parent(".fr-toolbar:not(.fr-inline)").css("zIndex", ""), 0 != d.parents(".fr-popup").length || b.opts.toolbarInline || (d.hasClass("fr-active") ? b.$tb.css("zIndex", (b.opts.zIndex || 1) + 4) : b.$tb.css("zIndex", ""))
+      }, 300), e.offset().left + e.outerWidth() > jQuery(b.opts.scrollableContainer).offset().left + jQuery(b.opts.scrollableContainer).outerWidth() && e.css("margin-left", -(e.offset().left + e.outerWidth() - jQuery(b.opts.scrollableContainer).offset().left - jQuery(b.opts.scrollableContainer).outerWidth())), g.removeClass("fr-active"), g.parent(".fr-toolbar:not(.fr-inline)").css("zIndex", ""), 0 != d.parents(".fr-popup").length || b.opts.toolbarInline || (d.hasClass("fr-active") ? b.$tb.css("zIndex", (b.opts.zIndex || 1) + 4) : b.$tb.css("zIndex", ""))
     }
 
     function d(b) {
-      b.addClass("fr-blink"), setTimeout(function () {
-        b.removeClass("fr-blink")
-      }, 500);
+      // b.addClass("fr-blink"), setTimeout(function () {
+      //   b.removeClass("fr-blink")
+      // }, 500);
+      
       for (var c = b.data("cmd"), d = [];
         "undefined" != typeof b.data("param" + (d.length + 1));) d.push(b.data("param" + (d.length + 1)));
-      var e = a(".fr-dropdown.fr-active");
+      var e = jQuery(".fr-dropdown.fr-active");
       e.length && (e.removeClass("fr-active"), e.parent(".fr-toolbar:not(.fr-inline)").css("zIndex", "")), b.parents(".fr-popup, .fr-toolbar").data("instance").commands.exec(c, d)
     }
 
     function e(b) {
-      var c = a(b.currentTarget);
+      var c = jQuery(b.currentTarget);
       d(c)
     }
 
     function f(b) {
-      var d = a(b.currentTarget),
+      var d = jQuery(b.currentTarget),
         f = d.parents(".fr-popup, .fr-toolbar").data("instance");
       if (0 != d.parents(".fr-popup").length || d.data("popup") || f.popups.hideAll(), f.popups.areVisible() && !f.popups.areVisible(f)) {
-        for (var g = 0; g < a.FE.INSTANCES.length; g++) a.FE.INSTANCES[g] != f && a.FE.INSTANCES[g].popups && a.FE.INSTANCES[g].popups.areVisible() && a.FE.INSTANCES[g].$el.find(".fr-marker").remove();
+        for (var g = 0; g < jQuery.FE.INSTANCES.length; g++) jQuery.FE.INSTANCES[g] != f && jQuery.FE.INSTANCES[g].popups && jQuery.FE.INSTANCES[g].popups.areVisible() && jQuery.FE.INSTANCES[g].$el.find(".fr-marker").remove();
         f.popups.hideAll()
       }
-      d.hasClass("fr-dropdown") ? c(b) : (e(b), a.FE.COMMANDS[d.data("cmd")] && 0 != a.FE.COMMANDS[d.data("cmd")].refreshAfterCallback && f.button.bulkRefresh())
+      d.hasClass("fr-dropdown") ? c(b) : (e(b), jQuery.FE.COMMANDS[d.data("cmd")] && 0 != jQuery.FE.COMMANDS[d.data("cmd")].refreshAfterCallback && f.button.bulkRefresh())
     }
 
     function g(a) {
@@ -3296,9 +3302,9 @@
       var e = c.get(0).ownerDocument,
         j = "defaultView" in e ? e.defaultView : e.parentWindow,
         k = function (d) {
-          (!d || d.type == b._mouseup && d.target != a("html").get(0) || "keydown" == d.type && (b.keys.isCharacter(d.which) && !b.keys.ctrlKey(d) || d.which == a.FE.KEYCODE.ESC)) && g(c)
+          (!d || d.type == b._mouseup && d.target != jQuery("html").get(0) || "keydown" == d.type && (b.keys.isCharacter(d.which) && !b.keys.ctrlKey(d) || d.which == jQuery.FE.KEYCODE.ESC)) && g(c)
         };
-      b.events.$on(a(j), b._mouseup + " resize keydown", k, !0), b.opts.iframe && b.events.$on(b.$win, b._mouseup, k, !0), a.merge(q, c.find(".fr-btn").toArray()), b.tooltip.bind(c, ".fr-btn, .fr-title", d)
+      b.events.$on(jQuery(j), b._mouseup + " resize keydown", k, !0), b.opts.iframe && b.events.$on(b.$win, b._mouseup, k, !0), jQuery.merge(q, c.find(".fr-btn").toArray()), b.tooltip.bind(c, ".fr-btn, .fr-title", d)
     }
 
     function k(a, c) {
@@ -3307,7 +3313,7 @@
       else {
         var e = c.options;
         "function" == typeof e && (e = e()), d += '<ul class="fr-dropdown-list">';
-        for (var f in e) e.hasOwnProperty(f) && (d += '<li><a class="fr-command" data-cmd="' + a + '" data-param1="' + f + '" title="' + e[f] + '">' + b.language.translate(e[f]) + "</a></li>");
+        for (var f in e) e.hasOwnProperty(f) && (d += '<li><jQuery class="fr-command" data-cmd="' + a + '" data-param1="' + f + '" title="' + e[f] + '">' + b.language.translate(e[f]) + "</jQuery></li>");
         d += "</ul>"
       }
       return d
@@ -3334,7 +3340,7 @@
     function m(c, d) {
       for (var e = "", f = 0; f < c.length; f++) {
         var g = c[f],
-          h = a.FE.COMMANDS[g];
+          h = jQuery.FE.COMMANDS[g];
         if (!(h && "undefined" != typeof h.plugin && b.opts.pluginsEnabled.indexOf(h.plugin) < 0))
           if (h) {
             var i = "undefined" != typeof d ? d.indexOf(g) >= 0 : !0;
@@ -3348,16 +3354,16 @@
     function n(c) {
       var d, e = c.parents(".fr-popup, .fr-toolbar").data("instance") || b,
         f = c.data("cmd");
-      c.hasClass("fr-dropdown") ? d = c.next() : c.removeClass("fr-active"), a.FE.COMMANDS[f] && a.FE.COMMANDS[f].refresh ? a.FE.COMMANDS[f].refresh.apply(e, [c, d]) : b.refresh[f] && e.refresh[f](c, d)
+      c.hasClass("fr-dropdown") ? d = c.next() : c.removeClass("fr-active"), jQuery.FE.COMMANDS[f] && jQuery.FE.COMMANDS[f].refresh ? jQuery.FE.COMMANDS[f].refresh.apply(e, [c, d]) : b.refresh[f] && e.refresh[f](c, d)
     }
 
     function o() {
       var c = b.$tb ? b.$tb.data("instance") || b : b;
       return 0 == b.events.trigger("buttons.refresh") ? !0 : void setTimeout(function () {
         for (var b = c.selection.inEditor() && c.core.hasFocus(), d = 0; d < q.length; d++) {
-          var e = a(q[d]),
+          var e = jQuery(q[d]),
             f = e.data("cmd");
-          0 == e.parents(".fr-popup").length ? b || a.FE.COMMANDS[f] && a.FE.COMMANDS[f].forcedRefresh ? c.button.refresh(e) : e.hasClass("fr-dropdown") || e.removeClass("fr-active") : e.parents(".fr-popup").is(":visible") && c.button.refresh(e)
+          0 == e.parents(".fr-popup").length ? b || jQuery.FE.COMMANDS[f] && jQuery.FE.COMMANDS[f].forcedRefresh ? c.button.refresh(e) : e.hasClass("fr-dropdown") || e.removeClass("fr-active") : e.parents(".fr-popup").is(":visible") && c.button.refresh(e)
         }
       }, 0)
     }
@@ -3375,7 +3381,7 @@
       exec: d
     }
   };
-  a.FE.MODULES.position = function (b) {
+  jQuery.FE.MODULES.position = function (b) {
     function c() {
       var c, d = b.selection.ranges(0);
       if (d && d.collapsed && b.selection.inEditor()) {
@@ -3385,7 +3391,7 @@
         f.css("display", "inline"), f.css("line-height", "");
         var g = f.offset(),
           h = f.outerHeight();
-        f.css("display", "none"), f.css("line-height", 0), c = {}, c.left = g.left, c.width = 0, c.height = h, c.top = g.top - (b.helpers.isIOS() ? 0 : a(b.o_win).scrollTop()), c.right = 1, c.bottom = 1, c.ok = !0, e && b.selection.restore()
+        f.css("display", "none"), f.css("line-height", 0), c = {}, c.left = g.left, c.width = 0, c.height = h, c.top = g.top - (b.helpers.isIOS() ? 0 : jQuery(b.o_win).scrollTop()), c.right = 1, c.bottom = 1, c.ok = !0, e && b.selection.restore()
       }
       else d && (c = d.getBoundingClientRect());
       return c
@@ -3396,22 +3402,22 @@
       if (!b.helpers.isMobile() && b.$tb && c.parent().get(0) != b.$tb.get(0)) {
         var g = (c.parent().height() - 20 - (b.opts.toolbarBottom ? b.$tb.outerHeight() : 0), c.parent().offset().top),
           h = d - f - (e || 0);
-        c.parent().get(0) == a(b.opts.scrollableContainer).get(0) && (g -= c.parent().position().top), g + d + f > a(b.o_doc).outerHeight() && c.parent().offset().top + h > 0 ? (d = h, c.addClass("fr-above")) : c.removeClass("fr-above")
+        c.parent().get(0) == jQuery(b.opts.scrollableContainer).get(0) && (g -= c.parent().position().top), g + d + f > jQuery(b.o_doc).outerHeight() && c.parent().offset().top + h > 0 ? (d = h, c.addClass("fr-above")) : c.removeClass("fr-above")
       }
       return d
     }
 
     function e(c, d) {
       var e = c.outerWidth();
-      return c.parent().offset().left + d + e > a(b.opts.scrollableContainer).width() - 10 && (d = a(b.opts.scrollableContainer).width() - e - 10 - c.parent().offset().left + a(b.opts.scrollableContainer).offset().left), c.parent().offset().left + d < a(b.opts.scrollableContainer).offset().left && (d = 10 - c.parent().offset().left + a(b.opts.scrollableContainer).offset().left), d
+      return c.parent().offset().left + d + e > jQuery(b.opts.scrollableContainer).width() - 10 && (d = jQuery(b.opts.scrollableContainer).width() - e - 10 - c.parent().offset().left + jQuery(b.opts.scrollableContainer).offset().left), c.parent().offset().left + d < jQuery(b.opts.scrollableContainer).offset().left && (d = 10 - c.parent().offset().left + jQuery(b.opts.scrollableContainer).offset().left), d
     }
 
     function f(d) {
       var e = c();
       d.css("top", 0).css("left", 0);
       var f = e.top + e.height,
-        h = e.left + e.width / 2 - d.outerWidth() / 2 + a(b.o_win).scrollLeft();
-      b.opts.iframe || (f += a(b.o_win).scrollTop()), g(h, f, d, e.height)
+        h = e.left + e.width / 2 - d.outerWidth() / 2 + jQuery(b.o_win).scrollLeft();
+      b.opts.iframe || (f += jQuery(b.o_win).scrollTop()), g(h, f, d, e.height)
     }
 
     function g(a, c, f, g) {
@@ -3427,38 +3433,38 @@
     }
 
     function h(c) {
-      var d = a(c),
+      var d = jQuery(c),
         e = d.is(".fr-sticky-on"),
         f = d.data("sticky-top"),
         g = d.data("sticky-scheduled");
       if ("undefined" == typeof f) {
         d.data("sticky-top", 0);
-        var h = a('<div class="fr-sticky-dummy" style="height: ' + d.outerHeight() + 'px;"></div>');
+        var h = jQuery('<div class="fr-sticky-dummy" style="height: ' + d.outerHeight() + 'px;"></div>');
         b.$box.prepend(h)
       }
       else b.$box.find(".fr-sticky-dummy").css("height", d.outerHeight());
       if (b.core.hasFocus() || b.$tb.find("input:visible:focus").length > 0) {
-        var i = a(window).scrollTop(),
+        var i = jQuery(window).scrollTop(),
           j = Math.min(Math.max(i - b.$tb.parent().offset().top, 0), b.$tb.parent().outerHeight() - d.outerHeight());
         j != f && j != g && (clearTimeout(d.data("sticky-timeout")), d.data("sticky-scheduled", j), d.outerHeight() < i - b.$tb.parent().offset().top && d.addClass("fr-opacity-0"), d.data("sticky-timeout", setTimeout(function () {
-          var c = a(window).scrollTop(),
+          var c = jQuery(window).scrollTop(),
             e = Math.min(Math.max(c - b.$tb.parent().offset().top, 0), b.$tb.parent().outerHeight() - d.outerHeight());
           e > 0 && "BODY" == b.$tb.parent().get(0).tagName && (e += b.$tb.parent().position().top), e != f && (d.css("top", Math.max(e, 0)), d.data("sticky-top", e), d.data("sticky-scheduled", e)), d.removeClass("fr-opacity-0")
         }, 100))), e || (d.css("top", "0"), d.width(b.$tb.parent().width()), d.addClass("fr-sticky-on"), b.$box.addClass("fr-sticky-box"))
       }
-      else clearTimeout(a(c).css("sticky-timeout")), d.css("top", "0"), d.css("position", ""), d.width(""), d.data("sticky-top", 0), d.removeClass("fr-sticky-on"), b.$box.removeClass("fr-sticky-box")
+      else clearTimeout(jQuery(c).css("sticky-timeout")), d.css("top", "0"), d.css("position", ""), d.width(""), d.data("sticky-top", 0), d.removeClass("fr-sticky-on"), b.$box.removeClass("fr-sticky-box")
     }
 
     function i(c) {
       if (c.offsetWidth) {
-        var d, e, f = a(c),
+        var d, e, f = jQuery(c),
           g = f.outerHeight(),
           h = f.data("sticky-position"),
-          i = a("body" == b.opts.scrollableContainer ? b.o_win : b.opts.scrollableContainer).outerHeight(),
+          i = jQuery("body" == b.opts.scrollableContainer ? b.o_win : b.opts.scrollableContainer).outerHeight(),
           j = 0,
           k = 0;
-        "body" !== b.opts.scrollableContainer && (j = a(b.opts.scrollableContainer).offset().top, k = a(b.o_win).outerHeight() - j - i);
-        var l = "body" == b.opts.scrollableContainer ? a(b.o_win).scrollTop() : j,
+        "body" !== b.opts.scrollableContainer && (j = jQuery(b.opts.scrollableContainer).offset().top, k = jQuery(b.o_win).outerHeight() - j - i);
+        var l = "body" == b.opts.scrollableContainer ? jQuery(b.o_win).scrollTop() : j,
           m = f.is(".fr-sticky-on");
         f.data("sticky-parent") || f.data("sticky-parent", f.parent());
         var n = f.data("sticky-parent"),
@@ -3497,17 +3503,17 @@
             b.helpers.requestAnimationFrame()(c);
             for (var a = 0; a < b._stickyElements.length; a++) h(b._stickyElements[a])
           };
-          c(), b.events.$on(a(b.o_win), "scroll", function () {
+          c(), b.events.$on(jQuery(b.o_win), "scroll", function () {
             if (b.core.hasFocus())
               for (var c = 0; c < b._stickyElements.length; c++) {
-                var d = a(b._stickyElements[c]),
+                var d = jQuery(b._stickyElements[c]),
                   e = d.parent(),
-                  f = a(window).scrollTop();
+                  f = jQuery(window).scrollTop();
                 d.outerHeight() < f - e.offset().top && (d.addClass("fr-opacity-0"), d.data("sticky-top", -1), d.data("sticky-scheduled", -1))
               }
           }, !0)
         }
-        else b.events.$on(a("body" == b.opts.scrollableContainer ? b.o_win : b.opts.scrollableContainer), "scroll", l, !0), b.events.$on(a(b.o_win), "resize", l, !0), b.events.on("initialized", l), b.events.on("focus", l), b.events.$on(a(b.o_win), "resize", "textarea", l, !0)
+        else b.events.$on(jQuery("body" == b.opts.scrollableContainer ? b.o_win : b.opts.scrollableContainer), "scroll", l, !0), b.events.$on(jQuery(b.o_win), "resize", l, !0), b.events.on("initialized", l), b.events.on("focus", l), b.events.$on(jQuery(b.o_win), "resize", "textarea", l, !0)
     }
 
     function l() {
@@ -3530,25 +3536,25 @@
       getBoundingRect: c
     }
   };
-  a.extend(a.FE.DEFAULTS, {
+  jQuery.extend(jQuery.FE.DEFAULTS, {
     toolbarBottom: !1,
-    toolbarButtons: ["fullscreen", "bold", "italic", "underline", "strikeThrough", "subscript", "superscript", "fontFamily", "fontSize", "|", "color", "emoticons", "inlineStyle", "paragraphStyle", "|", "paragraphFormat", "align", "formatOL", "formatUL", "outdent", "indent", "quote", "insertHR", "-", "insertLink", "insertImage", "insertVideo", "insertFile", "insertTable", "undo", "redo", "clearFormatting", "selectAll", "html"],
-    toolbarButtonsXS: ["bold", "italic", "fontFamily", "fontSize", "|", "undo", "redo"],
-    toolbarButtonsSM: ["bold", "italic", "underline", "|", "fontFamily", "fontSize", "insertLink", "insertImage", "table", "|", "undo", "redo"],
-    toolbarButtonsMD: ["fullscreen", "bold", "italic", "underline", "fontFamily", "fontSize", "color", "paragraphStyle", "paragraphFormat", "align", "formatOL", "formatUL", "outdent", "indent", "quote", "insertHR", "-", "insertLink", "insertImage", "insertVideo", "insertFile", "insertTable", "undo", "redo", "clearFormatting"],
+    toolbarButtons:   ["fullscreen", "bold", "italic", "underline", "strikeThrough", /*"subscript", "superscript",*/ "fontFamily", "fontSize", "color", "emoticons", "inlineStyle", "paragraphStyle", "paragraphFormat", "align", "formatOL", "formatUL", "outdent", "indent", "quote", "insertHR", "insertLink", "insertImage", "insertVideo", "insertFile", "insertTable", "undo", "redo", "clearFormatting", "selectAll", "html"],
+    toolbarButtonsXS: ["fullscreen", "bold", "italic", "underline", "strikeThrough", /*"subscript", "superscript",*/ "fontFamily", "fontSize", "color", "emoticons", "inlineStyle", "paragraphStyle", "paragraphFormat", "align", "formatOL", "formatUL", "outdent", "indent", "quote", "insertHR", "insertLink", "insertImage", "insertVideo", "insertFile", "insertTable", "undo", "redo", "clearFormatting", "selectAll", "html"],//["bold", "italic", "fontFamily", "fontSize", "|", "undo", "redo"],
+    toolbarButtonsSM: ["fullscreen", "bold", "italic", "underline", "strikeThrough", /*"subscript", "superscript",*/ "fontFamily", "fontSize", "color", "emoticons", "inlineStyle", "paragraphStyle", "paragraphFormat", "align", "formatOL", "formatUL", "outdent", "indent", "quote", "insertHR", "insertLink", "insertImage", "insertVideo", "insertFile", "insertTable", "undo", "redo", "clearFormatting", "selectAll", "html"],//["bold", "italic", "underline", "|", "fontFamily", "fontSize", "insertLink", "insertImage", "table", "|", "undo", "redo"],
+    toolbarButtonsMD: ["fullscreen", "bold", "italic", "underline", "strikeThrough", /*"subscript", "superscript",*/ "fontFamily", "fontSize", "color", "emoticons", "inlineStyle", "paragraphStyle", "paragraphFormat", "align", "formatOL", "formatUL", "outdent", "indent", "quote", "insertHR", "insertLink", "insertImage", "insertVideo", "insertFile", "insertTable", "undo", "redo", "clearFormatting", "selectAll", "html"],//["fullscreen", "bold", "italic", "underline", "fontFamily", "fontSize", "color", "paragraphStyle", "paragraphFormat", "align", "formatOL", "formatUL", "outdent", "indent", "quote", "insertHR", "-", "insertLink", "insertImage", "insertVideo", "insertFile", "insertTable", "undo", "redo", "clearFormatting"],
     toolbarContainer: null,
     toolbarInline: !1,
     toolbarSticky: !0,
     toolbarStickyOffset: 0,
     toolbarVisibleWithoutSelection: !1
   });
-  a.FE.MODULES.toolbar = function (b) {
+  jQuery.FE.MODULES.toolbar = function (b) {
     function c(a, b) {
       for (var c = 0; c < b.length; c++) "-" != b[c] && "|" != b[c] && a.indexOf(b[c]) < 0 && a.push(b[c])
     }
 
     function d() {
-      var d = a.merge([], e());
+      var d = jQuery.merge([], e());
       c(d, b.opts.toolbarButtonsXS || []), c(d, b.opts.toolbarButtonsSM || []), c(d, b.opts.toolbarButtonsMD || []), c(d, b.opts.toolbarButtons);
       for (var f = d.length - 1; f >= 0; f--) "-" != d[f] && "|" != d[f] && d.indexOf(d[f]) < f && d.splice(f, 1);
       var g = b.button.buildList(d, e());
@@ -3573,12 +3579,12 @@
     }
 
     function g() {
-      b.events.$on(a(b.o_win), "resize", f, !0), b.events.$on(a(b.o_win), "orientationchange", f, !0)
+      b.events.$on(jQuery(b.o_win), "resize", f, !0), b.events.$on(jQuery(b.o_win), "orientationchange", f, !0)
     }
 
     function h(c, d) {
       setTimeout(function () {
-        if (c && c.which == a.FE.KEYCODE.ESC);
+        if (c && c.which == jQuery.FE.KEYCODE.ESC);
         else if (b.selection.inEditor() && b.core.hasFocus() && !b.popups.areVisible() && (b.opts.toolbarVisibleWithoutSelection && c && "keyup" != c.type || !b.selection.isCollapsed() && !b.keys.isIME() || d)) {
           if (b.$tb.data("instance", b), 0 == b.events.trigger("toolbar.show", [c])) return !1;
           b.opts.toolbarContainer || b.position.forSelection(b.$tb), b.$tb.show()
@@ -3596,12 +3602,41 @@
 
     function k() {
       b.events.on("window.mousedown", i), b.events.on("keydown", i), b.events.on("blur", i), b.events.on("window.mouseup", h), b.helpers.isMobile() ? b.helpers.isIOS() || (b.events.on("window.touchend", h), b.browser.mozilla && setInterval(h, 200)) : b.events.on("window.keyup", h), b.events.on("keydown", function (b) {
-        b && b.which == a.FE.KEYCODE.ESC && i()
+        b && b.which == jQuery.FE.KEYCODE.ESC && i()
       }), b.events.$on(b.$wp, "scroll.toolbar", h), b.events.on("commands.after", h), b.helpers.isMobile() && (b.events.$on(b.$doc, "selectionchange", h), b.events.$on(b.$doc, "orientationchange", h))
     }
 
     function l() {
-      b.opts.toolbarInline ? (a(b.opts.scrollableContainer).append(b.$tb), b.$tb.data("container", a(b.opts.scrollableContainer)), b.$tb.addClass("fr-inline"), b.$tb.prepend('<span class="fr-arrow"></span>'), k(), b.opts.toolbarBottom = !1) : (b.opts.toolbarBottom && !b.helpers.isIOS() ? (b.$box.append(b.$tb), b.$tb.addClass("fr-bottom"), b.$box.addClass("fr-bottom")) : (b.opts.toolbarBottom = !1, b.$box.prepend(b.$tb), b.$tb.addClass("fr-top"), b.$box.addClass("fr-top")), b.$tb.addClass("fr-basic"), b.opts.toolbarSticky && (b.opts.toolbarStickyOffset && (b.opts.toolbarBottom ? b.$tb.css("bottom", b.opts.toolbarStickyOffset) : b.$tb.css("top", b.opts.toolbarStickyOffset)), b.position.addSticky(b.$tb)))
+        if ( b.opts.toolbarInline ) {
+          jQuery(b.opts.scrollableContainer).append(b.$tb)
+          b.$tb.data("container", jQuery(b.opts.scrollableContainer))
+          b.$tb.addClass("fr-inline")
+          b.$tb.prepend('<span class="fr-arrow"></span>')
+          k(), b.opts.toolbarBottom = !1
+        } else {
+          
+          if (b.opts.toolbarBottom && !b.helpers.isIOS()) {
+            b.$box.append(b.$tb)
+            b.$tb.addClass("fr-bottom")
+            b.$box.addClass("fr-bottom")
+          } else {
+            b.opts.toolbarBottom = !1
+            b.$box.prepend(b.$tb)
+            b.$tb.addClass("fr-top")
+            b.$box.addClass("fr-top")
+          }
+          b.$tb.addClass("fr-basic")
+          // b.opts.toolbarSticky && (
+          //   b.opts.toolbarStickyOffset && (
+          //     if ( b.opts.toolbarBottom ) {
+          //        b.$tb.css("bottom", b.opts.toolbarStickyOffset)
+          //      } else {
+          //        b.$tb.css("top", b.opts.toolbarStickyOffset)
+          //      }  )
+          //   b.position.addSticky(b.$tb)
+          //   )
+          // )
+        }
     }
 
     function m() {
@@ -3609,7 +3644,8 @@
     }
 
     function n() {
-      b.$box.removeClass("fr-top fr-bottom fr-inline fr-basic"), b.$box.find(".fr-sticky-dummy").remove()
+      b.$box.removeClass("fr-top fr-bottom fr-inline fr-basic");
+      b.$box.find(".fr-sticky-dummy").remove();
     }
 
     function o() {
@@ -3620,9 +3656,9 @@
     }
 
     function p() {
-      return b.$wp ? (b.opts.toolbarContainer ? (b.shared.$tb ? (b.$tb = b.shared.$tb, b.opts.toolbarInline && k()) : (b.shared.$tb = a('<div class="fr-toolbar"></div>'), b.$tb = b.shared.$tb, a(b.opts.toolbarContainer).append(b.$tb), o(), b.$tb.data("instance", b)), b.events.on("focus", function () {
+      return b.$wp ? (b.opts.toolbarContainer ? (b.shared.$tb ? (b.$tb = b.shared.$tb, b.opts.toolbarInline && k()) : (b.shared.$tb = jQuery('<div class="fr-toolbar"></div>'), b.$tb = b.shared.$tb, jQuery(b.opts.toolbarContainer).append(b.$tb), o(), b.$tb.data("instance", b)), b.events.on("focus", function () {
         b.$tb.data("instance", b)
-      }, !0), b.opts.toolbarInline = !1) : b.opts.toolbarInline ? (b.$box.addClass("fr-inline"), b.shared.$tb ? (b.$tb = b.shared.$tb, k()) : (b.shared.$tb = a('<div class="fr-toolbar"></div>'), b.$tb = b.shared.$tb, o())) : (b.$box.addClass("fr-basic"), b.$tb = a('<div class="fr-toolbar"></div>'), o(), b.$tb.data("instance", b)), b.events.on("destroy", n, !0), void b.events.on(b.opts.toolbarInline ? "shared.destroy" : "destroy", m, !0)) : !1
+      }, !0), b.opts.toolbarInline = !1) : b.opts.toolbarInline ? (b.$box.addClass("fr-inline"), b.shared.$tb ? (b.$tb = b.shared.$tb, k()) : (b.shared.$tb = jQuery('<div class="fr-toolbar"></div>'), b.$tb = b.shared.$tb, o())) : (b.$box.addClass("fr-basic"), b.$tb = jQuery('<div class="fr-toolbar"></div>'), o(), b.$tb.data("instance", b)), b.events.on("destroy", n, !0), void b.events.on(b.opts.toolbarInline ? "shared.destroy" : "destroy", m, !0)) : !1
     }
 
     function q() {
@@ -3633,7 +3669,10 @@
       v && b.$tb && (b.$tb.find("> .fr-command").removeClass("fr-disabled fr-no-refresh"), v = !1), b.button.bulkRefresh()
     }
     var s, t, u = [];
-    u[a.FE.XS] = b.opts.toolbarButtonsXS || b.opts.toolbarButtons, u[a.FE.SM] = b.opts.toolbarButtonsSM || b.opts.toolbarButtons, u[a.FE.MD] = b.opts.toolbarButtonsMD || b.opts.toolbarButtons, u[a.FE.LG] = b.opts.toolbarButtons;
+    u[jQuery.FE.XS] = b.opts.toolbarButtonsXS || b.opts.toolbarButtons;
+    u[jQuery.FE.SM] = b.opts.toolbarButtonsSM || b.opts.toolbarButtons;
+    u[jQuery.FE.MD] = b.opts.toolbarButtonsMD || b.opts.toolbarButtons;
+    u[jQuery.FE.LG] = b.opts.toolbarButtons;
     var v = !1;
     return {
       _init: p,
@@ -3644,7 +3683,7 @@
       enable: r
     }
   };
-  a.FE.SHORTCUTS_MAP = {
+  jQuery.FE.SHORTCUTS_MAP = {
     69: {
       cmd: "show"
     },
@@ -3673,26 +3712,41 @@
       cmd: "redo"
     }
   };
-  a.extend(a.FE.DEFAULTS, {
+  jQuery.extend(jQuery.FE.DEFAULTS, {
     shortcutsEnabled: ["show", "bold", "italic", "underline", "strikeThrough", "indent", "outdent", "undo", "redo"]
   });
-  a.FE.RegisterShortcut = function (b, c, d, e) {
-    a.FE.SHORTCUTS_MAP[b * (e ? -1 : 1)] = {
+  jQuery.FE.RegisterShortcut = function (b, c, d, e) {
+    jQuery.FE.SHORTCUTS_MAP[b * (e ? -1 : 1)] = {
       cmd: c,
       val: d
-    }, a.FE.DEFAULTS.shortcutsEnabled.push(c)
+    }, jQuery.FE.DEFAULTS.shortcutsEnabled.push(c)
   };
-  a.FE.MODULES.shortcuts = function (b) {
+
+  jQuery.FE.MODULES.shortcuts = function (b) {
     function c(c) {
       if (!b.core.hasFocus()) return !0;
       var d = c.which;
-      if (b.keys.ctrlKey(c) && (c.shiftKey && a.FE.SHORTCUTS_MAP[-d] || !c.shiftKey && a.FE.SHORTCUTS_MAP[d])) {
-        var e = a.FE.SHORTCUTS_MAP[d * (c.shiftKey ? -1 : 1)].cmd;
+
+      if ( b.keys.ctrlKey(c) && (c.shiftKey && jQuery.FE.SHORTCUTS_MAP[-d] || !c.shiftKey && jQuery.FE.SHORTCUTS_MAP[d] )) {
+        var e = jQuery.FE.SHORTCUTS_MAP[d * (c.shiftKey ? -1 : 1)].cmd;
+        
         if (e && b.opts.shortcutsEnabled.indexOf(e) >= 0) {
-          var f, g = a.FE.SHORTCUTS_MAP[d * (c.shiftKey ? -1 : 1)].val;
-          if (e && !g ? f = b.$tb.find('.fr-command[data-cmd="' + e + '"]') : e && g && (f = b.$tb.find('.fr-command[data-cmd="' + e + '"][data-param1="' + g + '"]')), f.length) return c.preventDefault(), c.stopPropagation(), f.parents(".fr-toolbar").data("instance", b), "keydown" == c.type && b.button.exec(f), !1;
+          var f, g = jQuery.FE.SHORTCUTS_MAP[d * (c.shiftKey ? -1 : 1)].val;
+          
+          if (
+            e && !g ? f = b.$tb.find('.fr-command[data-cmd="' + e + '"]') : 
+              e && g && (f = b.$tb.find('.fr-command[data-cmd="' + e + '"][data-param1="' + g + '"]')),
+              f.length) {
+            return 
+          c.preventDefault(),
+          c.stopPropagation(),
+          f.parents(".fr-toolbar").data("instance", b),
+          "keydown" == c.type && b.button.exec(f),
+          !1;g}
+          
           if (e && b.commands[e]) return c.preventDefault(), c.stopPropagation(), "keydown" == c.type && b.commands[e](), !1
         }
+
       }
     }
 
@@ -3703,7 +3757,7 @@
       _init: d
     }
   };
-  a.FE.MODULES.snapshot = function (a) {
+  jQuery.FE.MODULES.snapshot = function (a) {
     function b(a) {
       for (var b = a.parentNode.childNodes, c = 0, d = null, e = 0; e < b.length; e++) {
         if (d) {
@@ -3780,7 +3834,8 @@
       equal: j
     }
   };
-  a.FE.MODULES.undo = function (a) {
+
+  jQuery.FE.MODULES.undo = function (a) {
     function b(b) {
       var c = b.which,
         d = a.keys.ctrlKey(b);
@@ -3843,27 +3898,28 @@
       saveStep: e
     }
   };
-  a.FE.POPUP_TEMPLATES = {
+
+  jQuery.FE.POPUP_TEMPLATES = {
     "text.edit": "[_EDIT_]"
   };
-  a.FE.RegisterTemplate = function (b, c) {
-    a.FE.POPUP_TEMPLATES[b] = c
+  jQuery.FE.RegisterTemplate = function (b, c) {
+    jQuery.FE.POPUP_TEMPLATES[b] = c
   };
-  a.FE.MODULES.popups = function (b) {
+  jQuery.FE.MODULES.popups = function (b) {
     function c(c, d) {
-      d.is(":visible") || (d = a(b.opts.scrollableContainer)), d.is(x[c].data("container")) || (x[c].data("container", d), d.append(x[c]))
+      d.is(":visible") || (d = jQuery(b.opts.scrollableContainer)), d.is(x[c].data("container")) || (x[c].data("container", d), d.append(x[c]))
     }
 
     function d(d, e, h, i) {
       if (g() && b.$el.find(".fr-marker").length > 0 && (b.events.disableBlur(), b.selection.restore()), m([d]), !x[d]) return !1;
-      a(".fr-dropdown.fr-active").removeClass("fr-active").parent(".fr-toolbar").css("zIndex", ""), x[d].data("instance", b), b.$tb && b.$tb.data("instance", b);
+      jQuery(".fr-dropdown.fr-active").removeClass("fr-active").parent(".fr-toolbar").css("zIndex", ""), x[d].data("instance", b), b.$tb && b.$tb.data("instance", b);
       var j = x[d].outerWidth(),
         k = (x[d].outerHeight(), f(d));
       x[d].addClass("fr-active").find("input, textarea").removeAttr("disabled");
       var l = x[d].data("container");
-      l.is(b.$tb) && b.$tb.css("zIndex", (b.opts.zIndex || 1) + 4), b.opts.toolbarInline && l && b.$tb && l.get(0) == b.$tb.get(0) && (c(d, b.opts.toolbarInline ? a(b.opts.scrollableContainer) : b.$box), h && (h = b.$tb.offset().top - b.helpers.getPX(b.$tb.css("margin-top"))), e && (e = b.$tb.offset().left + b.$tb.width() / 2), b.$tb.hasClass("fr-above") && h && (h += b.$tb.outerHeight()), i = 0), l = x[d].data("container"), !b.opts.iframe || i || k || (e && (e -= b.$iframe.offset().left), h && (h -= b.$iframe.offset().top)), e && (e -= j / 2), b.opts.toolbarBottom && l && b.$tb && l.get(0) == b.$tb.get(0) && (x[d].addClass("fr-above"), h && (h -= x[d].outerHeight())), x[d].removeClass("fr-active"), b.position.at(e, h, x[d], i || 0), x[d].addClass("fr-active");
+      l.is(b.$tb) && b.$tb.css("zIndex", (b.opts.zIndex || 1) + 4), b.opts.toolbarInline && l && b.$tb && l.get(0) == b.$tb.get(0) && (c(d, b.opts.toolbarInline ? jQuery(b.opts.scrollableContainer) : b.$box), h && (h = b.$tb.offset().top - b.helpers.getPX(b.$tb.css("margin-top"))), e && (e = b.$tb.offset().left + b.$tb.width() / 2), b.$tb.hasClass("fr-above") && h && (h += b.$tb.outerHeight()), i = 0), l = x[d].data("container"), !b.opts.iframe || i || k || (e && (e -= b.$iframe.offset().left), h && (h -= b.$iframe.offset().top)), e && (e -= j / 2), b.opts.toolbarBottom && l && b.$tb && l.get(0) == b.$tb.get(0) && (x[d].addClass("fr-above"), h && (h -= x[d].outerHeight())), x[d].removeClass("fr-active"), b.position.at(e, h, x[d], i || 0), x[d].addClass("fr-active");
       var n = x[d].find("input:visible, textarea:visible").get(0);
-      n && (0 == b.$el.find(".fr-marker").length && b.core.hasFocus() && b.selection.save(), b.events.disableBlur(), a(n).select().focus()), b.opts.toolbarInline && b.toolbar.hide(), b.events.trigger("popups.show." + d)
+      n && (0 == b.$el.find(".fr-marker").length && b.core.hasFocus() && b.selection.save(), b.events.disableBlur(), jQuery(n).select().focus()), b.opts.toolbarInline && b.toolbar.hide(), b.events.trigger("popups.show." + d)
     }
 
     function e(a, c) {
@@ -3904,7 +3960,7 @@
     function l(c) {
       b.events.trigger("popups.refresh." + c);
       for (var d = x[c].find(".fr-command"), e = 0; e < d.length; e++) {
-        var f = a(d[e]);
+        var f = jQuery(d[e]);
         0 == f.parents(".fr-dropdown-menu").length && b.button.refresh(f)
       }
     }
@@ -3927,7 +3983,7 @@
     }
 
     function q(c, d) {
-      var e = a.FE.POPUP_TEMPLATES[c];
+      var e = jQuery.FE.POPUP_TEMPLATES[c];
       "function" == typeof e && (e = e.apply(b));
       for (var f in d) d.hasOwnProperty(f) && (e = e.replace("[_" + f.toUpperCase() + "_]", d[f]));
       return e
@@ -3935,9 +3991,9 @@
 
     function r(c, d) {
       var e = q(c, d),
-        f = a('<div class="fr-popup' + (b.helpers.isMobile() ? " fr-mobile" : " fr-desktop") + (b.opts.toolbarInline ? " fr-inline" : "") + '"><span class="fr-arrow"></span>' + e + "</div>");
+        f = jQuery('<div class="fr-popup' + (b.helpers.isMobile() ? " fr-mobile" : " fr-desktop") + (b.opts.toolbarInline ? " fr-inline" : "") + '"><span class="fr-arrow"></span>' + e + "</div>");
       b.opts.theme && f.addClass(b.opts.theme + "-theme"), b.opts.zIndex > 1 && b.$tb.css("z-index", b.opts.zIndex + 2), "auto" != b.opts.direction && f.removeClass("fr-ltr fr-rtl").addClass("fr-" + b.opts.direction), f.find("input, textarea").attr("dir", b.opts.direction).attr("disabled", "disabled");
-      var g = a("body");
+      var g = jQuery("body");
       return g.append(f), f.data("container", g), x[c] = f, b.button.bindCommands(f, !1), f
     }
 
@@ -3953,31 +4009,31 @@
           if (c.preventDefault(), c.stopPropagation(), setTimeout(function () {
               e.events.enableBlur()
             }, 0), e.helpers.isMobile()) {
-            var f = a(e.o_win).scrollTop();
+            var f = jQuery(e.o_win).scrollTop();
             setTimeout(function () {
-              a(e.o_win).scrollTop(f)
+              jQuery(e.o_win).scrollTop(f)
             }, 0)
           }
         },
         _inputBlur: function (c) {
           var e = d.data("instance") || b;
-          document.activeElement != this && a(this).is(":visible") && (e.events.blurActive() && e.events.trigger("blur"), e.events.enableBlur())
+          document.activeElement != this && jQuery(this).is(":visible") && (e.events.blurActive() && e.events.trigger("blur"), e.events.enableBlur())
         },
         _inputKeydown: function (e) {
           var g = d.data("instance") || b,
             h = e.which;
-          if (a.FE.KEYCODE.TAB == h) {
+          if (jQuery.FE.KEYCODE.TAB == h) {
             e.preventDefault();
             var i = d.find("input, textarea, button, select").filter(":visible").not(":disabled").toArray();
             i.sort(function (b, c) {
-              return e.shiftKey ? a(b).attr("tabIndex") < a(c).attr("tabIndex") : a(b).attr("tabIndex") > a(c).attr("tabIndex")
+              return e.shiftKey ? jQuery(b).attr("tabIndex") < jQuery(c).attr("tabIndex") : jQuery(b).attr("tabIndex") > jQuery(c).attr("tabIndex")
             }), g.events.disableBlur();
             var j = i.indexOf(this) + 1;
-            j == i.length && (j = 0), a(i[j]).focus()
+            j == i.length && (j = 0), jQuery(i[j]).focus()
           }
-          else if (a.FE.KEYCODE.ENTER == h) d.find(".fr-submit:visible").length > 0 && (e.preventDefault(), e.stopPropagation(), g.events.disableBlur(), g.button.exec(d.find(".fr-submit:visible:first")));
+          else if (jQuery.FE.KEYCODE.ENTER == h) d.find(".fr-submit:visible").length > 0 && (e.preventDefault(), e.stopPropagation(), g.events.disableBlur(), g.button.exec(d.find(".fr-submit:visible:first")));
           else {
-            if (a.FE.KEYCODE.ESC == h) return e.preventDefault(), e.stopPropagation(), g.$el.find(".fr-marker") && (g.events.disableBlur(), a(this).data("skip", !0), g.selection.restore(), g.events.enableBlur()), f(c) && d.find(".fr-back:visible").length ? g.button.exec(d.find(".fr-back:visible:first")) : g.popups.hide(c), g.opts.toolbarInline && g.toolbar.showInline(null, !0), !1;
+            if (jQuery.FE.KEYCODE.ESC == h) return e.preventDefault(), e.stopPropagation(), g.$el.find(".fr-marker") && (g.events.disableBlur(), jQuery(this).data("skip", !0), g.selection.restore(), g.events.enableBlur()), f(c) && d.find(".fr-back:visible").length ? g.button.exec(d.find(".fr-back:visible:first")) : g.popups.hide(c), g.opts.toolbarInline && g.toolbar.showInline(null, !0), !1;
             e.stopPropagation()
           }
         },
@@ -3985,21 +4041,21 @@
           if (!b.core.sameInstance(d)) return !0;
           var g = d.data("instance") || b,
             h = e.which;
-          if (a.FE.KEYCODE.ESC == h) {
+          if (jQuery.FE.KEYCODE.ESC == h) {
             if (f(c) && g.opts.toolbarInline) return e.stopPropagation(), f(c) && d.find(".fr-back:visible").length ? g.button.exec(d.find(".fr-back:visible:first")) : (g.popups.hide(c), g.toolbar.showInline(null, !0)), !1;
             f(c) && d.find(".fr-back:visible").length ? g.button.exec(d.find(".fr-back:visible:first")) : g.popups.hide(c)
           }
         },
         _editorKeydown: function (e) {
           var g = d.data("instance") || b;
-          g.keys.ctrlKey(e) || e.which == a.FE.KEYCODE.ESC || (f(c) && d.find(".fr-back:visible").length ? g.button.exec(d.find(".fr-back:visible:first")) : g.popups.hide(c))
+          g.keys.ctrlKey(e) || e.which == jQuery.FE.KEYCODE.ESC || (f(c) && d.find(".fr-back:visible").length ? g.button.exec(d.find(".fr-back:visible:first")) : g.popups.hide(c))
         },
         _preventFocus: function (c) {
           var e = d.data("instance") || b;
           e.events.disableBlur();
           var f = c.originalEvent ? c.originalEvent.target || c.originalEvent.originalTarget : null,
             g = "input, textarea, button, select, label, .fr-command";
-          return f && !a(f).is(g) && 0 === a(f).parents(g).length ? (c.stopPropagation(), !1) : void(f && a(f).is(g) && c.stopPropagation())
+          return f && !jQuery(f).is(g) && 0 === jQuery(f).parents(g).length ? (c.stopPropagation(), !1) : void(f && jQuery(f).is(g) && c.stopPropagation())
         },
         _editorMouseup: function (a) {
           d.is(":visible") && p() && d.find("input:focus, textarea:focus, button:focus, select:focus").filter(":visible").length > 0 && b.events.disableBlur()
@@ -4010,11 +4066,11 @@
           d.is(":visible") && p() && (a.stopPropagation(), e.markers.remove(), e.popups.hide(c), o())
         },
         _doPlaceholder: function (b) {
-          var c = a(this).next();
-          0 == c.length && a(this).after("<span>" + a(this).attr("placeholder") + "</span>"), a(this).toggleClass("fr-not-empty", "" != a(this).val())
+          var c = jQuery(this).next();
+          0 == c.length && jQuery(this).after("<span>" + jQuery(this).attr("placeholder") + "</span>"), jQuery(this).toggleClass("fr-not-empty", "" != jQuery(this).val())
         },
         _repositionPopup: function (e) {
-          if (f(c) && d.parent().get(0) == a(b.opts.scrollableContainer).get(0)) {
+          if (f(c) && d.parent().get(0) == jQuery(b.opts.scrollableContainer).get(0)) {
             var g = d.offset().top - b.$wp.offset().top,
               h = (b.$wp.scrollTop(), b.$wp.outerHeight());
             g > h || 0 > g ? d.addClass("fr-hidden") : d.removeClass("fr-hidden")
@@ -4035,10 +4091,10 @@
       var e = r(c, d),
         f = s(c);
       return t(f, c), b.events.$on(e, "mousedown mouseup touchstart touchend touch", "*", f._preventFocus, !0), b.events.$on(e, "focus", "input, textarea, button, select", f._inputFocus, !0), b.events.$on(e, "blur", "input, textarea, button, select", f._inputBlur, !0), b.events.$on(e, "keydown", "input, textarea, button, select", f._inputKeydown, !0), b.events.$on(e, "keydown keyup change input", "input, textarea", f._doPlaceholder, !0), b.helpers.isIOS() && b.events.$on(e, "touchend", "label", function () {
-        a("#" + a(this).attr("for")).prop("checked", function (a, b) {
+        jQuery("#" + jQuery(this).attr("for")).prop("checked", function (a, b) {
           return !b
         })
-      }, !0), b.events.$on(a(b.o_win), "resize", f._windowResize, !0), e
+      }, !0), b.events.$on(jQuery(b.o_win), "resize", f._windowResize, !0), e
     }
 
     function v() {
@@ -4072,7 +4128,7 @@
       areVisible: g
     }
   };
-  a.FE.MODULES.refresh = function (b) {
+  jQuery.FE.MODULES.refresh = function (b) {
     function c(a, c) {
       try {
         b.doc.queryCommandState(c) === !0 && a.addClass("fr-active")
@@ -4100,9 +4156,9 @@
     function g(c) {
       if (c.hasClass("fr-no-refresh")) return !1;
       for (var d = b.selection.blocks(), e = 0; e < d.length; e++) {
-        var f = "rtl" == b.opts.direction || "rtl" == a(d[e]).css("direction") ? "margin-right" : "margin-left";
+        var f = "rtl" == b.opts.direction || "rtl" == jQuery(d[e]).css("direction") ? "margin-right" : "margin-left";
         if ("LI" == d[e].tagName || "LI" == d[e].parentNode.tagName) return c.removeClass("fr-disabled"), !0;
-        if (b.helpers.getPX(a(d[e]).css(f)) > 0) return c.removeClass("fr-disabled"), !0
+        if (b.helpers.getPX(jQuery(d[e]).css(f)) > 0) return c.removeClass("fr-disabled"), !0
       }
       c.addClass("fr-disabled")
     }
@@ -4114,10 +4170,12 @@
       indent: f
     }
   };
-  a.extend(a.FE.DEFAULTS, {
+  
+  jQuery.extend(jQuery.FE.DEFAULTS, {
     editInPopup: !1
   });
-  a.FE.MODULES.textEdit = function (b) {
+
+  jQuery.FE.MODULES.textEdit = function (b) {
     function c() {
       var a = '<div id="fr-text-edit-' + b.id + '" class="fr-layer fr-text-edit-layer"><div class="fr-input-line"><input type="text" placeholder="' + b.language.translate("Text") + '" tabIndex="1"></div><div class="fr-action-buttons"><button type="button" class="fr-command fr-submit" data-cmd="updateText" tabIndex="2">' + b.language.translate("Update") + "</button></div></div>",
         c = {
@@ -4128,7 +4186,7 @@
 
     function d() {
       var c, d = b.popups.get("text.edit");
-      c = "INPUT" === b.$el.prop("tagName") ? b.$el.attr("placeholder") : b.$el.text(), d.find("input").val(c).trigger("change"), b.popups.setContainer("text.edit", a("body")), b.popups.show("text.edit", b.$el.offset().left + b.$el.outerWidth() / 2, b.$el.offset().top + b.$el.outerHeight(), b.$el.outerHeight())
+      c = "INPUT" === b.$el.prop("tagName") ? b.$el.attr("placeholder") : b.$el.text(), d.find("input").val(c).trigger("change"), b.popups.setContainer("text.edit", jQuery("body")), b.popups.show("text.edit", b.$el.offset().left + b.$el.outerWidth() / 2, b.$el.offset().top + b.$el.outerHeight(), b.$el.outerHeight())
     }
 
     function e() {
@@ -4153,7 +4211,7 @@
       update: f
     }
   };
-  a.FE.RegisterCommand("updateText", {
+  jQuery.FE.RegisterCommand("updateText", {
     focus: !1,
     undo: !1,
     callback: function () {

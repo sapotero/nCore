@@ -173,8 +173,8 @@ Router.prototype.bindEvents = function() {
 
     core.events.subscribe("core:router:start", function(){
       console.log('Router <- core:router:start');
-      router.hashChange();
       core.events.publish( "core:preloader:task:ready" );
+      router.hashChange();
     });
 
     core.events.subscribe("core:router:update", function(){

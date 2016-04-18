@@ -11,6 +11,8 @@
     <link href="assets/css/css/mdl.css"   rel="stylesheet">
     <link href="assets/css/css/style.css" rel="stylesheet">
     <link href="assets/css/css/font.css" rel="stylesheet">
+    <link href="assets/css/css/froala.css" rel="stylesheet">
+    
     <!-- <link href="assets/css/fr.css"    rel="stylesheet"> -->
     
     <link rel="import" href="assets/templates/elements/layout.html">
@@ -34,13 +36,14 @@
           }
         }
         core.startAll();
+        $('#editor').froalaEditor();
       };
     </script>
   
   </head>
   
   <body class="hide-sidedrawer">
-
+    <div id="editor" class="animated fadeOut"></div>
     <script type="text/javascript" src="assets/build/application.min.js"></script>
 
     <script type="text/javascript" src="assets/js/shared/jquery.js"></script>
