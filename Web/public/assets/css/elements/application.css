@@ -13,14 +13,48 @@
 }
 
 #layout {
-  background-color: #fafafa;
+  background-color: #EEEEEE;
+  overflow: hidden;
 }
 
 .mdl--fixed-header{
   position: fixed;
 }
+.mdl--fixed-header-menu{
+  position: fixed;
+  top: 64px;
+  width: 100%;
+  height: 48px;
+  background: red;
+  background-color: #F5F5F5;
+}
+
 
 .page-content{
   position: relative;
-  top: 48px;
+  top: 112px;
+}
+
+.layout-document--cards{
+  transition: 0.5s;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  /*height: 100%;*/
+  position: relative;
+  height: calc(50% - 500px );
+}
+
+.layout-document--menu{
+  transition: 0.5s;
+  position: absolute;
+}
+
+.layout-document--menu-hide{
+  right: -20%;
+}
+
+.panel{
+  /*height: 100%;*/
+  background: white;
+  border-right: 2px double rgba(0,0,0,0.1);
 }

@@ -46,12 +46,14 @@ Dom.prototype.bindEvents = function () {
       core.dom.editor.style.zIndex = 1;
       core.dom.editor.classList.add('fadeIn');
       core.dom.editor.classList.remove('fadeOut');
+      core.dom.editor.classList.remove('hide');
     });
     core.events.subscribe('core:dom:editor:hide', function () {
       console.log( ' Dom <- core:dom:editor:hide' );
       core.dom.editor.style.zIndex = 0;
       core.dom.editor.classList.remove('fadeIn');
       core.dom.editor.classList.add('fadeOut');
+      core.dom.editor.classList.add('hide');
     });
 
   }, false);

@@ -9,17 +9,20 @@
   
   <div class="mdl-layout--fixed-header">
     <div id="layout" class="mdl-layout mdl-layout--fixed-header">
+      
       <header class="mdl-layout__header mdl--fixed-header">
-        <div class="mdl-layout__header-row mdl-shadow--4dp">
+        <div class="mdl-layout__header-row">
           
           <span class="mdl-layout-title">Документы</span>
           <div class="mdl-layout-spacer"></div>
           <nav class="mdl-navigation">
             <!-- <a class="mdl-navigation__link" href="">Link</a> -->
-            <!-- <a class="mdl-navigation__link" href="">Link</a> -->
-            <!-- <a class="mdl-navigation__link" href="">Link</a> -->
             <core-user></core-user>
           </nav>
+          
+        </div>
+        <div class="mdl--fixed-header-menu mdl-shadow--4dp">
+          test
         </div>
       </header>
       
@@ -34,16 +37,25 @@
       </div>
       <main class="mdl-layout__content">
         <div class="page-content">
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--2-col">
+          <div class="mdl-grid mdl-grid--no-spacing ">
+            
+            <div class="mdl-cell mdl-cell--2-col panel mdl-cell--stretch">
               <core-menu></core-menu>
             </div>
-            <div class="mdl-cell mdl-cell--10-col">
+            
+            <div class="layout-document--cards mdl-cell mdl-cell--10-col">
               <div class="mdl-grid documentCards animated">
-
-                <div class="animated loading fadeIn"></div>
+                <core-spinner></core-spinner>
               </div>
             </div>
+
+            <div class="mdl-cell mdl-cell--2-col panel mdl-cell--stretch layout-document--menu layout-document--menu-hide ">
+              test
+              test
+              test
+              test
+            </div>
+
           </div>
         </div>
       </main>
@@ -91,6 +103,7 @@ window.onload = (function( window, document, undefined) {
     this.root    = shadowRoot;
     this.element = this.root.querySelector('#layout');
     this.menu    = this.root.querySelector('core-menu');
+    this.spinner = this.root.querySelector('core-spinner');
     this.documentCardRoot = this.root.querySelector('.documentCards');
     this.materialize();
 
@@ -111,8 +124,6 @@ window.onload = (function( window, document, undefined) {
     var type   = data.type;
     var report = data.report;
 
-    // console.log( 'ApplicationProto.data', type, report );
-    
     var card = document.createElement('core-card');
     
     if ( report._id ) {
@@ -131,10 +142,10 @@ window.onload = (function( window, document, undefined) {
       card.setAttribute( 'update', report.update_at );
     }
 
-    
-
-    this.documentCardRoot.appendChild( card );
-    this.documentCards.push( card );
+    var app = this;
+    // setTimeout( this.documentCardRoot.appendChild( card ).bind(this) , 10);
+    app.documentCardRoot.appendChild( card );
+    // this.documentCards.push( card );
 
   }
 
@@ -143,8 +154,9 @@ window.onload = (function( window, document, undefined) {
 
     this.root    = {};
     this.element = {};
+    this.menu    = {}
+    this.spinner = {};
 
-    this.menu = {}
     this.documentCardRoot = {};
     this.documentCards    = [];
 
@@ -160,7 +172,14 @@ window.onload = (function( window, document, undefined) {
     var app = this;
 
     core.events.subscribe("core:card:add", function (data) {
-       app.addDocumentCard(data);
+      app.spinner.classList.add('animated');
+      app.spinner.classList.add('fadeOut');
+      
+      app.addDocumentCard(data);
+
+      setTimeout( function () {
+        app.spinner.remove();
+      } ,100);
     });
   };
 
@@ -546,43 +565,6 @@ window.onload = (function( window, document, undefined) {
       console.log( this );
     }
   };
-
-
-  function MaterialLayoutTab(tab, tabs, panels, layout) {
-    /**
-     * Auxiliary method to programmatically select a tab in the UI.
-     */
-    function selectTab() {
-      var href = tab.href.split('#')[1];
-      var panel = layout.content_.querySelector('#' + href);
-      layout.resetTabState_(tabs);
-      layout.resetPanelState_(panels);
-      tab.classList.add(layout.CssClasses_.IS_ACTIVE);
-      panel.classList.add(layout.CssClasses_.IS_ACTIVE);
-    }
-
-    if (layout.tabBar_.classList.contains(
-        layout.CssClasses_.JS_RIPPLE_EFFECT)) {
-      var rippleContainer = document.createElement('span');
-      rippleContainer.classList.add(layout.CssClasses_.RIPPLE_CONTAINER);
-      rippleContainer.classList.add(layout.CssClasses_.JS_RIPPLE_EFFECT);
-      var ripple = document.createElement('span');
-      ripple.classList.add(layout.CssClasses_.RIPPLE);
-      rippleContainer.appendChild(ripple);
-      tab.appendChild(rippleContainer);
-    }
-
-    tab.addEventListener('click', function(e) {
-      if (tab.getAttribute('href').charAt(0) === '#') {
-        e.preventDefault();
-        selectTab();
-      }
-    });
-
-    tab.show = selectTab;
-  }
-
-
 
   window.CoreSelect = thatDoc.registerElement('core-application', {
     prototype: ApplicationProto
