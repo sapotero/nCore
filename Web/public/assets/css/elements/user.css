@@ -13,6 +13,9 @@
 .core-user {
   right : 25px;
 }
+.core-user-layout > #core-user-menu > .mdl-list__item .mdl-list__item-icon {
+  margin-right: 16px;
+}
 
 @media screen and (min-width:400px) {
   .core-user-layout > #core-user-menu > .mdl-list__item .mdl-list__item-icon {

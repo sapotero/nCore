@@ -7,9 +7,9 @@
   <style> @import "assets/css/css/font.css"; </style>
   
   
-  <div>
-    <div id="layout" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-      <header class="mdl-layout__header mdl-layout__header">
+  <div class="mdl-layout--fixed-header">
+    <div id="layout" class="mdl-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header mdl--fixed-header">
         <div class="mdl-layout__header-row mdl-shadow--4dp">
           
           <span class="mdl-layout-title">Документы</span>
@@ -39,10 +39,9 @@
               <core-menu></core-menu>
             </div>
             <div class="mdl-cell mdl-cell--10-col">
-              <div class="mdl-grid documentCards">
+              <div class="mdl-grid documentCards animated">
 
                 <div class="animated loading fadeIn"></div>
-              
               </div>
             </div>
           </div>
@@ -98,6 +97,15 @@ window.onload = (function( window, document, undefined) {
     // $( this.editor ).froalaEditor();
   };
 
+  ApplicationProto.hideCards = function() {
+    this.documentCardRoot.classList.remove('fadeIn')
+    this.documentCardRoot.classList.add('fadeOut')
+  }
+  ApplicationProto.showCards = function() {
+    this.documentCardRoot.classList.remove('fadeOut')
+    this.documentCardRoot.classList.add('fadeIn')
+  }
+
   ApplicationProto.addDocumentCard = function(data) {
     // <core-card id="1231" ></core-card>
     var type   = data.type;
@@ -145,6 +153,7 @@ window.onload = (function( window, document, undefined) {
     this.bindEvents();
 
     this.menu.default();
+    this.menu.setShadow(0);
   };
 
   ApplicationProto.bindEvents = function(){
@@ -232,13 +241,13 @@ window.onload = (function( window, document, undefined) {
   };
 
   ApplicationProto.contentScrollHandler_ = function() {
+    console.log('contentScrollHandler_', contentScrollHandler_);
+
     if (this.header_.classList.contains(this.CssClasses_.IS_ANIMATING)) {
       return;
     }
 
-    var headerVisible =
-        !this.element_.classList.contains(this.CssClasses_.IS_SMALL_SCREEN) ||
-        this.element_.classList.contains(this.CssClasses_.FIXED_HEADER);
+    var headerVisible = !this.element_.classList.contains(this.CssClasses_.IS_SMALL_SCREEN) || this.element_.classList.contains(this.CssClasses_.FIXED_HEADER);
 
     if ( this.content_.scrollTop > 0 && !this.header_.classList.contains(this.CssClasses_.IS_COMPACT) ) {
       this.header_.classList.add(this.CssClasses_.CASTING_SHADOW);

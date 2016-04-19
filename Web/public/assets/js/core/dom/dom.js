@@ -3,7 +3,9 @@
 var Dom = function () {
   this.root        = document;
   this.application = {};
+  this.editor      = {};
   this.snackbar    = {};
+
 
   this.bindEvents();
 };
@@ -30,16 +32,26 @@ Dom.prototype.bindEvents = function () {
       dom.build();
     });
 
-    core.events.subscribe('core:dom:attach:progressbar', function () {
-      // dom.application.addElement('progressbar');
+    core.events.subscribe('core:dom:application:show', function () {
+      console.log( ' Dom <- core:dom:application:show' );
+      core.dom.application.application.showCards();
+    });
+    core.events.subscribe('core:dom:application:hide', function () {
+      console.log( ' Dom <- core:dom:application:hide' );
+      core.dom.application.application.hideCards();
     });
 
-    core.events.subscribe('core:dom:remove:progressbar', function () {
-      // dom.application.removeElement('progressbar');
+    core.events.subscribe('core:dom:editor:show', function () {
+      console.log( ' Dom <- core:dom:editor:show' );
+      core.dom.editor.style.zIndex = 1;
+      core.dom.editor.classList.add('fadeIn');
+      core.dom.editor.classList.remove('fadeOut');
     });
-
-    core.events.subscribe('core:dom:progressbar:update', function (percent) {
-      // dom.application.updateProgress(percent);
+    core.events.subscribe('core:dom:editor:hide', function () {
+      console.log( ' Dom <- core:dom:editor:hide' );
+      core.dom.editor.style.zIndex = 0;
+      core.dom.editor.classList.remove('fadeIn');
+      core.dom.editor.classList.add('fadeOut');
     });
 
   }, false);
@@ -49,6 +61,7 @@ Dom.prototype.build = function () {
   console.log('Dom :: build application');
 
   this.application = document.createElement('core-layout');
+  this.editor      = document.querySelector('#editor');
   this.root.body.appendChild(this.application);
 
   core.events.publish('core:dom:build:ready');

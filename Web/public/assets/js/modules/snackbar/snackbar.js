@@ -121,7 +121,8 @@ Snackbar.prototype.start = function() {
   coreSnackbar.appendChild( coreSnackbarButton );
 
   core.dom.snackbar = coreSnackbar;
-  core.dom.application.appendChild( coreSnackbar );
+  // core.dom.application.appendChild( coreSnackbar );
+  core.dom.root.body.appendChild( coreSnackbar );
   
   this.element       = coreSnackbar;
   this.textElement   = this.element.querySelector('.' + this.cssClasses.MESSAGE);
@@ -143,6 +144,7 @@ Snackbar.prototype.bindEvents = function() {
     core.events.subscribe("core:snackbar:start", function(){
       console.log('Snackbar <- core:snackbar:start');
       core.events.publish( "core:preloader:task:ready" );
+      snackbar.start();
     });
 
   });

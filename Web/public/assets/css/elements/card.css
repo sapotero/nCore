@@ -8,6 +8,12 @@
   height: 100%;
   min-height: 256px;
   /*max-height: 2560px;*/
+  background-color: #fafafa;
+
+}
+
+.report-card {
+  background-color: white;
 }
 
 .report-card.mdl-card {
@@ -19,7 +25,7 @@
   /*max-height: 2560px;*/
 }
 .report-card > .mdl-card__actions {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(0, 0, 0, 0.07);
 }
 .report-card > .mdl-card__title {
   align-items: flex-start;

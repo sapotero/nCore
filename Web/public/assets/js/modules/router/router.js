@@ -144,13 +144,13 @@ Router.prototype.start = function() {
     routes   : {
       reports : function(params) {
         console.log('[reports]: ', params);
-        // core.events.publish("core:dom:application:clear");
-        // core.modules.reports.start();
+        core.events.publish( "core:dom:application:show" );
+        core.events.publish( "core:dom:editor:hide" );
       },
       'reports/{id}' : function(params) {
         console.log('[reports/{id}]: ', params);
-        // core.events.publish("core:dom:application:clear");
-        // core.modules.reports.show( params.id );
+        core.events.publish( "core:dom:application:hide" );
+        core.events.publish( "core:dom:editor:show" );
       }
     }
   });
@@ -169,6 +169,7 @@ Router.prototype.bindEvents = function() {
     core.events.subscribe( 'core:router:reports:show', function (id) {
       console.log( 'Router <- core:router:reports:show', id );
       location.hash = id;
+
     });
 
     core.events.subscribe("core:router:start", function(){

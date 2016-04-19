@@ -12,3 +12,15 @@
   top: 6px;
 }
 
+#layout {
+  background-color: #fafafa;
+}
+
+.mdl--fixed-header{
+  position: fixed;
+}
+
+.page-content{
+  position: relative;
+  top: 48px;
+}

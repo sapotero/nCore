@@ -5,7 +5,7 @@
   <style> @import "assets/css/elements/menu.css"; </style>
   <style> @import "assets/css/animate.css"; </style>
 
-  <ul class="menu-list mdl-list mdl-shadow--3dp mdl-cell--hide-phone">
+  <ul class="menu-list mdl-list mdl-cell--hide-phone">
   </ul>
 
 </template>
@@ -30,9 +30,15 @@ window.onload = (function( window, document, undefined) {
     this[ element ].remove()
     delete this[ element ];
   };
+  MenuProto.setShadow = function (depth) {
+     this.menu.classList.add('mdl-shadow--' + depth + 'dp')
+  }
 
   MenuProto.attributeChangedCallback = function( attr, oldVal, newVal) {
     switch( attr ){
+      case "shadow":
+        this.setShadow( newVal );
+        break;
       default:
         console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
         break;

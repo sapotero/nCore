@@ -28,7 +28,9 @@
   animation-fill-mode: both;
 }
 
-
+.core-app {
+  overflow: hidden;
+}
 
 html,
 body {
@@ -149,6 +151,6 @@ buttons {
   position: fixed;
   height: 100%;
   width: calc(68.3333333333% - 24px);
-  z-index: 0;
+  z-index: 1;
   /*display: none;*/
 }
