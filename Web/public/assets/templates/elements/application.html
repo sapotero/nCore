@@ -7,17 +7,14 @@
   <style> @import "assets/css/css/font.css"; </style>
   
   
-<!-- Uses a header that scrolls with the text, rather than staying
-  locked at the top -->
   <div>
     <div id="layout" class="mdl-layout mdl-js-layout">
-      <header class="mdl-layout__header mdl-layout__header--scroll">
-        <div class="mdl-layout__header-row">
-          <!-- Title -->
+      <header class="mdl-layout__header mdl-layout__header--fixed">
+        <div class="mdl-layout__header-row mdl-shadow--4dp">
+          
           <span class="mdl-layout-title">Документы</span>
-          <!-- Add spacer, to align navigation to the right -->
           <div class="mdl-layout-spacer"></div>
-          <!-- Navigation -->
+          
           <nav class="mdl-navigation">
             <!-- <a class="mdl-navigation__link" href="">Link</a> -->
             <!-- <a class="mdl-navigation__link" href="">Link</a> -->
@@ -28,15 +25,15 @@
       </header>
       
       <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Title</span>
+        <span class="mdl-layout-title">Документы</span>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="">Link _draw</a>
-          <a class="mdl-navigation__link" href="">Link _draw</a>
-          <a class="mdl-navigation__link" href="">Link _draw</a>
-          <a class="mdl-navigation__link" href="">Link _draw</a>
+          <a class="mdl-navigation__link" href="">Отчёты</a>
+          <a class="mdl-navigation__link" href="">Бизнес-процессы</a>
+          <a class="mdl-navigation__link" href="">Экранные формы</a>
+          <a class="mdl-navigation__link" href="">Печатные формы</a>
         </nav>
       </div>
-      <main class="mdl-layout__content" style="padding: 20px;">
+      <main class="mdl-layout__content">
         <div class="page-content">
           <div class="mdl-grid">
             <div class="mdl-cell mdl-cell--2-col">
@@ -44,7 +41,9 @@
             </div>
             <div class="mdl-cell mdl-cell--10-col">
               <div class="mdl-grid documentCards">
-                <!-- <core-card id="1231" ></core-card> -->
+
+                <div class="animated loading fadeIn"></div>
+              
               </div>
             </div>
           </div>
