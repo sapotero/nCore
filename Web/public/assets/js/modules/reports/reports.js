@@ -204,14 +204,21 @@ Reports.prototype.bindEvents = function(){
       core.events.publish( "core:preloader:task:ready" );
     });
 
-    core.events.subscribe("core:reports:start", function(template){
+    core.events.subscribe("core:reports:start", function( template ){
       console.log('Reports <- core:reports:start');
       core.events.publish( "core:preloader:task:ready" );
     });
 
-    core.events.subscribe("core:template:reports", function(template){
+    core.events.subscribe("core:template:reports", function( template ){
       reports.updateRootElement( template.raw );
     });
+
+    // клик по меню с документами
+    core.events.subscribe("core:reports:menu:select", function( menuItem ){
+      console.log( 'Reports <- core:reports:menu:select', menuItem );
+      core.events.publish( "core:router:default" );
+    });
+
   });
 };
 Reports.prototype.updateRootElement = function(html){

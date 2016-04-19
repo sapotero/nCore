@@ -77,6 +77,7 @@ window.onload = (function( window, document, undefined) {
     this.menu.appendChild( element );
     
     var elements = this.elements;
+    
     element.addEventListener( 'click', function (event) {
       console.log( 'menu -> click', this );
       for(var i = 0, length1 = elements.length; i < length1; i++){
@@ -85,6 +86,7 @@ window.onload = (function( window, document, undefined) {
         _element.classList.remove('mdl-color--grey-200');
         if ( this == _element) {
           _element.classList.add('mdl-color--grey-200');
+          core.events.publish( 'core:reports:menu:select', _element );
         }
       };
     });

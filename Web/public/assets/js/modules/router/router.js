@@ -168,8 +168,12 @@ Router.prototype.bindEvents = function() {
     
     core.events.subscribe( 'core:router:reports:show', function (id) {
       console.log( 'Router <- core:router:reports:show', id );
-      location.hash = id;
+      // location.hash = id;
+    });
 
+    core.events.subscribe("core:router:default", function(){
+      console.log('Router <- core:router:default');
+      location.hash = '#reports';
     });
 
     core.events.subscribe("core:router:start", function(){
