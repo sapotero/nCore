@@ -1,0 +1,15 @@
+/* list */
+.user > .mdl-list__item-primary-content {
+  color: white;
+}
+.user > .mdl-list__item-primary-content > .mdl-list__item-icon {
+  color: white;
+}
+.user:hover {
+  cursor: pointer;
+}
+
+/* menu */
+.core-user {
+  right : 25px;
+}

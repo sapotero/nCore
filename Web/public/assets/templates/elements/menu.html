@@ -7,7 +7,6 @@
 
   <ul class="menu-list mdl-list mdl-shadow--3dp mdl-cell--hide-phone">
   </ul>
-  
 
 </template>
 
@@ -54,11 +53,20 @@ window.onload = (function( window, document, undefined) {
     console.log( '** core-menu :: add', config );
 
     var element = document.createElement('li');
-    element.className = "menu-item mdl-list__item mdl-list__item--two-line";
+    element.className = "menu-item mdl-list__item";
     element.innerHTML = this.menuItemProto;
-    element.querySelector('.document-name').textContent = config.name;
-    element.querySelector('.mdl-list__item-avatar').textContent = config.icon;
-    element.querySelector('.mdl-list__item-sub-title').textContent = config.count;
+    if ( config.name ) {
+      element.querySelector('.document-name').textContent = config.name;
+    }
+    if ( config.icon ) {
+      element.querySelector('.mdl-list__item-avatar').textContent = config.icon;
+    }
+    if ( config.count ) {
+      element.classList.add('mdl-list__item--two-line');
+      element.querySelector('.mdl-list__item-sub-title').textContent = config.count;
+    } else {
+      element.classList.add('mdl-list__item--one-line');
+    }
     
     this.menu.appendChild( element );
     
@@ -95,24 +103,24 @@ window.onload = (function( window, document, undefined) {
 
 
     this.create();
-    this.default();
+    // this.default();
   };
+  
   MenuProto.default = function(){
     var defaultMenu = [
       {
-        "icon"  : "person",
+        "icon"  : "folder",
+        "name"  : "Документы",
+        "count" : "100 документов",
+      },
+      {
+        "icon"  : "folder_shared",
         "name"  : "Документы",
         "count" : "100 документов",
       },
       {
         "icon"  : "person",
-        "name"  : "Документы",
-        "count" : "100 документов",
-      },
-      {
-        "icon"  : "person",
-        "name"  : "Документы",
-        "count" : "100 документов",
+        "name"  : "Документы"
       }
     ];
 

@@ -19,10 +19,10 @@
           <div class="mdl-layout-spacer"></div>
           <!-- Navigation -->
           <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a>
+            <!-- <a class="mdl-navigation__link" href="">Link</a> -->
+            <!-- <a class="mdl-navigation__link" href="">Link</a> -->
+            <!-- <a class="mdl-navigation__link" href="">Link</a> -->
+            <core-user></core-user>
           </nav>
         </div>
       </header>
@@ -91,9 +91,9 @@ window.onload = (function( window, document, undefined) {
         item       = thatDoc.importNode( itemTemplate, true );
     shadowRoot.appendChild( item );
 
-    this.root = shadowRoot;
+    this.root    = shadowRoot;
     this.element = this.root.querySelector('#layout');
-    this.editor  = this.root.querySelector('.editor');
+    this.menu    = this.root.querySelector('core-menu');
     this.documentCardRoot = this.root.querySelector('.documentCards');
     this.materialize();
 
@@ -138,16 +138,15 @@ window.onload = (function( window, document, undefined) {
     this.root    = {};
     this.element = {};
 
+    this.menu = {}
     this.documentCardRoot = {};
     this.documentCards    = [];
 
-    
     this.create();
     this.addCards();
     this.bindEvents();
-    // for(var i = 0, length1 = 10; i < length1; i++){
-    //   this.addDocumentCard();
-    // }
+
+    this.menu.default();
   };
 
   ApplicationProto.bindEvents = function(){

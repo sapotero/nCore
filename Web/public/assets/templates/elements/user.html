@@ -1,0 +1,362 @@
+<template id="core-user">
+
+  <style> @import "assets/css/css/mdl.css"; </style>
+  <style> @import "assets/css/css/font.css"; </style>
+  <style> @import "assets/css/elements/user.css"; </style>
+  <style> @import "assets/css/animate.css"; </style>
+  
+  <div>
+    <ul id="core-user-menu" class="demo-list-icon mdl-list">
+      <li class="mdl-list__item user">
+        <span class="mdl-list__item-primary-content">
+          <i class="material-icons mdl-list__item-icon">person</i>
+          <span class="name"></span>
+          </span>
+      </li>
+    </ul>
+
+    <ul class="core-user mdl-menu mdl-js-menu mdl-menu--bottom-right" for="core-user-menu">
+      <li class="mdl-menu__item">Настройки</li>
+      <li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Отчёты</li>
+      <li class="mdl-menu__item">Выйти из системы</li>
+    </ul>
+  </div>
+
+
+</template>
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc      = document,
+      thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate = thisDoc.querySelector('template#core-user').content,
+      UserProto    = Object.create(HTMLElement.prototype);
+
+  UserProto.initialize = function(){
+    console.log( '** core-user :: initialize', this);
+
+    this.root     = {};
+    this.element_ = {};
+    this.user     = {};
+    this.create();
+
+    this.init();
+  };
+
+  UserProto.create = function() {
+    console.log('** core-user :: create');
+
+    var shadowRoot = this.createShadowRoot(),
+        item       = thatDoc.importNode( itemTemplate, true );
+    shadowRoot.appendChild( item );
+
+    this.root = shadowRoot;
+
+    this.element_ = this.root.querySelector('.core-user');
+    this.name = this.root.querySelector('.name');
+    this.user = this.root.querySelector('.user');
+
+    this.name.textContent = core.global.user.name
+  };
+
+  UserProto.Constant_ = {
+    TRANSITION_DURATION_SECONDS: 0.3,
+    TRANSITION_DURATION_FRACTION: 0.8,
+    CLOSE_TIMEOUT: 150
+  };
+
+  UserProto.Keycodes_ = {
+    ENTER: 13,
+    ESCAPE: 27,
+    SPACE: 32,
+    UP_ARROW: 38,
+    DOWN_ARROW: 40
+  };
+
+  UserProto.CssClasses_ = {
+    CONTAINER: 'mdl-menu__container',
+    OUTLINE: 'mdl-menu__outline',
+    ITEM: 'mdl-menu__item',
+    ITEM_RIPPLE_CONTAINER: 'mdl-menu__item-ripple-container',
+    RIPPLE_IGNORE_EVENTS: 'mdl-js-ripple-effect--ignore-events',
+    RIPPLE: 'mdl-ripple',
+
+    IS_UPGRADED: 'is-upgraded',
+    IS_VISIBLE: 'is-visible',
+    IS_ANIMATING: 'is-animating',
+
+    BOTTOM_LEFT: 'mdl-menu--bottom-left',  // default.
+    BOTTOM_RIGHT: 'mdl-menu--bottom-right',
+    TOP_LEFT: 'mdl-menu--top-left',
+    TOP_RIGHT: 'mdl-menu--top-right',
+    UNALIGNED: 'mdl-menu--unaligned'
+  };
+
+  UserProto.init = function() {
+    if (this.element_) {
+      var container = document.createElement('div');
+      container.classList.add(this.CssClasses_.CONTAINER);
+      this.element_.parentElement.insertBefore(container, this.element_);
+      this.element_.parentElement.removeChild(this.element_);
+      container.appendChild(this.element_);
+      this.container_ = container;
+
+      var outline = document.createElement('div');
+      outline.classList.add(this.CssClasses_.OUTLINE);
+      this.outline_ = outline;
+      container.insertBefore(outline, this.element_);
+
+      var forElId = this.element_.getAttribute('for') || this.element_.getAttribute('data-mdl-for');
+      var forEl = null;
+      if (forElId) {
+        console.log('forElId', forElId);
+
+        forEl = this.root.getElementById(forElId);
+        if (forEl) {
+          this.forElement_ = forEl;
+          
+          console.log('this.forElement_', this.forElement_);
+
+          forEl.addEventListener('click', this.handleForClick_.bind(this));
+          forEl.addEventListener('keydown', this.handleForKeyboardEvent_.bind(this));
+        }
+      }
+
+      var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM);
+      this.boundItemKeydown_ = this.handleItemKeyboardEvent_.bind(this);
+      this.boundItemClick_ = this.handleItemClick_.bind(this);
+      
+      for (var i = 0; i < items.length; i++) {
+        items[i].addEventListener('click', this.boundItemClick_);
+        items[i].tabIndex = '-1';
+        items[i].addEventListener('keydown', this.boundItemKeydown_);
+      }
+
+      if (this.element_.classList.contains(this.CssClasses_.BOTTOM_LEFT)) {
+        this.outline_.classList.add(this.CssClasses_.BOTTOM_LEFT);
+      }
+      if (this.element_.classList.contains(this.CssClasses_.BOTTOM_RIGHT)) {
+        this.outline_.classList.add(this.CssClasses_.BOTTOM_RIGHT);
+      }
+      if (this.element_.classList.contains(this.CssClasses_.TOP_LEFT)) {
+        this.outline_.classList.add(this.CssClasses_.TOP_LEFT);
+      }
+      if (this.element_.classList.contains(this.CssClasses_.TOP_RIGHT)) {
+        this.outline_.classList.add(this.CssClasses_.TOP_RIGHT);
+      }
+      if (this.element_.classList.contains(this.CssClasses_.UNALIGNED)) {
+        this.outline_.classList.add(this.CssClasses_.UNALIGNED);
+      }
+      container.classList.add(this.CssClasses_.IS_UPGRADED);
+    }
+  };
+
+  UserProto.handleForClick_ = function(evt) {
+    // console.log('handleForClick_', evt);
+    if (this.element_ && this.forElement_) {
+      var rect = this.forElement_.getBoundingClientRect();
+      var forRect = this.forElement_.parentElement.getBoundingClientRect();
+      if (this.element_.classList.contains(this.CssClasses_.UNALIGNED)) {
+      } else if (this.element_.classList.contains( this.CssClasses_.BOTTOM_RIGHT ) ) {
+        this.container_.style.right = (forRect.right - rect.right) + (this.user.getBoundingClientRect().width/4) + 'px';
+        this.container_.style.top = this.forElement_.offsetTop + this.forElement_.offsetHeight + 'px';
+      } else if (this.element_.classList.contains(this.CssClasses_.TOP_LEFT)) {
+        this.container_.style.left = this.forElement_.offsetLeft + 'px';
+        this.container_.style.bottom = (forRect.bottom - rect.top) + 'px';
+      } else if (this.element_.classList.contains(this.CssClasses_.TOP_RIGHT)) {
+        this.container_.style.right = (forRect.right - rect.right) + 'px';
+        this.container_.style.bottom = (forRect.bottom - rect.top) + 'px';
+      } else {
+        this.container_.style.left = this.forElement_.offsetLeft + 'px';
+        this.container_.style.top = this.forElement_.offsetTop + this.forElement_.offsetHeight + 'px';
+      }
+    }
+
+    this.toggle(evt);
+  };
+
+  UserProto.handleForKeyboardEvent_ = function(evt) {
+    if (this.element_ && this.container_ && this.forElement_) {
+      var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM + ':not([disabled])');
+      if (items && items.length > 0 && this.container_.classList.contains(this.CssClasses_.IS_VISIBLE)) {
+        if (evt.keyCode === this.Keycodes_.UP_ARROW) {
+          evt.preventDefault();
+          items[items.length - 1].focus();
+        } else if (evt.keyCode === this.Keycodes_.DOWN_ARROW) {
+          evt.preventDefault();
+          items[0].focus();
+        }
+      }
+    }
+  };
+
+  UserProto.handleItemKeyboardEvent_ = function(evt) {
+    if (this.element_ && this.container_) {
+      var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM + ':not([disabled])');
+
+      if (items && items.length > 0 && this.container_.classList.contains(this.CssClasses_.IS_VISIBLE)) {
+        var currentIndex = Array.prototype.slice.call(items).indexOf(evt.target);
+
+        if (evt.keyCode === this.Keycodes_.UP_ARROW) {
+          evt.preventDefault();
+          if (currentIndex > 0) {
+            items[currentIndex - 1].focus();
+          } else {
+            items[items.length - 1].focus();
+          }
+        } else if (evt.keyCode === this.Keycodes_.DOWN_ARROW) {
+          evt.preventDefault();
+          if (items.length > currentIndex + 1) {
+            items[currentIndex + 1].focus();
+          } else {
+            items[0].focus();
+          }
+        } else if (evt.keyCode === this.Keycodes_.SPACE || evt.keyCode === this.Keycodes_.ENTER) {
+          evt.preventDefault();
+          var e = new MouseEvent('mousedown');
+          evt.target.dispatchEvent(e);
+          e = new MouseEvent('mouseup');
+          evt.target.dispatchEvent(e);
+          evt.target.click();
+        } else if (evt.keyCode === this.Keycodes_.ESCAPE) {
+          evt.preventDefault();
+          this.hide();
+        }
+      }
+    }
+  };
+
+  UserProto.handleItemClick_ = function(evt) {
+    if (evt.target.hasAttribute('disabled')) {
+      evt.stopPropagation();
+    } else {
+      this.closing_ = true;
+      window.setTimeout(function() {
+        this.hide();
+        this.closing_ = false;
+      }.bind(this), (this.Constant_.CLOSE_TIMEOUT));
+    }
+  };
+  UserProto.applyClip_ = function(height, width) {
+    if (this.element_.classList.contains(this.CssClasses_.UNALIGNED)) {
+      this.element_.style.clip = '';
+    } else if ( this.element_.classList.contains(this.CssClasses_.BOTTOM_RIGHT)) {
+      this.element_.style.clip = 'rect(0 ' + width + 'px 0 ' + width + 'px)';
+    } else if (this.element_.classList.contains(this.CssClasses_.TOP_LEFT)) {
+      this.element_.style.clip = 'rect(' + height + 'px 0 ' + height + 'px 0)';
+    } else if (this.element_.classList.contains(this.CssClasses_.TOP_RIGHT)) {
+      this.element_.style.clip = 'rect(' + height + 'px ' + width + 'px ' + height + 'px ' + width + 'px)';
+    } else {
+      this.element_.style.clip = '';
+    }
+  };
+
+  UserProto.removeAnimationEndListener_ = function(evt) {
+    evt.target.classList.remove( UserProto.CssClasses_.IS_ANIMATING);
+  };
+
+  UserProto.addAnimationEndListener_ = function() {
+    this.element_.addEventListener(
+        'transitionend', this.removeAnimationEndListener_);
+    this.element_.addEventListener(
+        'webkitTransitionEnd', this.removeAnimationEndListener_);
+  };
+
+  UserProto.show = function(evt) {
+    if (this.element_ && this.container_ && this.outline_) {
+      // Measure the inner element.
+      var height = this.element_.getBoundingClientRect().height;
+      var width = this.element_.getBoundingClientRect().width;
+
+      this.container_.style.width = width + 'px';
+      this.container_.style.height = height + 'px';
+      this.outline_.style.width = width + 'px';
+      this.outline_.style.height = height + 'px';
+
+      var transitionDuration = this.Constant_.TRANSITION_DURATION_SECONDS *
+          this.Constant_.TRANSITION_DURATION_FRACTION;
+
+      var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM);
+      for (var i = 0; i < items.length; i++) {
+        var itemDelay = null;
+        if (this.element_.classList.contains(this.CssClasses_.TOP_LEFT) ||
+            this.element_.classList.contains(this.CssClasses_.TOP_RIGHT)) {
+          itemDelay = ((height - items[i].offsetTop - items[i].offsetHeight) /
+              height * transitionDuration) + 's';
+        } else {
+          itemDelay = (items[i].offsetTop / height * transitionDuration) + 's';
+        }
+        items[i].style.transitionDelay = itemDelay;
+      }
+
+      this.applyClip_(height, width);
+
+      requestAnimationFrame(function() {
+        this.element_.classList.add(this.CssClasses_.IS_ANIMATING);
+        this.element_.style.clip = 'rect(0 ' + width + 'px ' + height + 'px 0)';
+        this.container_.classList.add(this.CssClasses_.IS_VISIBLE);
+      }.bind(this));
+
+      this.addAnimationEndListener_();
+
+      var callback = function(e) {
+        if (e !== evt && !this.closing_ &&
+            e.target.parentNode !== this.element_) {
+          document.removeEventListener('click', callback);
+          this.hide();
+        }
+      }.bind(this);
+      document.addEventListener('click', callback);
+    }
+  };
+  UserProto['show'] = UserProto.show;
+
+  UserProto.hide = function() {
+    if (this.element_ && this.container_ && this.outline_) {
+      var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM);
+
+      for (var i = 0; i < items.length; i++) {
+        items[i].style.removeProperty('transition-delay');
+      }
+
+      var rect = this.element_.getBoundingClientRect();
+      var height = rect.height;
+      var width = rect.width;
+
+      this.element_.classList.add(this.CssClasses_.IS_ANIMATING);
+      this.applyClip_(height, width);
+      this.container_.classList.remove(this.CssClasses_.IS_VISIBLE);
+
+      this.addAnimationEndListener_();
+    }
+  };
+  UserProto['hide'] = UserProto.hide;
+
+  UserProto.toggle = function(evt) {
+    // console.log('UserProto.toggle', evt);
+    if (this.container_.classList.contains(this.CssClasses_.IS_VISIBLE)) {
+      this.hide();
+    } else {
+      this.show(evt);
+    }
+  };
+  UserProto['toggle'] = UserProto.toggle;
+
+  UserProto.createdCallback = function(){
+    this.initialize();
+  };
+
+  UserProto.attributeChangedCallback = function( attr, oldVal, newVal) {
+    switch( attr ){
+      default:
+        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        break;
+    };
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-user', {
+    prototype: UserProto
+  });
+
+})(window, document);
+</script>
