@@ -6,24 +6,23 @@
   <style> @import "assets/css/css/froala.css"; </style>
   <style> @import "assets/css/css/font.css"; </style>
   
-  
   <div class="mdl-layout--fixed-header">
     <div id="layout" class="mdl-layout mdl-layout--fixed-header">
       
-      <header class="mdl-layout__header mdl--fixed-header">
+      <header class="mdl-layout__header mdl--fixed-header mdl-shadow--4dp">
         <div class="mdl-layout__header-row">
           
           <span class="mdl-layout-title">Документы</span>
           <div class="mdl-layout-spacer"></div>
           <nav class="mdl-navigation">
             <!-- <a class="mdl-navigation__link" href="">Link</a> -->
-            <core-user></core-user>
+            <core-user-menu></core-user-menu>
           </nav>
           
         </div>
-        <div class="mdl--fixed-header-menu mdl-shadow--4dp">
+        <!-- <div class="mdl--fixed-header-menu mdl-shadow--4dp">
           test
-        </div>
+        </div> -->
       </header>
       
       <div class="mdl-layout__drawer">
@@ -39,17 +38,15 @@
         <div class="page-content">
           <div class="mdl-grid mdl-grid--no-spacing ">
             
-            <div class="mdl-cell mdl-cell--2-col panel mdl-cell--stretch">
+            <div class="layout-document--menu mdl-cell mdl-cell--2-col panel mdl-cell--stretch">
               <core-menu></core-menu>
             </div>
             
             <div class="layout-document--cards mdl-cell mdl-cell--10-col">
-              <div class="mdl-grid documentCards animated">
-                <core-spinner></core-spinner>
-              </div>
+              <div class="mdl-grid documentCards animated"></div>
             </div>
 
-            <div class="mdl-cell mdl-cell--2-col panel mdl-cell--stretch layout-document--menu layout-document--menu-hide ">
+            <div class="mdl-cell mdl-cell--2-col panel mdl-cell--stretch layout-document--info-panel layout-document--info-panel-hide ">
               test
               test
               test
@@ -107,7 +104,7 @@ window.onload = (function( window, document, undefined) {
     this.documentCardRoot = this.root.querySelector('.documentCards');
     this.materialize();
 
-    // $( this.editor ).froalaEditor();
+    $( this.editor ).froalaEditor();
   };
 
   ApplicationProto.hideCards = function() {
@@ -172,14 +169,11 @@ window.onload = (function( window, document, undefined) {
     var app = this;
 
     core.events.subscribe("core:card:add", function (data) {
-      app.spinner.classList.add('animated');
-      app.spinner.classList.add('fadeOut');
+      // app.spinner.classList.add('animated');
+      // app.spinner.classList.add('fadeOut');
       
       app.addDocumentCard(data);
 
-      setTimeout( function () {
-        app.spinner.remove();
-      } ,100);
     });
   };
 

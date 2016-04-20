@@ -1,10 +1,11 @@
 'use strict';
 
 var Dom = function () {
-  this.root        = document;
-  this.application = {};
-  this.editor      = {};
-  this.snackbar    = {};
+  this.root         = document;
+  this.application  = {};
+  this.editor       = {};
+  this.snackbar     = {};
+  this.splashscreen = {};
 
 
   this.bindEvents();
@@ -62,8 +63,10 @@ Dom.prototype.bindEvents = function () {
 Dom.prototype.build = function () {
   console.log('Dom :: build application');
 
-  this.application = document.createElement('core-layout');
-  this.editor      = document.querySelector('#editor');
+  this.application  = document.createElement('core-layout');
+  this.editor       = document.querySelector('#editor');
+  this.splashscreen = document.querySelector('#splashscreen');
+  
   this.root.body.appendChild(this.application);
 
   core.events.publish('core:dom:build:ready');

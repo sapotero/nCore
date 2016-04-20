@@ -1,0 +1,69 @@
+<template id="core-splashscreen">
+
+  <style> @import "assets/css/css/mdl.css"; </style>
+  <style> @import "assets/css/css/font.css"; </style>
+  <style> @import "assets/css/elements/splashscreen.css"; </style>
+  <style> @import "assets/css/animate.css"; </style>
+  
+  <div class="core-splashscreen-layout">
+    <div class="core-splashscreen">
+      <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--12-col">
+          <i class="material-icons icon">work</i>
+        </div>
+        <div class="mdl-cell mdl-cell--12-col">
+          <core-spinner class="load"></core-spinner>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</template>
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc      = document,
+      thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate = thisDoc.querySelector('template#core-splashscreen').content,
+      SplashScreenProto  = Object.create(HTMLElement.prototype);
+  
+  SplashScreenProto.createdCallback = function(){
+    this.initialize();
+  };
+
+  SplashScreenProto.attributeChangedCallback = function( attr, oldVal, newVal) {
+    switch( attr ){
+      default:
+        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        break;
+    };
+  };
+
+  SplashScreenProto.hide = function() {
+    this.root.querySelector('.core-splashscreen-layout').classList.add('animate')
+  }
+
+  SplashScreenProto.create = function() {
+    console.log('** core-splashscreen :: create');
+
+    var shadowRoot = this.createShadowRoot(),
+        item       = thatDoc.importNode( itemTemplate, true );
+    shadowRoot.appendChild( item );
+
+    this.root   = shadowRoot;
+    this.layout = this.root.querySelector('.core-splashscreen');
+    
+  };
+
+  SplashScreenProto.initialize = function(){
+    console.log( '** core-splashscreen :: initialize', this);
+    this.root = {};
+    this.create();
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-splashscreen', {
+    prototype: SplashScreenProto
+  });
+
+})(window, document);
+</script>

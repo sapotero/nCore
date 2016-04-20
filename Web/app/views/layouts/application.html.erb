@@ -20,6 +20,7 @@
     <link rel="import" href="assets/templates/elements/spinner.html">
     <link rel="import" href="assets/templates/elements/application.html">
     <link rel="import" href="assets/templates/elements/progressbar.html">
+    <link rel="import" href="assets/templates/elements/splashscreen.html">
 
     <script type="text/javascript">
       'use strict';
@@ -37,13 +38,15 @@
         }
         core.startAll();
         // $('#editor').css( 'display', 'none' );
-        $('#editor').froalaEditor();
+        // $('#editor').froalaEditor();
       };
     </script>
   
   </head>
   
   <body class="core-app">
+    <core-splashscreen id="splashscreen"></core-splashscreen>
+    
     <div id="editor" class="hide animated"> test </div>
 
     <script type="text/javascript" src="assets/build/application.min.js"></script>

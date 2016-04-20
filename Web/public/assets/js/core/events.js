@@ -3,6 +3,13 @@ module.exports = function(){
 
     core.events.subscribe("core:dom:build:ready", function(){
       console.log('Core <- core:dom:build:ready');
+
+      core.dom.splashscreen.hide();
+      setTimeout(function(){
+        core.dom.splashscreen.remove();
+        core.dom.splashscreen = {};
+      }, 1000);
+
       core.events.publish("core:dom:attach:progressbar");
       core.events.publish("core:preloader:start");
     });

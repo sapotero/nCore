@@ -1,12 +1,12 @@
-<template id="core-user">
+<template id="core-user-menu">
 
   <style> @import "assets/css/css/mdl.css"; </style>
   <style> @import "assets/css/css/font.css"; </style>
   <style> @import "assets/css/elements/user.css"; </style>
   <style> @import "assets/css/animate.css"; </style>
   
-  <div class='core-user-layout'>
-    <ul id="core-user-menu" class="demo-list-icon mdl-list">
+  <div class='core-user-menu-layout'>
+    <ul id="core-user-menu-menu" class="demo-list-icon mdl-list">
       <li class="mdl-list__item user">
         <span class="mdl-list__item-primary-content">
           <i class="material-icons mdl-list__item-icon">person</i>
@@ -15,7 +15,7 @@
       </li>
     </ul>
 
-    <ul class="core-user mdl-menu mdl-js-menu mdl-menu--bottom-right" for="core-user-menu">
+    <ul class="core-user-menu mdl-menu mdl-js-menu mdl-menu--bottom-right" for="core-user-menu-menu">
       <li class="mdl-menu__item">Настройки</li>
       <li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Отчёты</li>
       <li class="mdl-menu__item">Выйти из системы</li>
@@ -29,11 +29,11 @@
 window.onload = (function( window, document, undefined) {
   var thatDoc      = document,
       thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
-      itemTemplate = thisDoc.querySelector('template#core-user').content,
+      itemTemplate = thisDoc.querySelector('template#core-user-menu').content,
       UserProto    = Object.create(HTMLElement.prototype);
 
   UserProto.initialize = function(){
-    console.log( '** core-user :: initialize', this);
+    console.log( '** core-user-menu :: initialize', this);
 
     this.root     = {};
     this.element_ = {};
@@ -44,7 +44,7 @@ window.onload = (function( window, document, undefined) {
   };
 
   UserProto.create = function() {
-    console.log('** core-user :: create');
+    console.log('** core-user-menu :: create');
 
     var shadowRoot = this.createShadowRoot(),
         item       = thatDoc.importNode( itemTemplate, true );
@@ -52,7 +52,7 @@ window.onload = (function( window, document, undefined) {
 
     this.root = shadowRoot;
 
-    this.element_ = this.root.querySelector('.core-user');
+    this.element_ = this.root.querySelector('.core-user-menu');
     this.name = this.root.querySelector('.name');
     this.user = this.root.querySelector('.user');
 
@@ -354,7 +354,7 @@ window.onload = (function( window, document, undefined) {
     };
   };
 
-  window.CoreSelect = thatDoc.registerElement('core-user', {
+  window.CoreSelect = thatDoc.registerElement('core-user-menu', {
     prototype: UserProto
   });
 
