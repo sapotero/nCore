@@ -121,8 +121,8 @@ Snackbar.prototype.start = function() {
   coreSnackbar.appendChild( coreSnackbarButton );
 
   core.dom.snackbar = coreSnackbar;
-  // core.dom.application.appendChild( coreSnackbar );
   core.dom.root.body.appendChild( coreSnackbar );
+  // core.dom.application.appendChild( coreSnackbar );
   
   this.element       = coreSnackbar;
   this.textElement   = this.element.querySelector('.' + this.cssClasses.MESSAGE);

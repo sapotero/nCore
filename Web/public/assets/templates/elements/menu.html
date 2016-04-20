@@ -5,7 +5,7 @@
   <style> @import "assets/css/elements/menu.css"; </style>
   <style> @import "assets/css/animate.css"; </style>
 
-  <ul class="menu-list mdl-list mdl-cell--hide-phone">
+  <ul class="panel menu-list mdl-list mdl-cell--hide-phone">
   </ul>
 
 </template>
@@ -80,6 +80,7 @@ window.onload = (function( window, document, undefined) {
     
     element.addEventListener( 'click', function (event) {
       console.log( 'menu -> click', this );
+      
       for(var i = 0, length1 = elements.length; i < length1; i++){
         var _element = elements[i];
 
@@ -89,6 +90,7 @@ window.onload = (function( window, document, undefined) {
           core.events.publish( 'core:reports:menu:select', _element );
         }
       };
+
     });
 
     this.elements.push( element );
@@ -117,18 +119,21 @@ window.onload = (function( window, document, undefined) {
   MenuProto.default = function(){
     var defaultMenu = [
       {
-        "icon"  : "folder",
-        "name"  : "Документы",
-        "count" : "100 документов",
+        "icon"   : "folder",
+        "name"   : "Мои документы",
+        "count"  : "100 документов",
+        "action" : "reports"
       },
       {
-        "icon"  : "folder_shared",
-        "name"  : "Документы",
-        "count" : "100 документов",
+        "icon"   : "folder_shared",
+        "name"   : "Общие документы",
+        "count"  : "100 документов",
+        "action" : "reports"
       },
       {
-        "icon"  : "person",
-        "name"  : "Документы"
+        "icon"   : "person",
+        "name"   : "Шаблоны",
+        "action" : "reports"
       }
     ];
 

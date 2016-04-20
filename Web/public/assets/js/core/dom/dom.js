@@ -37,6 +37,7 @@ Dom.prototype.bindEvents = function () {
       console.log( ' Dom <- core:dom:application:show' );
       core.dom.application.application.showCards();
     });
+
     core.events.subscribe('core:dom:application:hide', function () {
       console.log( ' Dom <- core:dom:application:hide' );
       core.dom.application.application.hideCards();
@@ -57,6 +58,11 @@ Dom.prototype.bindEvents = function () {
       core.dom.editor.classList.add('hide');
     });
 
+    core.events.subscribe('core:dom:set:title', function (title) {
+      console.log( ' Dom <- core:dom:set:title' );
+      core.dom.application.application.setAttribute('caption', title);
+    });
+
   }, false);
 };
 
@@ -66,8 +72,10 @@ Dom.prototype.build = function () {
   this.application  = document.createElement('core-layout');
   this.editor       = document.querySelector('#editor');
   this.splashscreen = document.querySelector('#splashscreen');
+
   
   this.root.body.appendChild(this.application);
+  this.application.application.setAttribute('caption', 'Отчеты');
 
   core.events.publish('core:dom:build:ready');
 };

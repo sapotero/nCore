@@ -96,15 +96,10 @@ window.onload = (function( window, document, undefined) {
     this.updated    = {};
 
     this.create();
-    // this.bindEvents();
   };
 
   CardProto.show = function(event){
-    // console.log( 'card -> click', this );
-    location.hash = `#reports/${this.id}`;
-    
-    // console.log( `#reports/${this.id}` );
-    // core.events.publish( 'core:router:reports:show', this.id );
+    core.events.publish( 'core:router:reports:show', { id: this.id, name: this.name } );
   };
 
   CardProto.setId = function(id) {

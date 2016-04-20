@@ -151,6 +151,21 @@ Router.prototype.start = function() {
         console.log('[reports/{id}]: ', params);
         core.events.publish( "core:dom:application:hide" );
         core.events.publish( "core:dom:editor:show" );
+      },
+      reports1 : function(params) {
+        console.log('[reports1]: ', params);
+        core.events.publish( "core:dom:application:show" );
+        core.events.publish( "core:dom:editor:hide" );
+      },
+      reports2 : function(params) {
+        console.log('[reports2]: ', params);
+        core.events.publish( "core:dom:application:show" );
+        core.events.publish( "core:dom:editor:hide" );
+      },
+      reports3 : function(params) {
+        console.log('[reports3]: ', params);
+        core.events.publish( "core:dom:application:show" );
+        core.events.publish( "core:dom:editor:hide" );
       }
     }
   });
@@ -166,14 +181,20 @@ Router.prototype.bindEvents = function() {
   var router = this;
   document.addEventListener('DOMContentLoaded', function(){
     
-    core.events.subscribe( 'core:router:reports:show', function (id) {
-      console.log( 'Router <- core:router:reports:show', id );
-      // location.hash = id;
+    core.events.subscribe( 'core:router:reports:show', function (doc) {
+      console.log( 'Router <- core:router:reports:show', doc );
+      core.events.publish( "core:dom:set:title", doc.name );
+      location.hash = `#reports/${doc.id}`;
     });
 
     core.events.subscribe("core:router:default", function(){
       console.log('Router <- core:router:default');
       location.hash = '#reports';
+    });
+
+    core.events.subscribe("core:router:check", function(route){
+      console.log('Router <- core:router:check', route);
+      location.hash = '#' + route;
     });
 
     core.events.subscribe("core:router:start", function(){

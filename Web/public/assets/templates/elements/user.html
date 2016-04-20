@@ -14,15 +14,13 @@
           </span>
       </li>
     </ul>
-
     <ul class="core-user-menu mdl-menu mdl-js-menu mdl-menu--bottom-right" for="core-user-menu-menu">
       <li class="mdl-menu__item">Настройки</li>
       <li class="mdl-menu__item mdl-menu__item--full-bleed-divider">Отчёты</li>
       <li class="mdl-menu__item">Выйти из системы</li>
     </ul>
   </div>
-
-
+  
 </template>
 
 <script>
@@ -92,7 +90,7 @@ window.onload = (function( window, document, undefined) {
     UNALIGNED: 'mdl-menu--unaligned'
   };
 
-  UserProto.init = function() {
+  UserProto.init = function(element) {
     if (this.element_) {
       var container = document.createElement('div');
       container.classList.add(this.CssClasses_.CONTAINER);
@@ -256,15 +254,12 @@ window.onload = (function( window, document, undefined) {
   };
 
   UserProto.addAnimationEndListener_ = function() {
-    this.element_.addEventListener(
-        'transitionend', this.removeAnimationEndListener_);
-    this.element_.addEventListener(
-        'webkitTransitionEnd', this.removeAnimationEndListener_);
+    this.element_.addEventListener( 'transitionend', this.removeAnimationEndListener_);
+    this.element_.addEventListener( 'webkitTransitionEnd', this.removeAnimationEndListener_);
   };
 
   UserProto.show = function(evt) {
     if (this.element_ && this.container_ && this.outline_) {
-      // Measure the inner element.
       var height = this.element_.getBoundingClientRect().height;
       var width = this.element_.getBoundingClientRect().width;
 
@@ -279,10 +274,8 @@ window.onload = (function( window, document, undefined) {
       var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM);
       for (var i = 0; i < items.length; i++) {
         var itemDelay = null;
-        if (this.element_.classList.contains(this.CssClasses_.TOP_LEFT) ||
-            this.element_.classList.contains(this.CssClasses_.TOP_RIGHT)) {
-          itemDelay = ((height - items[i].offsetTop - items[i].offsetHeight) /
-              height * transitionDuration) + 's';
+        if (this.element_.classList.contains(this.CssClasses_.TOP_LEFT) || this.element_.classList.contains(this.CssClasses_.TOP_RIGHT)) {
+          itemDelay = ((height - items[i].offsetTop - items[i].offsetHeight) / height * transitionDuration) + 's';
         } else {
           itemDelay = (items[i].offsetTop / height * transitionDuration) + 's';
         }

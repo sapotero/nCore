@@ -6,7 +6,7 @@
   <style> @import "assets/css/animate.css"; </style>
   
   <div class="core-layout animated fadeIn">
-    <core-application class="application"></core-application>
+    <core-application caption="" type=""></core-application>
   </div>
   
 
@@ -40,12 +40,7 @@ window.onload = (function( window, document, undefined) {
     this.root = shadowRoot;
 
     this.layout      = this.root.querySelector('.core-layout');
-    this.application = this.root.querySelector('.application');
-    // this.application = document.createElement('core-application');
-    
-    // this.layout.appendChild( this.application );
-    
-    // this.header           = this.root.querySelector('.header');
+    this.application = this.root.querySelector('core-application');
   };
 
   LayoutProto.addElement = function( element ){
@@ -57,9 +52,15 @@ window.onload = (function( window, document, undefined) {
     this.application.removeElement( element );
   };
 
-  LayoutProto.updateProgress = function(percent){
-    this.application.updateProgress( percent );
-  };
+  LayoutProto.setDefaults = function () {
+    console.log( '** core-layout :: setDefaults' );
+    if ( this.application.getAttribute('caption') === '' ) {
+      this.application.setAttribute('caption', '')
+    }
+    if ( this.application.getAttribute('type') === '' ) {
+      this.application.setAttribute('type', 'reports')
+    }
+  }
 
 
   LayoutProto.initialize = function(){
@@ -71,6 +72,7 @@ window.onload = (function( window, document, undefined) {
     this.application      = {};
 
     this.create();
+    this.setDefaults();
 
   };
 
