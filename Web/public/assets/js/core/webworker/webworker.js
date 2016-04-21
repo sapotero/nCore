@@ -36,10 +36,15 @@ var WebWorker = function(){
           case 'criteriaKeys:loaded':
             core.events.publish("core:criteriaKeys:loaded", data[key] );
             break;
-
-
-
-
+          case 'print-forms:loaded':
+            core.events.publish("core:print-forms:loaded", data[key] );
+            break;
+          case 'web-forms:loaded':
+            core.events.publish("core:web-forms:loaded", data[key] );
+            break;
+          case 'bps:loaded':
+            core.events.publish("core:bps:loaded", data[key] );
+            break;
           default:
             console.log('default');
             break;

@@ -7,7 +7,6 @@ var Dom = function () {
   this.snackbar     = {};
   this.splashscreen = {};
 
-
   this.bindEvents();
 };
 

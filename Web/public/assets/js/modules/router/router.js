@@ -142,7 +142,7 @@ Router.prototype.start = function() {
   this.update({
     pathRoot : '',
     routes   : {
-      reports : function(params) {
+      'reports' : function(params) {
         console.log('[reports]: ', params);
         core.events.publish( "core:dom:application:show" );
         core.events.publish( "core:dom:editor:hide" );
@@ -152,21 +152,36 @@ Router.prototype.start = function() {
         core.events.publish( "core:dom:application:hide" );
         core.events.publish( "core:dom:editor:show" );
       },
-      reports1 : function(params) {
-        console.log('[reports1]: ', params);
+      'bps' : function(params) {
+        console.log('[bps]: ', params);
         core.events.publish( "core:dom:application:show" );
         core.events.publish( "core:dom:editor:hide" );
       },
-      reports2 : function(params) {
-        console.log('[reports2]: ', params);
+      'bps/{id}' : function(params) {
+        console.log('[bps/{id}]: ', params);
+        core.events.publish( "core:dom:application:hide" );
+        core.events.publish( "core:dom:editor:show" );
+      },
+      'print-forms' : function(params) {
+        console.log('[print-forms]: ', params);
         core.events.publish( "core:dom:application:show" );
         core.events.publish( "core:dom:editor:hide" );
       },
-      reports3 : function(params) {
-        console.log('[reports3]: ', params);
+      'print-forms/{id}' : function(params) {
+        console.log('[print-forms/{id}]: ', params);
+        core.events.publish( "core:dom:application:hide" );
+        core.events.publish( "core:dom:editor:show" );
+      },
+      'web-forms' : function(params) {
+        console.log('[web-forms]: ', params);
         core.events.publish( "core:dom:application:show" );
         core.events.publish( "core:dom:editor:hide" );
-      }
+      },
+      'web-forms/{id}' : function(params) {
+        console.log('[web-forms/{id}]: ', params);
+        core.events.publish( "core:dom:application:hide" );
+        core.events.publish( "core:dom:editor:show" );
+      },
     }
   });
   this.run();

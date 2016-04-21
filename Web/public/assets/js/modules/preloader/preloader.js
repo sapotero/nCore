@@ -3,7 +3,7 @@
 var Preloader = function(){
   this.tasks  = {
     start  : [ 'progressbar', 'router', 'snackbar'/*'reports' ,'templates' */ ],
-    load   : [ 'reports', 'criterias', 'criteriaKeys' ],
+    load   : [ 'reports', 'criterias', 'criteriaKeys', 'bps', 'web-forms', 'print-forms' ],
   };
   this.total   = 0;
   this.loaded  = 0;
@@ -30,6 +30,12 @@ Preloader.prototype.bindEvents = function() {
 
       if ( parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 ) ) {
         core.events.publish("core:preloader:finish");
+
+        core.dom.splashscreen.hide();
+        setTimeout(function(){
+          core.dom.splashscreen.remove();
+          core.dom.splashscreen = {};
+        }, 1000);
       }
     });
   });
@@ -59,11 +65,6 @@ Preloader.prototype.finish = function() {
 };
 Preloader.prototype.destroy = function() {
   console.log( 'Preloader: destroy' );
-};
-
-Preloader.prototype.build = function() {
-  var preloader = this;
-  core.events.publish( "core:dom:attach:progressbar" );
 };
 
 module.exports = Preloader;

@@ -4,19 +4,13 @@ module.exports = function(){
     core.events.subscribe("core:dom:build:ready", function(){
       console.log('Core <- core:dom:build:ready');
 
-      core.dom.splashscreen.hide();
-      setTimeout(function(){
-        core.dom.splashscreen.remove();
-        core.dom.splashscreen = {};
-      }, 1000);
-
       core.events.publish("core:dom:attach:progressbar");
       core.events.publish("core:preloader:start");
     });
 
     core.events.subscribe("core:preloader:finish", function(){
       console.log('Core <- core:preloader:finish');
-      core.events.publish("core:dom:remove:progressbar");
+      // core.events.publish("core:dom:remove:progressbar");
       core.events.publish("core:router:update");
     });
 
@@ -47,6 +41,31 @@ module.exports = function(){
     });
 
 
+    core.events.subscribe( "core:web-forms:load", function (template) {
+      console.log('Core <- core:web-forms:load' );
+      core.worker.postMessage( [ 'web-forms:load', '' ] );
+    });
+    core.events.subscribe( "core:web-forms:loaded", function (template) {
+      console.log('Core <- core:web-forms:loaded' );
+      core.events.publish( "core:preloader:task:ready" );
+    });
+    core.events.subscribe( "core:print-forms:load", function (template) {
+      console.log('Core <- core:print-forms:load' );
+      core.worker.postMessage( [ 'print-forms:load', '' ] );
+    });
+    core.events.subscribe( "core:print-forms:loaded", function (template) {
+      console.log('Core <- core:print-forms:loaded' );
+      core.events.publish( "core:preloader:task:ready" );
+    });
+    core.events.subscribe( "core:bps:load", function (template) {
+      console.log('Core <- core:bps:load' );
+      core.worker.postMessage( [ 'bps:load', '' ] );
+    });
+    core.events.subscribe( "core:bps:loaded", function (template) {
+      console.log('Core <- core:bps:loaded' );
+      core.events.publish( "core:preloader:task:ready" );
+    });
+
     core.events.subscribe( "core:criterias:load", function (template) {
       console.log('Core <- core:criterias:load' );
       core.worker.postMessage( [ 'criterias:load', '' ] );
@@ -55,8 +74,6 @@ module.exports = function(){
       console.log('Core <- core:criterias:loaded' );
       core.events.publish( "core:preloader:task:ready" );
     });
-
-
 
     core.events.subscribe( "core:criteriaKeys:loaded", function (template) {
       console.log('Core <- core:criteriaKeys:loaded' );

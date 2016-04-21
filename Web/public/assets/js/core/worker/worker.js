@@ -128,9 +128,86 @@ onmessage = function(e) {
        throw new Error(e);
     });
   };
-   var Criterias = function(){};
-   Criterias.prototype.request = Request;
-   Criterias.prototype.load = function() {
+
+  var Bps = function(){};
+  Bps.prototype.request = Request;
+  Bps.prototype.load = function() {
+    var data = [];
+
+    var request = new this.request({
+      type : 'GET',
+      url  : '/documents.json'
+    });
+
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      // console.log( 'Reports WORKER REQUEST: ', data );
+      postMessage({
+        "bps:loaded": data
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+  };
+  var PrintForms = function(){};
+  PrintForms.prototype.request = Request;
+  PrintForms.prototype.load = function() {
+    var data = [];
+
+    var request = new this.request({
+      type : 'GET',
+      url  : '/documents.json'
+    });
+
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      // console.log( 'Reports WORKER REQUEST: ', data );
+      postMessage({
+        "print-forms:loaded": data
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+  };
+  var WebForms = function(){};
+  WebForms.prototype.request = Request;
+  WebForms.prototype.load = function() {
+    var data = [];
+
+    var request = new this.request({
+      type : 'GET',
+      url  : '/documents.json'
+    });
+
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      // console.log( 'Reports WORKER REQUEST: ', data );
+      postMessage({
+        "web-forms:loaded": data
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+  };
+
+  var Criterias = function(){};
+  Criterias.prototype.request = Request;
+  Criterias.prototype.load = function() {
     var data = [];
 
     var request = new this.request({
@@ -191,6 +268,9 @@ onmessage = function(e) {
   Command.prototype.return       = postMessage;
   Command.prototype.criterias    = Criterias;
   Command.prototype.criteriaKeys = CriteriaKeys;
+  Command.prototype.bps = CriteriaKeys;
+  Command.prototype['print-forms'] = PrintForms;
+  Command.prototype['web-forms']   = WebForms;
 
   Command.prototype.do = function() {
     if (this.action !== '') {
