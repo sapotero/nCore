@@ -1,0 +1,85 @@
+<template id="core-progress">
+
+  <style> @import "assets/css/css/mdl.css"; </style>
+  <style> @import "assets/css/css/font.css"; </style>
+  <style> @import "assets/css/elements/progress.css"; </style>
+  <div class="core-progress mdl-progress mdl-js-progress "></div>
+
+</template>
+
+<script>
+window.onload = (function( window, document, undefined) {
+  var thatDoc      = document,
+      thisDoc      = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument,
+      itemTemplate = thisDoc.querySelector('template#core-progress').content,
+      ProgressProto  = Object.create(HTMLElement.prototype);
+  
+  ProgressProto.createdCallback = function(){
+    this.initialize();
+  };
+
+  ProgressProto.create = function() {
+    console.log('** core-progress :: create');
+
+    var shadowRoot = this.createShadowRoot(),
+        item       = thatDoc.importNode( itemTemplate, true );
+    shadowRoot.appendChild( item );
+
+    this.root   = shadowRoot;
+    this.layout = this.root.querySelector('.core-progress');
+  };
+
+  ProgressProto.initialize = function(){
+    console.log( '** core-progress :: initialize', this);
+    this.root   = {};
+    this.layout = {};
+    this.create();
+    this.init();
+  };
+
+  ProgressProto.CssClasses_ = {
+    INDETERMINATE_CLASS: 'mdl-progress__indeterminate'
+  };
+
+  ProgressProto.setProgress = function(p) {
+    if (this.layout.classList.contains( this.CssClasses_.INDETERMINATE_CLASS) ) {
+      return;
+    }
+
+    this.progressbar_.style.width = p + '%';
+  };
+
+  ProgressProto.setBuffer = function(p) {
+    this.bufferbar_.style.width = p + '%';
+    this.auxbar_.style.width = (100 - p) + '%';
+  };
+
+  ProgressProto.init = function(){
+    if (this.layout) {
+      var el = document.createElement('div');
+      el.className = 'progressbar bar bar1';
+      this.layout.appendChild(el);
+      this.progressbar_ = el;
+
+      el = document.createElement('div');
+      el.className = 'bufferbar bar bar2';
+      this.layout.appendChild(el);
+      this.bufferbar_ = el;
+
+      el = document.createElement('div');
+      el.className = 'auxbar bar bar3';
+      this.layout.appendChild(el);
+      this.auxbar_ = el;
+
+      this.progressbar_.style.width = '0%';
+      this.bufferbar_.style.width = '100%';
+      this.auxbar_.style.width = '0%';
+    }
+  };
+
+  window.CoreSelect = thatDoc.registerElement('core-progress', {
+    prototype: ProgressProto
+  });
+
+})(window, document);
+</script>

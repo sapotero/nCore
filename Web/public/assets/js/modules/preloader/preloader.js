@@ -24,18 +24,11 @@ Preloader.prototype.bindEvents = function() {
       preloader.loaded++;
       console.log("* Preloader <- core:preloader:ready | " + `${parseInt( preloader.loaded, 10 )} ${parseInt( preloader.total, 10 )}` +  ` | ${parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 )}` +"\n\n");
       
-      preloader.percent = Math.round( (preloader.loaded/preloader.total*100) / 10) * 10;
-      // console.log( "core:dom:progressbar:update", preloader.percent );
-      core.events.publish( "core:dom:progressbar:update", preloader.percent );
+      preloader.percent = Math.round( (preloader.loaded/preloader.total*100) / 5) * 5;
+      core.dom.splashscreen.progress.setProgress( preloader.percent );
 
       if ( parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 ) ) {
         core.events.publish("core:preloader:finish");
-
-        core.dom.splashscreen.hide();
-        setTimeout(function(){
-          core.dom.splashscreen.remove();
-          core.dom.splashscreen = {};
-        }, 1000);
       }
     });
   });

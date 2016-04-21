@@ -12,7 +12,7 @@
           <i class="material-icons icon">work</i>
         </div>
         <div class="mdl-cell mdl-cell--12-col">
-          <core-spinner class="load"></core-spinner>
+          <core-progress class="load"></core-progress>
         </div>
       </div>
     </div>
@@ -40,8 +40,10 @@ window.onload = (function( window, document, undefined) {
   };
 
   SplashScreenProto.hide = function() {
-    this.root.querySelector('.core-splashscreen-layout').classList.add('animate')
-  }
+    this.root.querySelector('.core-splashscreen-layout').classList.add('animate');
+  };
+  SplashScreenProto.bindEvents = function() {
+  };
 
   SplashScreenProto.create = function() {
     console.log('** core-splashscreen :: create');
@@ -50,14 +52,15 @@ window.onload = (function( window, document, undefined) {
         item       = thatDoc.importNode( itemTemplate, true );
     shadowRoot.appendChild( item );
 
-    this.root   = shadowRoot;
-    this.layout = this.root.querySelector('.core-splashscreen');
-    
+    this.root     = shadowRoot;
+    this.layout   = this.root.querySelector('.core-splashscreen');
+    this.progress = this.root.querySelector('core-progress');
   };
 
   SplashScreenProto.initialize = function(){
     console.log( '** core-splashscreen :: initialize', this);
     this.root = {};
+    this.bindEvents();
     this.create();
   };
 
