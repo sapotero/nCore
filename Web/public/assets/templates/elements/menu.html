@@ -67,6 +67,9 @@ window.onload = (function( window, document, undefined) {
     if ( config.icon ) {
       element.querySelector('.mdl-list__item-avatar').textContent = config.icon;
     }
+    if ( config.action ) {
+      element.setAttribute('action', config.action);
+    }
     if ( config.count ) {
       element.classList.add('mdl-list__item--two-line');
       element.querySelector('.mdl-list__item-sub-title').textContent = config.count;
@@ -85,6 +88,7 @@ window.onload = (function( window, document, undefined) {
         var _element = elements[i];
 
         _element.classList.remove('mdl-color--grey-200');
+        
         if ( this == _element) {
           _element.classList.add('mdl-color--grey-200');
           core.events.publish( 'core:reports:menu:select', _element );
@@ -110,8 +114,6 @@ window.onload = (function( window, document, undefined) {
         <span class="document-name"></span>
         <span class="mdl-list__item-sub-title"></span>
       </span>`;
-
-
     this.create();
     // this.default();
   };
@@ -122,18 +124,18 @@ window.onload = (function( window, document, undefined) {
         "icon"   : "folder",
         "name"   : "Мои документы",
         "count"  : "100 документов",
-        "action" : "reports"
+        "action" : "my"
       },
       {
         "icon"   : "folder_shared",
         "name"   : "Общие документы",
         "count"  : "100 документов",
-        "action" : "reports"
+        "action" : "shared"
       },
       {
         "icon"   : "person",
         "name"   : "Шаблоны",
-        "action" : "reports"
+        "action" : "templates"
       }
     ];
 

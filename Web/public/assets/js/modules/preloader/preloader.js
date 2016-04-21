@@ -26,7 +26,6 @@ Preloader.prototype.bindEvents = function() {
       
       preloader.percent = Math.round( (preloader.loaded/preloader.total*100) / 5) * 5;
       core.events.publish( "core:dom:splashscreen:progress:set", preloader.percent);
-      
 
       if ( parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 ) ) {
         core.events.publish("core:preloader:finish");

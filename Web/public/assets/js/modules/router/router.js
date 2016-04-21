@@ -147,11 +147,21 @@ Router.prototype.start = function() {
         core.events.publish( "core:dom:application:show" );
         core.events.publish( "core:dom:editor:hide" );
       },
+      'reports/templates' : function(params) {
+        console.log('[reports/templates/]: ', params);
+      },
+      'reports/shared' : function(params) {
+        console.log('[reports/shared/]: ', params);
+      },
+      'reports/my' : function(params) {
+        console.log('[reports/my/]: ', params);
+      },
       'reports/{id}' : function(params) {
         console.log('[reports/{id}]: ', params);
         core.events.publish( "core:dom:application:hide" );
         core.events.publish( "core:dom:editor:show" );
       },
+      
       'bps' : function(params) {
         console.log('[bps]: ', params);
         core.events.publish( "core:dom:application:show" );
@@ -162,6 +172,7 @@ Router.prototype.start = function() {
         core.events.publish( "core:dom:application:hide" );
         core.events.publish( "core:dom:editor:show" );
       },
+      
       'print-forms' : function(params) {
         console.log('[print-forms]: ', params);
         core.events.publish( "core:dom:application:show" );
@@ -172,6 +183,7 @@ Router.prototype.start = function() {
         core.events.publish( "core:dom:application:hide" );
         core.events.publish( "core:dom:editor:show" );
       },
+      
       'web-forms' : function(params) {
         console.log('[web-forms]: ', params);
         core.events.publish( "core:dom:application:show" );
@@ -205,6 +217,11 @@ Router.prototype.bindEvents = function() {
     core.events.subscribe("core:router:default", function(){
       console.log('Router <- core:router:default');
       location.hash = '#reports';
+    });
+
+    core.events.subscribe("core:router:go", function( url ){
+      console.log('Router <- core:router:go', url);
+      location.hash = [ core.dom.application.application.getAttribute('type'), url ].join('/');
     });
 
     core.events.subscribe("core:router:check", function(route){

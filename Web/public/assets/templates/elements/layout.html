@@ -23,10 +23,13 @@ window.onload = (function( window, document, undefined) {
     this.initialize();
   };
 
-  LayoutProto.attributeChangedCallback = function( attr, oldVal, newVal) {
-    switch( attr ){
+  LayoutProto.attributeChangedCallback = function( attribute, oldValue, newValue) {
+    switch( attribute ){
+      case "application":
+        this.application.setAttribute('type', newValue );
+        break;
       default:
-        console.log('UNEXPECTED attr, oldVal, newVal: ',attr, oldVal, newVal);
+        console.log('UNEXPECTED attribute, oldValue, newValue: ',attribute, oldValue, newValue);
         break;
     };
   };

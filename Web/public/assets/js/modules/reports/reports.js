@@ -215,8 +215,8 @@ Reports.prototype.bindEvents = function(){
 
     // клик по меню с документами
     core.events.subscribe("core:reports:menu:select", function( menuItem ){
-      console.log( 'Reports <- core:reports:menu:select', menuItem );
-      core.events.publish( "core:router:default" );
+      // console.log( 'Reports <- core:reports:menu:select', menuItem );
+      core.events.publish( "core:router:go", menuItem.getAttribute('action') );
     });
 
   });
