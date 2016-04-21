@@ -211,7 +211,8 @@ Router.prototype.bindEvents = function() {
     core.events.subscribe( 'core:router:reports:show', function (doc) {
       console.log( 'Router <- core:router:reports:show', doc );
       core.events.publish( "core:dom:set:title", doc.name );
-      location.hash = `#reports/${doc.id}`;
+      // location.hash = `#reports/${doc.id}`;
+      location.hash = '#reports/'+doc.id;
     });
 
     core.events.subscribe("core:router:default", function(){

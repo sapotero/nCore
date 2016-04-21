@@ -1,14 +1,25 @@
+var webpack = require('webpack');
+
 module.exports = {
-    entry: "./public/assets/js/core.js",
-    output: {
-        path: __dirname,
-        filename: "./public/assets/build/application.min.js"
-    },
-    module: {
-        loaders: [
-            { test: /\.css$/, loader: "style!css" }
-        ]
-    }
+  entry: "./public/assets/js/core.js",
+  output: {
+    path: __dirname,
+    filename: "./public/assets/build/application.min.js"
+  },
+  module: {
+    loaders: [
+      { test: /\.css$/, loader: "style!css" }
+    ]
+  },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true,
+      compress: {
+        warnings: false
+      }
+    })
+  ]
 };
 // var path = require('path');
 // var webpack = require('webpack');

@@ -2,7 +2,7 @@
 
 var Preloader = function(){
   this.tasks  = {
-    start  : [ 'progressbar', 'router', 'snackbar'/*'reports' ,'templates' */ ],
+    start  : [ 'router', 'snackbar'/*'reports' ,'templates' */ ],
     load   : [ 'reports', 'criterias', 'criteriaKeys', 'bps', 'web-forms', 'print-forms' ],
   };
   this.total   = 0;
@@ -22,7 +22,7 @@ Preloader.prototype.bindEvents = function() {
 
     core.events.subscribe( "core:preloader:task:ready", function () {
       preloader.loaded++;
-      console.log("* Preloader <- core:preloader:ready | " + `${parseInt( preloader.loaded, 10 )} ${parseInt( preloader.total, 10 )}` +  ` | ${parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 )}` +"\n\n");
+      // console.log("* Preloader <- core:preloader:ready | " + `${parseInt( preloader.loaded, 10 )} ${parseInt( preloader.total, 10 )}` +  ` | ${parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 )}` +"\n\n");
       
       preloader.percent = Math.round( (preloader.loaded/preloader.total*100) / 5) * 5;
       core.events.publish( "core:dom:splashscreen:progress:set", preloader.percent);
@@ -44,8 +44,9 @@ Preloader.prototype.start = function() {
   for (var type in this.tasks) {
     var tasks = this.tasks[type];
     for (var i = tasks.length - 1; i >= 0; i--) {
-      console.log( `Preloader -> core:${tasks[i]}:${type}` );
-      core.events.publish( `core:${tasks[i]}:${type}` );
+      var task = ['core', tasks[i], type].join(':');
+      console.log( 'Preloader ->', task );
+      core.events.publish( task );
     }
   }
 };
