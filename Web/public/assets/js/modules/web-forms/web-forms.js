@@ -89,7 +89,7 @@ WebForm.prototype.loadEditors = function(body) {
 
 
 WebForm.prototype.attachEvents = function(){
-  var web-form = this;
+  var webForm = this;
   
   core.events.subscribe("core:template:web-forms:editor", function(template){
     web-form.update( template.raw );
@@ -150,76 +150,11 @@ WebForms.prototype.init = function(){
   core.events.publish( "[ + ] core:web-forms:init" );
 
   this.element = document.createElement('div');
-  core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
+  // core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
   
   core.events.publish("core:web-forms:template");
 };
 WebForms.prototype.bindEvents = function(){
-  var web-forms = this;
-
-  document.addEventListener('DOMContentLoaded', function(){
-    core.events.subscribe("core:web-forms:loaded", function(rawData){
-      // console.log( 'RAW REPORTS', rawData );
-      for (var type in rawData ) {
-        var data = rawData[type];
-
-        // console.log( '***++', type, rawData.raw[type] );
-        
-        for (var i = data.length - 1; i >= 0; i--) {
-          var _d = data[i];
-          var web-form = {
-            _id         : _d._id,
-            name        : _d.name,
-            description : _d.description,
-            update_at   : _d.updated_at,
-            
-            author : {
-              id   : _d.author_id,
-              name : _d.author_id
-            },
-
-            providerId  : _d.provider_id,
-
-            query       : _d.query,
-            globalQuery : _d.globalQuery,
-
-            settings : {
-              periodStart  : _d.periodStart,
-              periodEnd    : _d.periodEnd,
-              main         : _d.main,
-              compare      : _d.compare,
-              isYearWebForm : _d.yearWebForm,
-              isTemplate   : _d.template,
-              providerSelected : _d.providerSelected
-            }
-          };
-          web-forms.add( type, web-form );
-          
-          core.events.publish("core:card:add", {
-            type:type,
-            web-form:web-form
-          });
-        }
-      }
-      core.events.publish( "core:preloader:task:ready" );
-    });
-
-    core.events.subscribe("core:web-forms:start", function( template ){
-      console.log('WebForms <- core:web-forms:start');
-      core.events.publish( "core:preloader:task:ready" );
-    });
-
-    core.events.subscribe("core:template:web-forms", function( template ){
-      web-forms.updateRootElement( template.raw );
-    });
-
-    // клик по меню с документами
-    core.events.subscribe("core:web-forms:menu:select", function( menuItem ){
-      console.log( 'WebForms <- core:web-forms:menu:select', menuItem );
-      core.events.publish( "core:router:default" );
-    });
-
-  });
 };
 WebForms.prototype.updateRootElement = function(html){
   this.element.innerHTML = html;
@@ -292,7 +227,7 @@ WebForms.prototype.find = function(id) {
 
 WebForms.prototype.show = function(id) {
   console.log( 'WebForms: show -> ', id);
-  var web-form = this.find(id);
+  var webForm = this.find(id);
   if ( web-form ) {
     web-form.init();
   } else {

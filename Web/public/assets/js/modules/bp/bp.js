@@ -150,7 +150,7 @@ BusinessForms.prototype.init = function(){
   core.events.publish( "[ + ] core:bps:init" );
 
   this.element = document.createElement('div');
-  core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
+  // core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
   
   core.events.publish("core:bps:template");
 };
@@ -195,10 +195,10 @@ BusinessForms.prototype.bindEvents = function(){
           };
           bps.add( type, bp );
           
-          core.events.publish("core:card:add", {
-            type:type,
-            bp:bp
-          });
+          // core.events.publish("core:card:add", {
+          //   type:type,
+          //   bp:bp
+          // });
         }
       }
       core.events.publish( "core:preloader:task:ready" );

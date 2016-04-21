@@ -10,8 +10,10 @@ core = (function(){
       Router      = require('./modules/router/router'),
       Snackbar    = require('./modules/snackbar/snackbar'),
       Templates   = require('./modules/templates/templates'),
-      Progressbar = require('./modules/progressbar/progressbar'),
-      Reports     = require('./modules/reports/reports');
+      Reports     = require('./modules/reports/reports'),
+      WebForms    = require('./modules/web-forms/web-forms'),
+      PrintForms  = require('./modules/print-forms/print-forms'),
+      Bps         = require('./modules/bp/bp');
 
   var Core = function( config ){
     this.events   = new Mediator();
@@ -19,12 +21,14 @@ core = (function(){
     this.utils    = new Utils();
     this.dom      = new Dom();
     this.modules  = {
-      preloader   : new Preloader(),
-      router      : new Router(),
-      snackbar    : new Snackbar(),
-      templates   : new Templates(),
-      progressbar : new Progressbar(),
-      reports     : new Reports()
+      'preloader'   : new Preloader(),
+      'router'      : new Router(),
+      'snackbar'    : new Snackbar(),
+      'templates'   : new Templates(),
+      'reports'     : new Reports(),
+      'web-forms'   : new WebForms(),
+      'print-forms' : new PrintForms(),
+      'bps'         : new Bps()
     };
     this.debug    = true;
 

@@ -89,14 +89,14 @@ PrintForm.prototype.loadEditors = function(body) {
 
 
 PrintForm.prototype.attachEvents = function(){
-  var print-form = this;
+  var printForm = this;
   
   core.events.subscribe("core:template:print-forms:editor", function(template){
-    print-form.update( template.raw );
+    printForm.update( template.raw );
   });
   
   core.events.subscribe("core:print-form:loaded", function(data){
-    print-form.loadEditor( data.raw.body );
+    printForm.loadEditor( data.raw.body );
   });
   
 };
@@ -150,76 +150,11 @@ PrintForms.prototype.init = function(){
   core.events.publish( "[ + ] core:print-forms:init" );
 
   this.element = document.createElement('div');
-  core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
+  // core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
   
   core.events.publish("core:print-forms:template");
 };
 PrintForms.prototype.bindEvents = function(){
-  var print-forms = this;
-
-  document.addEventListener('DOMContentLoaded', function(){
-    core.events.subscribe("core:print-forms:loaded", function(rawData){
-      // console.log( 'RAW REPORTS', rawData );
-      for (var type in rawData ) {
-        var data = rawData[type];
-
-        // console.log( '***++', type, rawData.raw[type] );
-        
-        for (var i = data.length - 1; i >= 0; i--) {
-          var _d = data[i];
-          var print-form = {
-            _id         : _d._id,
-            name        : _d.name,
-            description : _d.description,
-            update_at   : _d.updated_at,
-            
-            author : {
-              id   : _d.author_id,
-              name : _d.author_id
-            },
-
-            providerId  : _d.provider_id,
-
-            query       : _d.query,
-            globalQuery : _d.globalQuery,
-
-            settings : {
-              periodStart  : _d.periodStart,
-              periodEnd    : _d.periodEnd,
-              main         : _d.main,
-              compare      : _d.compare,
-              isYearPrintForm : _d.yearPrintForm,
-              isTemplate   : _d.template,
-              providerSelected : _d.providerSelected
-            }
-          };
-          print-forms.add( type, print-form );
-          
-          core.events.publish("core:card:add", {
-            type:type,
-            print-form:print-form
-          });
-        }
-      }
-      core.events.publish( "core:preloader:task:ready" );
-    });
-
-    core.events.subscribe("core:print-forms:start", function( template ){
-      console.log('PrintForms <- core:print-forms:start');
-      core.events.publish( "core:preloader:task:ready" );
-    });
-
-    core.events.subscribe("core:template:print-forms", function( template ){
-      print-forms.updateRootElement( template.raw );
-    });
-
-    // клик по меню с документами
-    core.events.subscribe("core:print-forms:menu:select", function( menuItem ){
-      console.log( 'PrintForms <- core:print-forms:menu:select', menuItem );
-      core.events.publish( "core:router:default" );
-    });
-
-  });
 };
 PrintForms.prototype.updateRootElement = function(html){
   this.element.innerHTML = html;
@@ -292,9 +227,9 @@ PrintForms.prototype.find = function(id) {
 
 PrintForms.prototype.show = function(id) {
   console.log( 'PrintForms: show -> ', id);
-  var print-form = this.find(id);
+  var printForm = this.find(id);
   if ( print-form ) {
-    print-form.init();
+    printForm.init();
   } else {
     throw new Error('template not found!');
   }

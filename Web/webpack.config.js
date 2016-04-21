@@ -11,15 +11,15 @@ module.exports = {
       { test: /\.css$/, loader: "style!css" }
     ]
   },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      include: /\.min\.js$/,
-      minimize: true,
-      compress: {
-        warnings: false
-      }
-    })
-  ]
+  // plugins: [
+  //   new webpack.optimize.UglifyJsPlugin({
+  //     include: /\.min\.js$/,
+  //     minimize: true,
+  //     compress: {
+  //       warnings: false
+  //     }
+  //   })
+  // ]
 };
 // var path = require('path');
 // var webpack = require('webpack');

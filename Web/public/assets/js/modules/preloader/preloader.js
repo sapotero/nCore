@@ -22,7 +22,7 @@ Preloader.prototype.bindEvents = function() {
 
     core.events.subscribe( "core:preloader:task:ready", function () {
       preloader.loaded++;
-      // console.log("* Preloader <- core:preloader:ready | " + `${parseInt( preloader.loaded, 10 )} ${parseInt( preloader.total, 10 )}` +  ` | ${parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 )}` +"\n\n");
+      console.log("* Preloader <- core:preloader:ready | " + `${parseInt( preloader.loaded, 10 )} ${parseInt( preloader.total, 10 )}` +  ` | ${parseInt( preloader.loaded, 10 ) === parseInt( preloader.total, 10 )}` +"\n\n");
       
       preloader.percent = Math.round( (preloader.loaded/preloader.total*100) / 5) * 5;
       core.events.publish( "core:dom:splashscreen:progress:set", preloader.percent);
