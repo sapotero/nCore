@@ -31,6 +31,10 @@
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Документы</span>
         <nav class="mdl-navigation mdl-navigation-drawer">
+          <a class="mdl-navigation__link" href="#reports"  > Отчёты</a>
+          <a class="mdl-navigation__link" href="#reports1"> Бизнес-процессы</a>
+          <a class="mdl-navigation__link" href="#reports2"> Экранные формы</a>
+          <a class="mdl-navigation__link" href="#reports3"> Печатные формы</a>
         </nav>
       </div>
       
@@ -111,9 +115,6 @@ window.onload = (function( window, document, undefined) {
     this.documentCardRoot = this.root.querySelector('.documentCards');
     
     this.materialize();
-
-    this.navigation = this.root.querySelector('.mdl-navigation-drawer');
-    this.defaultDrawerMenu();
   };
 
   ApplicationProto.hideCards = function() {
@@ -172,7 +173,6 @@ window.onload = (function( window, document, undefined) {
     this.element    = {};
     this.menu       = {};
     this.title      = {};
-    this.navigation = {};
 
 
 
@@ -186,51 +186,6 @@ window.onload = (function( window, document, undefined) {
 
     this.menu.default();
     this.menu.setShadow(0);
-  };
-
-  ApplicationProto.drawerClickHandler = function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    console.log( ' core-drawer > a -> click ', this, e );
-    core.events.publish('core:router:check', this );
-    // this.toggleDrawer();
-  };
-
-  ApplicationProto.defaultDrawerMenu = function(){
-    var menu = [
-      {
-        name: "Отчёты",
-        type: "reports"
-      },
-      {
-        name: "Бизнес-процессы",
-        type: "reports1"
-      },
-      {
-        name: "Экранные формы",
-        type: "reports2"
-      },
-      {
-        name: "Печатные формы",
-        type: "reports3"
-      },
-    ];
-
-    for(var i = 0, length = menu.length; i < length; i++){
-      var element = document.createElement('a');
-      element.className = 'mdl-navigation__link';
-      
-      if ( menu[i].type ) {
-        element.setAttribute('type', menu[i].type );
-        element.href = '#' + menu[i].type;
-      }
-
-      element.textContent = menu[i].name;
-      element.title = menu[i].name;
-      element.addEventListener('click', this.drawerClickHandler );
-      this.navigation.appendChild(element);
-    }
-
   };
 
   ApplicationProto.bindEvents = function(){
@@ -302,6 +257,7 @@ window.onload = (function( window, document, undefined) {
     TAB_BAR_RIGHT_BUTTON: 'mdl-layout__tab-bar-right-button',
     PANEL: 'mdl-layout__tab-panel',
 
+    DRAWER_MENU: 'mdl-navigation__link',
     HAS_DRAWER: 'has-drawer',
     HAS_TABS: 'has-tabs',
     HAS_SCROLLING_HEADER: 'has-scrolling-header',
@@ -511,6 +467,12 @@ window.onload = (function( window, document, undefined) {
 
         drawerButton.addEventListener('click', this.drawerToggleHandler_.bind(this));
         drawerButton.addEventListener('keydown', this.drawerToggleHandler_.bind(this));
+
+        var drawerMenu = this.drawer_.querySelectorAll( '.'+this.CssClasses_.DRAWER_MENU );
+
+        for(var i = 0, length1 = drawerMenu.length; i < length1; i++){
+          drawerMenu[i].addEventListener('click', this.toggleDrawer.bind(this) );
+        }
 
         this.element_.classList.add(this.CssClasses_.HAS_DRAWER);
 
