@@ -16,7 +16,7 @@ module.exports = function(){
         core.dom.splashscreen.remove();
         core.dom.splashscreen = {};
         core.events.publish("core:router:update");
-      }, 250 );
+      }, 750 );
     });
 
     core.events.subscribe( "core:template:load", function (template) {

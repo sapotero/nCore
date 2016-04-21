@@ -62,21 +62,42 @@ Dom.prototype.bindEvents = function () {
       core.dom.application.application.setAttribute('caption', title);
     });
 
+    core.events.subscribe('core:dom:splashscreen:progress:set', function (percent) {
+      console.log( ' Dom <- core:dom:splashscreen:progress:set' );
+      try {
+        core.dom.splashscreen.progress.setProgress( percent );
+      } catch(e) {
+        console.log(e);
+      }
+    });
+
+
   }, false);
 };
 
 Dom.prototype.build = function () {
   console.log('Dom :: build application');
+  var dom = this;
 
-  this.application  = document.createElement('core-layout');
   this.editor       = document.querySelector('#editor');
   this.splashscreen = document.querySelector('#splashscreen');
-
   
-  this.root.body.appendChild(this.application);
-  this.application.application.setAttribute('caption', 'Отчеты');
+  this.application  = document.createElement('core-layout');
+  document.body.appendChild( this.application );
+  // this.application.application.setAttribute('caption', 'Отчеты');
 
-  core.events.publish('core:dom:build:ready');
+  setTimeout( core.events.publish('core:dom:build:ready') ,100);
+  // var build = new Promise(function(resolve, reject) {
+  //   console.log( '++dom', dom );
+  //   resolve(true);
+  // });
+  // build.then( function(data){
+  //   return true;
+  // }).then( function(data){
+  // }).catch( function (error){
+  //   throw new Error( error );
+  // });
+
 };
 
 Dom.prototype.start = function () {
