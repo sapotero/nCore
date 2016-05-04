@@ -18,10 +18,10 @@ Snackbar.prototype.Constant = {
   ANIMATION_LENGTH: 500
 };
 Snackbar.prototype.cssClasses = {
-  SNACKBAR: 'core-snackbar',
-  MESSAGE:  'core-snackbar__text',
-  ACTION:   'core-snackbar__action',
-  ACTIVE:   'core-snackbar--active'
+  SNACKBAR: 'mdl-snackbar',
+  MESSAGE:  'mdl-snackbar__text',
+  ACTION:   'mdl-snackbar__action',
+  ACTIVE:   'mdl-snackbar--active'
 };
 Snackbar.prototype.displaySnackbar = function() {
   this.element.setAttribute('aria-hidden', 'true');
@@ -103,21 +103,21 @@ Snackbar.prototype.setActionHidden = function(value) {
 Snackbar.prototype.start = function() {
   console.log( 'Snackbar: start' );
   
-  // <div id="core-snackbar" class="core-snackbar">
-  //   <div class="core-snackbar__text"></div>
-  //   <button class="core-snackbar__action" type="button"></button>
+  // <div id="mdl-snackbar" class="mdl-snackbar">
+  //   <div class="mdl-snackbar__text"></div>
+  //   <button class="mdl-snackbar__action" type="button"></button>
   // </div>
 
   var coreSnackbar = document.createElement("div");
-  coreSnackbar.id = 'core-snackbar';
-  coreSnackbar.classList.add('core-snackbar');
+  coreSnackbar.id = 'mdl-snackbar';
+  coreSnackbar.classList.add('mdl-snackbar');
   
   var coreSnackbarText = document.createElement("div");
-  coreSnackbarText.classList.add('core-snackbar__text');
+  coreSnackbarText.classList.add('mdl-snackbar__text');
   coreSnackbar.appendChild( coreSnackbarText );
 
   var coreSnackbarButton = document.createElement("button");
-  coreSnackbarButton.classList.add('core-snackbar__action');
+  coreSnackbarButton.classList.add('mdl-snackbar__action');
   coreSnackbar.appendChild( coreSnackbarButton );
 
   core.dom.snackbar = coreSnackbar;

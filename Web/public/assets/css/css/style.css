@@ -28,22 +28,29 @@
   animation-fill-mode: both;
 }
 
-.core-app {
-  overflow: hidden;
+.core-fixed {
+  position: fixed;
+}
+.core-layout-offset {
+  margin-top: 64px;
 }
 
+/*.core-app {
+  overflow: hidden;
+}*/
+/*
 html,
 body {
   margin: 0px;
   padding: 0px;
   height: 100%;
 
-/*  user-select: none;
+  user-select: none;
   -o-user-select: none;
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;*/
+  -ms-user-select: none;
 }
 
 html,
@@ -55,8 +62,8 @@ buttons {
   -moz-osx-font-smoothing: grayscale;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
 }
-
-
+*/
+/*
 .core-snackbar {
   position: fixed;
   bottom: 0;
@@ -156,3 +163,4 @@ buttons {
 .hide{
   display: none;
 }
+*/
