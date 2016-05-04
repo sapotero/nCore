@@ -30,9 +30,14 @@ module.exports = function(){
     // });
 
     // загрузка отчета по id
-    core.events.subscribe( "core:report:loaded", function (id) {
+    core.events.subscribe( "core:report:load", function (id) {
       core.worker.postMessage( [ 'reports:id', id ] )
     });
+
+    core.events.subscribe( "core:events:editor:set:html", function ( html ) {
+      $( core.dom.editor ).froalaEditor('html.set', html );
+    });
+
 
     core.events.subscribe( "core:layout:template:ready", function (template) {
       // console.log('layout: ', template);

@@ -142,22 +142,37 @@ Router.prototype.start = function() {
   this.update({
     pathRoot : '',
     routes   : {
+      // отчёты - начальная страница
       'reports' : function(params) {
         console.log('[reports]: ', params);
         core.events.publish( "core:dom:application:show" );
         core.events.publish( "core:dom:editor:hide" );
       },
+
+      // отчёты - шаблоны
       'reports/templates' : function(params) {
         console.log('[reports/templates/]: ', params);
+        core.events.publish( "core:dom:application:show" );
+        core.events.publish( "core:dom:editor:hide" );
       },
+
+      // отчёты - общие документы провайдера
       'reports/shared' : function(params) {
         console.log('[reports/shared/]: ', params);
+        core.events.publish( "core:dom:application:show" );
+        core.events.publish( "core:dom:editor:hide" );
       },
+
+      // отчёты - мои документы
       'reports/my' : function(params) {
         console.log('[reports/my/]: ', params);
+        core.events.publish( "core:dom:application:show" );
+        core.events.publish( "core:dom:editor:hide" );
       },
+
       'reports/{id}' : function(params) {
         console.log('[reports/{id}]: ', params);
+        core.events.publish( "core:report:load", params.id );
         core.events.publish( "core:dom:application:hide" );
         core.events.publish( "core:dom:editor:show" );
       },

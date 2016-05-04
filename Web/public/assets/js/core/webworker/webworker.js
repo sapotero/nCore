@@ -25,7 +25,7 @@ var WebWorker = function(){
             core.events.publish("core:reports:loaded", data[key] );
             break;
           case 'report:loaded':
-            console.log( 'report:loaded --> ', data[key] );
+            console.log( 'report:loaded --> ');
             core.events.publish("core:report:loaded", {
               raw: data[key]
             });

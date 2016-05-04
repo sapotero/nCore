@@ -7,6 +7,7 @@ var ReportSettings = function(config){
   this.periodEnd    = this.current_date;
   this.main         = this.current_date.getFullYear();
   this.compare      = this.current_date.getFullYear()-1;
+  
   this.isYearReport = config.isYearReport || false;
   this.isTemplate   = config.isTemplate || false;
   this.isNew        = config.isNew || true;
@@ -94,11 +95,6 @@ Report.prototype.attachEvents = function(){
   core.events.subscribe("core:template:reports:editor", function(template){
     report.update( template.raw );
   });
-  
-  core.events.subscribe("core:report:loaded", function(data){
-    report.loadEditor( data.raw.body );
-  });
-  
 };
 Report.prototype.render = function(){
   console.log( 'Report -> render', this );
@@ -143,6 +139,7 @@ Report.prototype.render = function(){
 var Reports = function(){
   this.element   = {};
   this.documents = {};
+  this.current   = {};
   this.bindEvents();
 };
 Reports.prototype.Report = Report;
@@ -158,13 +155,29 @@ Reports.prototype.bindEvents = function(){
   var reports = this;
 
   document.addEventListener('DOMContentLoaded', function(){
+
+    core.events.subscribe("core:report:loaded", function(data){
+      
+      var report = JSON.parse( data.raw );
+      report.settings = {
+        isYearReport : report.yearReport,
+        isTemplate   : report.template,
+        isNew        : report.new
+      };
+
+      console.log( 'core:report:loaded', report );
+      reports.current = new reports.Report( report );
+
+      core.events.publish("core:events:editor:set:html", core.utils.Base64.decode( report.body ) );
+
+      // report.loadEditor( data.raw.body );
+    });
+
     core.events.subscribe("core:reports:loaded", function(rawData){
       // console.log( 'RAW REPORTS', rawData );
       for (var type in rawData ) {
         var data = rawData[type];
-
         // console.log( '***++', type, rawData.raw[type] );
-        
         for (var i = data.length - 1; i >= 0; i--) {
           var _d = data[i];
           var report = {

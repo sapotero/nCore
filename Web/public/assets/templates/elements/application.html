@@ -40,6 +40,7 @@
       
       <main class="mdl-layout__content">
         <div class="page-content">
+        
           <div class="mdl-grid mdl-grid--no-spacing ">
             
             <div class="layout-document--menu mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-cell white">
@@ -49,6 +50,8 @@
             <div class="layout-document--cards mdl-cell mdl-cell--10-col">
               <div class="mdl-grid documentCards animated"></div>
             </div>
+              <div id="editor"></div>
+
 
             <!-- <div class="mdl-cell mdl-cell--2-col panel mdl-cell--stretch layout-document--info-panel layout-document--info-panel-hide ">
               test
@@ -114,6 +117,7 @@ window.onload = (function( window, document, undefined) {
     this.menu    = this.root.querySelector('core-menu');
     this.documentCardRoot = this.root.querySelector('.documentCards');
     
+    $(this.root.querySelector('#editor')).froalaEditor();
     this.materialize();
   };
 
