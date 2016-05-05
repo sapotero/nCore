@@ -108,9 +108,7 @@
         </div>
       </main>
     </div> 
-
-
- */
+*/
 
 var Dom = function () {
   this.root         = document;
@@ -137,8 +135,12 @@ Dom.prototype.bindEvents = function () {
     }, { priority: 0 });
 
     core.events.subscribe('core:dom:application:clear', function () {
-      console.log(' clear ->', dom.application);
+      dom.leftPanel.innerHTML = '';
+      dom.content.innerHTML   = '';
+      dom.infoPanel.innerHTML = '';
     });
+
+    core.events.publish( "core:dom:clear" );
 
     core.events.subscribe('core:dom:build:application', function () {
       console.log('Dom <- core:dom:build:application');
@@ -162,12 +164,12 @@ Dom.prototype.bindEvents = function () {
 
     core.events.subscribe('core:dom:remove:progressbar', function () {
       console.log( '* Dom <- core:dom:remove:progressbar' );
-      dom.splashscreen.classList.add('fadeOut');
-      dom.application.classList.add('fadeIn');
-      dom.application.style.display  = 'block';
+      // dom.splashscreen.classList.add('fadeOut');
+      // dom.application.classList.add('fadeIn');
       
       setTimeout( function () {
         dom.splashscreen.style.display = 'none';
+        dom.application.style.display  = 'block';
         core.events.publish("core:router:update");
       }, 500);
 
@@ -505,6 +507,11 @@ Dom.prototype.addToDrawerNavigation = function ( href, name ) {
   item.id   = [ 'drawer', href ].join('_');
   
   this.drawerNavigation.appendChild( item );
+
+  item.addEventListener( 'click', function(e) {
+     core.dom.application.MaterialLayout.toggleDrawer();
+  } )
+  // core.dom.application.MaterialLayout.toggleDrawer()
 };
 
 /* INFO PANEL */

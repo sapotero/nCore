@@ -145,8 +145,9 @@ Router.prototype.start = function() {
       // отчёты - начальная страница
       'reports' : function(params) {
         console.log('[reports]: ', params);
-        core.events.publish( "core:dom:application:show" );
-        core.events.publish( "core:dom:editor:hide" );
+        core.events.publish( "core:reports:render" );
+        // core.events.publish( "core:dom:application:show" );
+        // core.events.publish( "core:dom:editor:hide" );
       },
 
       // отчёты - шаблоны
@@ -179,8 +180,10 @@ Router.prototype.start = function() {
       
       'bps' : function(params) {
         console.log('[bps]: ', params);
-        core.events.publish( "core:dom:application:show" );
-        core.events.publish( "core:dom:editor:hide" );
+        core.events.publish( "bps:reports:render" );
+
+        // core.events.publish( "core:dom:application:show" );
+        // core.events.publish( "core:dom:editor:hide" );
       },
       'bps/{id}' : function(params) {
         console.log('[bps/{id}]: ', params);

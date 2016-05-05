@@ -142,11 +142,156 @@ var Reports = function(){
   this.current   = {};
   this.bindEvents();
 };
+
+// <!-- боковая панель c выбором типа документов -->
+// <div class="mdl-cell mdl-cell--2-col">
+//   leftPanel
+// </div>
+
+// <div class="mdl-cell mdl-cell--8-col" style="height: 5000px;">
+//    content
+// </div>
+
+// <!-- боковая панель c критериями -->
+// <div class="mdl-cell mdl-cell--2-col">
+//   <ul class="demo-list-control mdl-list">
+//     <li class="mdl-list__item">
+//       <span class="mdl-list__item-primary-content">
+//         <!-- <i class="material-icons  mdl-list__item-avatar">person</i> -->
+//         Bryan Cranston
+//       </span>
+//       <span class="mdl-list__item-secondary-action">
+//         <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">
+//           <input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" checked />
+//         </label>
+//       </span>
+//     </li>
+//     <li class="mdl-list__item">
+//       <span class="mdl-list__item-primary-content">
+//         <!-- <i class="material-icons  mdl-list__item-avatar">person</i> -->
+//         Bob Odenkirk
+//       </span>
+//         <span class="mdl-list__item-secondary-action">
+//           <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="list-switch-1">
+//             <input type="checkbox" id="list-switch-1" class="mdl-switch__input" checked />
+//           </label>
+//       </span>
+//     </li>
+//   </ul>
+// </div>
+
+Reports.prototype.addItemToLeftPanel = function( config ){
+  // <li class="menu-item mdl-list__item mdl-list__item--two-line" action="my">
+  //   <span class="mdl-list__item-primary-content">
+  //     <i class="material-icons mdl-list__item-avatar">folder</i>
+  //     <span class="document-name">Мои документы</span>
+  //     <span class="mdl-list__item-sub-title">100 документов</span>
+  //   </span>
+  // </li>
+  // 
+  var item = document.createElement('li');
+  item.className = 'menu-item mdl-list__item';
+  item.setAttribute('action', config.action );
+
+  var content = document.createElement('span');
+  content.className = 'mdl-list__item-primary-content';
+
+  if ( config.icon ) {
+    var icon = document.createElement('i');
+    icon.className   = 'material-icons mdl-list__item-avatar';
+    icon.textContent = config.icon;
+    content.appendChild( icon );
+  }
+
+  if ( config.name ) {
+    var name = document.createElement('span');
+    name.className   = 'document-name';
+    name.textContent = config.name;
+    content.appendChild( name );
+  }
+
+  if ( config.count ) {
+    var count = document.createElement('span');
+    count.className   = 'mdl-list__item-sub-title';
+    count.textContent = config.count;
+    content.appendChild( count );
+  }
+
+  if ( config.name && config.count ) {
+    item.classList.add('mdl-list__item--two-line');
+  }
+
+  item.appendChild( content );
+  this.leftPanel.appendChild( item );
+}
+
+Reports.prototype.renderLeftPanel = function(){
+  this.leftPanel = document.createElement('ul');
+  this.leftPanel.className = 'panel menu-list mdl-list mdl-cell--hide-phone mdl-shadow--0dp';
+  
+  this.addItemToLeftPanel({
+    action : 'event',
+    name   : 'event',
+    icon   : 'event',
+    count  : '100'
+  });
+  this.addItemToLeftPanel({
+    action : 'code',
+    name   : 'code',
+    icon   : 'code'
+  });
+  this.addItemToLeftPanel({
+    action : 'done',
+    name   : 'done',
+    icon   : 'done',
+    count  : '100'
+  });
+  this.addItemToLeftPanel({
+    action : 'start',
+    name   : 'start',
+    icon   : 'start'
+  });
+
+  core.dom.leftPanel.appendChild( this.leftPanel );
+
+
+  // <ul class="panel menu-list mdl-list mdl-cell--hide-phone mdl-shadow--0dp">
+    
+  //   <li class="menu-item mdl-list__item mdl-list__item--two-line" action="shared">
+  //     <span class="mdl-list__item-primary-content">
+  //       <i class="material-icons mdl-list__item-avatar">folder_shared</i>
+  //       <span class="document-name">Общие документы</span>
+  //       <span class="mdl-list__item-sub-title">100 документов</span>
+  //     </span>
+  //   </li>
+    
+  //   <li class="menu-item mdl-list__item mdl-list__item--one-line" action="templates">
+  //     <span class="mdl-list__item-primary-content">
+  //       <i class="material-icons mdl-list__item-avatar">person</i>
+  //       <span class="document-name">Шаблоны</span>
+  //       <span class="mdl-list__item-sub-title"></span>
+  //     </span>
+  //   </li>
+  // </ul>
+}
+
+Reports.prototype.render = function() {
+  core.events.publish( "core:dom:application:clear" );
+  
+  this.renderLeftPanel();
+  // this.buildContent();
+  // this.buildInfoPanel();
+  // core.dom.content
+  // core.dom.infoPanel
+}
+
 Reports.prototype.Report = Report;
 Reports.prototype.init = function(){
   core.events.publish( "[ + ] core:reports:init" );
 
   this.element = document.createElement('div');
+  this.render();
+
   core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
   
   core.events.publish("core:reports:template");
@@ -155,6 +300,11 @@ Reports.prototype.bindEvents = function(){
   var reports = this;
 
   document.addEventListener('DOMContentLoaded', function(){
+
+    
+    core.events.subscribe("core:reports:render", function(){
+      reports.render();
+    });
 
     core.events.subscribe("core:report:loaded", function(data){
       
@@ -223,6 +373,7 @@ Reports.prototype.bindEvents = function(){
     });
 
     core.events.subscribe("core:template:reports", function( template ){
+      
       reports.updateRootElement( template.raw );
     });
 
@@ -241,7 +392,7 @@ Reports.prototype.updateRootElement = function(html){
   this.render();
 };
 
-Reports.prototype.render = function(){
+Reports.prototype._render = function(){
   if ( !Object.keys(this.documents).length ){
     return false;
   }

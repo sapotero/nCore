@@ -33,7 +33,7 @@
   transition: 0.3s ease;
 }
 
-.content-leftPanel {
+/*.content-leftPanel {
   height: 100px;
 }
 .content-content {
@@ -41,7 +41,7 @@
 }
 .content-infoPanel {
   height: 100px;
-}
+}*/
 
 .content-infoPanel {
   position: absolute;

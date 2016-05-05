@@ -145,6 +145,112 @@ var BusinessForms = function(){
   this.documents = {};
   this.bindEvents();
 };
+
+BusinessForms.prototype.addItemToLeftPanel = function( config ){
+  // <li class="menu-item mdl-list__item mdl-list__item--two-line" action="my">
+  //   <span class="mdl-list__item-primary-content">
+  //     <i class="material-icons mdl-list__item-avatar">folder</i>
+  //     <span class="document-name">Мои документы</span>
+  //     <span class="mdl-list__item-sub-title">100 документов</span>
+  //   </span>
+  // </li>
+  // 
+  var item = document.createElement('li');
+  item.className = 'menu-item mdl-list__item';
+  item.setAttribute('action', config.action );
+
+  var content = document.createElement('span');
+  content.className = 'mdl-list__item-primary-content';
+
+  if ( config.icon ) {
+    var icon = document.createElement('i');
+    icon.className   = 'material-icons mdl-list__item-avatar';
+    icon.textContent = config.icon;
+    content.appendChild( icon );
+  }
+
+  if ( config.name ) {
+    var name = document.createElement('span');
+    name.className   = 'document-name';
+    name.textContent = config.name;
+    content.appendChild( name );
+  }
+
+  if ( config.count ) {
+    var count = document.createElement('span');
+    count.className   = 'mdl-list__item-sub-title';
+    count.textContent = config.count;
+    content.appendChild( count );
+  }
+
+  if ( config.name && config.count ) {
+    item.classList.add('mdl-list__item--two-line');
+  }
+
+  item.appendChild( content );
+  this.leftPanel.appendChild( item );
+}
+
+BusinessForms.prototype.renderLeftPanel = function(){
+  this.leftPanel = document.createElement('ul');
+  this.leftPanel.className = 'panel menu-list mdl-list mdl-cell--hide-phone mdl-shadow--0dp';
+  
+  this.addItemToLeftPanel({
+    action : 'event',
+    name   : 'event_bps',
+    icon   : 'event',
+    count  : '100'
+  });
+  this.addItemToLeftPanel({
+    action : 'code',
+    name   : 'code_bps',
+    icon   : 'code'
+  });
+  this.addItemToLeftPanel({
+    action : 'done',
+    name   : 'done_bps',
+    icon   : 'done',
+    count  : '100'
+  });
+  this.addItemToLeftPanel({
+    action : 'start',
+    name   : 'start_bps',
+    icon   : 'start'
+  });
+
+  core.dom.leftPanel.appendChild( this.leftPanel );
+
+
+  // <ul class="panel menu-list mdl-list mdl-cell--hide-phone mdl-shadow--0dp">
+    
+  //   <li class="menu-item mdl-list__item mdl-list__item--two-line" action="shared">
+  //     <span class="mdl-list__item-primary-content">
+  //       <i class="material-icons mdl-list__item-avatar">folder_shared</i>
+  //       <span class="document-name">Общие документы</span>
+  //       <span class="mdl-list__item-sub-title">100 документов</span>
+  //     </span>
+  //   </li>
+    
+  //   <li class="menu-item mdl-list__item mdl-list__item--one-line" action="templates">
+  //     <span class="mdl-list__item-primary-content">
+  //       <i class="material-icons mdl-list__item-avatar">person</i>
+  //       <span class="document-name">Шаблоны</span>
+  //       <span class="mdl-list__item-sub-title"></span>
+  //     </span>
+  //   </li>
+  // </ul>
+}
+
+BusinessForms.prototype.render = function() {
+  core.events.publish( "core:dom:application:clear" );
+  this.renderLeftPanel();
+  // this.buildContent();
+  // this.buildInfoPanel();
+  // core.dom.content
+  // core.dom.infoPanel
+}
+
+
 BusinessForms.prototype.BusinessForm = BusinessForm;
 BusinessForms.prototype.init = function(){
   core.events.publish( "[ + ] core:bps:init" );
@@ -158,8 +264,13 @@ BusinessForms.prototype.bindEvents = function(){
   var bps = this;
 
   document.addEventListener('DOMContentLoaded', function(){
+    
+    core.events.subscribe("bps:reports:render", function(){
+      bps.render();
+    });
+
     core.events.subscribe("core:bps:loaded", function(rawData){
-      // console.log( 'RAW REPORTS', rawData );
+      // console.log( 'RAW BusinessForms', rawData );
       for (var type in rawData ) {
         var data = rawData[type];
 
@@ -228,7 +339,7 @@ BusinessForms.prototype.updateRootElement = function(html){
   this.render();
 };
 
-BusinessForms.prototype.render = function(){
+BusinessForms.prototype._render = function(){
   if ( !Object.keys(this.documents).length ){
     return false;
   }
