@@ -265,11 +265,7 @@ Dom.prototype.build = function () {
   this.navigation.className = "mdl-navigation mdl-layout--large-screen-only";
   header.appendChild( this.navigation );
 
-  var navigationItem = document.createElement('a');
-  navigationItem.href = "#";
-  navigationItem.textContent = 'link';
-  navigationItem.className = "mdl-navigation__link";
-  this.navigation.appendChild( navigationItem );
+  this.addToMainMenuNavigation( 'test', 'link_test' );
 
 
 // <header class="mdl-layout__header core-fixed">
@@ -300,25 +296,23 @@ Dom.prototype.build = function () {
     
 
   /* Боковое меню */
-  this.drawer = document.createElement('div');
-  this.drawer.className = "mdl-layout__drawer";
-  this.application.appendChild( this.drawer );
+  var drawer = document.createElement('div');
+  drawer.className = "mdl-layout__drawer";
+  this.application.appendChild( drawer );
 
-  var drawerTitle = document.createElement('span');
-  drawerTitle.className = "mdl-layout-title";
-  drawerTitle.textContent = 'App title';
-  this.drawer.appendChild( drawerTitle );
+  this.drawerTitle = document.createElement('span');
+  this.drawerTitle.className = "mdl-layout-title";
+  drawer.appendChild( this.drawerTitle );
+  this.setDrawerTitle('App title');
 
-  var drawerNavigation = document.createElement('nav');
-  drawerNavigation.className = "mdl-navigation";
-  this.drawer.appendChild( drawerNavigation );
-
-  var navigationItem = document.createElement('a');
-  navigationItem.href = "#";
-  navigationItem.className = "mdl-navigation__link";
-  navigationItem.textContent = 'link';
-  drawerNavigation.appendChild( navigationItem );
-
+  this.drawerNavigation = document.createElement('nav');
+  this.drawerNavigation.className = "mdl-navigation";
+  drawer.appendChild( this.drawerNavigation );
+  this.addToDrawerNavigation( 'reports'     , 'Отчёты' );
+  this.addToDrawerNavigation( 'bps'         , 'Бизнес-процессы' );
+  this.addToDrawerNavigation( 'web-forms'   , 'Экранные формы' );
+  this.addToDrawerNavigation( 'print-forms' , 'Печатные формы' );
+  
 // <div class="mdl-layout__drawer">
 //   <span class="mdl-layout-title">Title</span>
 //   <nav class="mdl-navigation">
@@ -429,6 +423,54 @@ Dom.prototype.build = function () {
   // this.application.application.setAttribute('caption', 'Отчеты');
 
   setTimeout( core.events.publish('core:dom:build:ready') ,1000);
+};
+
+
+
+
+/* MainMenu */
+Dom.prototype.addToMainMenuNavigation = function ( href, name ) {
+  if ( !name ) {
+    throw new Error('addToDrawerNavigation -> can`t create link without name')
+  }
+
+  if ( !href ) {
+    throw new Error('addToDrawerNavigation -> can`t create link without href')
+  }
+  
+  var navigationItem = document.createElement('a');
+  navigationItem.className = "mdl-navigation__link";
+  navigationItem.textContent = name;
+  navigationItem.href = [ '#', href ].join();
+  navigationItem.id   = [ 'navigation', href ].join('_');
+  
+  this.navigation.appendChild( navigationItem );
+};
+
+/* DRAWER */
+Dom.prototype.setDrawerTitle = function ( title ) {
+  if ( !title ) {
+    throw new Error('setDrawerTitle -> can`t set title')
+  }
+  this.drawerTitle.textContent = title;
+};
+
+Dom.prototype.addToDrawerNavigation = function ( href, name ) {
+  if ( !name ) {
+    throw new Error('addToDrawerNavigation -> can`t create link without name')
+  }
+
+  if ( !href ) {
+    throw new Error('addToDrawerNavigation -> can`t create link without href')
+  }
+  
+  var navigationItem = document.createElement('a');
+  navigationItem.className = "mdl-navigation__link";
+  navigationItem.textContent = name;
+  navigationItem.href = [ '#', href ].join();
+  navigationItem.id   = [ 'drawer', href ].join('_');
+  
+  this.drawerNavigation.appendChild( navigationItem );
 };
 
 Dom.prototype.start = function () {
