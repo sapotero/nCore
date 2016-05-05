@@ -412,7 +412,7 @@ Dom.prototype.createHeader = function(argument){
   this.addToMainMenuNavigation( 'test', 'link_test' );
   this.addToMainMenuNavigation( 'test_callback', 'test_callback', function(e){ 
     e.preventDefault();
-    console.log('test_callback',e, this);
+    // console.log('test_callback',e, this);
     this.toggleInfoPanel();
   });
 };
@@ -441,7 +441,7 @@ Dom.prototype.addToMainMenuNavigation = function ( href, name, callback ) {
   var item = document.createElement('a');
   item.className = "mdl-navigation__link";
   item.textContent = name;
-  item.href = [ '#', href ].join();
+  item.href = [ '#', href ].join('');
   item.id   = [ 'navigation', href ].join('_');
   
   this.navigation.appendChild( item );
@@ -501,7 +501,7 @@ Dom.prototype.addToDrawerNavigation = function ( href, name ) {
   var item = document.createElement('a');
   item.className = "mdl-navigation__link";
   item.textContent = name;
-  item.href = [ '#', href ].join();
+  item.href = [ '#', href ].join('');
   item.id   = [ 'drawer', href ].join('_');
   
   this.drawerNavigation.appendChild( item );
