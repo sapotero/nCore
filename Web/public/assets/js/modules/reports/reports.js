@@ -159,30 +159,7 @@ var Reports = function(){
 
 // <!-- боковая панель c критериями -->
 // <div class="mdl-cell mdl-cell--2-col">
-//   <ul class="demo-list-control mdl-list">
-//     <li class="mdl-list__item">
-//       <span class="mdl-list__item-primary-content">
-//         <!-- <i class="material-icons  mdl-list__item-avatar">person</i> -->
-//         Bryan Cranston
-//       </span>
-//       <span class="mdl-list__item-secondary-action">
-//         <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">
-//           <input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" checked />
-//         </label>
-//       </span>
-//     </li>
-//     <li class="mdl-list__item">
-//       <span class="mdl-list__item-primary-content">
-//         <!-- <i class="material-icons  mdl-list__item-avatar">person</i> -->
-//         Bob Odenkirk
-//       </span>
-//         <span class="mdl-list__item-secondary-action">
-//           <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="list-switch-1">
-//             <input type="checkbox" id="list-switch-1" class="mdl-switch__input" checked />
-//           </label>
-//       </span>
-//     </li>
-//   </ul>
+//  
 // </div>
 
 Reports.prototype.addItemToLeftPanel = function( config ){
@@ -278,8 +255,112 @@ Reports.prototype.renderLeftPanel = function(){
   //   </li>
   // </ul>
 }
-Reports.prototype.renderInfoPanel = function(){
 
+Reports.prototype.addItemToInfoPanel = function( config ){
+  var item = document.createElement('li');
+  item.classList.add('mdl-list__item');
+  
+  if ( config.name ) {
+    var name = document.createElement('span');
+    name.className = "mdl-list__item-primary-content";
+    name.textContent = config.name;
+    item.appendChild(name);
+
+    if ( config.icon ) {
+      // <i class="material-icons  mdl-list__item-avatar">person</i>
+      var icon = document.createElement('i');
+      icon.className = "material-icons  mdl-list__item-avatar";
+      icon.textContent = config.icon;
+      name.insertAdjacentHTML('afterBegin', icon.outerHTML );
+    }
+    
+  }
+
+  if ( config.action ) {
+    var action = document.createElement('span');
+    action.className = "mdl-list__item-secondary-action";
+    
+    var id = Math.round( Math.random()*150550 );
+
+    var label = document.createElement('label');
+    label.className = "mdl-" + config.action + " mdl-js-" + config.action + " mdl-js-ripple-effect";
+    label.setAttribute( 'for', id)
+
+    var input = document.createElement('input');
+    switch ( config.action ) {
+      case 'switch':
+        input.className = "mdl-switch__input";
+        break;
+      case 'checkbox':
+        input.className = "mdl-checkbox__input";
+        break;
+      default:
+        input.className = "mdl-textfield__input";
+        break;
+    }
+    
+    input.id = id;
+    input.type = config.action;
+    label.appendChild(input);
+
+    action.appendChild(label);
+
+    item.appendChild(action);
+  }
+  this.infoPanel.appendChild( item );
+  // <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">
+  // <label class="mdl-radio    mdl-js-radio    mdl-js-ripple-effect" for="list-option-1">
+  // <label class="mdl-switch   mdl-js-switch   mdl-js-ripple-effect" for="list-switch-1">
+
+  //   <li class="mdl-list__item">
+  //     
+  //     <span class="mdl-list__item-primary-content">
+  //       <i class="material-icons  mdl-list__item-avatar">person</i>
+  //       Bob Odenkirk
+  //     </span>
+  //     
+  //     <span class="mdl-list__item-secondary-action">
+  //       <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="list-switch-1">
+  //         <input type="checkbox" id="list-switch-1" class="mdl-switch__input" checked />
+  //       </label>
+  //     </span>
+  //   </li>
+
+};
+
+Reports.prototype.renderInfoPanel = function(){
+  // <ul class="mdl-list">
+  //   <li class="mdl-list__item">
+  //     <span class="mdl-list__item-primary-content">
+  //       <!-- <i class="material-icons  mdl-list__item-avatar">person</i> -->
+  //       Bryan Cranston
+  //     </span>
+  //     <span class="mdl-list__item-secondary-action">
+  //       <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">
+  //         <input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" checked />
+  //       </label>
+  //     </span>
+  //   </li>
+  // </ul>
+  this.infoPanel = document.createElement('ul');
+  this.infoPanel.className = 'mdl-list'
+  this.addItemToInfoPanel({
+    action: 'checkbox',
+    name: 'checkbox',
+    icon: 'gif',
+  });
+  this.addItemToInfoPanel({
+    action: 'checkbox',
+    name: 'checkbox'
+  });
+  this.addItemToInfoPanel({
+    action: 'switch',
+    name: 'checkboxx',
+    icon: 'star',
+  });
+
+  core.dom.infoPanel.appendChild( this.infoPanel );
+  componentHandler.upgradeAllRegistered();
 }
 Reports.prototype.renderContent = function(){
   var reports = this;
