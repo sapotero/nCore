@@ -29,11 +29,35 @@
   animation-fill-mode: both;
 }
 
+.page-content-panel-animation {
+  transition: 0.3s ease;
+}
+
+.content-leftPanel {
+  height: 100px;
+}
+.content-content {
+  height: 100px;
+}
+.content-infoPanel {
+  height: 100px;
+}
+
+.content-infoPanel {
+  position: absolute;
+  right: 0px;
+}
+.zero-width {
+  position: absolute;
+  right: -16.7%;
+}
+
 .core-fixed {
   position: fixed;
 }
 .core-layout-offset {
   margin-top: 64px;
+  width: 100%;
 }
 
 .core-splashscreen-fixed{
