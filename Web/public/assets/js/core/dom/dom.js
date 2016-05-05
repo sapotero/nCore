@@ -327,6 +327,8 @@ Dom.prototype.createApplicationContent = function(argument){
   this.infoPanel = document.createElement('div');
   this.infoPanel.className = "mdl-cell mdl-cell--2-col";
   this.grid.appendChild( this.infoPanel );
+
+  document.body.appendChild( this.application );
 };
 
 /* ProgressBar */
@@ -354,9 +356,7 @@ Dom.prototype.createProgressBar = function(argument){
   this.splashscreen.appendChild( this.logo );
   this.splashscreen.appendChild( this.progressbar );
   this.splashscreen.style.display = 'none';
-  
   document.body.appendChild( this.splashscreen );
-  document.body.appendChild( this.application );
 };
 
 
@@ -410,6 +410,10 @@ Dom.prototype.createHeader = function(argument){
   header.appendChild( this.navigation );
 
   this.addToMainMenuNavigation( 'test', 'link_test' );
+  this.addToMainMenuNavigation( 'test_callback', 'test_callback', function(e){ 
+    e.preventDefault();
+    console.log('test_callback',e, this)
+  });
 };
 
 Dom.prototype.setTitle = function ( title ) {
@@ -419,7 +423,7 @@ Dom.prototype.setTitle = function ( title ) {
   this.title.textContent = title;
 };
 
-Dom.prototype.addToMainMenuNavigation = function ( href, name ) {
+Dom.prototype.addToMainMenuNavigation = function ( href, name, callback ) {
   if ( !name ) {
     throw new Error('addToDrawerNavigation -> can`t create link without name')
   }
@@ -427,6 +431,7 @@ Dom.prototype.addToMainMenuNavigation = function ( href, name ) {
   if ( !href ) {
     throw new Error('addToDrawerNavigation -> can`t create link without href')
   }
+
   
   var item = document.createElement('a');
   item.className = "mdl-navigation__link";
@@ -435,6 +440,10 @@ Dom.prototype.addToMainMenuNavigation = function ( href, name ) {
   item.id   = [ 'navigation', href ].join('_');
   
   this.navigation.appendChild( item );
+  
+  if ( typeof callback === 'function' ) {
+    item.addEventListener( 'click', callback.bind(this) );
+  }
 };
 
 
