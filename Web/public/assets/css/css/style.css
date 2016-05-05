@@ -25,6 +25,7 @@
 }
 .animated {
   animation-duration: 0.5s;
+  /*animation-duration: 5s;*/
   animation-fill-mode: both;
 }
 
@@ -33,6 +34,15 @@
 }
 .core-layout-offset {
   margin-top: 64px;
+}
+
+.core-splashscreen-fixed{
+  position: fixed;
+  height: 100%;
+  width: 95%;
+  background-color: white;
+  margin-top: 15%;
+  z-index: 999;
 }
 
 /*.core-app {
