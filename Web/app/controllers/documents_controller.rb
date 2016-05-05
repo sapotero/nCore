@@ -6,9 +6,8 @@ class DocumentsController < ApplicationController
 
   def index
     result = {}
-
-    result['documents'] = Document.active( current_user )
-    result['templates'] = Document.find_templates()
+    
+    result = Document.active( current_user )
     render :json => result
   end
 

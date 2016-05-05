@@ -91,7 +91,7 @@ class Document
 
   def self.active( current_user, with_images = false )
     documents = self.where( archived: false )
-    documents = documents.where( template: false )
+    # documents = documents.where( template: false )
     documents = documents.where( provider_id: current_user['provider_id'] ) if current_user['provider_id']
     documents = self.with_images( documents ) if with_images
     documents
