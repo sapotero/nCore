@@ -43,6 +43,14 @@
   height: 100px;
 }*/
 
+.menu-item:hover {
+  cursor: pointer;
+  background-color: #FAFAFA;
+}
+.menu-item {
+  transition: 0.3s ease;
+}
+
 .content-infoPanel {
   position: absolute;
   right: 0px;
