@@ -93,6 +93,13 @@ Report.prototype.attachEvents = function(){
     report.update( template.raw );
   });
 };
+
+Report.prototype.cardClickHandler = function(e){
+  console.log( 'Report: cardClickHandler', e, this );
+  location.hash = '#reports/' + this._id;
+};
+
+
 Report.prototype.render = function( config ){
   // <div class="report-card mdl-card--border mdl-shadow--2dp">
 
@@ -133,6 +140,7 @@ Report.prototype.render = function( config ){
   var cardTitle = document.createElement('div');
   cardTitle.className = 'mdl-card__title mdl-card--expand';
   card.appendChild( cardTitle );
+  cardTitle.addEventListener( 'click', this.cardClickHandler.bind(this) );
 
   var titleText = document.createElement('div');
   titleText.className = 'mdl-card__title-text';
