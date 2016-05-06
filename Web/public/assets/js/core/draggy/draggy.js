@@ -22,6 +22,8 @@ Draggy = function(el, config) {
     onStop      : config && config.hasOwnProperty('onStop')      ? config.onStop      : function(e, obj) {}
   };
 
+  this.el.style.top      = this.el.getBoundingClientRect().top  + 'px';
+  this.el.style.left     = this.el.getBoundingClientRect().left + 'px';
   this.el.style.position = "absolute";
 
   this.Positions = new Positions(this.options);
@@ -154,3 +156,4 @@ Draggy.prototype.mouseupHandler = function(e) {
 };
 
 module.exports = Draggy;
+
