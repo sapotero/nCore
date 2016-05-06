@@ -174,8 +174,8 @@ Router.prototype.start = function() {
       'reports/{id}' : function(params) {
         console.log('[reports/{id}]: ', params);
         core.events.publish( "core:report:load", params.id );
-        core.events.publish( "core:dom:application:hide" );
-        core.events.publish( "core:dom:editor:show" );
+        // core.events.publish( "core:dom:application:hide" );
+        // core.events.publish( "core:dom:editor:show" );
       },
       
       'bps' : function(params) {

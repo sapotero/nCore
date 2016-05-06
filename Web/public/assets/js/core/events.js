@@ -29,7 +29,14 @@ module.exports = function(){
     });
 
     core.events.subscribe( "core:events:editor:set:html", function ( html ) {
-      $( core.dom.editor ).froalaEditor('html.set', html );
+      core.dom.content.innerHTML = '';
+
+      if ( $(core.dom.content).data('froala.editor')) {
+        $(core.dom.content).froalaEditor('destroy');
+      }
+      
+      $( core.dom.content ).froalaEditor();
+      $( core.dom.content ).froalaEditor('html.set', html );
     });
 
 

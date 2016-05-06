@@ -99,37 +99,13 @@ Report.prototype.cardClickHandler = function(e){
   location.hash = '#reports/' + this._id;
 };
 
+Report.prototype.editor = function( config ){
+
+};
+
 
 Report.prototype.render = function( config ){
-  // <div class="report-card mdl-card--border mdl-shadow--2dp">
 
-  //   <div class="mdl-card__title mdl-card--expand">
-  //     <h4 class="mdl-card__title-text"></h4>
-  //     <div class="mdl-card__subtitle-text"></div>
-  //   </div>
-
-  //   <div class="mdl-card__supporting-text">
-  //     document name
-  //   </div>
-
-  //   <div class="mdl-card__actions mdl-card--border">
-  //     <!-- <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-  //       Добавить
-  //     </a>
-  //     <div class="mdl-layout-spacer"></div>
-  //     <i class="material-icons">event</i> -->
-  //     <div class="mdl-card__supporting-text mdl-card__supporting-text-date"> date current </div>
-  //   </div>
-
-  //   <div class="mdl-card__menu mdl-card__menu-hide">
-  //     <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-  //       <i class="material-icons">star</i>
-  //     </button>
-  //   </div>
-  // </div>
-
-  
- 
   this.element = document.createElement('div');
   this.element.className = 'report-card-full mdl-cell mdl-cell--3-col mdl-cell--12-col-phone mdl-card';
 
@@ -215,6 +191,7 @@ var Reports = function(){
   this.bindEvents();
 };
 
+
 Reports.prototype.addItemToLeftPanel = function( config ){
   // <li class="menu-item mdl-list__item mdl-list__item--two-line" action="my">
   //   <span class="mdl-list__item-primary-content">
@@ -258,7 +235,6 @@ Reports.prototype.addItemToLeftPanel = function( config ){
   item.appendChild( content );
   this.leftPanel.appendChild( item );
 }
-
 Reports.prototype.renderLeftPanel = function(){
   this.leftPanel = document.createElement('ul');
   this.leftPanel.className = 'panel menu-list mdl-list mdl-cell--hide-phone mdl-shadow--0dp';
@@ -378,9 +354,7 @@ Reports.prototype.addItemToInfoPanel = function( config ){
   //       </label>
   //     </span>
   //   </li>
-
 };
-
 Reports.prototype.renderInfoPanel = function(){
   // <ul class="mdl-list">
   //   <li class="mdl-list__item">
@@ -414,6 +388,7 @@ Reports.prototype.renderInfoPanel = function(){
 
   core.dom.infoPanel.appendChild( this.infoPanel );
 }
+
 
 Reports.prototype.renderContent = function(){
   var reports = this;
