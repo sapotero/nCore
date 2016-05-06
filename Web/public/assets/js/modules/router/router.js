@@ -142,35 +142,24 @@ Router.prototype.start = function() {
   this.update({
     pathRoot : '',
     routes   : {
+
       // отчёты - начальная страница
       'reports' : function(params) {
         console.log('[reports]: ', params);
         core.events.publish( "core:reports:render" );
-        // core.events.publish( "core:dom:application:show" );
-        // core.events.publish( "core:dom:editor:hide" );
       },
-
       // отчёты - шаблоны
       'reports/templates' : function(params) {
         console.log('[reports/templates/]: ', params);
-        core.events.publish( "core:dom:application:show" );
-        core.events.publish( "core:dom:editor:hide" );
       },
-
       // отчёты - общие документы провайдера
       'reports/shared' : function(params) {
         console.log('[reports/shared/]: ', params);
-        core.events.publish( "core:dom:application:show" );
-        core.events.publish( "core:dom:editor:hide" );
       },
-
       // отчёты - мои документы
       'reports/my' : function(params) {
         console.log('[reports/my/]: ', params);
-        core.events.publish( "core:dom:application:show" );
-        core.events.publish( "core:dom:editor:hide" );
       },
-
       'reports/{id}' : function(params) {
         console.log('[reports/{id}]: ', params);
         core.events.publish( "core:report:load", params.id );
@@ -181,36 +170,26 @@ Router.prototype.start = function() {
       'bps' : function(params) {
         console.log('[bps]: ', params);
         core.events.publish( "bps:reports:render" );
-
-        // core.events.publish( "core:dom:application:show" );
-        // core.events.publish( "core:dom:editor:hide" );
       },
       'bps/{id}' : function(params) {
         console.log('[bps/{id}]: ', params);
-        core.events.publish( "core:dom:application:hide" );
-        core.events.publish( "core:dom:editor:show" );
       },
       
       'print-forms' : function(params) {
         console.log('[print-forms]: ', params);
-        core.events.publish( "core:dom:application:show" );
-        core.events.publish( "core:dom:editor:hide" );
       },
       'print-forms/{id}' : function(params) {
         console.log('[print-forms/{id}]: ', params);
-        core.events.publish( "core:dom:application:hide" );
-        core.events.publish( "core:dom:editor:show" );
       },
       
       'web-forms' : function(params) {
-        console.log('[web-forms]: ', params);
-        core.events.publish( "core:dom:application:show" );
-        core.events.publish( "core:dom:editor:hide" );
+        core.events.publish( "core:web-forms:render" );
+      },
+      'web-forms/new' : function(params) {
+        console.log('[web-forms/new]: ', params);
       },
       'web-forms/{id}' : function(params) {
         console.log('[web-forms/{id}]: ', params);
-        core.events.publish( "core:dom:application:hide" );
-        core.events.publish( "core:dom:editor:show" );
       },
     }
   });

@@ -102,6 +102,17 @@ Utils.prototype.delete = function( url, data, callback ) {
   this.request( 'delete', url, data, callback );
 };
 
+Utils.prototype.extend = function() {
+  for (var i = 1; i < arguments.length; i++) {
+    for (var key in arguments[i]) {
+      if (arguments[i].hasOwnProperty(key)) {
+        arguments[0][key] = arguments[i][key];
+      }
+    }
+  }
+  return arguments[0];
+}
+
 Utils.prototype.start = function() {
   console.log( 'Utils: start' );
 };

@@ -51,92 +51,19 @@ WebForm.prototype.detachEvents = function(){
   core.events.remove("core:template:web-forms:editor");
   core.events.remove("core:web-form:loaded");
 };
-WebForm.prototype.destroyEditor = function() {
-  if ($('div#paper').data('froala.editor')) {
-    $('div#paper').froalaEditor('destroy');
-  }
-};
-
-WebForm.prototype.loadEditor = function(body) {
-  var html = core.utils.Base64.decode(body);
-
-  var initialize = new Promise(function(resolve, reject) {
-    window.jQuery('div#paper').froalaEditor({
-      toolbarButtons   : ['file-o', 'floppy-o', 'adjust', 'phone',  'textRotate', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', /*'cog', 'rotateDocument' */, 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
-      language         : 'ru',
-      charCounterCount : false,
-      toolbarSticky    : false
-    });
-    resolve(true);
-  });
-
-  initialize.then(function(editor) {
-    $('div#paper').froalaEditor('html.set', (html ? html : '<p>') + '<p>');
-  }).then(function(editor) {
-    // var parent = document.querySelector('.fr-wrapper').parentNode;
-    // parent.removeChild( document.querySelector('.fr-wrapper').nextSibling ) ;
-    // return editor;
-  }).catch(function(result) {
-
-    console.log("ERROR!", result);
-  });
-
-};
-WebForm.prototype.loadEditors = function(body) {
-  var html = core.utils.Base64.decode(body);
-  console.log( 'decoded:', html );
-}
 
 
 WebForm.prototype.attachEvents = function(){
   var webForm = this;
   
   core.events.subscribe("core:template:web-forms:editor", function(template){
-    web-form.update( template.raw );
+    webForm.update( template.raw );
   });
   
   core.events.subscribe("core:web-form:loaded", function(data){
-    web-form.loadEditor( data.raw.body );
+    webForm.loadEditor( data.raw.body );
   });
   
-};
-WebForm.prototype.render = function(){
-  console.log( 'WebForm -> render', this );
-
-  var helper = {
-    '_id': {
-      text: function (params) {
-        return this._id || '-_id-';
-      }
-    },
-    'name': {
-      text: function (params) {
-        return this.name || '-name-';
-      }
-    },
-    'description': {
-      text: function (params) {
-        return this.description || '-description-';
-      }
-    },
-    'providerId': {
-      text: function (params) {
-        return this.providerId || '-providerId-';
-      }
-    },
-    'query': {
-      text: function (params) {
-        return this.query || '-query-';
-      }
-    },
-    'globalQuery': {
-      text: function (params) {
-        return this.globalQuery || '-globalQuery-';
-      }
-    }
-  };
-
-  Transparency.render( this.element.querySelector('#web-form'), this, helper );
 };
 
 
@@ -148,13 +75,15 @@ var WebForms = function(){
 WebForms.prototype.WebForm = WebForm;
 WebForms.prototype.init = function(){
   core.events.publish( "[ + ] core:web-forms:init" );
-
-  this.element = document.createElement('div');
   // core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
-  
-  core.events.publish("core:web-forms:template");
 };
 WebForms.prototype.bindEvents = function(){
+  var webForms = this;
+  document.addEventListener('DOMContentLoaded', function(){ 
+    core.events.subscribe("core:web-forms:render", function(data){
+      webForms.render();
+    });
+  });
 };
 WebForms.prototype.updateRootElement = function(html){
   this.element.innerHTML = html;
@@ -164,44 +93,7 @@ WebForms.prototype.updateRootElement = function(html){
 };
 
 WebForms.prototype.render = function(){
-  if ( !Object.keys(this.documents).length ){
-    return false;
-  }
-
-  for (var type in this.documents) {
-    // console.log( 'render -> type, documents', type,this.element.querySelector('.'+type),   this.documents[type] );
-    var helper = {
-      type: {
-        text: function (params) {
-          return this.type;
-        }
-      }
-    };
-    helper[type] = {
-        '_id': {
-          text: function (params) {
-            return this._id || '-id-';
-          }
-        },
-        name: {
-          text: function (params) {
-            return this.name || '-name-';
-          }
-        },
-        link: {
-          href: function (params) {
-            return '#web-forms/' + this._id;
-          }
-        }
-    };
-
-    var config = {
-      type: type
-    };
-    config[type] = this.documents[type];
-
-    Transparency.render( this.element.querySelector('.web-form-'+type), config, helper );
-  }
+  core.events.publish( "core:dom:application:clear" );
 };
 
 WebForms.prototype.add = function( type, config ) {
@@ -229,7 +121,7 @@ WebForms.prototype.show = function(id) {
   console.log( 'WebForms: show -> ', id);
   var webForm = this.find(id);
   if ( web-form ) {
-    web-form.init();
+    webForm.init();
   } else {
     throw new Error('template not found!');
   }

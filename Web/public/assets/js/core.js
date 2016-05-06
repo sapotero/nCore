@@ -5,6 +5,7 @@ core = (function(){
       WebWorker = require('./core/webworker/webworker'),
       Utils     = require('./core/utils/utils'),
       Dom       = require('./core/dom/dom'),
+      Draggy    = require('./core/draggy/draggy'),
       
       Preloader   = require('./modules/preloader/preloader'),
       Router      = require('./modules/router/router'),
@@ -20,6 +21,7 @@ core = (function(){
     this.worker   = new WebWorker();
     this.utils    = new Utils();
     this.dom      = new Dom();
+    this.draggy   = Draggy;
     this.modules  = {
       'preloader'   : new Preloader(),
       'router'      : new Router(),
