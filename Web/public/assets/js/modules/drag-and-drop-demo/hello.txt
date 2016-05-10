@@ -1,5 +1,0 @@
-Hello Treehouse!
-
-This is a text file with multiple lines.
-
-Go native drag and drop :)
