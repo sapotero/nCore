@@ -68,8 +68,10 @@ WebForm.prototype.attachEvents = function(){
 
 
 var WebForms = function(){
-  this.element   = {};
-  this.documents = {};
+  this.forms     = {};
+  this.leftPanel = {};
+  this.content   = {};
+  this.infoPanel = {};
   this.bindEvents();
 };
 WebForms.prototype.WebForm = WebForm;
@@ -92,8 +94,73 @@ WebForms.prototype.updateRootElement = function(html){
   this.render();
 };
 
+var links = document.querySelectorAll('a');
+for(var i = 0, length1 = links.length; i < length1; i++){
+  links[i].addEventListener( 'click', function (e) {
+    e.preventDefault();
+    console.log( this );
+  });
+}
+
+
+WebForms.prototype.renderLeftPanel = function() {
+  this.leftPanel = document.createElement('div');
+  // this.leftPanel.textContent = 'this.leftPanel';
+  this.leftPanel.innerHTML = `<div class="demo-list-action mdl-list">
+    <div class="drag mdl-list__item">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-avatar">person</i>
+        <span>Bryan Cranston</span>
+      </span>
+      <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
+    </div>
+    <div class="drag mdl-list__item">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-avatar">person</i>
+        <span>Aaron Paul</span>
+      </span>
+      <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
+    </div>
+    <div class="drag mdl-list__item">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-avatar">person</i>
+        <span>Bob Odenkirk</span>
+      </span>
+      <span class="mdl-list__item-secondary-content">
+        <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
+    </span>
+    </div>
+  </div>`;
+  this.leftPanel.style.height = '800px';
+  core.dom.leftPanel.appendChild( this.leftPanel );
+}
+WebForms.prototype.renderContent = function() {
+  this.content   = document.createElement('div');
+  this.content.textContent  = 'this.content';
+  this.content.style.height = '800px';
+
+  var dnds = document.querySelectorAll('.drag');
+  
+  for(var i = 0, length1 = dnds.length; i < length1; i++){
+    core.modules.draggy.add( dnds[i], { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  }
+
+  core.dom.content.appendChild( this.content );
+}
+WebForms.prototype.renderInfoPanel = function() {
+  this.infoPanel = document.createElement('div');
+  this.infoPanel.textContent = 'this.infoPanel';
+  core.dom.infoPanel.appendChild( this.infoPanel );
+}
+
 WebForms.prototype.render = function(){
   core.events.publish( "core:dom:application:clear" );
+
+  this.renderLeftPanel();
+  this.renderContent();
+  this.renderInfoPanel();
+
+  componentHandler.upgradeAllRegistered();
 };
 
 WebForms.prototype.add = function( type, config ) {

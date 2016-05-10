@@ -524,56 +524,8 @@ Reports.prototype.bindEvents = function(){
 
   });
 };
-Reports.prototype.updateRootElement = function(html){
-  this.element.innerHTML = html;
-  this.element.classList.add('animated');
-  this.element.classList.add('fadeIn');
-  this.render();
-};
-
-Reports.prototype._render = function(){
-  if ( !Object.keys(this.documents).length ){
-    return false;
-  }
-
-  for (var type in this.documents) {
-    // console.log( 'render -> type, documents', type,this.element.querySelector('.'+type),   this.documents[type] );
-    var helper = {
-      type: {
-        text: function (params) {
-          return this.type;
-        }
-      }
-    };
-    helper[type] = {
-        '_id': {
-          text: function (params) {
-            return this._id || '-id-';
-          }
-        },
-        name: {
-          text: function (params) {
-            return this.name || '-name-';
-          }
-        },
-        link: {
-          href: function (params) {
-            return '#reports/' + this._id;
-          }
-        }
-    };
-
-    var config = {
-      type: type
-    };
-    config[type] = this.documents[type];
-
-    Transparency.render( this.element.querySelector('.report-'+type), config, helper );
-  }
-};
 
 Reports.prototype.add = function(  config ) {
-
   this.documents.push( new this.Report(config) );
 };
 Reports.prototype.clear = function(config) {
@@ -586,16 +538,6 @@ Reports.prototype.find = function(id) {
         return this.documents[type][i];
       }
     }
-  }
-};
-
-Reports.prototype.show = function(id) {
-  console.log( 'Reports: show -> ', id);
-  var report = this.find(id);
-  if ( report ) {
-    report.init();
-  } else {
-    throw new Error('template not found!');
   }
 };
 

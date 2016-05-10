@@ -1,3 +1,5 @@
+'use strict';
+
 var RestrictionDecorator = require('./RestrictionDecorator');
 var AxisDecorator        = require('./AxisDecorator');
 var SnapDecorator        = require('./SnapDecorator');
@@ -6,7 +8,7 @@ var Positions            = require('./Positions');
 
 var isDrag = false;
 
-Draggy = function(el, config) {
+var Drag = function(el, config) {
   var scope = this;
 
   this.el = el;
@@ -54,7 +56,7 @@ Draggy = function(el, config) {
     scope.mousedownHandler(e.changedTouches[0]);
   };
 };
-Draggy.prototype.mousedownHandler = function(e) {
+Drag.prototype.mousedownHandler = function(e) {
 
   var event = document.all ? window.event : e,
     scope   = this,
@@ -108,7 +110,7 @@ Draggy.prototype.mousedownHandler = function(e) {
     scope.mouseupHandler(event);
   };
 };
-Draggy.prototype.mousemoveHandler = function(e) {
+Drag.prototype.mousemoveHandler = function(e) {
   var mouseX = document.all ? window.event.clientX : e.pageX,
     mouseY = document.all ? window.event.clientY : e.pageY;
 
@@ -136,7 +138,7 @@ Draggy.prototype.mousemoveHandler = function(e) {
     this.options.onDrag(e, this.el);
   }
 };
-Draggy.prototype.mouseupHandler = function(e) {
+Drag.prototype.mouseupHandler = function(e) {
   if (isDrag === false)
     return;
 
@@ -155,5 +157,12 @@ Draggy.prototype.mouseupHandler = function(e) {
   isDrag = false;
 };
 
-module.exports = Draggy;
+var Draggy = function(){
+  this.element = [];
+};
 
+Draggy.prototype.add = function( selector, config ){
+  this.element.push( new Drag( document.querySelector(selector), config ) );
+};
+
+module.exports = Draggy;

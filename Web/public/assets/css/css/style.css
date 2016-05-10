@@ -25,12 +25,15 @@
 }
 .animated {
   animation-duration: 0.5s;
-  /*animation-duration: 5s;*/
   animation-fill-mode: both;
 }
 
 .page-content-panel-animation {
   transition: 0.3s ease;
+}
+
+.active-border{
+  border: 2px double red;
 }
 
 /*.content-leftPanel {

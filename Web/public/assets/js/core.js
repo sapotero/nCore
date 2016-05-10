@@ -21,7 +21,6 @@ core = (function(){
     this.worker   = new WebWorker();
     this.utils    = new Utils();
     this.dom      = new Dom();
-    this.draggy   = Draggy;
     this.modules  = {
       'preloader'   : new Preloader(),
       'router'      : new Router(),
@@ -31,6 +30,7 @@ core = (function(){
       'web-forms'   : new WebForms(),
       'print-forms' : new PrintForms(),
       'bps'         : new Bps()
+      'drag'        : new Draggy();
     };
     this.debug    = true;
 
