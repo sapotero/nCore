@@ -13,14 +13,14 @@ var Drag = function(el, config) {
 
   this.el = el;
   this.options = {
-    activeClass : config && config.hasOwnProperty('activeClass') ? config.activeClass : ''                  ,
-    snapX       : config && config.hasOwnProperty('snapX')       ? config.snapX       : 1                   ,
-    snapY       : config && config.hasOwnProperty('snapY')       ? config.snapY       : 1                   ,
-    axisX       : config && config.hasOwnProperty('axisX')       ? config.axisX       : true                ,
-    axisY       : config && config.hasOwnProperty('axisY')       ? config.axisY       : true                ,
-    restrict    : config && config.hasOwnProperty('restrict')    ? config.restrict    : 'document'          ,
-    onStart     : config && config.hasOwnProperty('onStart')     ? config.onStart     : function(e, obj) {} ,
-    onDrag      : config && config.hasOwnProperty('onDrag')      ? config.onDrag      : function(e, obj) {} ,
+    activeClass : config && config.hasOwnProperty('activeClass') ? config.activeClass : '',
+    snapX       : config && config.hasOwnProperty('snapX')       ? config.snapX       : 1,
+    snapY       : config && config.hasOwnProperty('snapY')       ? config.snapY       : 1,
+    axisX       : config && config.hasOwnProperty('axisX')       ? config.axisX       : true,
+    axisY       : config && config.hasOwnProperty('axisY')       ? config.axisY       : true,
+    restrict    : config && config.hasOwnProperty('restrict')    ? config.restrict    : 'document',
+    onStart     : config && config.hasOwnProperty('onStart')     ? config.onStart     : function(e, obj) {},
+    onDrag      : config && config.hasOwnProperty('onDrag')      ? config.onDrag      : function(e, obj) {},
     onStop      : config && config.hasOwnProperty('onStop')      ? config.onStop      : function(e, obj) {}
   };
 
@@ -159,9 +159,9 @@ Drag.prototype.mouseupHandler = function(e) {
 
 
 
-var Draggy = function(){
+var Draggy = function( config ){
   this.elements = [];
-  this.active  = {};
+  this.active   = {};
 };
 
 Draggy.prototype.Constant = {
@@ -169,6 +169,80 @@ Draggy.prototype.Constant = {
 }
 
 Draggy.prototype.Drag = Drag;
+
+Draggy.prototype.copy = function () {
+  this.dropZone     = core.dom.content;
+  this.dragElements = core.dom.leftPanel.querySelectorAll('#web-forms-left > *');
+  this.elementDragged = null;
+
+
+  for (var i = 0; i < this.dragElements.length; i++) {
+
+    // Event Listener for when the drag interaction starts.
+    this.dragElements[i].addEventListener('dragstart', function(e) {
+      console.log('dragstart');
+
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text', this.innerHTML);
+      this.elementDragged = this;
+    });
+
+    // Event Listener for when the drag interaction finishes.
+    this.dragElements[i].addEventListener('dragend', function(e) {
+      console.log('dragend');
+      
+      this.elementDragged = null;
+    });
+  };
+
+  this.dropZone.addEventListener('dragover', function(e) {
+    // Event Listener for when the dragged element is over the drop zone.
+    console.log('dragover');
+    
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
+    e.dataTransfer.dropEffect = 'move';
+
+    return false;
+  });
+
+  this.dropZone.addEventListener('dragenter', function(e) {
+    // Event Listener for when the dragged element enters the drop zone.
+    console.log('dragenter');
+    this.className = "over";
+  });
+
+  this.dropZone.addEventListener('dragleave', function(e) {
+    // Event Listener for when the dragged element leaves the drop zone.
+    console.log('dragleave');
+    this.className = "";
+  });
+
+  this.dropZone.addEventListener('drop', function(e) {
+    // Event Listener for when the dragged element dropped in the drop zone.
+    console.log('drop');
+    if (e.preventDefault){
+      e.preventDefault();
+    }
+
+    if (e.stopPropagation){
+      e.stopPropagation();
+    }
+
+    this.className = "";
+    this.innerHTML = "Dropped " + e.dataTransfer.getData('text');
+
+    // Remove the element from the list.
+    // document.querySelector('#drag-elements').removeChild(this.elementDragged);
+    this.elementDragged = null;
+
+    return false;
+  });
+
+}
+
 
 Draggy.prototype.setActive = function( element, e ){
   console.log( 'setActive', e, element);

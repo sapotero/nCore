@@ -91,18 +91,9 @@ WebForms.prototype.bindEvents = function(){
   });
 };
 
-WebForms.prototype.cloneAndDrug = function( element, e ){
-  console.log(element, e);
-  var clone = element.cloneNode(true);
-
-  element.insertAdjacentHTML('beforeend', clone.outerHTML );
-  core.modules.drag.add( element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
-
-};
-
-
 WebForms.prototype.renderLeftPanel = function() {
   this.leftPanel = document.createElement('div');
+  this.leftPanel.id = 'web-forms-left';
 
   var input = this.Elements.create( {
     elementType : 'input',
@@ -111,7 +102,6 @@ WebForms.prototype.renderLeftPanel = function() {
     placeholder : 'texttium',
     label: 'label'
   } );
-  input.element.addEventListener( 'click', this.cloneAndDrug.bind(this, input.element) );
 
   this.leftPanel.appendChild( input.element );
 
@@ -137,13 +127,14 @@ WebForms.prototype.renderLeftPanel = function() {
   // core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
   // 
   // core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
-  // core.modules.drag.add( date.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  // core.modules.drag.add( date.element,  { snapX: 10,  snapY: 10, activeClass: "active-border" } );
   // core.modules.drag.add( check.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
 }
 WebForms.prototype.renderContent = function() {
   this.content   = document.createElement('div');
   this.content.textContent  = 'this.content';
   this.content.style.height = '800px';
+  this.content.id = 'web-forms-container';
 
   // var dnds = document.querySelectorAll('.drag');
   

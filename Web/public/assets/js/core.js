@@ -5,8 +5,8 @@ core = (function(){
       WebWorker = require('./core/webworker/webworker'),
       Utils     = require('./core/utils/utils'),
       Dom       = require('./core/dom/dom'),
-      Draggy    = require('./core/draggy/draggy'),
       
+      Draggy      = require('./modules/draggy/draggy'),
       Preloader   = require('./modules/preloader/preloader'),
       Router      = require('./modules/router/router'),
       Snackbar    = require('./modules/snackbar/snackbar'),
