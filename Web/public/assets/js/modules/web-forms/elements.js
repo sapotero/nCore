@@ -1,47 +1,70 @@
 'use strict';
 
-var Label = function( options ) {
+var Label = function( name ) {
   this.element = document.createElement('label');
+  this.element.style.padding = '10px'
+
+  if ( name ) {
+    this.name = this.setName( name );
+  };
 }
+Label.prototype.setName = function( string ){
+  this.name = string;
+  this.element.name = string;
+  this.element.textContent = string;
+};
+
 
 var Input = function( options ) {
-  this.element = document.createElement('input');
+  if ( options.elementType ) {
+    this.element = document.createElement( options.elementType );
+    this.element.style.margin = '0px 10px'
+  };
 
   if ( options.name ) {
-    this.name = this.setName( options.name );
+    this.setName( options.name );
   };
   
   if ( options.type ) {
-    this.type = this.setType( options.type );
+    this.setType( options.type );
   };
   
   if ( options.placeholder ) {
-    this.placeholder = this.setPlaceholder( options.placeholder );
+    this.setPlaceholder( options.placeholder );
   };
   
   if ( options.label ) {
-    this.label = this.setLabel( options.label );
+    this.setLabel( options.label );
   };
-
-  this.render();
 }
+
 Input.prototype.setName = function( string ){
-  this.name = string;
   this.element.name = string;
 };
+
 Input.prototype.setType = function( string ){
-  this.type = string;
   this.element.type = string;
 };
+
 Input.prototype.setPlaceholder = function( string ){
-  this.placeholder = string;
   this.element.placeholder = string;
 };
+
 Input.prototype.setLabel = function( string ){
-  this.label = string;
+  this.label = new Label(string);
 };
+
 Input.prototype.render = function(){
-  return this.element;
+  var element = {};
+
+  if ( this.label ) {
+    element = this.label.element;
+    element.insertAdjacentHTML('beforeEnd', this.element.outerHTML );
+  } else {
+    element = this.element;
+  };
+
+  return element;
 };
 
 

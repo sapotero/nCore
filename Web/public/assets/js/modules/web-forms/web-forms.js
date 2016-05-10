@@ -42,7 +42,7 @@ WebForm.prototype.update = function(html){
   this.element.innerHTML = html;
   this.element.classList.add('animated');
   this.element.classList.add('fadeIn');
-  this.render();
+  // this.render();
 };
 WebForm.prototype.load = function(){
   console.log( 'WebForm -> bindEvents' );
@@ -80,8 +80,7 @@ WebForms.prototype.WebForm = WebForm;
 WebForms.prototype.Elements = Elements;
 
 WebForms.prototype.init = function(){
-  core.events.publish( "[ + ] core:web-forms:init" );
-  // core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
+  // core.events.publish( "[ + ] core:web-forms:init" );
 };
 WebForms.prototype.bindEvents = function(){
   var webForms = this;
@@ -91,21 +90,6 @@ WebForms.prototype.bindEvents = function(){
     });
   });
 };
-WebForms.prototype.updateRootElement = function(html){
-  this.element.innerHTML = html;
-  this.element.classList.add('animated');
-  this.element.classList.add('fadeIn');
-  this.render();
-};
-
-var links = document.querySelectorAll('a');
-for(var i = 0, length1 = links.length; i < length1; i++){
-  links[i].addEventListener( 'click', function (e) {
-    e.preventDefault();
-    console.log( this );
-  });
-}
-
 
 WebForms.prototype.renderLeftPanel = function() {
   this.leftPanel = document.createElement('div');
@@ -117,37 +101,16 @@ WebForms.prototype.renderLeftPanel = function() {
     placeholder : 'texttium',
     label: 'label'
   } );
+  this.leftPanel.appendChild( input.render() );
 
-  console.log( 'input', input );
-  this.leftPanel.appendChild( input.element );
+  var input = this.Elements.create( {
+    elementType : 'input',
+    type : 'date',
+    name : 'test-input',
+    placeholder : 'texttium',
+  } );
+  this.leftPanel.appendChild( input.render() );
 
-  // this.leftPanel.textContent = 'this.leftPanel';
-  // this.leftPanel.innerHTML = `<div class="demo-list-action mdl-list">
-  //   <div class="drag mdl-list__item">
-  //     <span class="mdl-list__item-primary-content">
-  //       <i class="material-icons mdl-list__item-avatar">person</i>
-  //       <span>Bryan Cranston</span>
-  //     </span>
-  //     <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
-  //   </div>
-  //   <div class="drag mdl-list__item">
-  //     <span class="mdl-list__item-primary-content">
-  //       <i class="material-icons mdl-list__item-avatar">person</i>
-  //       <span>Aaron Paul</span>
-  //     </span>
-  //     <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
-  //   </div>
-  //   <div class="drag mdl-list__item">
-  //     <span class="mdl-list__item-primary-content">
-  //       <i class="material-icons mdl-list__item-avatar">person</i>
-  //       <span>Bob Odenkirk</span>
-  //     </span>
-  //     <span class="mdl-list__item-secondary-content">
-  //       <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
-  //   </span>
-  //   </div>
-  // </div>`;
-  // this.leftPanel.style.height = '800px';
   core.dom.leftPanel.appendChild( this.leftPanel );
 }
 WebForms.prototype.renderContent = function() {
@@ -212,7 +175,7 @@ WebForms.prototype.show = function(id) {
 
 WebForms.prototype.start = function() {
   console.log( 'WebForms: start' );
-  this.init();
+  // this.init();
 };
 WebForms.prototype.stop = function() {
   console.log( 'WebForms: stop' );
