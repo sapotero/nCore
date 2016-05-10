@@ -91,6 +91,16 @@ WebForms.prototype.bindEvents = function(){
   });
 };
 
+WebForms.prototype.cloneAndDrug = function( element, e ){
+  console.log(element, e);
+  var clone = element.cloneNode(true);
+
+  element.insertAdjacentHTML('beforeend', clone.outerHTML );
+  core.modules.drag.add( element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+
+};
+
+
 WebForms.prototype.renderLeftPanel = function() {
   this.leftPanel = document.createElement('div');
 
@@ -101,6 +111,8 @@ WebForms.prototype.renderLeftPanel = function() {
     placeholder : 'texttium',
     label: 'label'
   } );
+  input.element.addEventListener( 'click', this.cloneAndDrug.bind(this, input.element) );
+
   this.leftPanel.appendChild( input.element );
 
   var date = this.Elements.create( {
@@ -122,9 +134,11 @@ WebForms.prototype.renderLeftPanel = function() {
 
   core.dom.leftPanel.appendChild( this.leftPanel );
 
-  core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
-  core.modules.drag.add( date.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
-  core.modules.drag.add( check.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  // core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  // 
+  // core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  // core.modules.drag.add( date.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  // core.modules.drag.add( check.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
 }
 WebForms.prototype.renderContent = function() {
   this.content   = document.createElement('div');
@@ -199,3 +213,4 @@ WebForms.prototype.destroy = function() {
 };
 
 module.exports = WebForms;
+
