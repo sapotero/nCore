@@ -1,3 +1,5 @@
+'use strict';
+
 var Positions = function(options) {
   this.options = options;
   this.points = {

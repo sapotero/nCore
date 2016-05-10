@@ -1,3 +1,5 @@
+'use strict';
+
 var PositionDecorator = require('./PositionDecorator');
 
 var SnapDecorator = function (Positions) {

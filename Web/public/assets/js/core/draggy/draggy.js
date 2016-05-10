@@ -157,12 +157,33 @@ Drag.prototype.mouseupHandler = function(e) {
   isDrag = false;
 };
 
+
+
 var Draggy = function(){
-  this.element = [];
+  this.elements = [];
+  this.active  = {};
 };
 
-Draggy.prototype.add = function( selector, config ){
-  this.element.push( new Drag( document.querySelector(selector), config ) );
+Draggy.prototype.Constant = {
+  'ACTIVE' : 'drag-active'
+}
+
+
+Draggy.prototype.setActive = function( element, e ){
+  console.log( 'setActive', e, element);
+  
+  for(var k = 0, length = this.elements.length; k < length; k++){
+    console.log();
+    this.elements[k].el.classList.remove( this.Constant.ACTIVE );
+  }
+  
+  element.classList.add( this.Constant.ACTIVE );
+};
+
+Draggy.prototype.add = function( element, config ){
+  this.elements.push( new Drag( element, config ) );
+  element.addEventListener('click', this.setActive.bind(this, element) );
+
 };
 
 module.exports = Draggy;

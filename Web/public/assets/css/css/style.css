@@ -36,6 +36,11 @@
   border: 2px double red;
 }
 
+.drag-active{
+  border: 4px double purple;
+
+}
+
 /*.content-leftPanel {
   height: 100px;
 }

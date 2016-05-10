@@ -1,3 +1,5 @@
+'use strict';
+
 function PositionDecorator(Positions) {
   this.Positions = Positions;
 }

@@ -29,8 +29,8 @@ core = (function(){
       'reports'     : new Reports(),
       'web-forms'   : new WebForms(),
       'print-forms' : new PrintForms(),
-      'bps'         : new Bps()
-      'drag'        : new Draggy();
+      'bps'         : new Bps(),
+      'drag'        : new Draggy()
     };
     this.debug    = true;
 
