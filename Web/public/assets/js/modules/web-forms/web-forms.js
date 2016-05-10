@@ -101,17 +101,30 @@ WebForms.prototype.renderLeftPanel = function() {
     placeholder : 'texttium',
     label: 'label'
   } );
-  this.leftPanel.appendChild( input.render() );
+  this.leftPanel.appendChild( input.element );
 
-  var input = this.Elements.create( {
+  var date = this.Elements.create( {
     elementType : 'input',
     type : 'date',
-    name : 'test-input',
+    name : 'test-input-date',
     placeholder : 'texttium',
   } );
-  this.leftPanel.appendChild( input.render() );
+  this.leftPanel.appendChild( date.element );
+
+  var check = this.Elements.create( {
+    elementType : 'input',
+    name : 'test-checkbox',
+    type : 'checkbox',
+    label: 'checkbox'
+  } );
+  this.leftPanel.appendChild( check.element );
+
 
   core.dom.leftPanel.appendChild( this.leftPanel );
+
+  core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  core.modules.drag.add( date.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  core.modules.drag.add( check.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
 }
 WebForms.prototype.renderContent = function() {
   this.content   = document.createElement('div');

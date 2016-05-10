@@ -2,7 +2,8 @@
 
 var Label = function( name ) {
   this.element = document.createElement('label');
-  this.element.style.padding = '10px'
+  this.element.style.padding = '10px';
+  this.element.style.display = 'block';
 
   if ( name ) {
     this.name = this.setName( name );
@@ -14,11 +15,10 @@ Label.prototype.setName = function( string ){
   this.element.textContent = string;
 };
 
-
 var Input = function( options ) {
   if ( options.elementType ) {
     this.element = document.createElement( options.elementType );
-    this.element.style.margin = '0px 10px'
+    this.element.style.margin = '0px 10px';
   };
 
   if ( options.name ) {
@@ -36,6 +36,8 @@ var Input = function( options ) {
   if ( options.label ) {
     this.setLabel( options.label );
   };
+
+  this.render();
 }
 
 Input.prototype.setName = function( string ){
@@ -64,8 +66,15 @@ Input.prototype.render = function(){
     element = this.element;
   };
 
-  return element;
+  this.element = element;
 };
+
+// var CheckBox = function( options ){
+//   this.element = document.createElement( options.elementType );
+// };
+// CheckBox.constructor = Input;
+// CheckBox.prototype   = Input.prototype;
+
 
 
 
@@ -94,7 +103,7 @@ Elements.prototype.create = function( options ) {
   
   var element = new parentClass( options );
   this.elements.push( element );
-  return new parentClass( options );
+  return element;
 }
 
 module.exports = new Elements();

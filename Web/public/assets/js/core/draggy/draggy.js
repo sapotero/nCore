@@ -168,6 +168,7 @@ Draggy.prototype.Constant = {
   'ACTIVE' : 'drag-active'
 }
 
+Draggy.prototype.Drag = Drag;
 
 Draggy.prototype.setActive = function( element, e ){
   console.log( 'setActive', e, element);
@@ -181,7 +182,7 @@ Draggy.prototype.setActive = function( element, e ){
 };
 
 Draggy.prototype.add = function( element, config ){
-  this.elements.push( new Drag( element, config ) );
+  this.elements.push( new this.Drag( element, config ) );
   element.addEventListener('click', this.setActive.bind(this, element) );
 
 };
