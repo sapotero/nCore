@@ -4,7 +4,7 @@ var Label = function( name ) {
   this.element = document.createElement('label');
   this.element.style.padding  = '10px';
   this.element.style.display  = 'block';
-  this.element.style.position = 'absolute';
+  // this.element.style.position = 'absolute';
 
 
   if ( name ) {

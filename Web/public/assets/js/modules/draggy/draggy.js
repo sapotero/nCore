@@ -171,6 +171,7 @@ Draggy.prototype.Constant = {
 Draggy.prototype.Drag = Drag;
 
 Draggy.prototype.copy = function () {
+  
   this.dropZone     = core.dom.content;
   this.dragElements = core.dom.leftPanel.querySelectorAll('#web-forms-left > *');
   this.elementDragged = null;
@@ -182,8 +183,9 @@ Draggy.prototype.copy = function () {
 
     this.dragElements[i].addEventListener('dragstart', function(e) {
       console.log('dragstart');
+
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text', this.innerHTML);
+      e.dataTransfer.setData('text', this.outerHTML);
       this.elementDragged = this;
     });
 
@@ -194,47 +196,44 @@ Draggy.prototype.copy = function () {
     });
   };
 
-  this.dropZone.addEventListener('dragover', function(e) {
-    console.log('dragover');
-    
-    if (e.preventDefault) {
-      e.preventDefault();
-    }
-
-    e.dataTransfer.dropEffect = 'move';
-
-    return false;
-  });
-
-  this.dropZone.addEventListener('dragenter', function(e) {
-    console.log('dragenter');
-    this.className = "over";
-  });
-
-  this.dropZone.addEventListener('dragleave', function(e) {
-    console.log('dragleave');
-    this.className = "";
-  });
-
-  this.dropZone.addEventListener('drop', function(e) {
-    console.log('drop');
-    if (e.preventDefault){
-      e.preventDefault();
-    }
-
-    if (e.stopPropagation){
-      e.stopPropagation();
-    }
-
-    this.className = "";
-    this.innerHTML = "Dropped " + e.dataTransfer.getData('text');
-
-    this.elementDragged = null;
-
-    return false;
-  });
-
+  this.dropZoneAttachEvents();
 }
+
+Draggy.prototype.dropZoneAttachEvents = function(){
+  this.dropZone.addEventListener('dragover',  this.dropZoneDragOver.bind( this, this.dropZone ) );
+  this.dropZone.addEventListener('dragenter', this.dropZoneDragEnter.bind( this, this.dropZone ) );
+  this.dropZone.addEventListener('dragleave', this.dropZoneDragLeave.bind( this, this.dropZone ) );
+  this.dropZone.addEventListener('drop',      this.dropZoneDrop.bind( this, this.dropZone ) );
+};
+
+Draggy.prototype.dropZoneDragOver  = function( element, e ){
+  console.log('dragover');
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+Draggy.prototype.dropZoneDragEnter = function( element, e ){
+  console.log('dragenter');
+  element.className = "over";
+}
+
+Draggy.prototype.dropZoneDragLeave = function( element, e ){
+  console.log('dragleave');
+  element.className = "";
+}
+
+Draggy.prototype.dropZoneDrop = function( element, e ){
+  e.preventDefault();
+  e.stopPropagation();
+
+  console.log('drop');
+
+  console.log( 'addEventListener -> drop : ', e.dataTransfer.getData('text'), element );
+
+  element.insertAdjacentHTML('afterbegin', e.dataTransfer.getData('text') );
+  element.elementDragged = null;
+}
+
 
 
 Draggy.prototype.setActive = function( element, e ){
