@@ -165,17 +165,17 @@ var Draggy = function( config ){
 };
 
 Draggy.prototype.Constant = {
-  'ACTIVE' : 'drag-active'
+  'ACTIVE'   : 'drag-active',
+  'DRAG_OVER': 'over'
 }
 
 Draggy.prototype.Drag = Drag;
 
 Draggy.prototype.copy = function () {
   
-  this.dropZone     = core.dom.content;
+  this.dropZone     = core.dom.content.querySelector('#web-forms-container');
   this.dragElements = core.dom.leftPanel.querySelectorAll('#web-forms-left > *');
   this.elementDragged = null;
-
 
   for (var i = 0; i < this.dragElements.length; i++) {
     this.dragElementAttachEvents( this.dragElements[i] );
@@ -189,11 +189,16 @@ Draggy.prototype.dragElementAttachEvents = function( element ){
   element.addEventListener('dragstart', this.dragElementDragStart.bind( this, element ) );
   element.addEventListener('dragend',   this.dragElementDragEnd.bind(   this, element ) );
 };
+Draggy.prototype.dragElementRemoveEvents = function( element ){
+  element.removeAttribute( 'draggable' );
+  element.removeEventListener('dragstart', this.dragElementDragStart );
+  element.removeEventListener('dragend',   this.dragElementDragEnd );
+};
 
 Draggy.prototype.dragElementDragStart = function( element, e ){
   console.log('dragstart', element, e);
   e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text', element.outerHTML);
+  e.dataTransfer.setData('text', element.innerHTML);
   element.elementDragged = element;
 }
 
@@ -209,15 +214,16 @@ Draggy.prototype.dropZoneAttachEvents = function(){
   this.dropZone.addEventListener('drop',      this.dropZoneDrop.bind( this, this.dropZone ) );
 };
 
+
 Draggy.prototype.dropZoneDragOver  = function( element, e ){
   console.log('dragover');
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
 }
 
-Draggy.prototype.dropZoneDragEnter = function( element, e ){
+Draggy.prototype.dropZoneDragEnter = function( element , e ){
   console.log('dragenter');
-  element.className = "over";
+  element.className = this.Constant.DRAG_OVER;
 }
 
 Draggy.prototype.dropZoneDragLeave = function( element, e ){
@@ -229,8 +235,20 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
   console.log('drop');
   e.preventDefault();
   e.stopPropagation();
-  element.insertAdjacentHTML('afterbegin', e.dataTransfer.getData('text') );
+  
+  var _drag = document.createElement('div');
+  _drag.innerHTML = e.dataTransfer.getData('text');
+
+
+  // element.insertAdjacentHTML('afterbegin', _drag.outerHTML );
+  element.appendChild( _drag );
+  
+  this.dragElementRemoveEvents(_drag);
+  core.modules.drag.add( _drag, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  
   element.elementDragged = null;
+
+  console.log( '_drag element', _drag );
 }
 
 
@@ -247,6 +265,7 @@ Draggy.prototype.setActive = function( element, e ){
 };
 
 Draggy.prototype.add = function( element, config ){
+  console.log( 'Draggy.prototype.add', element );
   this.elements.push( new this.Drag( element, config ) );
   element.addEventListener('click', this.setActive.bind(this, element) );
 
