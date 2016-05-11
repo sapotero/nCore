@@ -39,17 +39,10 @@ WebForm.prototype.init = function(){
   core.events.publish("core:web-form:load", this._id );
 };
 
-
-WebForm.prototype.update = function(html){
-  console.log( 'WebForm -> update' );
-  this.element.innerHTML = html;
-  this.element.classList.add('animated');
-  this.element.classList.add('fadeIn');
-  // this.render();
-};
 WebForm.prototype.load = function(){
   console.log( 'WebForm -> bindEvents' );
 };
+
 WebForm.prototype.detachEvents = function(){
   core.events.remove("core:template:web-forms:editor");
   core.events.remove("core:web-form:loaded");
@@ -70,7 +63,6 @@ WebForm.prototype.attachEvents = function(){
 };
 
 
-var Elements = require('./elements');
 
 var WebForms = function(){
   this.forms     = {};
@@ -80,8 +72,8 @@ var WebForms = function(){
   this.bindEvents();
 };
 
-WebForms.prototype.WebForm = WebForm;
-WebForms.prototype.Elements = Elements;
+WebForms.prototype.WebForm  = WebForm;
+WebForms.prototype.Elements = require('./elements');
 
 WebForms.prototype.init = function(){
 };
@@ -105,7 +97,9 @@ WebForms.prototype.import = function( data ){
       var element = document.createElement('div');
       element.innerHTML = elements[k].element;
 
+      // core.modules.drag.clonedElementAttachEvents( element );
       core.modules.drag.add( element, elements[k].options.drag );
+      // core.modules.drag.add( element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
 
       df.appendChild( element );
 
@@ -175,6 +169,40 @@ WebForms.prototype.renderContent = function() {
 WebForms.prototype.renderInfoPanel = function() {
   this.infoPanel = document.createElement('div');
   this.infoPanel.textContent = 'this.infoPanel';
+
+  var list = this.Elements.create({
+    elementType : 'list'
+  });
+
+  var item = this.Elements.create({
+    elementType : 'listItem',
+    action : 'event',
+    name   : 'event',
+    icon   : 'event',
+    count  : '100'
+  });
+  list.element.appendChild(item.element);
+
+  item = this.Elements.create({
+    elementType : 'listItem',
+    action : 'event',
+    name   : 'event',
+    icon   : 'event',
+    count  : '100'
+  });
+  list.element.appendChild(item.element);
+
+  item = this.Elements.create({
+    elementType : 'listItem',
+    action : 'event',
+    name   : 'event',
+    icon   : 'event',
+    count  : '100'
+  });
+  list.element.appendChild(item.element);
+  
+  this.infoPanel = list.element;
+
   core.dom.infoPanel.appendChild( this.infoPanel );
 }
 

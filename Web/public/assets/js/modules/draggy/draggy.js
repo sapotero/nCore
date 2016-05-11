@@ -165,7 +165,8 @@ var Draggy = function( config ){
 
 Draggy.prototype.Constant = {
   'ACTIVE'   : 'drag-active',
-  'DRAG_OVER': 'over'
+  'DRAG_OVER': 'drag-over',
+  'DRAG_END':  'drag-end'
 }
 
 Draggy.prototype.Drag = Drag;
@@ -223,12 +224,14 @@ Draggy.prototype.dropZoneDragOver  = function( element, e ){
 
 Draggy.prototype.dropZoneDragEnter = function( element , e ){
   // console.log('dragenter');
-  element.className = this.Constant.DRAG_OVER;
+  element.classList.add(this.Constant.DRAG_OVER)
+  element.classList.remove(this.Constant.DRAG_END)
 }
 
 Draggy.prototype.dropZoneDragLeave = function( element, e ){
   // console.log('dragleave');
-  element.className = "";
+  element.classList.remove(this.Constant.DRAG_OVER)
+  element.classList.add(this.Constant.DRAG_END)
 }
 
 Draggy.prototype.dropZoneDrop = function( element, e ){
