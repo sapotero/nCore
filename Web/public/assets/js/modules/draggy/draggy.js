@@ -261,36 +261,42 @@ Draggy.prototype.clonedElementAttachEvents = function( element ){
 };
 
 Draggy.prototype.clonedElementMouseOn = function( element, e ){
-  var box = element.getBoundingClientRect();
-  console.log( 'clonedElementMouseOn -> ', box.left, box.top );
+  
+  console.log( 'clonedElementMouseOn -> ', element, e );
 
   if ( !element.querySelector('.drag-config-button') ) {
-    var config = document.createElement('div');
-    config.classList.add('drag-config-button')
-
-    config.style.positions = 'absolute',
-    config.style.top       = box.top + 'px',
-    config.style.left      = box.left + 'px',
-    config.style.height    = box.height + 'px',
-    config.style.width     = box.width + 'px',
-
-    element.appendChild( config );
+    this.addConfigButton( element );
   }
 }
 
 Draggy.prototype.clonedElementMouseOut = function( element, e ){
   console.log( 'Draggy.prototype.clonedElementMouseOut ->', element, e );
   if ( !!element.querySelector('.drag-config-button') && element !== this.active ) {
-    element.querySelector('.drag-config-button').remove();
+    this.removeConfigButton( element );
   }
 }
+
+Draggy.prototype.addConfigButton = function( element ){
+  var box = element.getBoundingClientRect();
+
+  var config = document.createElement('div');
+  config.classList.add('drag-config-button')
+
+  config.style.positions = 'absolute',
+  config.style.top       = box.top + 'px',
+  config.style.left      = box.left + 'px',
+  config.style.height    = box.height + 'px',
+  config.style.width     = box.width + 'px',
+
+  element.appendChild( config );
+}
+
 Draggy.prototype.removeConfigButton = function( element ){
   console.log( 'Draggy.prototype.removeConfigButton ->', element );
   if ( !!element.querySelector('.drag-config-button') ) {
     element.querySelector('.drag-config-button').remove();
   }
 }
-
 
 Draggy.prototype.setActive = function( element, e ){
   console.log( 'setActive', e, element);
