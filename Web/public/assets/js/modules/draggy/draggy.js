@@ -284,11 +284,35 @@ Draggy.prototype.addConfigButton = function( element ){
   var config = document.createElement('div');
   config.classList.add('drag-config-button')
 
-  config.style.positions = 'absolute',
-  config.style.top       = box.top + 'px',
-  config.style.left      = box.left + 'px',
-  config.style.height    = box.height + 'px',
-  config.style.width     = box.width + 'px',
+  config.style.positions = 'absolute';
+  config.style.top       = box.top + 'px';
+  config.style.left      = box.left + 'px';
+  config.style.height    = box.height + 'px';
+  config.style.width     = box.width + 'px';
+
+  // <button class="mdl-button mdl-js-button mdl-button--icon">
+  //   <i class="material-icons">mood</i>
+  // </button>
+  
+  var button = document.createElement('button');
+  button.className = 'mdl-button mdl-js-button mdl-button--icon';
+
+  var icon = document.createElement('icon');
+  icon.className = 'material-icons drag-small-font';
+  icon.textContent = 'settings';
+  
+  button.appendChild( icon );
+  config.appendChild( button );
+
+  button = document.createElement('button');
+  button.className = 'mdl-button mdl-js-button mdl-button--icon';
+
+  icon = document.createElement('icon');
+  icon.className = 'material-icons drag-small-font';
+  icon.textContent = 'clear';
+  
+  button.appendChild( icon );
+  config.appendChild( button );
 
   element.appendChild( config );
 }

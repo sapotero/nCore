@@ -33,13 +33,20 @@
 }
 
 .active-border{
-  border: 1px double red;
+  /*border: 1px double red;*/
+}
+
+.drag-config-button{
+  /*border: 1px dashed blue;*/
 }
 
 
-
 .drag-active{
-  border: 1px solid purple;
+  /*border: 1px solid purple;*/
+}
+
+.material-icons.drag-small-font{
+  font-size: 16px;
 }
 
 .drag-over {
@@ -60,18 +67,13 @@
   cursor: move;
 }
 
+
+
 .page-content{
   height: 100%;
   min-height: 500px;
   background-color: #fafafa;
 }
-
-.drag-config-button{
-  border: 1px dashed blue;
-}
-
-
-
 
 .content-leftPanel {
   background-color: #ffffff;

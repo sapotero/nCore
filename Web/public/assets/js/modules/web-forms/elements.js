@@ -85,10 +85,10 @@ List.prototype.render = function(){
 
 
 var ListItem = function ( config ){
-  this.action = ''; // 'event'
-  this.name   = ''; // 'event'
-  this.icon   = ''; // 'event'
-  this.count  = ''; // 100
+  this.action = '';
+  this.name   = '';
+  this.icon   = '';
+  this.count  = '';
 
   if ( config && config.hasOwnProperty('root') ) {
       this.setRoot(config.root);
