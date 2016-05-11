@@ -124,8 +124,7 @@ WebForms.prototype.renderLeftPanel = function() {
 
   core.dom.leftPanel.appendChild( this.leftPanel );
 
-  // core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
-  // 
+  core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
   // core.modules.drag.add( input.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
   // core.modules.drag.add( date.element,  { snapX: 10,  snapY: 10, activeClass: "active-border" } );
   // core.modules.drag.add( check.element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );

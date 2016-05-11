@@ -71,6 +71,19 @@
   border-radius: 3px;
 }
 
+.drag-me{
+  border : 1px solid red;
+  height : 20px;
+  width  : 20px;
+  background-color: blue;
+  position: absolute;
+  cursor: move;
+}
+
+.page-content{
+  height: 100%;
+  min-height: 500px;
+}
 
 
 

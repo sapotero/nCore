@@ -2,8 +2,10 @@
 
 var Label = function( name ) {
   this.element = document.createElement('label');
-  this.element.style.padding = '10px';
-  this.element.style.display = 'block';
+  this.element.style.padding  = '10px';
+  this.element.style.display  = 'block';
+  this.element.style.position = 'absolute';
+
 
   if ( name ) {
     this.name = this.setName( name );
@@ -18,7 +20,7 @@ Label.prototype.setName = function( string ){
 var Input = function( options ) {
   if ( options.elementType ) {
     this.element = document.createElement( options.elementType );
-    this.element.style.margin = '0px 10px';
+    this.element.style.margin   = '0px 10px';
   };
 
   if ( options.name ) {
@@ -61,10 +63,12 @@ Input.prototype.render = function(){
 
   if ( this.label ) {
     element = this.label.element;
-    element.insertAdjacentHTML('beforeEnd', this.element.outerHTML );
+    element.insertAdjacentHTML('beforeend', this.element.outerHTML );
   } else {
     element = this.element;
   };
+
+  // element.insertAdjacentHTML('beforeend', '<span class="drag-me"></span>' );
 
   this.element = element;
 };

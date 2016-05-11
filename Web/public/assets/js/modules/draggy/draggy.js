@@ -178,16 +178,15 @@ Draggy.prototype.copy = function () {
 
   for (var i = 0; i < this.dragElements.length; i++) {
 
-    // Event Listener for when the drag interaction starts.
+    this.dragElements[i].setAttribute( 'draggable', true );
+
     this.dragElements[i].addEventListener('dragstart', function(e) {
       console.log('dragstart');
-
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text', this.innerHTML);
       this.elementDragged = this;
     });
 
-    // Event Listener for when the drag interaction finishes.
     this.dragElements[i].addEventListener('dragend', function(e) {
       console.log('dragend');
       
@@ -196,7 +195,6 @@ Draggy.prototype.copy = function () {
   };
 
   this.dropZone.addEventListener('dragover', function(e) {
-    // Event Listener for when the dragged element is over the drop zone.
     console.log('dragover');
     
     if (e.preventDefault) {
@@ -209,19 +207,16 @@ Draggy.prototype.copy = function () {
   });
 
   this.dropZone.addEventListener('dragenter', function(e) {
-    // Event Listener for when the dragged element enters the drop zone.
     console.log('dragenter');
     this.className = "over";
   });
 
   this.dropZone.addEventListener('dragleave', function(e) {
-    // Event Listener for when the dragged element leaves the drop zone.
     console.log('dragleave');
     this.className = "";
   });
 
   this.dropZone.addEventListener('drop', function(e) {
-    // Event Listener for when the dragged element dropped in the drop zone.
     console.log('drop');
     if (e.preventDefault){
       e.preventDefault();
@@ -234,8 +229,6 @@ Draggy.prototype.copy = function () {
     this.className = "";
     this.innerHTML = "Dropped " + e.dataTransfer.getData('text');
 
-    // Remove the element from the list.
-    // document.querySelector('#drag-elements').removeChild(this.elementDragged);
     this.elementDragged = null;
 
     return false;
