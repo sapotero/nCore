@@ -162,6 +162,7 @@ Drag.prototype.mouseupHandler = function(e) {
 var Draggy = function( config ){
   this.elements = [];
   this.active   = {};
+  this.attachEvents();
 };
 
 Draggy.prototype.Constant = {
@@ -197,14 +198,14 @@ Draggy.prototype.dragElementRemoveEvents = function( element ){
 };
 
 Draggy.prototype.dragElementDragStart = function( element, e ){
-  console.log('dragstart', element, e);
+  // console.log('dragstart', element, e);
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text', element.innerHTML);
   element.elementDragged = element;
 }
 
 Draggy.prototype.dragElementDragEnd   = function( element, e ){
-  console.log('dragend', element, e);
+  // console.log('dragend', element, e);
   element.elementDragged = null;
 }
 
@@ -217,23 +218,23 @@ Draggy.prototype.dropZoneAttachEvents = function(){
 };
 
 Draggy.prototype.dropZoneDragOver  = function( element, e ){
-  console.log('dragover');
+  // console.log('dragover');
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
 }
 
 Draggy.prototype.dropZoneDragEnter = function( element , e ){
-  console.log('dragenter');
+  // console.log('dragenter');
   element.className = this.Constant.DRAG_OVER;
 }
 
 Draggy.prototype.dropZoneDragLeave = function( element, e ){
-  console.log('dragleave');
+  // console.log('dragleave');
   element.className = "";
 }
 
 Draggy.prototype.dropZoneDrop = function( element, e ){
-  console.log('drop');
+  // console.log('drop');
   e.preventDefault();
   e.stopPropagation();
   
@@ -251,7 +252,7 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
   
   element.elementDragged = null;
 
-  console.log( '_drag element', _drag );
+  // console.log( '_drag element', _drag );
 }
 
 
@@ -262,7 +263,7 @@ Draggy.prototype.clonedElementAttachEvents = function( element ){
 
 Draggy.prototype.clonedElementMouseOn = function( element, e ){
   
-  console.log( 'clonedElementMouseOn -> ', element, e );
+  // console.log( 'clonedElementMouseOn -> ', element, e );
 
   if ( !element.querySelector('.drag-config-button') ) {
     this.addConfigButton( element );
@@ -270,7 +271,7 @@ Draggy.prototype.clonedElementMouseOn = function( element, e ){
 }
 
 Draggy.prototype.clonedElementMouseOut = function( element, e ){
-  console.log( 'Draggy.prototype.clonedElementMouseOut ->', element, e );
+  // console.log( 'Draggy.prototype.clonedElementMouseOut ->', element, e );
   if ( !!element.querySelector('.drag-config-button') && element !== this.active ) {
     this.removeConfigButton( element );
   }
@@ -292,7 +293,7 @@ Draggy.prototype.addConfigButton = function( element ){
 }
 
 Draggy.prototype.removeConfigButton = function( element ){
-  console.log( 'Draggy.prototype.removeConfigButton ->', element );
+  // console.log( 'Draggy.prototype.removeConfigButton ->', element );
   if ( !!element.querySelector('.drag-config-button') ) {
     element.querySelector('.drag-config-button').remove();
   }
@@ -310,6 +311,7 @@ Draggy.prototype.setActive = function( element, e ){
       this.active = element;
     }
   }
+
 };
 
 Draggy.prototype.add = function( element, config ){
@@ -318,5 +320,44 @@ Draggy.prototype.add = function( element, config ){
   this.elements.push( new this.Drag( element, config ) );
   element.addEventListener('click', this.setActive.bind(this, element) );
 };
+
+Draggy.prototype.export = function(){
+  var result = [];
+
+  for(var k = 0, length = this.elements.length; k < length; k++){
+    result.push({
+      element : this.elements[k].el.outerHTML,
+      options : {
+        drag    : this.elements[k].options,
+        id      : this.elements[k].el.id,
+        name    : this.elements[k].el.name,
+        title   : this.elements[k].el.title,
+        require : this.elements[k].el.require
+      }
+    });
+  }
+
+  return result;
+};
+
+Draggy.prototype.attachEvents = function(){
+  var draggy = this;
+  document.addEventListener('DOMContentLoaded', function(){
+
+    core.events.subscribe("core:drag:copy", function(){
+      console.log('Draggy <- core:drag:copy');
+      draggy.copy();
+    });
+
+    core.events.subscribe("core:drag:export", function(){
+      console.log('Draggy <- core:drag:export');
+
+      core.events.publish("core:web-forms:drag:export:result", draggy.export() );
+    });
+
+  });
+};
+
+
 
 module.exports = Draggy;
