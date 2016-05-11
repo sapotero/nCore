@@ -86,19 +86,33 @@ WebForms.prototype.Elements = Elements;
 WebForms.prototype.init = function(){
 };
 
-WebForms.prototype.load = function( data ){
+WebForms.prototype.import = function( data ){
+  var data = '[{"element":"<div style=\\"top: 80px; left: 450px; position: absolute;\\" class=\\"\\">label<input name=\\"test-input\\" type=\\"text\\" placeholder=\\"texttium\\" style=\\"margin: 0px 10px;\\"></div>","options":{"drag":{"activeClass":"active-border","snapX":10,"snapY":10,"axisX":true,"axisY":true,"restrict":"document"},"id":"","title":""}},{"element":"<div style=\\"top: 180px; left: 410px; position: absolute;\\" class=\\"drag-active\\">label<input name=\\"test-input\\" type=\\"text\\" placeholder=\\"texttium\\" style=\\"margin: 0px 10px;\\"><div class=\\"drag-config-button\\" style=\\"top: 164px; left: 330.828px; height: 21px; width: 222.594px;\\"></div></div>","options":{"drag":{"activeClass":"active-border","snapX":10,"snapY":10,"axisX":true,"axisY":true,"restrict":"document"},"id":"","title":""}}]';
+
   var elements = [];
   
-  try ( !data ) {
+  try {
     elements = JSON.parse( data );
   } catch( error ){
     throw new Error( error );
   }
 
   if ( elements.length ) {
+    var df = document.createDocumentFragment();
+
     for(var k = 0, length = elements.length; k < length; k++){
-      console.log( elements[k] );
+      
+      var element = document.createElement('div');
+      element.innerHTML = elements[k].element;
+
+      core.modules.drag.add( element, elements[k].options.drag );
+
+      df.appendChild( element );
+
     }
+
+  core.dom.content.appendChild( df );
+
   };
 };
 WebForms.prototype.bindEvents = function(){

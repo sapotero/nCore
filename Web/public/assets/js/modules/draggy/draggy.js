@@ -23,24 +23,22 @@ var Drag = function(el, config) {
     onDrag      : config && config.hasOwnProperty('onDrag')      ? config.onDrag      : function(e, obj) {},
     onStop      : config && config.hasOwnProperty('onStop')      ? config.onStop      : function(e, obj) {}
   };
+  var box = this.el.getBoundingClientRect();
 
-  this.el.style.top      = this.el.getBoundingClientRect().top  + 'px';
-  this.el.style.left     = this.el.getBoundingClientRect().left + 'px';
+  this.el.style.top      = box.top  + 'px';
+  this.el.style.left     = box.left + 'px';
   this.el.style.position = "absolute";
 
   this.Positions = new Positions(this.options);
 
-  // Set AxisDecorator
   if (this.options.axisX == false || this.options.axisY == false) {
     this.Positions = new AxisDecorator(this.Positions);
   }
 
-  // Set SnapDecorator
   if (this.options.snapX != 1 || this.options.snapY != 1) {
     this.Positions = new SnapDecorator(this.Positions);
   }
 
-  // set RestrictionDecorator
   this.Positions = new RestrictionDecorator(
     this.Positions,
     this.el,
@@ -112,7 +110,7 @@ Drag.prototype.mousedownHandler = function(e) {
 };
 Drag.prototype.mousemoveHandler = function(e) {
   var mouseX = document.all ? window.event.clientX : e.pageX,
-    mouseY = document.all ? window.event.clientY : e.pageY;
+      mouseY = document.all ? window.event.clientY : e.pageY;
 
   this.Positions.setPoints({
     lastMouseX: mouseX,
@@ -337,7 +335,7 @@ Draggy.prototype.export = function(){
     });
   }
 
-  return result;
+  return JSON.stringify(result);
 };
 
 Draggy.prototype.attachEvents = function(){
