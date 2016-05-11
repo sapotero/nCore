@@ -157,6 +157,7 @@ WebForms.prototype.render = function(){
   this.renderInfoPanel();
 
   componentHandler.upgradeAllRegistered();
+  core.modules.drag.copy();
 };
 
 WebForms.prototype.add = function( type, config ) {

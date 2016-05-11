@@ -33,11 +33,11 @@
 }
 
 .active-border{
-  border: 2px double red;
+  border: 1px double red;
 }
 
 .drag-active{
-  border: 4px double purple;
+  border: 1px solid purple;
 
 }
 
@@ -57,6 +57,10 @@
 .page-content{
   height: 100%;
   min-height: 500px;
+}
+
+.drag-config-button{
+  border: 1px dashed blue;
 }
 
 
