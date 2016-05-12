@@ -328,6 +328,26 @@ Draggy.prototype.showInfoPanel = function( element, e ){
 
 Draggy.prototype.deleteElement = function( element, e ){
   console.log( 'deleteElement', element );
+  this.remove( element );
+}
+
+Draggy.prototype.remove = function( element ){
+  console.log( 'Draggy.prototype.remove', element );
+  
+  // for (var i = this.elements.length - 1; i >= 0; i--) {
+  for (var i = 0, length = this.elements.length; i < length; i++) {
+    console.log( '**',i);
+    
+    if ( this.elements[i].el == element ) {
+      
+      console.log( '++++',i, element);
+
+      this.elements[i].el.remove();
+      this.elements.splice(i, 1);
+      break;
+    };
+
+  };
 }
 
 Draggy.prototype.removeConfigButton = function( element ){
