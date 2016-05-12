@@ -23,6 +23,10 @@ var Input = function( options ) {
     this.element.style.margin   = '0px 10px';
   };
 
+  if ( options ) {
+    this._config = options;
+  };
+
   if ( options.name ) {
     this.setName( options.name );
   };
@@ -68,9 +72,9 @@ Input.prototype.render = function(){
     element = this.element;
   };
 
-  // element.insertAdjacentHTML('beforeend', '<span class="drag-me"></span>' );
 
   this.element = element;
+  this.element._config = this._config;
 };
 
 var List = function (){
@@ -89,6 +93,10 @@ var ListItem = function ( config ){
   this.name   = '';
   this.icon   = '';
   this.count  = '';
+
+  if ( config ) {
+    this._config = config;
+  }
 
   if ( config && config.hasOwnProperty('root') ) {
       this.setRoot(config.root);
@@ -191,6 +199,7 @@ Elements.prototype.create = function( options ) {
 
   
   var element = new parentClass( options );
+
   this.elements.push( element );
   return element;
 }

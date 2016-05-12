@@ -121,6 +121,11 @@ WebForms.prototype.bindEvents = function(){
       console.log( 'core:web-forms:drag:export:result', result );
     });
 
+    core.events.subscribe("core:web-forms:infoPanel:show", function( config ){
+      console.log( 'core:web-forms:infoPanel:show', config );
+      webForms.renderInfoPanel(config);
+    });
+
   });
 
 
@@ -130,6 +135,7 @@ WebForms.prototype.renderLeftPanel = function() {
   this.leftPanel = document.createElement('div');
   this.leftPanel.id = 'web-forms-left';
 
+  var df = document.createDocumentFragment();
   var input = this.Elements.create( {
     elementType : 'input',
     name : 'test-input',
@@ -137,8 +143,7 @@ WebForms.prototype.renderLeftPanel = function() {
     placeholder : 'texttium',
     label: 'label'
   } );
-
-  this.leftPanel.appendChild( input.element );
+  df.appendChild( input.element );
 
   var date = this.Elements.create( {
     elementType : 'input',
@@ -146,7 +151,7 @@ WebForms.prototype.renderLeftPanel = function() {
     name : 'test-input-date',
     placeholder : 'texttium',
   } );
-  this.leftPanel.appendChild( date.element );
+  df.appendChild( date.element );
 
   var check = this.Elements.create( {
     elementType : 'input',
@@ -154,8 +159,12 @@ WebForms.prototype.renderLeftPanel = function() {
     type : 'checkbox',
     label: 'checkbox'
   } );
-  this.leftPanel.appendChild( check.element );
+  
+  console.log( '158 | web-forms -> check create', check, check.element, check._config );
 
+  df.appendChild( check.element );
+  
+  this.leftPanel.appendChild( df );
   core.dom.leftPanel.appendChild( this.leftPanel );
 }
 WebForms.prototype.renderContent = function() {
@@ -166,44 +175,32 @@ WebForms.prototype.renderContent = function() {
 
   core.dom.content.appendChild( this.content );
 }
-WebForms.prototype.renderInfoPanel = function() {
-  this.infoPanel = document.createElement('div');
-  this.infoPanel.textContent = 'this.infoPanel';
+WebForms.prototype.renderInfoPanel = function( config ) {
 
-  var list = this.Elements.create({
-    elementType : 'list'
-  });
+  if ( config && Object === config.constructor) {
 
-  var item = this.Elements.create({
-    elementType : 'listItem',
-    action : 'event',
-    name   : 'event',
-    icon   : 'event',
-    count  : '100'
-  });
-  list.element.appendChild(item.element);
+    core.dom.infoPanel.innerHTML = '';
 
-  item = this.Elements.create({
-    elementType : 'listItem',
-    action : 'event',
-    name   : 'event',
-    icon   : 'event',
-    count  : '100'
-  });
-  list.element.appendChild(item.element);
+    this.infoPanel = document.createElement('div');
 
-  item = this.Elements.create({
-    elementType : 'listItem',
-    action : 'event',
-    name   : 'event',
-    icon   : 'event',
-    count  : '100'
-  });
-  list.element.appendChild(item.element);
-  
-  this.infoPanel = list.element;
+    var list = this.Elements.create({
+      elementType : 'list'
+    });
 
-  core.dom.infoPanel.appendChild( this.infoPanel );
+    for ( var key in config ) {
+      var item = this.Elements.create({
+        elementType : 'listItem',
+        action : 'event',
+        icon   : 'event',
+        name   : config[key],
+        count  : key
+      });
+      list.element.appendChild( item.element );
+    }
+
+    this.infoPanel = list.element;
+    core.dom.infoPanel.appendChild( this.infoPanel );
+  };
 }
 
 WebForms.prototype.render = function(){
@@ -215,7 +212,7 @@ WebForms.prototype.render = function(){
 
   componentHandler.upgradeAllRegistered();
   
-  core.events.publish( "core:drag:copy" );
+  core.events.publish( "core:drag:attachEvents" );
 };
 
 WebForms.prototype.add = function( type, config ) {

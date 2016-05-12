@@ -178,6 +178,7 @@ Draggy.prototype.copy = function () {
   this.elementDragged = null;
 
   for (var i = 0; i < this.dragElements.length; i++) {
+    // console.log( 'el++ ', this.dragElements[i]._config );
     this.dragElementAttachEvents( this.dragElements[i] );
   };
 
@@ -197,14 +198,15 @@ Draggy.prototype.dragElementRemoveEvents = function( element ){
 };
 
 Draggy.prototype.dragElementDragStart = function( element, e ){
-  // console.log('dragstart', element, e);
+  // console.log('dragstart', element, element._config);
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text', element.innerHTML);
+  e.dataTransfer.setData('config', JSON.stringify(element._config) );
   element.elementDragged = element;
 }
 
 Draggy.prototype.dragElementDragEnd   = function( element, e ){
-  // console.log('dragend', element, e);
+  // console.log('dragend', element, element._config, e);
   element.elementDragged = null;
 }
 
@@ -213,7 +215,6 @@ Draggy.prototype.dropZoneAttachEvents = function(){
   this.dropZone.addEventListener('dragenter', this.dropZoneDragEnter.bind( this, this.dropZone ) );
   this.dropZone.addEventListener('dragleave', this.dropZoneDragLeave.bind( this, this.dropZone ) );
   this.dropZone.addEventListener('drop',      this.dropZoneDrop.bind( this, this.dropZone ) );
-  // this.dropZone.addEventListener('click',     this.setActive.bind( this ) );
 };
 
 Draggy.prototype.dropZoneDragOver  = function( element, e ){
@@ -235,12 +236,15 @@ Draggy.prototype.dropZoneDragLeave = function( element, e ){
 }
 
 Draggy.prototype.dropZoneDrop = function( element, e ){
-  // console.log('drop');
+  console.log('drop', element, element._config );
   e.preventDefault();
   e.stopPropagation();
   
   var _drag = document.createElement('div');
   _drag.innerHTML = e.dataTransfer.getData('text');
+  _drag._config   = JSON.parse( e.dataTransfer.getData('config') );
+
+  _drag._DragOptions = { snapX: 10,  snapY: 10, activeClass: "active-border" };
 
 
   // element.insertAdjacentHTML('afterbegin', _drag.outerHTML );
@@ -249,7 +253,7 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
   this.dragElementRemoveEvents(_drag);
   this.clonedElementAttachEvents(_drag);
 
-  core.modules.drag.add( _drag, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
+  core.modules.drag.add( _drag, _drag._DragOptions );
   
   element.elementDragged = null;
 
@@ -294,27 +298,36 @@ Draggy.prototype.addConfigButton = function( element ){
   //   <i class="material-icons">mood</i>
   // </button>
   
-  var button = document.createElement('button');
-  button.className = 'mdl-button mdl-js-button mdl-button--icon';
-
+  var configButton = document.createElement('button');
+  configButton.className = 'mdl-button mdl-js-button mdl-button--icon';
   var icon = document.createElement('icon');
   icon.className = 'material-icons drag-small-font';
   icon.textContent = 'settings';
-  
-  button.appendChild( icon );
-  config.appendChild( button );
+  configButton.appendChild( icon );
 
-  button = document.createElement('button');
-  button.className = 'mdl-button mdl-js-button mdl-button--icon';
-
-  icon = document.createElement('icon');
+  var deleteButton = document.createElement('button');
+  deleteButton.className = 'mdl-button mdl-js-button mdl-button--icon';
+  var icon = document.createElement('icon');
   icon.className = 'material-icons drag-small-font';
   icon.textContent = 'clear';
+  deleteButton.appendChild( icon );
+
+  configButton.addEventListener( 'click', this.showInfoPanel.bind(this, element ) );
+  deleteButton.addEventListener( 'click', this.deleteElement.bind(this, element ) );
   
-  button.appendChild( icon );
-  config.appendChild( button );
+  config.appendChild( configButton );
+  config.appendChild( deleteButton );
 
   element.appendChild( config );
+}
+
+Draggy.prototype.showInfoPanel = function( element, e ){
+  console.log( 'showInfoPanel', element, element._DragOptions, element._config );
+  core.events.publish("core:web-forms:infoPanel:show", element._config );
+}
+
+Draggy.prototype.deleteElement = function( element, e ){
+  console.log( 'deleteElement', element );
 }
 
 Draggy.prototype.removeConfigButton = function( element ){
@@ -325,7 +338,7 @@ Draggy.prototype.removeConfigButton = function( element ){
 }
 
 Draggy.prototype.setActive = function( element, e ){
-  console.log( 'setActive', e, element);
+  // console.log( 'setActive', e, element, element._config);
 
   for(var k = 0, length = this.elements.length; k < length; k++){
     if ( this.elements[k].el !== element ) {
@@ -336,11 +349,10 @@ Draggy.prototype.setActive = function( element, e ){
       this.active = element;
     }
   }
-
 };
 
 Draggy.prototype.add = function( element, config ){
-  console.log( 'Draggy.prototype.add', element );
+  console.log( 'Draggy.prototype.add', element, element._config );
   
   this.elements.push( new this.Drag( element, config ) );
   element.addEventListener('click', this.setActive.bind(this, element) );
@@ -369,8 +381,8 @@ Draggy.prototype.attachEvents = function(){
   var draggy = this;
   document.addEventListener('DOMContentLoaded', function(){
 
-    core.events.subscribe("core:drag:copy", function(){
-      console.log('Draggy <- core:drag:copy');
+    core.events.subscribe("core:drag:attachEvents", function(){
+      console.log('Draggy <- core:drag:attachEvents');
       draggy.copy();
     });
 
