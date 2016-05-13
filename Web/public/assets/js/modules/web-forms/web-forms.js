@@ -208,6 +208,7 @@ WebForms.prototype.renderInfoPanel = function( config ) {
         count  : key,
         icon   : 'event',
         
+        type   : 'text',
         label  : key,
         form   : true
       });

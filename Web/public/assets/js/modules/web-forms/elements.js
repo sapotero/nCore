@@ -1,18 +1,32 @@
 'use strict';
 
-var Label = function( name ) {
+var Label = function( config ) {
   this.element = document.createElement('label');
-  this.element.style.padding  = '10px';
-  this.element.style.display  = 'block';
-
-  if ( name ) {
-    this.name = this.setName( name );
+  
+  if ( config.name ) {
+    this.name = this.setName( config.name );
+  };
+  if ( config.text ) {
+    this.text = this.setText( config.text );
+  };
+  if ( config.class ) {
+    this.class = this.setClass( config.class );
+  };
+  if ( config.for ) {
+    this.for = this.setFor( config.for );
   };
 }
 Label.prototype.setName = function( string ){
-  this.name = string;
   this.element.name = string;
+};
+Label.prototype.setText = function( string ){
   this.element.textContent = string;
+};
+Label.prototype.setClass = function( string ){
+  this.element.className = string;
+};
+Label.prototype.setFor = function( string ){
+  this.element.setAttribute( 'for', string );
 };
 
 var Input = function( config ) {
@@ -23,6 +37,10 @@ var Input = function( config ) {
 
   if ( config ) {
     this._config = config;
+  };
+
+  if ( config.form ) {
+    this.form = config.form;
   };
 
   if ( config.name ) {
@@ -78,6 +96,10 @@ Input.prototype.render = function(){
     element = this.element;
   };
 
+  // <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+  //   <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
+  //   <span class="mdl-radio__label">First</span>
+  // </label>
 
   this.element = element;
   this.element._config = this._config;
@@ -99,7 +121,7 @@ var Form = function ( config ){
   if ( config && config.hasOwnProperty('class') ){
     this.setClass( config.class );
   };
-  
+
   return this;
 }
 Form.prototype.setClass = function( string ){
