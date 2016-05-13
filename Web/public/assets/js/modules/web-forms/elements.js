@@ -2,20 +2,28 @@
 
 var Label = function( config ) {
   this.element = document.createElement('label');
+  this.element.className = 'mdl-textfield__label';
   
-  if ( config.name ) {
-    this.name = this.setName( config.name );
+  console.log('Label = function( config ) {', config);
+
+  if ( config && config.hasOwnProperty('name') ) {
+    this.setName( config.name );
   };
-  if ( config.text ) {
-    this.text = this.setText( config.text );
+  if ( config && config.hasOwnProperty('text') ) {
+    this.setText( config.text );
   };
-  if ( config.class ) {
-    this.class = this.setClass( config.class );
+  if ( config && config.hasOwnProperty('class') ) {
+    this.setClass( config.class );
   };
-  if ( config.for ) {
-    this.for = this.setFor( config.for );
+  if ( config && config.hasOwnProperty('for') ) {
+    this.setFor( config.for );
   };
+  if ( config && config.hasOwnProperty('span') ) {
+    this.span = config.span;
+  };
+  this.render();
 }
+
 Label.prototype.setName = function( string ){
   this.element.name = string;
 };
@@ -28,11 +36,26 @@ Label.prototype.setClass = function( string ){
 Label.prototype.setFor = function( string ){
   this.element.setAttribute( 'for', string );
 };
+Label.prototype.render = function( string ){
+  if ( this.span ) {
+    var span = document.createElement('span');
+    span.className = 'mdl-radio__label';
+    span.textContent = this.element.textContent;
+    
+    this.element.textContent = '';
+    this.element.appendChild( span );
+  };
+  return this;
+};
+
 
 var Input = function( config ) {
-  
+  this.form = false;
+
   if ( config.elementType ) {
-    this.element = document.createElement( config.elementType );
+    this.element = document.createElement( 'input' );
+    this.element.className = 'mdl-textfield__input'
+    this.element.id = core.utils.generateId();
   };
 
   if ( config ) {
@@ -75,31 +98,86 @@ Input.prototype.setName = function( string ){
 };
 
 Input.prototype.setType = function( string ){
+  this.type = string;
   this.element.type = string;
 };
 
 Input.prototype.setPlaceholder = function( string ){
-  this.element.placeholder = string;
+  // this.element.placeholder = string;
 };
 
 Input.prototype.setLabel = function( string ){
-  this.label = new Label(string);
+  
+  var labelConfig = {
+    name  : '',
+    text  : string,
+    for   : this.element.id,
+    span  : this.form
+  };
+
+  if ( this.type !== 'text' ) {
+    labelConfig = `mdl-${this.type} mdl-js-${this.type} mdl-js-ripple-effect`
+  };
+
+  this.label = new Label( labelConfig );
 };
 
 Input.prototype.render = function(){
-  var element = {};
+// <!-- Simple Textfield -->
+// <form action="#">
+//   <div class="mdl-textfield mdl-js-textfield">
+//     <input class="mdl-textfield__input" type="text" id="sample1">
+//     <label class="mdl-textfield__label" for="sample1">Text...</label>
+//   </div>
+// </form>
+  
+  var element = document.createElement('div');
+  element.className = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label';
+  element.appendChild( this.element );
+  element.appendChild( this.label.element );
 
-  if ( this.label ) {
-    element = this.label.element;
-    element.insertAdjacentHTML('beforeend', this.element.outerHTML );
-  } else {
-    element = this.element;
-  };
+  // var label = this.label,
+  //      _el  = this.element;
+  // if ( this.span ) {
+  //   console.log('span+');
+  //   element = label.element.insertBefore( _el, label.firstChild );
+  // } else {
+  //   console.log('span-');
+  //   element = this.label.element;
+  //   // element.insertAdjacentHTML('beforeend', this.element.outerHTML );
+  // };
 
-  // <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
-  //   <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
-  //   <span class="mdl-radio__label">First</span>
-  // </label>
+
+  // var element = label.insertBefore( _el, span );
+
+
+
+// <!-- Textfield with Floating Label -->
+// <form action="#">
+//   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+//     <input class="mdl-textfield__input" type="text" id="sample3">
+//     <label class="mdl-textfield__label" for="sample3">Text...</label>
+//   </div>
+// </form>
+
+
+// <!-- Floating Multiline Textfield -->
+// <form action="#">
+//   <div class="mdl-textfield mdl-js-textfield">
+//     <textarea class="mdl-textfield__input" type="text" rows= "3" id="sample5" ></textarea>
+//     <label class="mdl-textfield__label" for="sample5">Text lines...</label>
+//   </div>
+// </form>
+
+
+//////////////
+// Checkbox //
+//////////////
+// <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
+//   <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
+//   <span class="mdl-checkbox__label">Checkbox</span>
+// </label>
+
 
   this.element = element;
   this.element._config = this._config;

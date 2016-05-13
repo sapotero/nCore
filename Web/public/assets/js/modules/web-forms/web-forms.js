@@ -158,22 +158,21 @@ WebForms.prototype.renderLeftPanel = function() {
   } );
   df.appendChild( input.element );
 
-  var date = this.Elements.create( {
-    elementType : 'input',
-    type : 'date',
-    name : 'test-input-date',
-    placeholder : 'texttium',
-  } );
-  df.appendChild( date.element );
+  // var date = this.Elements.create( {
+  //   elementType : 'input',
+  //   type : 'date',
+  //   name : 'test-input-date',
+  //   placeholder : 'texttium',
+  // } );
+  // df.appendChild( date.element );
 
-  var check = this.Elements.create( {
-    elementType : 'input',
-    name : 'test-checkbox',
-    type : 'checkbox',
-    label: 'checkbox'
-  } );
-  
-  df.appendChild( check.element );
+  // var check = this.Elements.create( {
+  //   elementType : 'input',
+  //   name : 'test-checkbox',
+  //   type : 'checkbox',
+  //   label: 'checkbox'
+  // } );
+  // df.appendChild( check.element );
   
   this.leftPanel.appendChild( df );
 
