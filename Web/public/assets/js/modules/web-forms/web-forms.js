@@ -193,21 +193,27 @@ WebForms.prototype.renderInfoPanel = function( config ) {
   if ( config && Object === config.constructor) {
     core.events.publish( "core:dom:infoPanel:clear" );
 
-    var list = this.Elements.create({
-      elementType : 'list'
+    // var list = this.Elements.create({
+    //   elementType : 'list'
+    // });
+    var form = this.Elements.create({
+      elementType : 'form'
     });
 
     for ( var key in config ) {
       var item = this.Elements.create({
-        elementType : 'listItem',
+        elementType : 'input',
         action : 'action',
-        // icon   : 'event',
         name   : config[key],
-        count  : key
+        count  : key,
+        icon   : 'event',
+        
+        label  : key,
+        form   : true
       });
-      list.element.appendChild( item.element );
+      form.element.appendChild( item.element );
     }
-    this.infoPanel = list.element;
+    this.infoPanel = form.element;
     
     core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
     core.events.publish( "core:dom:material:update" );

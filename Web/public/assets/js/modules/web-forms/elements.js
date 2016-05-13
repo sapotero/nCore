@@ -93,6 +93,22 @@ List.prototype.render = function(){
   return this.element;
 }
 
+var Form = function ( config ){
+  this.element = document.createElement('form');
+
+  if ( config && config.hasOwnProperty('class') ){
+    this.setClass( config.class );
+  };
+  
+  return this;
+}
+Form.prototype.setClass = function( string ){
+  this.element.className = string;
+}
+Form.prototype.render = function(){
+  return this.element;
+}
+
 
 var ListItem = function ( config ){
   this.action = '';
@@ -207,34 +223,37 @@ var Elements = function(){
 };
 
 Elements.prototype.create = function( options ) {
-  var parentClass = null;
+  var element = null;
 
   switch ( options.elementType ) {
     case 'label':
-      parentClass = Label;
+      element = Label;
       break;
     case 'input':
-      parentClass = Input;
+      element = Input;
       break;
     case 'list':
-      parentClass = List;
+      element = List;
+      break;
+    case 'form':
+      element = Form;
       break;
     case 'listItem':
-      parentClass = ListItem;
+      element = ListItem;
       break;
     default:
       break;
   }
   
-  if( parentClass === null ) {
+  if( element === null ) {
     return false;
   }
 
   
-  var element = new parentClass( options );
+  var _element = new element( options );
 
-  this.elements.push( element );
-  return element;
+  this.elements.push( _element );
+  return _element;
 }
 
 module.exports = new Elements();
