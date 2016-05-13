@@ -23,7 +23,6 @@ var WebForm = function(config){
   this.globalQuery = {};
   this.settings    = new WebFormSettings(config.settings);
 };
-
 WebForm.prototype.init = function(){
 
   this.detachEvents();
@@ -38,17 +37,14 @@ WebForm.prototype.init = function(){
   core.events.publish("core:web-forms:editor:template");
   core.events.publish("core:web-form:load", this._id );
 };
-
 WebForm.prototype.load = function(){
+
   console.log( 'WebForm -> bindEvents' );
 };
-
 WebForm.prototype.detachEvents = function(){
   core.events.remove("core:template:web-forms:editor");
   core.events.remove("core:web-form:loaded");
 };
-
-
 WebForm.prototype.attachEvents = function(){
   var webForm = this;
   
@@ -59,12 +55,11 @@ WebForm.prototype.attachEvents = function(){
   core.events.subscribe("core:web-form:loaded", function(data){
     webForm.loadEditor( data.raw.body );
   });
-  
 };
 
 
 
-var WebForms = function(){
+var WebForms = function WebForms(){
   this.forms     = {};
   this.leftPanel = {};
   this.content   = {};
@@ -76,6 +71,25 @@ WebForms.prototype.WebForm  = WebForm;
 WebForms.prototype.Elements = require('./elements');
 
 WebForms.prototype.init = function(){
+};
+WebForms.prototype.bindEvents = function(){
+  var webForms = this;
+  document.addEventListener('DOMContentLoaded', function(){ 
+    
+    core.events.subscribe("core:web-forms:render", function( data ){
+      webForms.render();
+    });
+
+    core.events.subscribe("core:web-forms:drag:export:result", function( result ){
+      console.log( 'core:web-forms:drag:export:result', result );
+    });
+
+    core.events.subscribe("core:web-forms:infoPanel:show", function( config ){
+      console.log( 'core:web-forms:infoPanel:show', config );
+      webForms.renderInfoPanel(config);
+    });
+
+  });
 };
 
 WebForms.prototype.import = function( data ){
@@ -109,26 +123,25 @@ WebForms.prototype.import = function( data ){
 
   };
 };
-WebForms.prototype.bindEvents = function(){
-  var webForms = this;
-  document.addEventListener('DOMContentLoaded', function(){ 
-    
-    core.events.subscribe("core:web-forms:render", function( data ){
-      webForms.render();
-    });
+WebForms.prototype.add = function( type, config ) {
 
-    core.events.subscribe("core:web-forms:drag:export:result", function( result ){
-      console.log( 'core:web-forms:drag:export:result', result );
-    });
+  if ( !this.documents.hasOwnProperty(type) ) {
+    this.documents[type] = [];
+  }
 
-    core.events.subscribe("core:web-forms:infoPanel:show", function( config ){
-      console.log( 'core:web-forms:infoPanel:show', config );
-      webForms.renderInfoPanel(config);
-    });
-
-  });
-
-
+  this.documents[type].push( new this.WebForm(config) );
+};
+WebForms.prototype.show = function(id) {
+  console.log( 'WebForms: show -> ', id);
+  var webForm = this.find(id);
+  if ( webForm ) {
+    webForm.init();
+  } else {
+    throw new Error('template not found!');
+  }
+};
+WebForms.prototype.clear = function(config) {
+  this.forms = {};
 };
 
 WebForms.prototype.renderLeftPanel = function() {
@@ -160,12 +173,12 @@ WebForms.prototype.renderLeftPanel = function() {
     label: 'checkbox'
   } );
   
-  console.log( '158 | web-forms -> check create', check, check.element, check._config );
-
   df.appendChild( check.element );
   
   this.leftPanel.appendChild( df );
-  core.dom.leftPanel.appendChild( this.leftPanel );
+
+  core.events.publish( "core:dom:leftPanel:set", this.leftPanel );
+  core.events.publish( "core:dom:material:update" );
 }
 WebForms.prototype.renderContent = function() {
   this.content   = document.createElement('div');
@@ -173,15 +186,12 @@ WebForms.prototype.renderContent = function() {
   this.content.style.height = '800px';
   this.content.id = 'web-forms-container';
 
-  core.dom.content.appendChild( this.content );
+  core.events.publish( "core:dom:content:set", this.content );
 }
 WebForms.prototype.renderInfoPanel = function( config ) {
 
   if ( config && Object === config.constructor) {
-
-    core.dom.infoPanel.innerHTML = '';
-
-    this.infoPanel = document.createElement('div');
+    core.events.publish( "core:dom:infoPanel:clear" );
 
     var list = this.Elements.create({
       elementType : 'list'
@@ -190,60 +200,32 @@ WebForms.prototype.renderInfoPanel = function( config ) {
     for ( var key in config ) {
       var item = this.Elements.create({
         elementType : 'listItem',
-        action : 'event',
-        icon   : 'event',
+        action : 'action',
+        // icon   : 'event',
         name   : config[key],
         count  : key
       });
       list.element.appendChild( item.element );
     }
-
     this.infoPanel = list.element;
-    core.dom.infoPanel.appendChild( this.infoPanel );
+    
+    core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
+    core.events.publish( "core:dom:material:update" );
   };
 }
-
 WebForms.prototype.render = function(){
+
   core.events.publish( "core:dom:application:clear" );
+  core.events.publish( "core:current:set", this );
 
   this.renderLeftPanel();
   this.renderContent();
   this.renderInfoPanel();
-
-  componentHandler.upgradeAllRegistered();
   
   core.events.publish( "core:drag:attachEvents" );
+  core.events.publish( "core:dom:material:update" );
 };
 
-WebForms.prototype.add = function( type, config ) {
-
-  if ( !this.documents.hasOwnProperty(type) ) {
-    this.documents[type] = [];
-  }
-
-  this.documents[type].push( new this.WebForm(config) );
-};
-
-WebForms.prototype.clear = function(config) {
-  this.documents = {};
-};
-
-
-WebForms.prototype.build = function() {
-  this.documents = {};
-};
-
-
-
-WebForms.prototype.show = function(id) {
-  console.log( 'WebForms: show -> ', id);
-  var webForm = this.find(id);
-  if ( web-form ) {
-    webForm.init();
-  } else {
-    throw new Error('template not found!');
-  }
-};
 
 WebForms.prototype.start = function() {
   console.log( 'WebForms: start' );

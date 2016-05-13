@@ -4,8 +4,6 @@ var Label = function( name ) {
   this.element = document.createElement('label');
   this.element.style.padding  = '10px';
   this.element.style.display  = 'block';
-  // this.element.style.position = 'absolute';
-
 
   if ( name ) {
     this.name = this.setName( name );
@@ -17,33 +15,41 @@ Label.prototype.setName = function( string ){
   this.element.textContent = string;
 };
 
-var Input = function( options ) {
-  if ( options.elementType ) {
-    this.element = document.createElement( options.elementType );
-    this.element.style.margin   = '0px 10px';
+var Input = function( config ) {
+  
+  if ( config.elementType ) {
+    this.element = document.createElement( config.elementType );
   };
 
-  if ( options ) {
-    this._config = options;
+  if ( config ) {
+    this._config = config;
   };
 
-  if ( options.name ) {
-    this.setName( options.name );
+  if ( config.name ) {
+    this.setName( config.name );
   };
   
-  if ( options.type ) {
-    this.setType( options.type );
+  if ( config.type ) {
+    this.setType( config.type );
   };
   
-  if ( options.placeholder ) {
-    this.setPlaceholder( options.placeholder );
+  if ( config.placeholder ) {
+    this.setPlaceholder( config.placeholder );
   };
   
-  if ( options.label ) {
-    this.setLabel( options.label );
+  if ( config.label ) {
+    this.setLabel( config.label );
+  };
+
+  if ( config && config.hasOwnProperty('class') ) {
+    this.setClass(config.class);
   };
 
   this.render();
+}
+
+Input.prototype.setClass = function ( data ) {
+  this.element.className = data;
 }
 
 Input.prototype.setName = function( string ){
@@ -93,10 +99,13 @@ var ListItem = function ( config ){
   this.name   = '';
   this.icon   = '';
   this.count  = '';
+  this.action = '';
 
   if ( config ) {
     this._config = config;
   }
+
+  
 
   if ( config && config.hasOwnProperty('root') ) {
       this.setRoot(config.root);
@@ -114,12 +123,19 @@ var ListItem = function ( config ){
     this.setCount(config.count);
   };
 
+  if ( config && config.hasOwnProperty('action') ) {
+      this.setAction(config.action);
+  };
+
   this.render();
 }
 
 
 ListItem.prototype.setRoot = function ( data ) {
   this.root = data;
+}
+ListItem.prototype.setAction = function ( data ) {
+  this.action = data;
 }
 
 ListItem.prototype.setName = function ( data ) {
@@ -131,6 +147,7 @@ ListItem.prototype.setIcon = function ( data ) {
 ListItem.prototype.setCount = function ( data ) {
   this.count = data;
 }
+
 ListItem.prototype.render = function () {
   this.element = document.createElement('li');
   this.element.className = 'menu-item mdl-list__item';
@@ -154,6 +171,7 @@ ListItem.prototype.render = function () {
     content.appendChild( name );
   }
 
+
   if ( this.count ) {
     var count = document.createElement('span');
     count.className   = 'mdl-list__item-sub-title';
@@ -167,6 +185,21 @@ ListItem.prototype.render = function () {
 
 
   this.element.appendChild( content );
+  
+  if ( this.action ) {
+    var action = document.createElement('span');
+    var id = core.utils.generateId();
+
+    action.className = 'mdl-list__item-secondary-action';
+    action.innerHTML = `
+    <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="${id}">
+        <input type="checkbox" id="${id}" class="mdl-checkbox__input" checked />
+      </label>
+    </span>`;
+
+    this.element.appendChild( action );
+  };
 }
 
 var Elements = function(){

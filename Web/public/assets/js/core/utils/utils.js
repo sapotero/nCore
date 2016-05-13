@@ -112,6 +112,10 @@ Utils.prototype.extend = function() {
   }
   return arguments[0];
 }
+Utils.prototype.generateId = function() {
+  return Math.floor( Math.random() * Math.pow(2,32) ).toString(10);
+};
+
 
 Utils.prototype.start = function() {
   console.log( 'Utils: start' );

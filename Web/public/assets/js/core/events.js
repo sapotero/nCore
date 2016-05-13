@@ -17,6 +17,10 @@ module.exports = function(){
       core.worker.postMessage( [ 'template:load', template ] )
     });
 
+    core.events.subscribe( "core:current:set", function ( module ) {
+      core.setCurrent( module );
+    });
+
     // загрузка всех отчетов
     // core.events.subscribe( "core:reports:loaded", function (data) {
     //   console.log( "core:reports:loaded", data );

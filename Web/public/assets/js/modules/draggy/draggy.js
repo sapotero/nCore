@@ -323,7 +323,9 @@ Draggy.prototype.addConfigButton = function( element ){
 
 Draggy.prototype.showInfoPanel = function( element, e ){
   console.log( 'showInfoPanel', element, element._DragOptions, element._config );
+  
   core.events.publish("core:web-forms:infoPanel:show", element._config );
+  core.events.publish("core:dom:infoPanel:show");
 }
 
 Draggy.prototype.deleteElement = function( element, e ){
@@ -334,16 +336,14 @@ Draggy.prototype.deleteElement = function( element, e ){
 Draggy.prototype.remove = function( element ){
   console.log( 'Draggy.prototype.remove', element );
   
-  // for (var i = this.elements.length - 1; i >= 0; i--) {
   for (var i = 0, length = this.elements.length; i < length; i++) {
-    console.log( '**',i);
     
     if ( this.elements[i].el == element ) {
-      
-      console.log( '++++',i, element);
-
       this.elements[i].el.remove();
       this.elements.splice(i, 1);
+
+      core.events.publish("core:dom:infoPanel:hide");
+      setTimeout( function(){ core.events.publish("core:dom:infoPanel:clear") } , 500);
       break;
     };
 

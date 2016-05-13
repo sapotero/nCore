@@ -32,6 +32,9 @@ core = (function(){
       'bps'         : new Bps(),
       'drag'        : new Draggy()
     };
+
+    // какой модуль активный в данный момент
+    this.current  = {};
     this.debug    = true;
 
     this.bindEvents();
@@ -44,9 +47,11 @@ core = (function(){
     console.log( 'Core :: loadCustomElements', elements );
   };
 
+  Core.prototype.setCurrent = function( module ) {
+    this.current = module;
+  };
+
   Core.prototype.start = function(module) {
-    // this.events.publish( "core:start:" + module );
-    // this.events.publish("core:preloader:start")
   };
 
   Core.prototype.destroy = function(module) {

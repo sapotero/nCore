@@ -30,6 +30,48 @@ Dom.prototype.bindEvents = function () {
       dom.infoPanel.innerHTML = '';
     });
 
+    core.events.subscribe('core:dom:infoPanel:clear', function () {
+      dom.infoPanel.innerHTML = '';
+    });
+
+    core.events.subscribe('core:dom:infoPanel:hide', function () {
+      dom.hideInfoPanel();
+    });
+
+    core.events.subscribe('core:dom:infoPanel:show', function () {
+      dom.showInfoPanel();
+    });
+
+    core.events.subscribe('core:dom:infoPanel:set', function ( html ) {
+      dom.infoPanel.appendChild( html );
+    });
+
+    core.events.subscribe('core:dom:content:set', function ( html ) {
+      dom.content.appendChild( html );
+    });
+
+    core.events.subscribe('core:dom:leftPanel:clear', function () {
+      dom.leftPanel.innerHTML = '';
+    });
+
+    core.events.subscribe('core:dom:leftPanel:hide', function () {
+      dom.hideleftPanel();
+    });
+
+    core.events.subscribe('core:dom:leftPanel:show', function () {
+      dom.showleftPanel();
+    });
+
+    core.events.subscribe('core:dom:leftPanel:set', function ( html ) {
+      dom.leftPanel.appendChild( html );
+    });
+
+
+    core.events.subscribe('core:dom:material:update', function () {
+      componentHandler.upgradeAllRegistered();
+    });
+
+
     core.events.publish( "core:dom:clear" );
 
     core.events.subscribe('core:dom:build:application', function () {
@@ -313,12 +355,17 @@ Dom.prototype.addToDrawerNavigation = function ( href, name ) {
 /* INFO PANEL */
 Dom.prototype.toggleInfoPanel = function(){
   console.log('DOM: toggleInfoPanel');
-  // this.infoPanel.style.backgroundColor = '#' + Math.floor( Math.random()*16777215 ).toString(16);
-  // this.content.style.backgroundColor   = '#' + Math.floor( Math.random()*16777215 ).toString(16);
-
   this.content.classList.toggle('mdl-cell--10-col');
   this.infoPanel.classList.toggle('zero-width');
-  // this.infoPanel.style.width = Math.floor( Math.random()*100 ) + 'px';
+};
+
+Dom.prototype.showInfoPanel = function(){
+  this.content.classList.remove('mdl-cell--10-col');
+  this.infoPanel.classList.remove('zero-width');
+};
+Dom.prototype.hideInfoPanel = function(){
+  this.content.classList.add('mdl-cell--10-col');
+  this.infoPanel.classList.add('zero-width');
 };
 
 

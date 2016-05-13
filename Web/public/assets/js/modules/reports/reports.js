@@ -1,6 +1,6 @@
 "use strict";
 
-var ReportSettings = function(config){
+var ReportSettings = function ReportSettings(config){
   this.currentDate = new Date();
   this.currentYear  = this.currentDate.getFullYear();
   this.periodStart  = this.currentDate;
@@ -13,7 +13,7 @@ var ReportSettings = function(config){
   this.isNew        = config.isNew || true;
 };
 
-var Report = function(config){
+var Report = function Report(config){
   this.element     = {};
   this._id         = config._id         || '';
   this.name        = config.name        || '';
@@ -179,7 +179,7 @@ Report.prototype.render = function( config ){
 };
 
 
-var Reports = function(){
+var Reports = function Reports(){
   this.element   = {};
   this.documents = [];
   this.current   = {};
@@ -427,7 +427,10 @@ Reports.prototype.renderContent = function(){
 }
 
 Reports.prototype.render = function() {
+  
   core.events.publish( "core:dom:application:clear" );
+  core.events.publish( "core:current:set", this );
+
 
   this.renderLeftPanel();
   this.renderContent();
