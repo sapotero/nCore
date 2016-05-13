@@ -153,26 +153,27 @@ WebForms.prototype.renderLeftPanel = function() {
     elementType : 'input',
     name : 'test-input',
     type : 'text',
-    placeholder : 'texttium',
     label: 'label'
   } );
   df.appendChild( input.element );
 
-  // var date = this.Elements.create( {
-  //   elementType : 'input',
-  //   type : 'date',
-  //   name : 'test-input-date',
-  //   placeholder : 'texttium',
-  // } );
-  // df.appendChild( date.element );
+  var check = this.Elements.create( {
+    elementType : 'input',
+    name : 'checkbox',
+    type : 'checkbox',
+    label: 'checkbox++',
+    form : true
+  } );
+  df.appendChild( check.element );
 
-  // var check = this.Elements.create( {
+  // var radio = this.Elements.create( {
   //   elementType : 'input',
-  //   name : 'test-checkbox',
-  //   type : 'checkbox',
-  //   label: 'checkbox'
+  //   name : 'radio',
+  //   type : 'radio',
+  //   label: 'radio',
+  //   form: true
   // } );
-  // df.appendChild( check.element );
+  // df.appendChild( radio.element );
   
   this.leftPanel.appendChild( df );
 

@@ -39,7 +39,7 @@ Label.prototype.setFor = function( string ){
 Label.prototype.render = function( string ){
   if ( this.span ) {
     var span = document.createElement('span');
-    span.className = 'mdl-radio__label';
+    span.className = `mdl-${this.span}__label`;
     span.textContent = this.element.textContent;
     
     this.element.textContent = '';
@@ -112,29 +112,56 @@ Input.prototype.setLabel = function( string ){
     name  : '',
     text  : string,
     for   : this.element.id,
-    span  : this.form
+    // span  : this.form
   };
 
-  if ( this.type !== 'text' ) {
-    labelConfig = `mdl-${this.type} mdl-js-${this.type} mdl-js-ripple-effect`
+
+  if ( this.type == 'checkbox' || this.type == 'radio' ) {
+    console.log( '++++setType', this.type );
+
+    this.element.className = `mdl-${this.type}__input`;
+    labelConfig.class = `mdl-${this.type} mdl-js-${this.type}`;
+    labelConfig.span  = this.type;
   };
 
   this.label = new Label( labelConfig );
 };
 
 Input.prototype.render = function(){
-// <!-- Simple Textfield -->
+
+// <!-- Textfield with Floating Label -->
 // <form action="#">
-//   <div class="mdl-textfield mdl-js-textfield">
-//     <input class="mdl-textfield__input" type="text" id="sample1">
-//     <label class="mdl-textfield__label" for="sample1">Text...</label>
+//   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+//     <input class="mdl-textfield__input" type="text" id="sample3">
+//     <label class="mdl-textfield__label" for="sample3">Text...</label>
 //   </div>
 // </form>
-  
-  var element = document.createElement('div');
-  element.className = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label';
-  element.appendChild( this.element );
-  element.appendChild( this.label.element );
+
+//////////////
+// Checkbox //
+//////////////
+// <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
+//   <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
+//   <span class="mdl-checkbox__label">Checkbox</span>
+// </label>
+  var wrapper = document.createElement('div');
+
+  var element = {};
+
+  if ( this.type === 'checkbox' || this.type === 'radio' ) {
+    console.log( 'checkbox++', this.label.element, this.element );
+
+    // this.label.element.insertBefore( this.element, this.label.element.firstChild );
+    this.label.element.appendChild( this.element );
+    element = this.label.element
+    wrapper.appendChild( this.label.element );
+
+  } else {
+    wrapper.className = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label';
+    wrapper.appendChild( this.element );
+    wrapper.appendChild( this.label.element );
+  }
+  console.log( '+++', element );
 
   // var label = this.label,
   //      _el  = this.element;
@@ -151,16 +178,6 @@ Input.prototype.render = function(){
   // var element = label.insertBefore( _el, span );
 
 
-
-// <!-- Textfield with Floating Label -->
-// <form action="#">
-//   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-//     <input class="mdl-textfield__input" type="text" id="sample3">
-//     <label class="mdl-textfield__label" for="sample3">Text...</label>
-//   </div>
-// </form>
-
-
 // <!-- Floating Multiline Textfield -->
 // <form action="#">
 //   <div class="mdl-textfield mdl-js-textfield">
@@ -170,16 +187,7 @@ Input.prototype.render = function(){
 // </form>
 
 
-//////////////
-// Checkbox //
-//////////////
-// <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
-//   <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
-//   <span class="mdl-checkbox__label">Checkbox</span>
-// </label>
-
-
-  this.element = element;
+  this.element = wrapper;
   this.element._config = this._config;
 };
 
