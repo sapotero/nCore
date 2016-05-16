@@ -64,6 +64,9 @@ var WebForms = function WebForms(){
   this.leftPanel = {};
   this.content   = {};
   this.infoPanel = {};
+  
+  this.active    = {};
+  
   this.bindEvents();
 };
 
@@ -201,7 +204,7 @@ WebForms.prototype.renderLeftPanel = function() {
     text : 'valuesss'
   });
   df.appendChild( label.element );
-  
+
 
   var textarea = core.elements.create( {
     elementType : 'textarea',
@@ -222,29 +225,36 @@ WebForms.prototype.renderLeftPanel = function() {
   });
   df.appendChild( _switch.element );
 
+  var button = core.elements.create( {
+    elementType : 'button',
+    preventCopy: true,
+    name : 'test-check',
+    fab  : true,
+    icon : 'star'
+  });
+  df.appendChild( button.element );
 
+  var button = core.elements.create( {
+    elementType : 'button',
+    preventCopy: true,
+    name : 'test-check',
+    text : 'TEST',
+    raised  : true,
+    ripple  : true,
+    color   : true
+  });
+  df.appendChild( button.element );
 
-  // var text = core.elements.create( {
-  //   elementType : 'text',
-  //   text  : 'label',
-  //   for   : checkbox,
-  //   class : 'class'
-  // } );
-  // df.appendChild( text.element );
+  var button = core.elements.create( {
+    elementType : 'button',
+    preventCopy: true,
+    name : 'test-check',
+    text : 'TEST_FLAT',
+    flat  : true,
+    ripple  : true,
+  });
+  df.appendChild( button.element );
 
-
-  
-  
-  
-
-  // var radio = core.elements.create( {
-  //   elementType : 'input',
-  //   name : 'radio',
-  //   type : 'radio',
-  //   label: 'radio',
-  //   form: true
-  // } );
-  // df.appendChild( radio.element );
   
   this.leftPanel.appendChild( df );
 
@@ -259,27 +269,33 @@ WebForms.prototype.renderContent = function() {
 
   core.events.publish( "core:dom:content:set", this.content );
 }
-WebForms.prototype.renderInfoPanel = function( config ) {
-
-  if ( config && Object === config.constructor) {
-    core.events.publish( "core:dom:infoPanel:clear" );
-
-    var form = document.createElement('div');
-
-    for ( var key in config ) {
-      var item = core.elements.create({
-        elementType : 'input',
-        name   : config[key],
-        value  : key + '__' +  config[key],
-        icon   : 'event'
-      });
-      form.appendChild( item.element );
-    }
-    this.infoPanel = form;
+WebForms.prototype.renderInfoPanel = function( element ) {
+  if ( element ) {
     
-    core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
-    core.events.publish( "core:dom:material:update" );
-  };
+    this.active = element;
+
+    var config  = element._config;
+    console.log( 'renderInfoPanel render ->', element );
+
+    if ( config && Object === config.constructor) {
+      core.events.publish( "core:dom:infoPanel:clear" );
+
+      var form = document.createElement('div');
+
+      for ( var key in config ) {
+        var item = core.elements.create({
+          elementType : 'input',
+          name   : config[key],
+          value  : key + '__' +  config[key],
+        });
+        form.appendChild( item.element );
+      }
+      this.infoPanel = form;
+      
+      core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
+      core.events.publish( "core:dom:material:update" );
+    };
+  }
 }
 WebForms.prototype.render = function(){
 

@@ -39,6 +39,12 @@ Element.prototype.create = function( options ) {
     case 'listItem':
       element = this.ListItem;
       break;
+
+    case 'button':
+      element = this.Button;
+      break;
+
+
     default:
       break;
   }
@@ -47,7 +53,6 @@ Element.prototype.create = function( options ) {
     return false;
   }
 
-  
   var _element = new element( options );
 
   if ( options.hasOwnProperty('preventCopy') && !options.preventCopy ) {
@@ -61,5 +66,6 @@ Element.prototype.Radio    = require('./elements/radio');
 Element.prototype.Switch   = require('./elements/switch');
 Element.prototype.Label    = require('./elements/label');
 Element.prototype.Textarea = require('./elements/textarea');
+Element.prototype.Button   = require('./elements/button');
 
 module.exports = Element;

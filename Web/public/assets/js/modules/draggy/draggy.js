@@ -327,7 +327,7 @@ Draggy.prototype.addConfigButton = function( element ){
 Draggy.prototype.showInfoPanel = function( element, e ){
   console.log( 'showInfoPanel', element, element._DragOptions, element._config );
   
-  core.events.publish("core:web-forms:infoPanel:show", element.firstElementChild._config );
+  core.events.publish("core:web-forms:infoPanel:show", element.firstElementChild );
   core.events.publish("core:dom:infoPanel:show");
 }
 
