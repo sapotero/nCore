@@ -4,7 +4,6 @@ var Input = function( config ) {
   this.element.id = core.utils.generateId();
 
   this.config = config;
-  this.element._config = config;
 
   this.render();
 }
@@ -57,6 +56,7 @@ Input.prototype.render = function() {
     this.element = wrapper;
   }
 
+  this.element._config = this.config;
   return this;
 };
 module.exports = Input;

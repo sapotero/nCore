@@ -59,6 +59,8 @@ Radio.prototype.render = function( string ){
 
     this.element = this.label.element;
   }
+  this.element._config = this.config;
+  return this;
 };
 
 

@@ -162,8 +162,7 @@ WebForms.prototype.renderLeftPanel = function() {
 
   var checkbox = core.elements.create( {
     elementType : 'checkbox',
-    name : 'test-input',
-    name  : 'name',
+    name : 'test-check',
     checked: true,
     // value : 'value',
     label : 'label_check'
@@ -172,7 +171,6 @@ WebForms.prototype.renderLeftPanel = function() {
 
   var radio = core.elements.create( {
     elementType : 'radio',
-    name : 'test-input',
     name  : 'name',
     checked: true,
     // value : 'value',
@@ -181,7 +179,6 @@ WebForms.prototype.renderLeftPanel = function() {
   df.appendChild( radio.element );
   var radio = core.elements.create( {
     elementType : 'radio',
-    name : 'test-input',
     name  : 'name',
     // value : 'value',
     label : 'radio'
@@ -189,14 +186,22 @@ WebForms.prototype.renderLeftPanel = function() {
   df.appendChild( radio.element );
   var radio = core.elements.create( {
     elementType : 'radio',
-    name : 'test-input',
     name  : 'name',
     // value : 'value',
     label : 'radio'
   });
   df.appendChild( radio.element );
 
-  
+  var label = core.elements.create( {
+    elementType : 'label',
+    class: 'mdl-label',
+    name  : 'name',
+    text : 'value'
+  });
+
+  df.appendChild( label.element );
+
+
 
   // var text = core.elements.create( {
   //   elementType : 'text',

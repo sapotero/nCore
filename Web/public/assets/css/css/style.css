@@ -28,6 +28,10 @@
   animation-fill-mode: both;
 }
 
+.mdl-label {
+  display: block;
+}
+
 .page-content-panel-animation {
   transition: 0.3s ease;
 }

@@ -292,7 +292,7 @@ Element.prototype.create = function( options ) {
 
   switch ( options.elementType ) {
     // forms
-    case 'text':
+    case 'label':
       element = this.Label;
       break;
     
