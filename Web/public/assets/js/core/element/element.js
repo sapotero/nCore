@@ -50,7 +50,9 @@ Element.prototype.create = function( options ) {
   
   var _element = new element( options );
 
-  this.elements.push( _element );
+  if ( options.hasOwnProperty('preventCopy') && !options.preventCopy ) {
+    this.elements.push( _element );
+  }
   return _element;
 }
 Element.prototype.Input    = require('./elements/input');

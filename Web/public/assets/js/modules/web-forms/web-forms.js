@@ -150,6 +150,7 @@ WebForms.prototype.renderLeftPanel = function() {
   var df = document.createDocumentFragment();
   var input = core.elements.create( {
     elementType : 'input',
+    preventCopy: true,
     name  : 'name',
     // value : 'value',
     label : 'label_input'
@@ -158,6 +159,7 @@ WebForms.prototype.renderLeftPanel = function() {
 
   var checkbox = core.elements.create( {
     elementType : 'checkbox',
+    preventCopy: true,
     name : 'test-check',
     checked: true,
     // value : 'value',
@@ -167,6 +169,7 @@ WebForms.prototype.renderLeftPanel = function() {
 
   var radio = core.elements.create( {
     elementType : 'radio',
+    preventCopy: true,
     name  : 'name',
     checked: true,
     // value : 'value',
@@ -175,6 +178,7 @@ WebForms.prototype.renderLeftPanel = function() {
   df.appendChild( radio.element );
   var radio = core.elements.create( {
     elementType : 'radio',
+    preventCopy: true,
     name  : 'name',
     // value : 'value',
     label : 'radio'
@@ -182,6 +186,7 @@ WebForms.prototype.renderLeftPanel = function() {
   df.appendChild( radio.element );
   var radio = core.elements.create( {
     elementType : 'radio',
+    preventCopy: true,
     name  : 'name',
     // value : 'value',
     label : 'radio'
@@ -190,13 +195,17 @@ WebForms.prototype.renderLeftPanel = function() {
 
   var label = core.elements.create( {
     elementType : 'label',
+    preventCopy: true,
     class: 'mdl-label',
     name  : 'name',
-    text : 'value'
+    text : 'valuesss'
   });
+  df.appendChild( label.element );
+  
 
   var textarea = core.elements.create( {
     elementType : 'textarea',
+    preventCopy: true,
     name  : 'name',
     value : 'value',
     label : 'label_input'
@@ -205,6 +214,7 @@ WebForms.prototype.renderLeftPanel = function() {
 
   var _switch = core.elements.create( {
     elementType : 'switch',
+    preventCopy: true,
     name : 'test-check',
     checked: true,
     // value : 'value',

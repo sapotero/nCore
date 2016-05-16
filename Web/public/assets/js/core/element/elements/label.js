@@ -14,6 +14,8 @@ var Label = function Label( config ) {
     this.setFor( config.for );
   };
 
+  this.element._config = config;
+
   this.render();
 }
 

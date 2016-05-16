@@ -240,24 +240,25 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
   e.preventDefault();
   e.stopPropagation();
   
+  // _drag.innerHTML = e.dataTransfer.getData('text');
+  // _drag._config   = JSON.parse( e.dataTransfer.getData('config') );
+  var _config = JSON.parse( e.dataTransfer.getData('config') );
+  _config.preventCopy = false;
+
+  var _element = core.elements.create( _config );
+
   var _drag = document.createElement('div');
-  _drag.innerHTML = e.dataTransfer.getData('text');
-  _drag._config   = JSON.parse( e.dataTransfer.getData('config') );
+  _drag.appendChild( _element.element );
 
   _drag._DragOptions = { snapX: 10,  snapY: 10, activeClass: "active-border" };
 
-
-  // element.insertAdjacentHTML('afterbegin', _drag.outerHTML );
   element.appendChild( _drag );
 
-  this.dragElementRemoveEvents(_drag);
-  this.clonedElementAttachEvents(_drag);
-
-  core.modules.drag.add( _drag, _drag._DragOptions );
+  this.dragElementRemoveEvents( _drag );
+  this.clonedElementAttachEvents( _drag );
+  core.modules.drag.add( _drag , _drag._DragOptions );
   
   element.elementDragged = null;
-
-  // console.log( '_drag element', _drag );
 }
 
 
@@ -292,7 +293,7 @@ Draggy.prototype.addConfigButton = function( element ){
   config.style.top       = box.top + 'px';
   config.style.left      = box.left + 'px';
   config.style.height    = box.height + 'px';
-  config.style.width     = box.width + 'px';
+  config.style.width     = box.width + 20 + 'px';
 
   // <button class="mdl-button mdl-js-button mdl-button--icon">
   //   <i class="material-icons">mood</i>
