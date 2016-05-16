@@ -149,31 +149,67 @@ WebForms.prototype.renderLeftPanel = function() {
 
   var df = document.createDocumentFragment();
   var input = core.elements.create( {
+
     elementType : 'input',
-    name : 'test-input',
-    
+
     // @super
     name  : 'name',
-    value : 'value',
-    class : 'class',
+    // value : 'value',
+    label : 'label_input'
 
-    label: 'label'
   } );
   df.appendChild( input.element );
 
   var checkbox = core.elements.create( {
     elementType : 'checkbox',
-    
     name : 'test-input',
-    
-    // @super
     name  : 'name',
-    value : 'value',
-    class : 'class',
-
-    label: 'label'
-  } );
+    checked: true,
+    // value : 'value',
+    label : 'label_check'
+  });
   df.appendChild( checkbox.element );
+
+  var radio = core.elements.create( {
+    elementType : 'radio',
+    name : 'test-input',
+    name  : 'name',
+    checked: true,
+    // value : 'value',
+    label : 'radio'
+  });
+  df.appendChild( radio.element );
+  var radio = core.elements.create( {
+    elementType : 'radio',
+    name : 'test-input',
+    name  : 'name',
+    // value : 'value',
+    label : 'radio'
+  });
+  df.appendChild( radio.element );
+  var radio = core.elements.create( {
+    elementType : 'radio',
+    name : 'test-input',
+    name  : 'name',
+    // value : 'value',
+    label : 'radio'
+  });
+  df.appendChild( radio.element );
+
+  
+
+  // var text = core.elements.create( {
+  //   elementType : 'text',
+  //   text  : 'label',
+  //   for   : checkbox,
+  //   class : 'class'
+  // } );
+  // df.appendChild( text.element );
+
+
+  
+  
+  
 
   // var radio = core.elements.create( {
   //   elementType : 'input',
@@ -202,28 +238,18 @@ WebForms.prototype.renderInfoPanel = function( config ) {
   if ( config && Object === config.constructor) {
     core.events.publish( "core:dom:infoPanel:clear" );
 
-    var list = core.elements.create({
-      elementType : 'list'
-    });
-    var form = core.elements.create({
-      elementType : 'form'
-    });
+    var form = document.createElement('div');
 
     for ( var key in config ) {
       var item = core.elements.create({
         elementType : 'input',
-        action : 'action',
         name   : config[key],
-        count  : key,
-        icon   : 'event',
-        
-        type   : 'text',
-        label  : key,
-        form   : true
+        value  : key + '__' +  config[key],
+        icon   : 'event'
       });
-      form.element.appendChild( item.element );
+      form.appendChild( item.element );
     }
-    this.infoPanel = form.element;
+    this.infoPanel = form;
     
     core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
     core.events.publish( "core:dom:material:update" );

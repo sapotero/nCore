@@ -292,7 +292,7 @@ Element.prototype.create = function( options ) {
 
   switch ( options.elementType ) {
     // forms
-    case 'label':
+    case 'text':
       element = this.Label;
       break;
     
@@ -331,10 +331,10 @@ Element.prototype.create = function( options ) {
   this.elements.push( _element );
   return _element;
 }
-// Element.prototype.Label = require('./elements/label');
 Element.prototype.Input    = require('./elements/input');
 Element.prototype.Checkbox = require('./elements/checkbox');
 Element.prototype.Radio    = require('./elements/radio');
+Element.prototype.Label    = require('./elements/label');
 // Element.prototype.Textarea = require('./elements/textarea');
 
 module.exports = Element;

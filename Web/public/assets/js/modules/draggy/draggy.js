@@ -198,9 +198,9 @@ Draggy.prototype.dragElementRemoveEvents = function( element ){
 };
 
 Draggy.prototype.dragElementDragStart = function( element, e ){
-  // console.log('dragstart', element, element._config);
+  console.log('dragstart', element, element._config);
   e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text', element.innerHTML);
+  e.dataTransfer.setData('text', element.outerHTML);
   e.dataTransfer.setData('config', JSON.stringify(element._config) );
   element.elementDragged = element;
 }
