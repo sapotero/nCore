@@ -259,6 +259,8 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
   core.modules.drag.add( _drag , _drag._DragOptions );
   
   element.elementDragged = null;
+  core.events.publish( "core:dom:material:update" );
+  
 }
 
 
@@ -325,7 +327,7 @@ Draggy.prototype.addConfigButton = function( element ){
 Draggy.prototype.showInfoPanel = function( element, e ){
   console.log( 'showInfoPanel', element, element._DragOptions, element._config );
   
-  core.events.publish("core:web-forms:infoPanel:show", element._config );
+  core.events.publish("core:web-forms:infoPanel:show", element.firstElementChild._config );
   core.events.publish("core:dom:infoPanel:show");
 }
 
