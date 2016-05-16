@@ -148,24 +148,34 @@ WebForms.prototype.renderLeftPanel = function() {
   this.leftPanel.id = 'web-forms-left';
 
   var df = document.createDocumentFragment();
-  // var input = this.Elements.create( {
-  //   elementType : 'input',
-  //   name : 'test-input',
-  //   type : 'text',
-  //   label: 'label'
-  // } );
-  // df.appendChild( input.element );
+  var input = core.elements.create( {
+    elementType : 'input',
+    name : 'test-input',
+    
+    // @super
+    name  : 'name',
+    value : 'value',
+    class : 'class',
 
-  // var check = this.Elements.create( {
-  //   elementType : 'input',
-  //   name : 'checkbox',
-  //   type : 'checkbox',
-  //   label: 'checkbox++',
-  //   form : true
-  // } );
-  // df.appendChild( check.element );
+    label: 'label'
+  } );
+  df.appendChild( input.element );
 
-  // var radio = this.Elements.create( {
+  var checkbox = core.elements.create( {
+    elementType : 'checkbox',
+    
+    name : 'test-input',
+    
+    // @super
+    name  : 'name',
+    value : 'value',
+    class : 'class',
+
+    label: 'label'
+  } );
+  df.appendChild( checkbox.element );
+
+  // var radio = core.elements.create( {
   //   elementType : 'input',
   //   name : 'radio',
   //   type : 'radio',
@@ -192,28 +202,28 @@ WebForms.prototype.renderInfoPanel = function( config ) {
   if ( config && Object === config.constructor) {
     core.events.publish( "core:dom:infoPanel:clear" );
 
-    // var list = this.Elements.create({
-    //   elementType : 'list'
-    // });
-    // var form = this.Elements.create({
-    //   elementType : 'form'
-    // });
+    var list = core.elements.create({
+      elementType : 'list'
+    });
+    var form = core.elements.create({
+      elementType : 'form'
+    });
 
-    // for ( var key in config ) {
-    //   var item = this.Elements.create({
-    //     elementType : 'input',
-    //     action : 'action',
-    //     name   : config[key],
-    //     count  : key,
-    //     icon   : 'event',
+    for ( var key in config ) {
+      var item = core.elements.create({
+        elementType : 'input',
+        action : 'action',
+        name   : config[key],
+        count  : key,
+        icon   : 'event',
         
-    //     type   : 'text',
-    //     label  : key,
-    //     form   : true
-    //   });
-    //   form.element.appendChild( item.element );
-    // }
-    // this.infoPanel = form.element;
+        type   : 'text',
+        label  : key,
+        form   : true
+      });
+      form.element.appendChild( item.element );
+    }
+    this.infoPanel = form.element;
     
     core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
     core.events.publish( "core:dom:material:update" );
