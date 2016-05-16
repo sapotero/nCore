@@ -29,6 +29,9 @@ Element.prototype.create = function( options ) {
     case 'form':
       element = this.Form;
       break;
+    case 'switch':
+      element = this.Switch;
+      break;
     
     case 'list':
       element = this.List;
@@ -53,6 +56,7 @@ Element.prototype.create = function( options ) {
 Element.prototype.Input    = require('./elements/input');
 Element.prototype.Checkbox = require('./elements/checkbox');
 Element.prototype.Radio    = require('./elements/radio');
+Element.prototype.Switch   = require('./elements/switch');
 Element.prototype.Label    = require('./elements/label');
 Element.prototype.Textarea = require('./elements/textarea');
 

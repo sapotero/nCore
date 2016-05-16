@@ -203,6 +203,15 @@ WebForms.prototype.renderLeftPanel = function() {
   });
   df.appendChild( textarea.element );
 
+  var _switch = core.elements.create( {
+    elementType : 'switch',
+    name : 'test-check',
+    checked: true,
+    // value : 'value',
+    label : 'label_check'
+  });
+  df.appendChild( _switch.element );
+
 
 
   // var text = core.elements.create( {
