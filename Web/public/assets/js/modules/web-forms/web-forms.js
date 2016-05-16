@@ -68,7 +68,6 @@ var WebForms = function WebForms(){
 };
 
 WebForms.prototype.WebForm  = WebForm;
-WebForms.prototype.Elements = require('./elements');
 
 WebForms.prototype.init = function(){
 };
@@ -149,22 +148,22 @@ WebForms.prototype.renderLeftPanel = function() {
   this.leftPanel.id = 'web-forms-left';
 
   var df = document.createDocumentFragment();
-  var input = this.Elements.create( {
-    elementType : 'input',
-    name : 'test-input',
-    type : 'text',
-    label: 'label'
-  } );
-  df.appendChild( input.element );
+  // var input = this.Elements.create( {
+  //   elementType : 'input',
+  //   name : 'test-input',
+  //   type : 'text',
+  //   label: 'label'
+  // } );
+  // df.appendChild( input.element );
 
-  var check = this.Elements.create( {
-    elementType : 'input',
-    name : 'checkbox',
-    type : 'checkbox',
-    label: 'checkbox++',
-    form : true
-  } );
-  df.appendChild( check.element );
+  // var check = this.Elements.create( {
+  //   elementType : 'input',
+  //   name : 'checkbox',
+  //   type : 'checkbox',
+  //   label: 'checkbox++',
+  //   form : true
+  // } );
+  // df.appendChild( check.element );
 
   // var radio = this.Elements.create( {
   //   elementType : 'input',
@@ -196,25 +195,25 @@ WebForms.prototype.renderInfoPanel = function( config ) {
     // var list = this.Elements.create({
     //   elementType : 'list'
     // });
-    var form = this.Elements.create({
-      elementType : 'form'
-    });
+    // var form = this.Elements.create({
+    //   elementType : 'form'
+    // });
 
-    for ( var key in config ) {
-      var item = this.Elements.create({
-        elementType : 'input',
-        action : 'action',
-        name   : config[key],
-        count  : key,
-        icon   : 'event',
+    // for ( var key in config ) {
+    //   var item = this.Elements.create({
+    //     elementType : 'input',
+    //     action : 'action',
+    //     name   : config[key],
+    //     count  : key,
+    //     icon   : 'event',
         
-        type   : 'text',
-        label  : key,
-        form   : true
-      });
-      form.element.appendChild( item.element );
-    }
-    this.infoPanel = form.element;
+    //     type   : 'text',
+    //     label  : key,
+    //     form   : true
+    //   });
+    //   form.element.appendChild( item.element );
+    // }
+    // this.infoPanel = form.element;
     
     core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
     core.events.publish( "core:dom:material:update" );

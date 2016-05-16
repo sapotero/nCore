@@ -1,26 +1,29 @@
 'use strict';
 
 core = (function(){
-  var Mediator  = require('./core/mediator/mediator'),
-      WebWorker = require('./core/webworker/webworker'),
-      Utils     = require('./core/utils/utils'),
-      Dom       = require('./core/dom/dom'),
+  var Mediator   = require('./core/mediator/mediator'),
+      WebWorker  = require('./core/webworker/webworker'),
+      Utils      = require('./core/utils/utils'),
+      Dom        = require('./core/dom/dom'),
+      Element    = require('./core/element/element'),
       
-      Draggy      = require('./modules/draggy/draggy'),
-      Preloader   = require('./modules/preloader/preloader'),
-      Router      = require('./modules/router/router'),
-      Snackbar    = require('./modules/snackbar/snackbar'),
-      Templates   = require('./modules/templates/templates'),
-      Reports     = require('./modules/reports/reports'),
-      WebForms    = require('./modules/web-forms/web-forms'),
-      PrintForms  = require('./modules/print-forms/print-forms'),
-      Bps         = require('./modules/bp/bp');
+      Draggy     = require('./modules/draggy/draggy'),
+      Preloader  = require('./modules/preloader/preloader'),
+      Router     = require('./modules/router/router'),
+      Snackbar   = require('./modules/snackbar/snackbar'),
+      Templates  = require('./modules/templates/templates'),
+      Reports    = require('./modules/reports/reports'),
+      WebForms   = require('./modules/web-forms/web-forms'),
+      PrintForms = require('./modules/print-forms/print-forms'),
+      Bps        = require('./modules/bp/bp');
 
   var Core = function( config ){
     this.events   = new Mediator();
     this.worker   = new WebWorker();
     this.utils    = new Utils();
     this.dom      = new Dom();
+    this.elements = new Element();
+
     this.modules  = {
       'preloader'   : new Preloader(),
       'router'      : new Router(),

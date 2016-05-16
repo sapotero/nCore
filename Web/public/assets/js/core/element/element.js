@@ -129,21 +129,21 @@ Input.prototype.setLabel = function( string ){
 
 Input.prototype.render = function(){
 
-// <!-- Textfield with Floating Label -->
-// <form action="#">
-//   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-//     <input class="mdl-textfield__input" type="text" id="sample3">
-//     <label class="mdl-textfield__label" for="sample3">Text...</label>
-//   </div>
-// </form>
+  // <!-- Textfield with Floating Label -->
+  // <form action="#">
+  //   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+  //     <input class="mdl-textfield__input" type="text" id="sample3">
+  //     <label class="mdl-textfield__label" for="sample3">Text...</label>
+  //   </div>
+  // </form>
 
-//////////////
-// Checkbox //
-//////////////
-// <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
-//   <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
-//   <span class="mdl-checkbox__label">Checkbox</span>
-// </label>
+  //////////////
+  // Checkbox //
+  //////////////
+  // <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
+  //   <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
+  //   <span class="mdl-checkbox__label">Checkbox</span>
+  // </label>
   var wrapper = document.createElement('div');
 
   var element = {};
@@ -178,13 +178,13 @@ Input.prototype.render = function(){
   // var element = label.insertBefore( _el, span );
 
 
-// <!-- Floating Multiline Textfield -->
-// <form action="#">
-//   <div class="mdl-textfield mdl-js-textfield">
-//     <textarea class="mdl-textfield__input" type="text" rows= "3" id="sample5" ></textarea>
-//     <label class="mdl-textfield__label" for="sample5">Text lines...</label>
-//   </div>
-// </form>
+  // <!-- Floating Multiline Textfield -->
+  // <form action="#">
+  //   <div class="mdl-textfield mdl-js-textfield">
+  //     <textarea class="mdl-textfield__input" type="text" rows= "3" id="sample5" ></textarea>
+  //     <label class="mdl-textfield__label" for="sample5">Text lines...</label>
+  //   </div>
+  // </form>
 
 
   this.element = wrapper;
@@ -253,7 +253,6 @@ var ListItem = function ( config ){
 
   this.render();
 }
-
 
 ListItem.prototype.setRoot = function ( data ) {
   this.root = data;
@@ -326,11 +325,11 @@ ListItem.prototype.render = function () {
   };
 }
 
-var Elements = function(){
+var Element = function(){
   this.elements = [];
 };
 
-Elements.prototype.create = function( options ) {
+Element.prototype.create = function( options ) {
   var element = null;
 
   switch ( options.elementType ) {
@@ -364,4 +363,4 @@ Elements.prototype.create = function( options ) {
   return _element;
 }
 
-module.exports = new Elements();
+module.exports = Element;
