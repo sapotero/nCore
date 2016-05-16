@@ -149,15 +149,11 @@ WebForms.prototype.renderLeftPanel = function() {
 
   var df = document.createDocumentFragment();
   var input = core.elements.create( {
-
     elementType : 'input',
-
-    // @super
     name  : 'name',
     // value : 'value',
     label : 'label_input'
-
-  } );
+  });
   df.appendChild( input.element );
 
   var checkbox = core.elements.create( {
@@ -199,7 +195,13 @@ WebForms.prototype.renderLeftPanel = function() {
     text : 'value'
   });
 
-  df.appendChild( label.element );
+  var textarea = core.elements.create( {
+    elementType : 'textarea',
+    name  : 'name',
+    value : 'value',
+    label : 'label_input'
+  });
+  df.appendChild( textarea.element );
 
 
 

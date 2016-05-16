@@ -33,7 +33,7 @@ Input.prototype.render = function() {
   //   </div>
 
   for( var key in this.config ){
-    var action = core.utils.toCamelCase( `set.${key}` );
+    var action = core.utils.toCamelCase( 'set.' + key );
 
     try{
       this[ action ]( this.config[ key ] );

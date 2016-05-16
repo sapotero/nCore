@@ -1,49 +1,64 @@
-var Label = function( config ) {
-  this.element = document.createElement('label');
-  this.element.className = 'mdl-textfield__label';
-  
-  console.log('Label = function( config ) {', config);
+var Textarea = function( config ) {
+  this.element = document.createElement( 'textarea' );
+  this.element.className = 'mdl-textfield__input';
+  this.element.id = core.utils.generateId();
 
-  if ( config && config.hasOwnProperty('name') ) {
-    this.setName( config.name );
-  };
-  if ( config && config.hasOwnProperty('text') ) {
-    this.setText( config.text );
-  };
-  if ( config && config.hasOwnProperty('class') ) {
-    this.setClass( config.class );
-  };
-  if ( config && config.hasOwnProperty('for') ) {
-    this.setFor( config.for );
-  };
-  if ( config && config.hasOwnProperty('span') ) {
-    this.span = config.span;
-  };
+  // this.elements.rows = 5;
+  // this.elements.cols = 5;
+
+  this.config = config;
+
   this.render();
 }
+Textarea.prototype = Object.create( require('./super').prototype );
+Textarea.prototype.constructor = Textarea;
 
-Label.prototype.setName = function( string ){
-  this.element.name = string;
-};
-Label.prototype.setText = function( string ){
-  this.element.textContent = string;
-};
-Label.prototype.setClass = function( string ){
-  this.element.className = string;
-};
-Label.prototype.setFor = function( string ){
-  this.element.setAttribute( 'for', string );
-};
-Label.prototype.render = function( string ){
-  if ( this.span ) {
-    var span = document.createElement('span');
-    span.className = `mdl-${this.span}__label`;
-    span.textContent = this.element.textContent;
-    
-    this.element.textContent = '';
-    this.element.appendChild( span );
+Textarea.prototype.Label = require('./label');
+
+Textarea.prototype.setLabel = function( string ){
+
+  var config = {
+    class : 'mdl-textfield__label',
+    for   : this.element,
+    text  : string
   };
+
+  this.label = new this.Label( config );
+  console.log(' ++ Textarea.prototype.setLabel', string, this.label );
+};
+
+Textarea.prototype.render = function() {
+  
+  // <div class="mdl-textfield mdl-js-textfield">
+  //   <textarea class="mdl-textfield__input" type="text" rows= "10" cols="200" id="sample5" ></textarea>
+  //   <label class="mdl-textfield__label" for="sample5">Text lines...</label>
+  // </div>
+
+  for( var key in this.config ){
+    var action = core.utils.toCamelCase( 'set.' + key );
+
+    try{
+      this[ action ]( this.config[ key ] );
+    } catch(e) {
+      // throw new Error('no method in prototype')
+      // console.log('no method in prototype', action);
+    }
+  }
+
+  if ( this.hasOwnProperty('label') ) {
+    
+    console.log( 'label++', this.label );
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'mdl-textfield mdl-js-textfield';
+
+    wrapper.appendChild( this.label.element );
+    wrapper.appendChild( this.element );
+
+    this.element = wrapper;
+  }
+
+  this.element._config = this.config;
   return this;
 };
-
-module.exports = Label;
+module.exports = Textarea;
