@@ -311,6 +311,12 @@ WebForms.prototype.render = function(){
 };
 
 
+WebForms.prototype.preview = function() {
+  var params = "menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,height=500,width=500,left=100,top=100"
+  var _window = window.open( '#preview/123' , "Preview", params );
+  console.log( _window.document.body.innerHTML );
+};
+
 WebForms.prototype.start = function() {
   console.log( 'WebForms: start' );
   // this.init();
