@@ -51,41 +51,6 @@ Report.prototype.detachEvents = function(){
   core.events.remove("core:report:loaded");
 };
 
-// Report.prototype.destroyEditor = function() {
-//   if ($('div#paper').data('froala.editor')) {
-//     $('div#paper').froalaEditor('destroy');
-//   }
-// };
-// Report.prototype.loadEditor = function(body) {
-//   var html = core.utils.Base64.decode(body);
-
-//   var initialize = new Promise(function(resolve, reject) {
-//     window.jQuery('div#paper').froalaEditor({
-//       toolbarButtons   : ['file-o', 'floppy-o', 'adjust', 'phone',  'textRotate', 'calculator', '|', 'bold', 'italic', 'underline', 'fontSize', '|', 'color', /*'paragraphStyle'*/ , '|', 'paragraphFormat', '|', 'alignLeft', 'alignCenter', 'alignRight', '|', /*'formatOL'*/, 'formatUL', '|', 'outdent', 'indent', '|', 'insertImage', 'insertTable', '|', 'html', '|', 'undo', 'redo', '|', 'cog', 'rotateDocument' , 'customCalculationCell'/*, '|', 'zoom-out', 'zoom-in'*/ ],
-//       language         : 'ru',
-//       charCounterCount : false,
-//       toolbarSticky    : false
-//     });
-//     resolve(true);
-//   });
-
-//   initialize.then(function(editor) {
-//     $('div#paper').froalaEditor('html.set', (html ? html : '<p>') + '<p>');
-//   }).then(function(editor) {
-//     // var parent = document.querySelector('.fr-wrapper').parentNode;
-//     // parent.removeChild( document.querySelector('.fr-wrapper').nextSibling ) ;
-//     // return editor;
-//   }).catch(function(result) {
-
-//     console.log("ERROR!", result);
-//   });
-// };
-// Report.prototype.loadEditors = function(body) {
-//   var html = core.utils.Base64.decode(body);
-//   console.log( 'decoded:', html );
-// }
-
-
 Report.prototype.attachEvents = function(){
   var report = this;
   
@@ -192,201 +157,139 @@ var Reports = function Reports(){
 };
 
 
-Reports.prototype.addItemToLeftPanel = function( config ){
-  // <li class="menu-item mdl-list__item mdl-list__item--two-line" action="my">
-  //   <span class="mdl-list__item-primary-content">
-  //     <i class="material-icons mdl-list__item-avatar">folder</i>
-  //     <span class="document-name">Мои документы</span>
-  //     <span class="mdl-list__item-sub-title">100 документов</span>
-  //   </span>
-  // </li>
-  var item = document.createElement('li');
-  item.className = 'menu-item mdl-list__item';
-  item.setAttribute('action', config.action );
-
-  var content = document.createElement('span');
-  content.className = 'mdl-list__item-primary-content';
-
-  if ( config.icon ) {
-    var icon = document.createElement('i');
-    icon.className   = 'material-icons mdl-list__item-avatar';
-    icon.textContent = config.icon;
-    content.appendChild( icon );
-  }
-
-  if ( config.name ) {
-    var name = document.createElement('span');
-    name.className   = 'document-name';
-    name.textContent = config.name;
-    content.appendChild( name );
-  }
-
-  if ( config.count ) {
-    var count = document.createElement('span');
-    count.className   = 'mdl-list__item-sub-title';
-    count.textContent = config.count;
-    content.appendChild( count );
-  }
-
-  if ( config.name && config.count ) {
-    item.classList.add('mdl-list__item--two-line');
-  }
-
-  item.appendChild( content );
-  this.leftPanel.appendChild( item );
-}
 Reports.prototype.renderLeftPanel = function(){
-  this.leftPanel = document.createElement('ul');
-  this.leftPanel.className = 'panel menu-list mdl-list mdl-cell--hide-phone mdl-shadow--0dp';
-  
-  this.addItemToLeftPanel({
-    action : 'event',
-    name   : 'event',
-    icon   : 'event',
-    count  : '100'
-  });
-  this.addItemToLeftPanel({
-    action : 'code',
-    name   : 'code',
-    icon   : 'code'
-  });
-  this.addItemToLeftPanel({
-    action : 'done',
-    name   : 'done',
-    icon   : 'done',
-    count  : '100'
-  });
-  this.addItemToLeftPanel({
-    action : 'start',
-    name   : 'start',
-    icon   : 'start'
+  var list = core.elements.create( {
+    elementType : 'list',
+    items: [
+      // минимальный вариант
+      {
+        title : 'menu item'
+      },
+
+      // минимальный вариант + иконка
+      {
+        title : 'menu item',
+        icon  : 'event'
+      },
+
+      {
+        title : 'menu item',
+        icon  : 'event',
+        subTitle : 'menu item',
+      },
+
+      {
+        title : 'menu item',
+        icon  : 'event',
+        action : {
+          icon : 'star',
+        },
+      },
+      {
+        title : 'menu item',
+        icon  : 'event',
+        action : {
+          href : '#',
+          icon : 'star',
+          title : 'tesst'
+        },
+      },
+      {
+        title : 'menu item',
+        subTitle : 'menu item',
+        icon  : 'event',
+        action : {
+          href : '#',
+          icon : 'star',
+          title : 'tesst'
+        },
+      },
+      {
+        title : 'menu item',
+        subTitle : 'menu item',
+        icon  : 'event',
+        action : {
+          element: core.elements.create({
+            elementType : 'button',
+            preventCopy : true,
+            name        : 'test-check',
+            fab         : true,
+            icon        : 'star'
+          })
+        },
+      },
+    ]
   });
 
-  core.dom.leftPanel.appendChild( this.leftPanel );
-
-
-  // <ul class="panel menu-list mdl-list mdl-cell--hide-phone mdl-shadow--0dp">
-    
-  //   <li class="menu-item mdl-list__item mdl-list__item--two-line" action="shared">
-  //     <span class="mdl-list__item-primary-content">
-  //       <i class="material-icons mdl-list__item-avatar">folder_shared</i>
-  //       <span class="document-name">Общие документы</span>
-  //       <span class="mdl-list__item-sub-title">100 документов</span>
-  //     </span>
-  //   </li>
-    
-  //   <li class="menu-item mdl-list__item mdl-list__item--one-line" action="templates">
-  //     <span class="mdl-list__item-primary-content">
-  //       <i class="material-icons mdl-list__item-avatar">person</i>
-  //       <span class="document-name">Шаблоны</span>
-  //       <span class="mdl-list__item-sub-title"></span>
-  //     </span>
-  //   </li>
-  // </ul>
+  core.dom.leftPanel.appendChild( list.element );
 }
 
-Reports.prototype.addItemToInfoPanel = function( config ){
-  var item = document.createElement('li');
-  item.classList.add('mdl-list__item');
-  
-  if ( config.name ) {
-    var name = document.createElement('span');
-    name.className = "mdl-list__item-primary-content";
-    name.textContent = config.name;
-    item.appendChild(name);
-
-    if ( config.icon ) {
-      // <i class="material-icons  mdl-list__item-avatar">person</i>
-      var icon = document.createElement('i');
-      icon.className = "material-icons  mdl-list__item-avatar";
-      icon.textContent = config.icon;
-      name.insertAdjacentHTML('afterBegin', icon.outerHTML );
-    }
-    
-  }
-
-  if ( config.action ) {
-    var action = document.createElement('span');
-    action.className = "mdl-list__item-secondary-action";
-    
-    var id = Math.round( Math.random()*150550 );
-
-    var label = document.createElement('label');
-    label.className = "mdl-" + config.action + " mdl-js-" + config.action + " mdl-js-ripple-effect";
-    label.setAttribute( 'for', id)
-
-    var input = document.createElement('input');
-    switch ( config.action ) {
-      case 'switch':
-        input.className = "mdl-switch__input";
-        break;
-      case 'checkbox':
-        input.className = "mdl-checkbox__input";
-        break;
-      default:
-        input.className = "mdl-textfield__input";
-        break;
-    }
-    
-    input.id = id;
-    input.type = config.action;
-    label.appendChild(input);
-
-    action.appendChild(label);
-
-    item.appendChild(action);
-  }
-  this.infoPanel.appendChild( item );
-  // <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">
-  // <label class="mdl-radio    mdl-js-radio    mdl-js-ripple-effect" for="list-option-1">
-  // <label class="mdl-switch   mdl-js-switch   mdl-js-ripple-effect" for="list-switch-1">
-
-  //   <li class="mdl-list__item">
-  //     
-  //     <span class="mdl-list__item-primary-content">
-  //       <i class="material-icons  mdl-list__item-avatar">person</i>
-  //       Bob Odenkirk
-  //     </span>
-  //     
-  //     <span class="mdl-list__item-secondary-action">
-  //       <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="list-switch-1">
-  //         <input type="checkbox" id="list-switch-1" class="mdl-switch__input" checked />
-  //       </label>
-  //     </span>
-  //   </li>
-};
 Reports.prototype.renderInfoPanel = function(){
-  // <ul class="mdl-list">
-  //   <li class="mdl-list__item">
-  //     <span class="mdl-list__item-primary-content">
-  //       <!-- <i class="material-icons  mdl-list__item-avatar">person</i> -->
-  //       Bryan Cranston
-  //     </span>
-  //     <span class="mdl-list__item-secondary-action">
-  //       <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-1">
-  //         <input type="checkbox" id="list-checkbox-1" class="mdl-checkbox__input" checked />
-  //       </label>
-  //     </span>
-  //   </li>
-  // </ul>
-  this.infoPanel = document.createElement('ul');
-  this.infoPanel.className = 'mdl-list'
-  this.addItemToInfoPanel({
-    action: 'checkbox',
-    name: 'checkbox',
-    icon: 'gif',
-  });
-  this.addItemToInfoPanel({
-    action: 'checkbox',
-    name: 'checkbox'
-  });
-  this.addItemToInfoPanel({
-    action: 'switch',
-    name: 'checkboxx',
-    icon: 'star',
+  var list = core.elements.create( {
+    elementType : 'list',
+    items: [
+      // минимальный вариант
+      {
+        title : 'menu item'
+      },
+
+      // минимальный вариант + иконка
+      {
+        title : 'menu item',
+        icon  : 'event'
+      },
+
+      {
+        title : 'menu item',
+        icon  : 'event',
+        subTitle : 'menu item',
+      },
+
+      {
+        title : 'menu item',
+        icon  : 'event',
+        action : {
+          icon : 'star',
+        },
+      },
+      {
+        title : 'menu item',
+        icon  : 'event',
+        action : {
+          href : '#',
+          icon : 'star',
+          title : 'tesst'
+        },
+      },
+      {
+        title : 'menu item',
+        subTitle : 'menu item',
+        icon  : 'event',
+        action : {
+          href : '#',
+          icon : 'star',
+          title : 'tesst'
+        },
+      },
+      {
+        title : 'menu item',
+        subTitle : 'menu item',
+        icon  : 'event',
+        action : {
+          element: core.elements.create({
+            elementType : 'button',
+            preventCopy : true,
+            name        : 'test-check',
+            fab         : true,
+            icon        : 'star'
+          })
+        },
+      },
+    ]
   });
 
-  core.dom.infoPanel.appendChild( this.infoPanel );
+  core.dom.infoPanel.appendChild( list.element );
+
 }
 
 

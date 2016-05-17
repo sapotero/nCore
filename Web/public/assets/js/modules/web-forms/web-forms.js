@@ -249,6 +249,85 @@ WebForms.prototype.renderLeftPanel = function() {
   });
   df.appendChild( button.element );
 
+  var list = core.elements.create( {
+    elementType : 'list',
+    items: [
+      // минимальный вариант
+      {
+        title : 'menu item'
+      },
+
+      // минимальный вариант + иконка
+      {
+        title : 'menu item',
+        icon  : 'event'
+      },
+
+      {
+        title : 'menu item',
+        icon  : 'event',
+        subTitle : 'menu item',
+      },
+
+      {
+        title : 'menu item',
+        icon  : 'event',
+        action : {
+          icon : 'star',
+        },
+      },
+      {
+        title : 'menu item',
+        icon  : 'event',
+        action : {
+          href : '#',
+          icon : 'star',
+          title : 'tesst'
+        },
+      },
+      {
+        title : 'menu item',
+        subTitle : 'menu item',
+        icon  : 'event',
+        action : {
+          href : '#',
+          icon : 'star',
+          title : 'tesst'
+        },
+      },
+      {
+        title : 'menu item',
+        subTitle : 'menu item',
+        icon  : 'event',
+        action : {
+          element: core.elements.create({
+            elementType : 'button',
+            preventCopy : true,
+            name        : 'test-check',
+            fab         : true,
+            icon        : 'star'
+          })
+        },
+      },
+
+      // // полная реализация
+      // {
+      //   title     : 'menu item',
+      //   subTitle : 'menu item',
+      //   icon : 'event',
+      //   action : {
+      //     href : '#',
+      //     icon : 'star',
+      //     // text: 'option'
+      //     // elelemt: {}
+      //   },
+      //   actionInfo : 'text'
+      // }
+    ]
+  });
+  df.appendChild( list.element );
+
+
   
   this.leftPanel.appendChild( df );
 
