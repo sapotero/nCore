@@ -22,17 +22,16 @@ Radio.prototype.setLabel = function( string ){
   };
 
   this.label = new this.Label( config );
-  console.log(' ++ Radio.prototype.setLabel', string, this.label );
 };
 
 Radio.prototype.render = function( string ){
-//////////////
-// Radio //
-//////////////
-// <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
-//   <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
-//   <span class="mdl-radio__label">First</span>
-// </label>
+  //////////////
+  // Radio //
+  //////////////
+  // <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+  //   <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
+  //   <span class="mdl-radio__label">First</span>
+  // </label>
 
   
   for( var key in this.config ){
@@ -42,13 +41,11 @@ Radio.prototype.render = function( string ){
       this[ action ]( this.config[ key ] );
     } catch(e) {
       // throw new Error('no method in prototype')
-      // console.log('no method in prototype', action);
     }
   }
 
   if ( this.hasOwnProperty('_label') ) {
     
-    console.log( 'label++', this.label );
 
     var span = document.createElement('span');
     span.className = 'mdl-checkbox__label';

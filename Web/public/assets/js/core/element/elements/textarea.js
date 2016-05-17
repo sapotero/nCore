@@ -24,7 +24,6 @@ Textarea.prototype.setLabel = function( string ){
   };
 
   this.label = new this.Label( config );
-  console.log(' ++ Textarea.prototype.setLabel', string, this.label );
 };
 
 Textarea.prototype.render = function() {
@@ -41,13 +40,10 @@ Textarea.prototype.render = function() {
       this[ action ]( this.config[ key ] );
     } catch(e) {
       // throw new Error('no method in prototype')
-      // console.log('no method in prototype', action);
     }
   }
 
   if ( this.hasOwnProperty('label') ) {
-    
-    console.log( 'label++', this.label );
 
     var wrapper = document.createElement('div');
     wrapper.className = 'mdl-textfield mdl-js-textfield';

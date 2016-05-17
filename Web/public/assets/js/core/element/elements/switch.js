@@ -24,7 +24,6 @@ Switch.prototype.setLabel = function( string ){
   };
 
   this.label = new this.Label( config );
-  console.log(' ++ Switch.prototype.setLabel', string, this.label );
 };
 
 Switch.prototype.render = function( string ){
@@ -43,13 +42,10 @@ Switch.prototype.render = function( string ){
       this[ action ]( this.config[ key ] );
     } catch(e) {
       // throw new Error('no method in prototype')
-      // console.log('no method in prototype', action);
     }
   }
 
   if ( this.hasOwnProperty('label') ) {
-    
-    console.log( 'label++', this.label );
 
     var span = document.createElement('span');
     span.className = 'mdl-switch__label';

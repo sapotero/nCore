@@ -26,7 +26,6 @@ Checkbox.prototype.setLabel = function( string ){
   };
 
   this.label = new this.Label( config );
-  console.log(' ++ Checkbox.prototype.setLabel', string, this.label );
 };
 
 Checkbox.prototype.render = function( string ){
@@ -45,13 +44,10 @@ Checkbox.prototype.render = function( string ){
       this[ action ]( this.config[ key ] );
     } catch(e) {
       // throw new Error('no method in prototype')
-      // console.log('no method in prototype', action);
     }
   }
 
   if ( this.hasOwnProperty('_label') ) {
-    
-    console.log( 'label++', this.label );
 
     var span = document.createElement('span');
     span.className = 'mdl-checkbox__label';

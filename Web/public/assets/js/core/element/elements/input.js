@@ -11,7 +11,9 @@ Input.prototype = Object.create( require('./super').prototype );
 Input.prototype.constructor = Input;
 
 Input.prototype.Label = require('./label');
-
+Input.prototype.setValue = function( data ){
+  this.element.value = data;
+};
 Input.prototype.setLabel = function( string ){
 
   var config = {
