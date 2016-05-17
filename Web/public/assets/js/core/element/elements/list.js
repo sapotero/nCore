@@ -1,3 +1,4 @@
+  this.element.classList.add( string );
 var List = function List( config ) {
 
   this.element = document.createElement('ul');
@@ -14,11 +15,7 @@ var List = function List( config ) {
 }
 
 List.prototype.setClass = function( string ){
-  this.element.className = string;
-};
-
-List.prototype.setClass = function( string ){
-  this.element.className = string;
+  this.element.classList.add( string );
 };
 
 List.prototype.CSS = {

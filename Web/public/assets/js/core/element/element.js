@@ -70,7 +70,7 @@ Element.prototype.Label    = require('./elements/label');
 
 Element.prototype.Button   = require('./elements/button');
 Element.prototype.List     = require('./elements/list');
-// Element.prototype.Card     = require('./elements/card');
+Element.prototype.Card     = require('./elements/card');
 // Element.prototype.Progressbar = require('./elements/progressbar');
 
 
