@@ -155,7 +155,6 @@ WebForms.prototype.renderLeftPanel = function() {
     elementType : 'input',
     preventCopy: true,
     name  : 'name',
-    // value : 'value',
     label : 'label_input'
   });
   df.appendChild( input.element );
@@ -165,7 +164,6 @@ WebForms.prototype.renderLeftPanel = function() {
     preventCopy: true,
     name : 'test-check',
     checked: true,
-    // value : 'value',
     label : 'label_check'
   });
   df.appendChild( checkbox.element );
@@ -175,83 +173,79 @@ WebForms.prototype.renderLeftPanel = function() {
     preventCopy: true,
     name  : 'name',
     checked: true,
-    // value : 'value',
     label : 'radio'
   });
   df.appendChild( radio.element );
   var radio = core.elements.create( {
     elementType : 'radio',
-    preventCopy: true,
-    name  : 'name',
-    // value : 'value',
-    label : 'radio'
+    preventCopy : true,
+    name        : 'name',
+    label       : 'radio'
   });
   df.appendChild( radio.element );
   var radio = core.elements.create( {
     elementType : 'radio',
-    preventCopy: true,
-    name  : 'name',
-    // value : 'value',
-    label : 'radio'
+    preventCopy : true,
+    name        : 'name',
+    label       : 'radio'
   });
   df.appendChild( radio.element );
 
   var label = core.elements.create( {
     elementType : 'label',
-    preventCopy: true,
-    class: 'mdl-label',
-    name  : 'name',
-    text : 'valuesss'
+    preventCopy : true,
+    class       : 'mdl-label',
+    name        : 'name',
+    text        : 'valuesss'
   });
   df.appendChild( label.element );
 
 
   var textarea = core.elements.create( {
     elementType : 'textarea',
-    preventCopy: true,
-    name  : 'name',
-    value : 'value',
-    label : 'label_input'
+    preventCopy : true,
+    name        : 'name',
+    value       : 'value',
+    label       : 'label_input'
   });
   df.appendChild( textarea.element );
 
   var _switch = core.elements.create( {
     elementType : 'switch',
-    preventCopy: true,
-    name : 'test-check',
-    checked: true,
-    // value : 'value',
-    label : 'label_check'
+    preventCopy : true,
+    name        : 'test-check',
+    checked     : true,
+    label       : 'label_check'
   });
   df.appendChild( _switch.element );
 
   var button = core.elements.create( {
     elementType : 'button',
-    preventCopy: true,
-    name : 'test-check',
-    fab  : true,
-    icon : 'star'
+    preventCopy : true,
+    name        : 'test-check',
+    fab         : true,
+    icon        : 'star'
   });
   df.appendChild( button.element );
 
   var button = core.elements.create( {
     elementType : 'button',
-    preventCopy: true,
-    name : 'test-check',
-    text : 'TEST',
-    raised  : true,
-    ripple  : true,
-    color   : true
+    preventCopy : true,
+    name        : 'test-check',
+    text        : 'TEST',
+    raised      : true,
+    ripple      : true,
+    color       : true
   });
   df.appendChild( button.element );
 
   var button = core.elements.create( {
     elementType : 'button',
-    preventCopy: true,
-    name : 'test-check',
-    text : 'TEST_FLAT',
-    flat  : true,
-    ripple  : true,
+    preventCopy : true,
+    name        : 'test-check',
+    text        : 'TEST_FLAT',
+    flat        : true,
+    ripple      : true,
   });
   df.appendChild( button.element );
 
