@@ -30,8 +30,10 @@ Card.prototype.setWidth = function( string ){
 Card.prototype.setHeight = function( string ){
   this.element.style.height = string + 'px';
 };
-Card.prototype.setClass = function( string ){
-  this.element.classList.add( string );
+Card.prototype.setClass = function( classes ){
+  for (var i = classes.length - 1; i >= 0; i--) {
+    this.element.classList.add( classes[i] );
+  }
 };
 Card.prototype.setShadow = function( shadow ){
   this.element.classList.add( "mdl-shadow--" + shadow + "dp" );

@@ -71,76 +71,117 @@ Report.prototype.editor = function( config ){
 
 Report.prototype.render = function( config ){
 
-  this.element = document.createElement('div');
-  this.element.className = 'report-card-full mdl-cell mdl-cell--3-col mdl-cell--12-col-phone mdl-card';
+  this.element = core.elements.create({
+    elementType : 'card',
+    preventCopy : true,
 
-  var card = document.createElement('div');
-  card.className = 'report-card mdl-card--border mdl-shadow--2dp';
-  this.element.appendChild( card );
+    // height : 200,
+    // width  : 200,
+    class: [ "mdl-cell", "mdl-cell--4-col" ],
+    title    : this.name,
+    // subTitle : this.description,
+    shadow : 8,
+    // media  : {
+    //   // image src
+    //   src: '',
+    // },
+    description : this.name,
+    actions : [
+      core.elements.create({
+        elementType : 'button',
+        preventCopy : true,
+        name        : 'test-check',
+        icon        : 'star'
+      }),
 
-  var cardTitle = document.createElement('div');
-  cardTitle.className = 'mdl-card__title mdl-card--expand';
-  card.appendChild( cardTitle );
-  cardTitle.addEventListener( 'click', this.cardClickHandler.bind(this) );
+      core.elements.create({
+        elementType : 'spacer'
+      }),
 
-  var titleText = document.createElement('div');
-  titleText.className = 'mdl-card__title-text';
-  titleText.textContent = this.name;
-  cardTitle.appendChild( titleText );
+      core.elements.create({
+        elementType : 'icon',
+        icon: 'star'
+      }),
+    ],
+    menu : [
+      core.elements.create({
+        elementType : 'button',
+        preventCopy : true,
+        name        : 'test-check',
+        icon        : 'star'
+      }),
+    ]
+  })
+  // this.element = document.createElement('div');
+  // this.element.className = 'report-card-full mdl-cell mdl-cell--3-col mdl-cell--12-col-phone mdl-card';
 
-  var subTitleText = document.createElement('div');
-  subTitleText.className = 'mdl-card__subtitle-text';
-  // subTitleText.textContent = this.description;
-  cardTitle.appendChild( subTitleText );
+  // var card = document.createElement('div');
+  // card.className = 'report-card mdl-card--border mdl-shadow--2dp';
+  // this.element.appendChild( card );
 
+  // var cardTitle = document.createElement('div');
+  // cardTitle.className = 'mdl-card__title mdl-card--expand';
+  // card.appendChild( cardTitle );
+  // cardTitle.addEventListener( 'click', this.cardClickHandler.bind(this) );
 
+  // var titleText = document.createElement('div');
+  // titleText.className = 'mdl-card__title-text';
+  // titleText.textContent = this.name;
+  // cardTitle.appendChild( titleText );
 
-
-  var supportingText = document.createElement('div');
-  supportingText.className = 'mdl-card__supporting-text';
-  supportingText.textContent = this.description;
-  card.appendChild( supportingText );
-
-  var actions = document.createElement('div');
-  actions.className = 'mdl-card__actions mdl-card--border';
-  // actions.textContent = this.description;
-  card.appendChild( actions );
-
-  var button = document.createElement('a');
-  button.className = 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect';
-  button.textContent = 'добавить';
-  actions.appendChild( button );
-
-  var spacer = document.createElement('div');
-  spacer.className = 'mdl-layout-spacer';
-  actions.appendChild( spacer );
-
-  var icon = document.createElement('i');
-  icon.className = 'material-icons';
-  icon.textContent = 'stars'
-  actions.appendChild( icon );
-
-  var supportingTextDate = document.createElement('div');
-  supportingTextDate.className = 'mdl-card__supporting-text mdl-card__supporting-text-date';
-  supportingTextDate.textContent = this.settings.currentDate.toLocaleString();
-  actions.appendChild( supportingTextDate );
+  // var subTitleText = document.createElement('div');
+  // subTitleText.className = 'mdl-card__subtitle-text';
+  // // subTitleText.textContent = this.description;
+  // cardTitle.appendChild( subTitleText );
 
 
 
-  var cardMenu = document.createElement('div');
-  cardMenu.className = 'mdl-card__menu';
-  card.appendChild( cardMenu );
 
-  var button = document.createElement('button');
-  button.className = 'mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect';
-  cardMenu.appendChild( button );
+  // var supportingText = document.createElement('div');
+  // supportingText.className = 'mdl-card__supporting-text';
+  // supportingText.textContent = this.description;
+  // card.appendChild( supportingText );
 
-  var icon = document.createElement('i');
-  icon.className = 'material-icons';
-  icon.textContent = 'star'
-  button.appendChild( icon );
+  // var actions = document.createElement('div');
+  // actions.className = 'mdl-card__actions mdl-card--border';
+  // // actions.textContent = this.description;
+  // card.appendChild( actions );
 
-  return this.element;
+  // var button = document.createElement('a');
+  // button.className = 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect';
+  // button.textContent = 'добавить';
+  // actions.appendChild( button );
+
+  // var spacer = document.createElement('div');
+  // spacer.className = 'mdl-layout-spacer';
+  // actions.appendChild( spacer );
+
+  // var icon = document.createElement('i');
+  // icon.className = 'material-icons';
+  // icon.textContent = 'stars'
+  // actions.appendChild( icon );
+
+  // var supportingTextDate = document.createElement('div');
+  // supportingTextDate.className = 'mdl-card__supporting-text mdl-card__supporting-text-date';
+  // supportingTextDate.textContent = this.settings.currentDate.toLocaleString();
+  // actions.appendChild( supportingTextDate );
+
+
+
+  // var cardMenu = document.createElement('div');
+  // cardMenu.className = 'mdl-card__menu';
+  // card.appendChild( cardMenu );
+
+  // var button = document.createElement('button');
+  // button.className = 'mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect';
+  // cardMenu.appendChild( button );
+
+  // var icon = document.createElement('i');
+  // icon.className = 'material-icons';
+  // icon.textContent = 'star'
+  // button.appendChild( icon );
+
+  return this.element.element;
 };
 
 
