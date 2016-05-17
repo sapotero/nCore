@@ -1,4 +1,3 @@
-  this.element.classList.add( string );
 var List = function List( config ) {
 
   this.element = document.createElement('ul');

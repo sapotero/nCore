@@ -183,6 +183,12 @@
   padding-right: 10px;
 }
 
+.mdl-card--flex {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+}
+
 .template {
   border: 2px solid red;
 }

@@ -1,4 +1,4 @@
-var Button = function( config ) {
+var Button = function Button( config ) {
   this.element = document.createElement( 'button' );
   this.element.className = 'mdl-button mdl-js-button';
   this.element.id = core.utils.generateId();

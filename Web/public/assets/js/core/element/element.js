@@ -1,6 +1,6 @@
 'use strict';
 
-var Element = function(){
+var Element = function Element(){
   this.elements = [];
 };
 
@@ -44,6 +44,13 @@ Element.prototype.create = function( options ) {
     case 'progressbar':
       element = this.Progressbar;
       break;
+    
+    case 'spacer':
+      element = this.Spacer;
+      break;
+    case 'icon':
+      element = this.Icon;
+      break;
 
     default:
       break;
@@ -67,6 +74,9 @@ Element.prototype.Radio    = require('./elements/radio');
 Element.prototype.Switch   = require('./elements/switch');
 Element.prototype.Textarea = require('./elements/textarea');
 Element.prototype.Label    = require('./elements/label');
+
+Element.prototype.Icon   = require('./elements/icon');
+Element.prototype.Spacer   = require('./elements/spacer');
 
 Element.prototype.Button   = require('./elements/button');
 Element.prototype.List     = require('./elements/list');

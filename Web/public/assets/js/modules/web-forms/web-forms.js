@@ -327,6 +327,48 @@ WebForms.prototype.renderLeftPanel = function() {
   });
   df.appendChild( list.element );
 
+  var card = core.elements.create( {
+    elementType : 'card',
+    preventCopy : true,
+
+    height : 200,
+    width  : 200,
+
+    title    : "title",
+    // subTitle : "subTitle",
+    shadow : 16,
+    // media  : {
+    //   // image src
+    //   src: '',
+    // },
+    description : 'The Sky Tower is an observation and telecommunications tower located in Auckland',
+    actions : [
+      core.elements.create({
+        elementType : 'button',
+        preventCopy : true,
+        name        : 'test-check',
+        icon        : 'star'
+      }),
+
+      core.elements.create({
+        elementType : 'spacer'
+      }),
+
+      core.elements.create({
+        elementType : 'icon',
+        icon: 'star'
+      }),
+    ],
+    menu : [
+      core.elements.create({
+        elementType : 'button',
+        preventCopy : true,
+        name        : 'test-check',
+        icon        : 'star'
+      }),
+    ]
+  });
+  df.appendChild( card.element );
 
   
   this.leftPanel.appendChild( df );
