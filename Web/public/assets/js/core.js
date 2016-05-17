@@ -46,9 +46,6 @@ core = (function(){
   Core.prototype.bindEvents = function() {
     require('./core/events');
   };
-  Core.prototype.loadCustomElements = function(elements){
-    console.log( 'Core :: loadCustomElements', elements );
-  };
 
   Core.prototype.setCurrent = function( module ) {
     this.current = module;

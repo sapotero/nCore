@@ -191,6 +191,10 @@ Router.prototype.start = function() {
       'web-forms/{id}' : function(params) {
         console.log('[web-forms/{id}]: ', params);
       },
+
+      'preview/{id}' : function(params) {
+        console.log('[web-forms/{id}]: ', params);
+      },
     }
   });
   this.run();
