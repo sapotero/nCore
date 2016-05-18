@@ -83,14 +83,20 @@ Menu.prototype.render = function(){
   if ( this._config.hasOwnProperty('items') && this._config.items.constructor === Array ) {
     for (var i = 0, length = this._config.items.length; i < length; i++) {
       var item = this._config.items[i];
+      console.log( 'menu item', item );
 
       if ( item.hasOwnProperty('element') ) {
         this.element.appendChild( item.element );
       }
       var _item = document.createElement('li');
       _item.classList.add( this.CSS.MENU_ITEM );
-      // _item.classList.add( this.CSS.MENU_RIGHT );
       _item.textContent = item.text;
+
+      if ( item.hasOwnProperty('callback') && typeof item.callback.function === 'function' ) {
+        item.callback.context = item.callback.context || this;
+        _item.addEventListener( 'click', item.callback.function.bind( item.callback.context ) );
+      }
+
       this.list.appendChild( _item );
       
     }

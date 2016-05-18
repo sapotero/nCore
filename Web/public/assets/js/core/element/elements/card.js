@@ -89,10 +89,11 @@ Card.prototype.render = function(){
 
   if ( this._config.hasOwnProperty('media') ){
     if ( this.title ) {
-      this.title.style.height = '176px';
-      this.title.style.background = "url('" + this._config.media + "')";
-      this.title.style.backgroundPosition = 'top';
-      this.title.style.backgroundRepeat   = 'no-repeat';
+      this.title.style.height = '276px';
+      // this.title.style.background = "url('" + this._config.media + "')";
+      // this.title.style.backgroundPosition = 'top';
+      // this.title.style.backgroundRepeat  = 'no-repeat';
+      this.title.style.backgroundColor   = '#C5CAE9';
     }
     // var media = document.createElement('div');
     // media.classList.add( this.CSS.MEDIA );

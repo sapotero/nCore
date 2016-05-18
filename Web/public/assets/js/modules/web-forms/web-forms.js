@@ -105,66 +105,58 @@ WebForms.prototype.clear = function(config) {
 };
 
 WebForms.prototype.renderLeftPanel = function() {
-  this.leftPanel = core.elements.create( {
-    elementType : 'list',
-    items: [
-      // минимальный вариант
-      {
-        title : 'menu item'
-      },
 
-      // минимальный вариант + иконка
-      {
-        title : 'menu item',
-        icon  : 'event'
-      },
 
-      {
-        title : 'menu item',
-        icon  : 'event',
-        subTitle : 'menu item',
-      },
-
-      {
-        title : 'menu item',
-        icon  : 'event',
-        action : {
-          icon : 'star',
-        },
-      },
-      {
-        title : 'menu item',
-        icon  : 'event',
-        action : {
-          href : '#',
-          icon : 'star',
-          title : 'tesst'
-        },
-      },
-      {
-        title : 'menu item',
-        subTitle : 'menu item',
-        icon  : 'event',
-        action : {
-          href : '#',
-          icon : 'star',
-          title : 'tesst'
-        },
-      },
-      {
-        title : 'menu item',
-        subTitle : 'menu item',
-        icon  : 'event',
-        action : {
-          element: core.elements.create({
+  this.leftPanel = core.elements.create({
+    elementType : 'simple',
+    class : 'webforms-leftPanel',
+    items : [
+      core.elements.create({
+      elementType : 'list',
+      items: [
+        {
+          title : core.elements.create({
             elementType : 'button',
-            preventCopy : true,
-            name        : 'test-check',
-            fab         : true,
-            icon        : 'star'
-          })
+            text        : 'Создать',
+            raised: true,
+            color: true,
+          }),
         },
-      },
+        {
+          title : 'menu item',
+          icon  : 'event'
+        },
+        {
+          title : 'menu item',
+          icon  : 'event',
+          subTitle : 'menu item',
+        },
+        {
+          title : 'menu item',
+          subTitle : 'menu item',
+          icon  : 'event',
+          action : {
+            href : '#',
+            icon : 'star',
+            title : 'tesst'
+          },
+        },
+        {
+          title : 'menu item',
+          subTitle : 'menu item',
+          icon  : 'event',
+          action : {
+            element: core.elements.create({
+              elementType : 'button',
+              preventCopy : true,
+              name        : 'test-check',
+              fab         : true,
+              icon        : 'star'
+            })
+          },
+        },
+      ]
+    })
     ]
   });
 
@@ -186,11 +178,11 @@ WebForms.prototype.renderContent = function() {
         elementType : 'card',
         class: [ 'mdl-cell', 'mdl-cell--3-col'],
         shadow : 8,
-        height : 200,
+        // height : 200,
         // width  : 300,
         media: 'assets/img/doc.png',
-        // title : data.name,
-        title : '',
+        title : data.name,
+        // title : '',
         // subTitle: data.name,
         description: data.description,
         menu: [
@@ -201,10 +193,24 @@ WebForms.prototype.renderContent = function() {
             // color: true,
             items: [
               {
-                text: 'lol'
+                text: 'hide',
+                callback : {
+                  context: this,
+                  function : function(e){
+                    e.preventDefault();
+                    core.events.publish('core:dom:infoPanel:hide');
+                  }
+                }
               },
               {
-                text: 'lol'
+                text: 'show',
+                callback : {
+                  context: this,
+                  function : function(e){
+                    e.preventDefault();
+                    core.events.publish('core:dom:infoPanel:show');
+                  }
+                }
               }
             ]
           })
