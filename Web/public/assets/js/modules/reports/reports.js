@@ -262,7 +262,7 @@ Reports.prototype.renderLeftPanel = function(){
     ]
   });
 
-  core.dom.leftPanel.appendChild( list.element );
+  core.dom.leftPanel.element.appendChild( list.element );
 }
 
 Reports.prototype.renderInfoPanel = function(){
@@ -329,7 +329,7 @@ Reports.prototype.renderInfoPanel = function(){
     ]
   });
 
-  core.dom.infoPanel.appendChild( list.element );
+  core.dom.infoPanel.element.appendChild( list.element );
 
 }
 
@@ -340,7 +340,7 @@ Reports.prototype.renderContent = function(){
   this.content = document.createElement('div');
   this.content.className = 'mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active';
 
-  core.dom.content.appendChild( this.content );
+  core.dom.content.element.appendChild( this.content );
   componentHandler.upgradeElement( this.content );
 
   var load = new Promise( function( resolve, reject ){

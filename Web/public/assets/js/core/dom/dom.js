@@ -25,13 +25,13 @@ Dom.prototype.bindEvents = function () {
     }, { priority: 0 });
 
     core.events.subscribe('core:dom:application:clear', function () {
-      dom.leftPanel.innerHTML = '';
-      dom.content.innerHTML   = '';
-      dom.infoPanel.innerHTML = '';
+      dom.leftPanel.element.innerHTML = '';
+      dom.content.element.innerHTML   = '';
+      dom.infoPanel.element.innerHTML = '';
     });
 
     core.events.subscribe('core:dom:infoPanel:clear', function () {
-      dom.infoPanel.innerHTML = '';
+      dom.infoPanel.element.innerHTML = '';
     });
 
     core.events.subscribe('core:dom:infoPanel:hide', function () {
@@ -43,15 +43,15 @@ Dom.prototype.bindEvents = function () {
     });
 
     core.events.subscribe('core:dom:infoPanel:set', function ( html ) {
-      dom.infoPanel.appendChild( html );
+      dom.infoPanel.element.appendChild( html );
     });
 
     core.events.subscribe('core:dom:content:set', function ( html ) {
-      dom.content.appendChild( html );
+      dom.content.element.appendChild( html );
     });
 
     core.events.subscribe('core:dom:leftPanel:clear', function () {
-      dom.leftPanel.innerHTML = '';
+      dom.leftPanel.element.innerHTML = '';
     });
 
     core.events.subscribe('core:dom:leftPanel:hide', function () {
@@ -63,7 +63,7 @@ Dom.prototype.bindEvents = function () {
     });
 
     core.events.subscribe('core:dom:leftPanel:set', function ( html ) {
-      dom.leftPanel.appendChild( html );
+      dom.leftPanel.element.appendChild( html );
     });
 
 
@@ -135,8 +135,6 @@ Dom.prototype.bindEvents = function () {
         console.log(e);
       }
     });
-
-
   }, false);
 };
 
@@ -170,63 +168,57 @@ Dom.prototype.createApplication = function(argument){
   var application = core.elements.create({
     elementType: 'simple',
     class: ["mdl-layout", "mdl-js-layout", "mdl-layout--fixed-header", "animated"],
-    // items: [
-    //   core.elements.create({
-    //     elementType: 'header',
-    //     class: ["mdl-layout__header", "core-fixed"],
-    //     items: [
-    //       core.elements.create({
-    //         elementType: 'simple',
-    //         class: ["mdl-layout__header-row"]
-    //       }),
-    //       core.elements.create({
-    //         elementType: 'span',
-    //         class: ["mdl-layout-title"]
-    //       }),
-    //       core.elements.create({
-    //         elementType: 'spacer'
-    //       }),
-    //       core.elements.create({
-    //         elementType: 'span',
-    //         class: ["mdl-layout-title"]
-    //       }),
-    //     ]
-    //   }),
-    // ]
   });
   
-  this.application  = application.element;
-  // this.application.className = "mdl-layout mdl-js-layout mdl-layout--fixed-header animated";
-  // this.application.style.display = 'none'
+  this.application = application.element;
 };
 
 Dom.prototype.createApplicationContent = function(argument){
 
-  this.main = document.createElement('div');
-  this.main.className = "mdl-layout__content core-layout-offset";
-  this.application.appendChild( this.main );
+  // this.main = document.createElement('div');
+  // this.main.className = "mdl-layout__content core-layout-offset";
+  this.leftPanel = core.elements.create({
+    elementType: 'simple',
+    class : ["mdl-cell", "mdl-cell--2-col", "page-content-panel-animation", "content-leftPanel"]
+  });
+  this.content = core.elements.create({
+    elementType: 'simple',
+    class : ["mdl-cell", "mdl-cell--8-col", "page-content-panel-animation", "content-content"]
+  });
+  this.infoPanel = core.elements.create({
+    elementType: 'simple',
+    class : ["mdl-cell", "mdl-cell--2-col", "page-content-panel-animation", "content-infoPanel"]
+  });
 
-  var content = document.createElement('div');
-  content.className = "page-content";
-  this.main.appendChild( content );
+  this.grid = core.elements.create({
+    elementType: 'simple',
+    class : ["mdl-grid"],
+    items : [
+      this.leftPanel,
+      this.content,
+      this.infoPanel
+    ]
+  });
 
-  this.grid = document.createElement('div');
-  this.grid.className = "mdl-grid";
-  content.appendChild( this.grid );
+  this.pageContent = core.elements.create({
+    elementType: 'simple',
+    class : ["page-content"],
+    items : [
+      this.grid,
+    ]
+  });
 
-  this.leftPanel = document.createElement('div');
-  this.leftPanel.className = "mdl-cell mdl-cell--2-col page-content-panel-animation content-leftPanel";
-  this.grid.appendChild( this.leftPanel );
+  this.main = core.elements.create({
+    elementType: 'simple',
+    class : ["mdl-layout__content", "core-layout-offset"],
+    items : [
+      this.pageContent,
+    ]
+  });
 
-  this.content = document.createElement('div');
-  this.content.className = "mdl-cell mdl-cell--8-col page-content-panel-animation content-content";
-  this.grid.appendChild( this.content );
-
-  this.infoPanel = document.createElement('div');
-  this.infoPanel.className = "mdl-cell mdl-cell--2-col page-content-panel-animation content-infoPanel";
-  this.grid.appendChild( this.infoPanel );
-
+  this.application.appendChild( this.main.element );
   document.body.appendChild( this.application );
+
 };
 
 /* ProgressBar */
@@ -261,140 +253,168 @@ Dom.prototype.createProgressBar = function(argument){
 /* MainMenu */
 Dom.prototype.createHeader = function(argument){
   
-  this.header = document.createElement('header');
-  this.header.className = "mdl-layout__header core-fixed";
-  this.application.appendChild( this.header );
-
-  var header = document.createElement('div');
-  header.className = "mdl-layout__header-row";
-  this.header.appendChild( header );
-
-  this.title = document.createElement('span');
-  this.title.className = "mdl-layout-title";
-  header.appendChild( this.title );
-  this.setTitle( 'App title' );
-
-  var spacer = document.createElement('div');
-  spacer.className = "mdl-layout-spacer";
-  header.appendChild( spacer );
-
-  this.navigation = document.createElement('nav');
-  this.navigation.className = "mdl-navigation mdl-layout--large-screen-only";
-  header.appendChild( this.navigation );
-
-  this.addToMainMenuNavigation( 'test', 'link_test' );
-  this.addToMainMenuNavigation( 'test_callback', 'test_callback', function(e){ 
-    e.preventDefault();
-    // console.log('test_callback',e, this);
-    this.toggleInfoPanel();
+  this.title = core.elements.create({
+    elementType : 'simple',
+    type        : 'span',
+    class       : ["mdl-layout-title"]
   });
+
+  this.navigation = core.elements.create({
+    elementType : 'simple',
+    type        : 'nav',
+    class       : ["mdl-navigation", "mdl-layout--large-screen-only"],
+    items       : [
+      core.elements.create({
+        elementType : 'button',
+        fab: true,
+        color: true,
+        icon: 'star',
+        callback : {
+          function : function(e){
+            e.preventDefault();
+            this.toggleInfoPanel();
+          },
+          context  : this
+        }
+      }),
+    ]
+  });
+
+  this.header = core.elements.create({
+    elementType : 'simple',
+    type        : 'header',
+    class       : ["mdl-layout__header", "core-fixed"],
+    items : [
+      core.elements.create({
+        elementType: 'simple',
+        class: ["mdl-layout__header-row"],
+        items : [
+          this.title,
+          core.elements.create({ elementType: 'spacer' }),
+          this.navigation,
+        ]
+      })
+    ]
+  });
+
+  this.application.appendChild( this.header.element );
+  this.setTitle( 'App title' );
 };
 
 Dom.prototype.setTitle = function ( title ) {
   if ( !title ) {
     throw new Error('setTitle -> can`t set title')
   }
-  this.title.textContent = title;
-};
-
-Dom.prototype.addToMainMenuNavigation = function ( href, name, callback ) {
-  if ( !name ) {
-    throw new Error('addToDrawerNavigation -> can`t create link without name')
-  }
-
-  if ( !href ) {
-    throw new Error('addToDrawerNavigation -> can`t create link without href')
-  }
-
-  
-  var item = document.createElement('a');
-  item.className = "mdl-navigation__link";
-  item.textContent = name;
-  item.href = [ '#', href ].join('');
-  item.id   = [ 'navigation', href ].join('_');
-  
-  this.navigation.appendChild( item );
-  
-  if ( typeof callback === 'function' ) {
-    item.addEventListener( 'click', callback.bind(this) );
-  }
+  this.title.element.textContent = title;
 };
 
 
 /* DRAWER */
 Dom.prototype.createDrawer = function(argument){
-  // <div class="mdl-layout__drawer">
-  //   <span class="mdl-layout-title">Title</span>
-  //   <nav class="mdl-navigation">
-  //     <a class="mdl-navigation__link" href="#reports"  >   Отчёты </a>
-  //     <a class="mdl-navigation__link" href="#bps">         Бизнес-процессы </a>
-  //     <a class="mdl-navigation__link" href="#web-forms">   Экранные формы </a>
-  //     <a class="mdl-navigation__link" href="#print-forms"> Печатные формы </a>
-  //   </nav>
-  // </div>
-  // 
-  var drawer = document.createElement('div');
-  drawer.className = "mdl-layout__drawer";
-  this.application.appendChild( drawer );
 
-  this.drawerTitle = document.createElement('span');
-  this.drawerTitle.className = "mdl-layout-title";
-  drawer.appendChild( this.drawerTitle );
+  this.drawerTitle = core.elements.create({
+    elementType: 'simple',
+    type  : 'span',
+    class : ["mdl-layout-title"]
+  });
+
+  this.drawerNavigation = core.elements.create({
+    elementType: 'simple',
+    type  : 'nav',
+    class : ["mdl-navigation"],
+    items : [
+      core.elements.create({
+        elementType : 'button',
+        class : 'mdl-navigation__link',
+        text  : 'Отчёты',
+        callback : {
+          function : function(e){
+            e.preventDefault();
+            core.dom.application.MaterialLayout.toggleDrawer();
+            core.events.publish("core:router:check", 'reports')
+          },
+          context  : this
+        }
+      }),
+      core.elements.create({
+        elementType : 'button',
+        class : 'mdl-navigation__link',
+        text  : 'Бизнес-процессы',
+        callback : {
+          function : function(e){
+            e.preventDefault();
+            core.dom.application.MaterialLayout.toggleDrawer();
+            core.events.publish("core:router:check", 'bps')
+          },
+          context  : this
+        }
+      }),
+      core.elements.create({
+        elementType : 'button',
+        class : 'mdl-navigation__link',
+        text  : 'Экранные формы',
+        callback : {
+          function : function(e){
+            e.preventDefault();
+            core.dom.application.MaterialLayout.toggleDrawer();
+            core.events.publish("core:router:check", 'web-forms')
+          },
+          context  : this
+        }
+      }),
+      core.elements.create({
+        elementType : 'button',
+        class : 'mdl-navigation__link',
+        text  : 'Печатные формы',
+        callback : {
+          function : function(e){
+            e.preventDefault();
+            core.dom.application.MaterialLayout.toggleDrawer();
+            core.events.publish("core:router:check", 'print-forms')
+          },
+          context  : this
+        }
+      }),
+
+    ]
+  });
+
+  this.drawer = core.elements.create({
+    elementType : 'simple',
+    class       : ["mdl-layout__drawer"],
+    items: [
+      this.drawerTitle,
+      this.drawerNavigation,
+    ]
+  });
+
+  this.application.appendChild( this.drawer.element );
   this.setDrawerTitle('App title');
 
-  this.drawerNavigation = document.createElement('nav');
-  this.drawerNavigation.className = "mdl-navigation";
-  drawer.appendChild( this.drawerNavigation );
-  this.addToDrawerNavigation( 'reports'     , 'Отчёты' );
-  this.addToDrawerNavigation( 'bps'         , 'Бизнес-процессы' );
-  this.addToDrawerNavigation( 'web-forms'   , 'Экранные формы' );
-  this.addToDrawerNavigation( 'print-forms' , 'Печатные формы' );
 };
 
 Dom.prototype.setDrawerTitle = function ( title ) {
   if ( !title ) {
     throw new Error('setDrawerTitle -> can`t set title')
   }
-  this.drawerTitle.textContent = title;
+  this.drawerTitle.element.textContent = title;
 };
 
-Dom.prototype.addToDrawerNavigation = function ( href, name ) {
-  if ( !name ) {
-    throw new Error('addToDrawerNavigation -> can`t create link without name')
-  }
-
-  if ( !href ) {
-    throw new Error('addToDrawerNavigation -> can`t create link without href')
-  }
-  
-  var item = document.createElement('a');
-  item.className = "mdl-navigation__link";
-  item.textContent = name;
-  item.href = [ '#', href ].join('');
-  item.id   = [ 'drawer', href ].join('_');
-  
-  this.drawerNavigation.appendChild( item );
-
-  item.addEventListener( 'click', function(e) {
-     core.dom.application.MaterialLayout.toggleDrawer();
-  } )
-  // core.dom.application.MaterialLayout.toggleDrawer()
-};
 
 /* INFO PANEL */
 Dom.prototype.toggleInfoPanel = function(){
   console.log('DOM: toggleInfoPanel');
-  this.content.classList.toggle('mdl-cell--10-col');
-  this.infoPanel.classList.toggle('zero-width');
+  this.content.element.classList.toggle('mdl-cell--10-col');
+  this.infoPanel.element.classList.toggle('zero-width');
 };
 
 Dom.prototype.showInfoPanel = function(){
-  this.content.classList.remove('mdl-cell--10-col');
-  this.infoPanel.classList.remove('zero-width');
+  this.content.element.classList.remove('mdl-cell--10-col');
+  this.infoPanel.element.classList.remove('zero-width');
 };
 Dom.prototype.hideInfoPanel = function(){
-  this.content.classList.add('mdl-cell--10-col');
-  this.infoPanel.classList.add('zero-width');
+  this.content.element.classList.add('mdl-cell--10-col');
+  this.infoPanel.element.classList.add('zero-width');
 };
 
 

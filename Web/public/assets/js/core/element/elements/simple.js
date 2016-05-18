@@ -24,8 +24,14 @@ Simple.prototype.populate = function(){
     this.addItems();
   };
 };
-Simple.prototype.setText = function(){
+Simple.prototype.setText = function( string ){
   this.element.textContent = string;
+};
+Simple.prototype.setId = function( id ){
+  this.element.id = id;
+};
+Simple.prototype.setHref = function( href ){
+  this.element.href = href;
 };
 Simple.prototype.setClass = function( classes ){
   if ( classes.length ) {

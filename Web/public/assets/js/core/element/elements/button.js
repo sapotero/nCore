@@ -11,23 +11,27 @@ var Button = function Button( config ) {
 Button.prototype.setText = function( text ) {
   this.element.textContent = text;
 }
+Button.prototype.setCallback = function( config ) {
+  this.context  = config.context;
+  this.function = config.function;
+}
 Button.prototype.setFab = function() {
-  this.element.className += ' mdl-button--fab';
+  this.element.classList.add('mdl-button--fab');
 }
 Button.prototype.setRipple = function() {
-  this.element.className += '  mdl-js-ripple-effect';
+  this.element.classList.add('mdl-js-ripple-effect');
 }
 Button.prototype.setRaised = function() {
-  this.element.className += ' mdl-button--raised';
+  this.element.classList.add('mdl-button--raised');
 }
 Button.prototype.setColor = function() {
-  this.element.className += ' mdl-button--accent';
+  this.element.classList.add('mdl-button--accent');
 }
 Button.prototype.setFlat = function() {
   return this;
 }
 Button.prototype.setIcon = function( _icon ) {
-  this.element.className += ' mdl-button--icon';
+  this.element.classList.add('mdl-button--icon');
 
   var icon = document.createElement('i');
   icon.classList.add('material-icons');
@@ -51,6 +55,11 @@ Button.prototype.render = function() {
   }
 
   this.element._config = this.config;
+  
+  if ( typeof this.function === 'function' ) {
+    this.element.addEventListener( 'click', this.function.bind( this.context ) );
+  }
+
   return this;
 };
 module.exports = Button;
