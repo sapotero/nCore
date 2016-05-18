@@ -19,8 +19,11 @@ Settings::Web::Application.routes.draw do
   get  '/documents/type',          to: 'documents#type'
   post '/documents/:id/calculate', to: 'documents#calculate'
 
-
   resources :documents do
+    post :remove
+  end
+
+  resources :webforms do
     post :remove
   end
   
