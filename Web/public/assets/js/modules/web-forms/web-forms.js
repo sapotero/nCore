@@ -1,17 +1,5 @@
 "use strict";
 
-var WebFormSettings = function(config){
-  this.current_date = new Date();
-  this.currentYear  = this.current_date.getFullYear();
-  this.periodStart  = this.current_date;
-  this.periodEnd    = this.current_date;
-  this.main         = this.current_date.getFullYear();
-  this.compare      = this.current_date.getFullYear()-1;
-  this.isYearWebForm = config.isYearWebForm || false;
-  this.isTemplate   = config.isTemplate || false;
-  this.isNew        = config.isNew || true;
-};
-
 var WebForm = function(config){
   this.element     = {};
   this._id         = config._id         || '';
@@ -19,9 +7,6 @@ var WebForm = function(config){
   this.description = config.description || '';
   this.author      = config.author;
   this.providerId  = config.provider_id;
-  this.query       = {};
-  this.globalQuery = {};
-  this.settings    = new WebFormSettings(config.settings);
 };
 WebForm.prototype.init = function(){
 
@@ -56,8 +41,6 @@ WebForm.prototype.attachEvents = function(){
     webForm.loadEditor( data.raw.body );
   });
 };
-
-
 
 var WebForms = function WebForms(){
   this.forms     = {};
@@ -147,109 +130,7 @@ WebForms.prototype.clear = function(config) {
 };
 
 WebForms.prototype.renderLeftPanel = function() {
-  this.leftPanel = document.createElement('div');
-  this.leftPanel.id = 'web-forms-left';
-
-  var df = document.createDocumentFragment();
-  var input = core.elements.create( {
-    elementType : 'input',
-    preventCopy: true,
-    name  : 'name',
-    label : 'label_input'
-  });
-  df.appendChild( input.element );
-
-  var checkbox = core.elements.create( {
-    elementType : 'checkbox',
-    preventCopy: true,
-    name : 'test-check',
-    checked: true,
-    label : 'label_check'
-  });
-  df.appendChild( checkbox.element );
-
-  var radio = core.elements.create( {
-    elementType : 'radio',
-    preventCopy: true,
-    name  : 'name',
-    checked: true,
-    label : 'radio'
-  });
-  df.appendChild( radio.element );
-  var radio = core.elements.create( {
-    elementType : 'radio',
-    preventCopy : true,
-    name        : 'name',
-    label       : 'radio'
-  });
-  df.appendChild( radio.element );
-  var radio = core.elements.create( {
-    elementType : 'radio',
-    preventCopy : true,
-    name        : 'name',
-    label       : 'radio'
-  });
-  df.appendChild( radio.element );
-
-  var label = core.elements.create( {
-    elementType : 'label',
-    preventCopy : true,
-    class       : 'mdl-label',
-    name        : 'name',
-    text        : 'valuesss'
-  });
-  df.appendChild( label.element );
-
-
-  var textarea = core.elements.create( {
-    elementType : 'textarea',
-    preventCopy : true,
-    name        : 'name',
-    value       : 'value',
-    label       : 'label_input'
-  });
-  df.appendChild( textarea.element );
-
-  var _switch = core.elements.create( {
-    elementType : 'switch',
-    preventCopy : true,
-    name        : 'test-check',
-    checked     : true,
-    label       : 'label_check'
-  });
-  df.appendChild( _switch.element );
-
-  var button = core.elements.create( {
-    elementType : 'button',
-    preventCopy : true,
-    name        : 'test-check',
-    fab         : true,
-    icon        : 'star'
-  });
-  df.appendChild( button.element );
-
-  var button = core.elements.create( {
-    elementType : 'button',
-    preventCopy : true,
-    name        : 'test-check',
-    text        : 'TEST',
-    raised      : true,
-    ripple      : true,
-    color       : true
-  });
-  df.appendChild( button.element );
-
-  var button = core.elements.create( {
-    elementType : 'button',
-    preventCopy : true,
-    name        : 'test-check',
-    text        : 'TEST_FLAT',
-    flat        : true,
-    ripple      : true,
-  });
-  df.appendChild( button.element );
-
-  var list = core.elements.create( {
+  this.leftPanel = core.elements.create( {
     elementType : 'list',
     items: [
       // минимальный вариант
@@ -309,83 +190,58 @@ WebForms.prototype.renderLeftPanel = function() {
           })
         },
       },
-
-
-
-      // // полная реализация
-      // {
-      //   title     : 'menu item',
-      //   subTitle : 'menu item',
-      //   icon : 'event',
-      //   action : {
-      //     href : '#',
-      //     icon : 'star',
-      //     // text: 'option'
-      //     // elelemt: {}
-      //   },
-      //   actionInfo : 'text'
-      // }
     ]
   });
-  df.appendChild( list.element );
 
-  var card = core.elements.create( {
-    elementType : 'card',
-    preventCopy : true,
-
-    height : 200,
-    width  : 200,
-
-    title    : "title",
-    // subTitle : "subTitle",
-    shadow : 16,
-    // media  : {
-    //   // image src
-    //   src: '',
-    // },
-    description : 'The Sky Tower is an observation and telecommunications tower located in Auckland',
-    actions : [
-      core.elements.create({
-        elementType : 'button',
-        preventCopy : true,
-        name        : 'test-check',
-        icon        : 'star'
-      }),
-
-      core.elements.create({
-        elementType : 'spacer'
-      }),
-
-      core.elements.create({
-        elementType : 'icon',
-        icon: 'star'
-      }),
-    ],
-    menu : [
-      core.elements.create({
-        elementType : 'button',
-        preventCopy : true,
-        name        : 'test-check',
-        icon        : 'star'
-      }),
-    ]
-  });
-  df.appendChild( card.element );
-
-  this.leftPanel.appendChild( df );
-
+  core.events.publish( "core:dom:leftPanel:clear" );
   core.events.publish( "core:dom:leftPanel:set", this.leftPanel );
   core.events.publish( "core:dom:material:update" );
 }
 WebForms.prototype.renderContent = function() {
-  this.content   = document.createElement('div');
-  this.content.textContent  = 'this.content';
-  this.content.style.height = '800px';
-  this.content.id = 'web-forms-container';
+  this.content = core.elements.create({
+    elementType : 'button',
+    preventCopy : true,
+    name        : 'test-check',
+    fab         : true,
+    icon        : 'star'
+  });
 
+  core.events.publish( "core:dom:content:clear" );
   core.events.publish( "core:dom:content:set", this.content );
 }
+
 WebForms.prototype.renderInfoPanel = function( element ) {
+  this.infoPanel = core.elements.create({
+    elementType : 'simple',
+    preventCopy : true,
+    name        : 'test-check',
+    fab         : true,
+    icon        : 'star'
+  });
+
+  core.events.publish( "core:dom:infoPanel:clear" );
+  core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
+}
+WebForms.prototype.render = function(){
+
+  core.events.publish( "core:dom:application:clear" );
+  core.events.publish( "core:current:set", this );
+
+  this.renderLeftPanel();
+  this.renderContent();
+  this.renderInfoPanel();
+  
+  // core.events.publish( "core:drag:attachEvents" );
+  core.events.publish( "core:dom:material:update" );
+};
+
+
+WebForms.prototype.preview = function() {
+  var params = "menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,height=500,width=500,left=100,top=100"
+  var _window = window.open( '#preview/123' , "Preview", params );
+  console.log( _window.document.body.innerHTML );
+};
+WebForms.prototype.showElementInfo = function( element ) {
   if ( element ) {
     
     this.active = element;
@@ -413,25 +269,6 @@ WebForms.prototype.renderInfoPanel = function( element ) {
     };
   }
 }
-WebForms.prototype.render = function(){
-
-  core.events.publish( "core:dom:application:clear" );
-  core.events.publish( "core:current:set", this );
-
-  this.renderLeftPanel();
-  this.renderContent();
-  this.renderInfoPanel();
-  
-  core.events.publish( "core:drag:attachEvents" );
-  core.events.publish( "core:dom:material:update" );
-};
-
-
-WebForms.prototype.preview = function() {
-  var params = "menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,height=500,width=500,left=100,top=100"
-  var _window = window.open( '#preview/123' , "Preview", params );
-  console.log( _window.document.body.innerHTML );
-};
 
 WebForms.prototype.start = function() {
   console.log( 'WebForms: start' );

@@ -42,12 +42,16 @@ Dom.prototype.bindEvents = function () {
       dom.showInfoPanel();
     });
 
-    core.events.subscribe('core:dom:infoPanel:set', function ( html ) {
-      dom.infoPanel.element.appendChild( html );
+    core.events.subscribe('core:dom:infoPanel:set', function ( _root ) {
+      dom.infoPanel.element.appendChild( _root.element );
     });
 
-    core.events.subscribe('core:dom:content:set', function ( html ) {
-      dom.content.element.appendChild( html );
+    core.events.subscribe('core:dom:content:set', function ( _root ) {
+      dom.content.element.appendChild( _root.element );
+    });
+
+    core.events.subscribe('core:dom:content:clear', function () {
+      dom.content.element.innerHTML = '';
     });
 
     core.events.subscribe('core:dom:leftPanel:clear', function () {
@@ -62,8 +66,8 @@ Dom.prototype.bindEvents = function () {
       dom.showleftPanel();
     });
 
-    core.events.subscribe('core:dom:leftPanel:set', function ( html ) {
-      dom.leftPanel.element.appendChild( html );
+    core.events.subscribe('core:dom:leftPanel:set', function ( _root ) {
+      dom.leftPanel.element.appendChild( _root.element );
     });
 
 
@@ -351,7 +355,7 @@ Dom.prototype.createDrawer = function(argument){
         class : 'mdl-navigation__link',
         text  : 'Экранные формы',
         color: true,
-        // raised: true,
+        raised: true,
         ripple: true,
         callback : {
           function : function(e){
