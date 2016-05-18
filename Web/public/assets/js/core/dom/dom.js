@@ -91,16 +91,14 @@ Dom.prototype.bindEvents = function () {
 
     core.events.subscribe('core:dom:attach:progressbar', function () {
       console.log( '* Dom <- core:dom:attach:progressbar' );
-      dom.splashscreen.style.display = 'block';
+      dom.splashscreen.element.style.display = 'block';
     });
 
     core.events.subscribe('core:dom:remove:progressbar', function () {
       console.log( '* Dom <- core:dom:remove:progressbar' );
-      // dom.splashscreen.classList.add('fadeOut');
-      // dom.application.classList.add('fadeIn');
       
       setTimeout( function () {
-        dom.splashscreen.style.display = 'none';
+        dom.splashscreen.element.style.display = 'none';
         dom.application.style.display  = 'block';
         core.events.publish("core:router:update");
       }, 500);
@@ -109,17 +107,9 @@ Dom.prototype.bindEvents = function () {
 
     core.events.subscribe('core:dom:editor:show', function () {
       console.log( ' Dom <- core:dom:editor:show' );
-      // core.dom.editor.style.zIndex = 1;
-      // core.dom.editor.classList.add('fadeIn');
-      // core.dom.editor.classList.remove('fadeOut');
-      // core.dom.editor.classList.remove('hide');
     });
     core.events.subscribe('core:dom:editor:hide', function () {
       console.log( ' Dom <- core:dom:editor:hide' );
-      // core.dom.editor.style.zIndex = 0;
-      // core.dom.editor.classList.remove('fadeIn');
-      // core.dom.editor.classList.add('fadeOut');
-      // core.dom.editor.classList.add('hide');
     });
 
     core.events.subscribe('core:dom:set:title', function (title) {
@@ -130,7 +120,7 @@ Dom.prototype.bindEvents = function () {
     core.events.subscribe('core:dom:splashscreen:progress:set', function (percent) {
       console.log( ' Dom <- core:dom:splashscreen:progress:set', percent );
       try {
-        dom.progressbar.MaterialProgress.setProgress(percent);
+        dom.progressbar.element.MaterialProgress.setProgress(percent);
       } catch(e) {
         console.log(e);
       }
@@ -175,8 +165,6 @@ Dom.prototype.createApplication = function(argument){
 
 Dom.prototype.createApplicationContent = function(argument){
 
-  // this.main = document.createElement('div');
-  // this.main.className = "mdl-layout__content core-layout-offset";
   this.leftPanel = core.elements.create({
     elementType: 'simple',
     class : ["mdl-cell", "mdl-cell--2-col", "page-content-panel-animation", "content-leftPanel"]
@@ -223,30 +211,34 @@ Dom.prototype.createApplicationContent = function(argument){
 
 /* ProgressBar */
 Dom.prototype.createProgressBar = function(argument){
-  this.splashscreen = document.createElement('div');
-  this.splashscreen.classList.add("mdl-grid");
-  this.splashscreen.classList.add("animated");
-  this.splashscreen.classList.add("core-splashscreen-fixed");
 
-  this.logo = document.createElement('div');
-  this.logo.classList.add("mdl-typography--text-center");
-  this.logo.classList.add("mdl-cell");
-  this.logo.classList.add("mdl-cell--12-col");
-  this.logo.classList.add("mdl-cell--bottom");
-  this.logo.innerHTML = '<i class="material-icons">work</i>';
-  
-  this.progressbar = document.createElement('div');
-  this.progressbar.classList.add("mdl-cell");
-  this.progressbar.classList.add("mdl-cell--12-col-phone");
-  this.progressbar.classList.add("mdl-cell--6-col-desktop");
-  this.progressbar.classList.add("mdl-cell--3-offset-desktop");
-  this.progressbar.classList.add("mdl-progress");
-  this.progressbar.classList.add("mdl-js-progress");
-  
-  this.splashscreen.appendChild( this.logo );
-  this.splashscreen.appendChild( this.progressbar );
-  this.splashscreen.style.display = 'none';
-  document.body.appendChild( this.splashscreen );
+  this.logo = core.elements.create({
+    elementType: 'simple',
+    class : [ "mdl-typography--text-center", "mdl-cell", "mdl-cell--12-col", "mdl-cell--bottom" ],
+    items : [
+      core.elements.create({
+        elementType: 'icon',
+        icon: 'work'
+      })
+    ]
+  });
+
+  this.progressbar = core.elements.create({
+    elementType: 'simple',
+    class : [ "mdl-cell", "mdl-cell--12-col-phone", "mdl-cell--6-col-desktop", "mdl-cell--3-offset-desktop", "mdl-progress", "mdl-js-progress" ]
+  });
+
+  this.splashscreen = core.elements.create({
+    elementType: 'simple',
+    class : [ "mdl-grid", "animated", "core-splashscreen-fixed" ],
+    items : [
+      this.logo,
+      this.progressbar
+    ]
+  });
+
+  this.splashscreen.element.style.display = 'none';
+  document.body.appendChild( this.splashscreen.element );
 };
 
 
@@ -329,6 +321,9 @@ Dom.prototype.createDrawer = function(argument){
         elementType : 'button',
         class : 'mdl-navigation__link',
         text  : 'Отчёты',
+        color: true,
+        // raised: true,
+        ripple: true,
         callback : {
           function : function(e){
             e.preventDefault();
@@ -355,6 +350,9 @@ Dom.prototype.createDrawer = function(argument){
         elementType : 'button',
         class : 'mdl-navigation__link',
         text  : 'Экранные формы',
+        color: true,
+        // raised: true,
+        ripple: true,
         callback : {
           function : function(e){
             e.preventDefault();
