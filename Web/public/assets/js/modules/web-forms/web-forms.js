@@ -177,7 +177,7 @@ WebForms.prototype.renderContent = function() {
       var form = core.elements.create({
         elementType : 'card',
         class: [ 'mdl-cell', 'mdl-cell--3-col'],
-        shadow : 8,
+        shadow : 4,
         // height : 200,
         // width  : 300,
         media: 'assets/img/doc.png',
