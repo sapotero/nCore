@@ -344,19 +344,22 @@ Reports.prototype.renderContent = function(){
   componentHandler.upgradeElement( this.content );
 
   var load = new Promise( function( resolve, reject ){
-     if ( reports.documents.length ) {
-       var df = document.createDocumentFragment();
-       
-       for(var j = 0, length = reports.documents.length; j < length; j++){
-         console.log( reports.documents[j] );
-         var report = reports.documents[j];
-         df.appendChild( report.render() );
-       }
+     setTimeout( function(){
+       if ( reports.documents.length ) {
+         var df = document.createDocumentFragment();
+         
+         for(var j = 0, length = reports.documents.length; j < length; j++){
+           console.log( reports.documents[j] );
+           var report = reports.documents[j];
+           df.appendChild( report.render() );
+         }
 
-       resolve( df );
-     } else {
-       reject( false );
-     }
+         resolve( df );
+       } else {
+         reject( false );
+       }
+      
+     }, 5000 );
   });
 
   load.then( function( documentFragment ){
@@ -381,8 +384,6 @@ Reports.prototype.render = function() {
   this.renderInfoPanel();
 
   componentHandler.upgradeAllRegistered();
-  // core.dom.content
-  // core.dom.infoPanel
 }
 
 Reports.prototype.Report = Report;

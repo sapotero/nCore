@@ -264,19 +264,21 @@ Dom.prototype.createHeader = function(argument){
     type        : 'nav',
     class       : ["mdl-navigation", "mdl-layout--large-screen-only"],
     items       : [
-      core.elements.create({
-        elementType : 'button',
+      core.elements.create( {
+        elementType : 'menu',
+        position    : 'right',
+        icon: 'star',
         fab: true,
         color: true,
-        icon: 'star',
-        callback : {
-          function : function(e){
-            e.preventDefault();
-            this.toggleInfoPanel();
+        items: [
+          {
+            text: 'lol'
           },
-          context  : this
-        }
-      }),
+          {
+            text: 'lol'
+          }
+        ]
+      })
     ]
   });
 

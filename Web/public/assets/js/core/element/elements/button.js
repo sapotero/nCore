@@ -1,11 +1,25 @@
 var Button = function Button( config ) {
-  this.element = document.createElement( 'button' );
-  this.element.className = 'mdl-button mdl-js-button';
-  this.element.id = core.utils.generateId();
-
   this.config = config;
 
+  this.element = document.createElement( 'button' );
+  this.element.classList.add( this.CSS.BUTTON );
+  this.element.classList.add( this.CSS.BUTTON_JS );
+  this.element.id = core.utils.generateId();
+
   this.render();
+}
+
+Button.prototype.CSS = {
+  BUTTON      : 'mdl-button',
+  BUTTON_JS   : 'mdl-js-button',
+  BUTTON_ICON : 'mdl-button-icon',
+  FAB         : 'mdl-button--fab',
+  FAB_MINI    : 'mdl-button--mini-fab',
+  EFFECT      : 'mdl-js-ripple-effect',
+  RAISED      : 'mdl-button--raised',
+  ACCENT      : 'mdl-button--accent',
+  ICON        : 'material-icons',
+  RIPPLE      : 'mdl-js-ripple-effect'
 }
 
 Button.prototype.setText = function( text ) {
@@ -16,25 +30,26 @@ Button.prototype.setCallback = function( config ) {
   this.function = config.function;
 }
 Button.prototype.setFab = function() {
-  this.element.classList.add('mdl-button--fab');
+  this.element.classList.add( this.CSS.FAB );
+  this.element.classList.add( this.CSS.FAB_MINI );
 }
 Button.prototype.setRipple = function() {
-  this.element.classList.add('mdl-js-ripple-effect');
+  this.element.classList.add( this.CSS.EFFECT );
 }
 Button.prototype.setRaised = function() {
-  this.element.classList.add('mdl-button--raised');
+  this.element.classList.add( this.CSS.RAISED );
 }
 Button.prototype.setColor = function() {
-  this.element.classList.add('mdl-button--accent');
+  this.element.classList.add( this.CSS.ACCENT );
 }
 Button.prototype.setFlat = function() {
   return this;
 }
 Button.prototype.setIcon = function( _icon ) {
-  this.element.classList.add('mdl-button--icon');
+  this.element.classList.add( this.CSS.BUTTON_ICON );
 
   var icon = document.createElement('i');
-  icon.classList.add('material-icons');
+  icon.classList.add( this.CSS.ICON );
   icon.textContent = _icon;
   
   this.element.appendChild( icon );

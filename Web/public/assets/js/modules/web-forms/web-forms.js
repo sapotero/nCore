@@ -310,6 +310,8 @@ WebForms.prototype.renderLeftPanel = function() {
         },
       },
 
+
+
       // // полная реализация
       // {
       //   title     : 'menu item',
@@ -370,7 +372,6 @@ WebForms.prototype.renderLeftPanel = function() {
   });
   df.appendChild( card.element );
 
-  
   this.leftPanel.appendChild( df );
 
   core.events.publish( "core:dom:leftPanel:set", this.leftPanel );
