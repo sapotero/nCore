@@ -65,7 +65,6 @@ Report.prototype.cardClickHandler = function(e){
 };
 
 Report.prototype.editor = function( config ){
-
 };
 
 
@@ -341,7 +340,8 @@ Reports.prototype.renderContent = function(){
   this.content.className = 'mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active';
 
   core.dom.content.element.appendChild( this.content );
-  componentHandler.upgradeElement( this.content );
+  core.events.publish('core:dom:material:update');
+  
 
   var load = new Promise( function( resolve, reject ){
      setTimeout( function(){
@@ -383,7 +383,7 @@ Reports.prototype.render = function() {
   this.renderContent();
   this.renderInfoPanel();
 
-  componentHandler.upgradeAllRegistered();
+  core.events.publish('core:dom:material:update');
 }
 
 Reports.prototype.Report = Report;

@@ -186,7 +186,7 @@ onmessage = function(e) {
 
     var request = new this.request({
       type : 'GET',
-      url  : '/documents.json'
+      url  : '/webforms.json'
     });
 
     var load = new Promise(function(resolve, reject){

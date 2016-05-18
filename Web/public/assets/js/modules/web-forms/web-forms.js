@@ -5,7 +5,7 @@ var WebForm = function(config){
   this._id         = config._id         || '';
   this.name        = config.name        || '';
   this.description = config.description || '';
-  this.author      = config.author;
+  this.authorId    = config.author_id;
   this.providerId  = config.provider_id;
 };
 WebForm.prototype.init = function(){
@@ -43,7 +43,7 @@ WebForm.prototype.attachEvents = function(){
 };
 
 var WebForms = function WebForms(){
-  this.forms     = {};
+  this.forms     = [];
   this.leftPanel = {};
   this.content   = {};
   this.infoPanel = {};
@@ -53,30 +53,10 @@ var WebForms = function WebForms(){
   this.bindEvents();
 };
 
-WebForms.prototype.WebForm  = WebForm;
+WebForms.prototype.WebForm = WebForm;
 
 WebForms.prototype.init = function(){
 };
-WebForms.prototype.bindEvents = function(){
-  var webForms = this;
-  document.addEventListener('DOMContentLoaded', function(){ 
-    
-    core.events.subscribe("core:web-forms:render", function( data ){
-      webForms.render();
-    });
-
-    core.events.subscribe("core:web-forms:drag:export:result", function( result ){
-      console.log( 'core:web-forms:drag:export:result', result );
-    });
-
-    core.events.subscribe("core:web-forms:infoPanel:show", function( config ){
-      console.log( 'core:web-forms:infoPanel:show', config );
-      webForms.renderInfoPanel(config);
-    });
-
-  });
-};
-
 WebForms.prototype.import = function( data ){
   var data = '[{"element":"<div style=\\"top: 80px; left: 450px; position: absolute;\\" class=\\"\\">label<input name=\\"test-input\\" type=\\"text\\" placeholder=\\"texttium\\" style=\\"margin: 0px 10px;\\"></div>","options":{"drag":{"activeClass":"active-border","snapX":10,"snapY":10,"axisX":true,"axisY":true,"restrict":"document"},"id":"","title":""}},{"element":"<div style=\\"top: 180px; left: 410px; position: absolute;\\" class=\\"drag-active\\">label<input name=\\"test-input\\" type=\\"text\\" placeholder=\\"texttium\\" style=\\"margin: 0px 10px;\\"><div class=\\"drag-config-button\\" style=\\"top: 164px; left: 330.828px; height: 21px; width: 222.594px;\\"></div></div>","options":{"drag":{"activeClass":"active-border","snapX":10,"snapY":10,"axisX":true,"axisY":true,"restrict":"document"},"id":"","title":""}}]';
 
@@ -108,13 +88,8 @@ WebForms.prototype.import = function( data ){
 
   };
 };
-WebForms.prototype.add = function( type, config ) {
-
-  if ( !this.documents.hasOwnProperty(type) ) {
-    this.documents[type] = [];
-  }
-
-  this.documents[type].push( new this.WebForm(config) );
+WebForms.prototype.add = function( config ) {
+  this.forms.push( new this.WebForm(config) );
 };
 WebForms.prototype.show = function(id) {
   console.log( 'WebForms: show -> ', id);
@@ -198,18 +173,43 @@ WebForms.prototype.renderLeftPanel = function() {
   core.events.publish( "core:dom:material:update" );
 }
 WebForms.prototype.renderContent = function() {
-  this.content = core.elements.create({
-    elementType : 'button',
-    preventCopy : true,
-    name        : 'test-check',
-    fab         : true,
-    icon        : 'star'
-  });
+  this.content = {};
+
+  if ( this.forms.length ) {
+
+    var df = document.createDocumentFragment();
+
+    for (var i = this.forms.length - 1; i >= 0; i--) {
+      var data = this.forms[i];
+
+      var form = core.elements.create({
+        elementType : 'button',
+        preventCopy : true,
+        name        : 'test-check',
+        fab         : true,
+        icon        : 'star'
+      });
+
+      df.appendChild( form.element );
+    }
+    this.content = core.elements.create({
+      elementType : 'simple',
+      class : '__content'
+    });
+    
+    this.content.element.appendChild( df );
+    core.events.publish('core:dom:material:update');
+  } else {
+    // empty forms
+    this.content = core.elements.create({
+      elementType: 'simple',
+      class : [ "mdl-cell", "mdl-cell--12-col-phone", "mdl-cell--6-col-desktop", "mdl-cell--3-offset-desktop", "mdl-progress", "mdl-js-progress" ]
+    });
+  }
 
   core.events.publish( "core:dom:content:clear" );
   core.events.publish( "core:dom:content:set", this.content );
 }
-
 WebForms.prototype.renderInfoPanel = function( element ) {
   this.infoPanel = core.elements.create({
     elementType : 'simple',
@@ -222,6 +222,7 @@ WebForms.prototype.renderInfoPanel = function( element ) {
   core.events.publish( "core:dom:infoPanel:clear" );
   core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
 }
+
 WebForms.prototype.render = function(){
 
   core.events.publish( "core:dom:application:clear" );
@@ -234,7 +235,6 @@ WebForms.prototype.render = function(){
   // core.events.publish( "core:drag:attachEvents" );
   core.events.publish( "core:dom:material:update" );
 };
-
 
 WebForms.prototype.preview = function() {
   var params = "menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,height=500,width=500,left=100,top=100"
@@ -280,6 +280,43 @@ WebForms.prototype.stop = function() {
 WebForms.prototype.destroy = function() {
   console.log( 'WebForms: destroy' );
   this.element = [];
+};
+
+WebForms.prototype.bindEvents = function(){
+  var webForms = this;
+  document.addEventListener('DOMContentLoaded', function(){ 
+    
+    core.events.subscribe("core:web-forms:render", function( data ){
+      webForms.render();
+    });
+
+    core.events.subscribe("core:web-forms:drag:export:result", function( result ){
+      console.log( 'core:web-forms:drag:export:result', result );
+    });
+
+    core.events.subscribe("core:web-forms:infoPanel:show", function( config ){
+      console.log( 'core:web-forms:infoPanel:show', config );
+      webForms.renderInfoPanel(config);
+    });
+
+    core.events.subscribe("core:web-forms:loaded", function( data ){
+      var forms = [];
+      
+      try{
+        forms = JSON.parse( data );
+      } catch (e){
+        throw new Error( 'Error while web-forms loading', e );
+      }
+
+      if ( forms.length ) {
+        for (var i = forms.length - 1; i >= 0; i--) {
+          webForms.add( forms[i] );
+        }
+
+        // webForms.renderContent();
+      }
+    });
+  });
 };
 
 module.exports = WebForms;
