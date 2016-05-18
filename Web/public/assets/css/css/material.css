@@ -4241,7 +4241,9 @@ input.mdl-button[type="submit"] {
   line-height: 18px;
   overflow: hidden;
   padding: 16px 16px;
-  width: 90%; }
+  width: 90%;
+  /*min-height: 52px;*/
+}
 
 .mdl-card__actions {
   font-size: 16px;

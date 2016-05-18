@@ -183,20 +183,41 @@ WebForms.prototype.renderContent = function() {
       var data = this.forms[i];
 
       var form = core.elements.create({
-        elementType : 'button',
-        preventCopy : true,
-        name        : 'test-check',
-        fab         : true,
-        icon        : 'star'
+        elementType : 'card',
+        class: [ 'mdl-cell', 'mdl-cell--3-col'],
+        shadow : 8,
+        height : 200,
+        // width  : 300,
+        media: 'assets/img/doc.png',
+        // title : data.name,
+        title : '',
+        // subTitle: data.name,
+        description: data.description,
+        menu: [
+          core.elements.create( {
+            elementType : 'menu',
+            position    : 'right',
+            icon: 'more_vert',
+            // color: true,
+            items: [
+              {
+                text: 'lol'
+              },
+              {
+                text: 'lol'
+              }
+            ]
+          })
+        ]
       });
 
       df.appendChild( form.element );
     }
     this.content = core.elements.create({
       elementType : 'simple',
-      class : '__content'
+      class : ['mdl-grid']
     });
-    
+
     this.content.element.appendChild( df );
     core.events.publish('core:dom:material:update');
   } else {

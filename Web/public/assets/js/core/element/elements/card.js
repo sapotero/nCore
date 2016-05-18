@@ -64,38 +64,46 @@ Card.prototype.render = function(){
   var df = document.createDocumentFragment();
 
   if ( this._config.hasOwnProperty('title') ){
-    var title = document.createElement('div');
-    title.classList.add( this.CSS.TITLE );
+    this.title = document.createElement('div');
+    this.title.classList.add( this.CSS.TITLE );
     
     if ( this._config.hasOwnProperty('expand') && this._config.expand === true ){
-      title.classList.add( this.CSS.EXPAND );
+      this.title.classList.add( this.CSS.EXPAND );
     }
 
     var titleText = document.createElement('h2');
     titleText.classList.add( this.CSS.TITLE_TEXT );
     titleText.textContent = this._config.title;
 
-    title.appendChild( titleText );
+    this.title.appendChild( titleText );
     
     if ( this._config.hasOwnProperty('subTitle') ){
       var subTitle = document.createElement('div');
-      subTitle.classList.add( this.CSS.TITLE );
+      subTitle.classList.add( this.CSS.SUB_TITLE_TEXT );
       subTitle.textContent = this._config.subTitle;
-      title.appendChild( subTitle );
+      this.title.appendChild( subTitle );
     }
     
-    df.appendChild( title );
+    df.appendChild( this.title );
   }
 
   if ( this._config.hasOwnProperty('media') ){
-    var media = document.createElement('div');
-    media.classList.add( this.CSS.MEDIA );
+    if ( this.title ) {
+      this.title.style.height = '176px';
+      this.title.style.background = "url('" + this._config.media + "')";
+      this.title.style.backgroundPosition = 'top';
+      this.title.style.backgroundRepeat   = 'no-repeat';
+    }
+    // var media = document.createElement('div');
+    // media.classList.add( this.CSS.MEDIA );
 
-    var image = document.createElement('image');
-    image.setAttribute( 'src', this._config.media );
-    media.appendChild( image );
+    // var image = document.createElement('img');
+    // image.setAttribute( 'src', this._config.media );
+    // image.setAttribute( 'height', '100%' );
+    // image.setAttribute( 'width',  '100%' );
+    // media.appendChild( image );
 
-    df.appendChild( media );
+    // df.appendChild( media );
   }
 
   if ( this._config.hasOwnProperty('description') ){

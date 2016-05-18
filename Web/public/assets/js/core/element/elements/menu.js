@@ -29,7 +29,7 @@ Menu.prototype.CSS = {
   ROOT        : 'mdl-menu--wrapper',
   BUTTON      : 'mdl-button',
   BUTTON_JS   : 'mdl-js-button',
-  BUTTON_ICON : 'mdl-button-icons',
+  BUTTON_ICON : 'mdl-button--icon',
   
   FAB         : 'mdl-button--fab',
   FAB_MINI    : 'mdl-button--mini-fab',
@@ -87,7 +87,6 @@ Menu.prototype.render = function(){
       if ( item.hasOwnProperty('element') ) {
         this.element.appendChild( item.element );
       }
-      console.log( '++', item );
       var _item = document.createElement('li');
       _item.classList.add( this.CSS.MENU_ITEM );
       // _item.classList.add( this.CSS.MENU_RIGHT );
