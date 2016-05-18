@@ -48,6 +48,9 @@ Element.prototype.create = function( options ) {
     case 'spacer':
       element = this.Spacer;
       break;
+    case 'simple':
+      element = this.Simple
+      break;
     case 'icon':
       element = this.Icon;
       break;
@@ -75,7 +78,10 @@ Element.prototype.Switch   = require('./elements/switch');
 Element.prototype.Textarea = require('./elements/textarea');
 Element.prototype.Label    = require('./elements/label');
 
-Element.prototype.Icon   = require('./elements/icon');
+// Element.prototype.Header   = require('./elements/header');
+Element.prototype.Simple   = require('./elements/simple');
+// Element.prototype.Span     = require('./elements/span');
+Element.prototype.Icon     = require('./elements/icon');
 Element.prototype.Spacer   = require('./elements/spacer');
 
 Element.prototype.Button   = require('./elements/button');

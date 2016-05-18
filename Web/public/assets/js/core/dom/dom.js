@@ -166,14 +166,43 @@ Dom.prototype.build = function () {
 
 /* Application */
 Dom.prototype.createApplication = function(argument){
-  this.application  = document.createElement('div');
-  this.application.className = "mdl-layout mdl-js-layout mdl-layout--fixed-header animated";
-  this.application.style.display = 'none'
+  
+  var application = core.elements.create({
+    elementType: 'simple',
+    class: ["mdl-layout", "mdl-js-layout", "mdl-layout--fixed-header", "animated"],
+    // items: [
+    //   core.elements.create({
+    //     elementType: 'header',
+    //     class: ["mdl-layout__header", "core-fixed"],
+    //     items: [
+    //       core.elements.create({
+    //         elementType: 'simple',
+    //         class: ["mdl-layout__header-row"]
+    //       }),
+    //       core.elements.create({
+    //         elementType: 'span',
+    //         class: ["mdl-layout-title"]
+    //       }),
+    //       core.elements.create({
+    //         elementType: 'spacer'
+    //       }),
+    //       core.elements.create({
+    //         elementType: 'span',
+    //         class: ["mdl-layout-title"]
+    //       }),
+    //     ]
+    //   }),
+    // ]
+  });
+  
+  this.application  = application.element;
+  // this.application.className = "mdl-layout mdl-js-layout mdl-layout--fixed-header animated";
+  // this.application.style.display = 'none'
 };
 
 Dom.prototype.createApplicationContent = function(argument){
 
-  this.main = document.createElement('main');
+  this.main = document.createElement('div');
   this.main.className = "mdl-layout__content core-layout-offset";
   this.application.appendChild( this.main );
 
