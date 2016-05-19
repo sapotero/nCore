@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="ru">
   <head>
     <title> new_core index page </title>
 
@@ -9,29 +9,33 @@
     <meta name="theme-color" content="#9CC2CE">
     
     <link href="assets/css/css/material.css"   rel="stylesheet">
-    <!-- <link href="assets/css/css/mdl.css"   rel="stylesheet"> -->
     <link href="assets/css/css/style.css" rel="stylesheet">
     <link href="assets/css/css/froala.css" rel="stylesheet">
     <link href="assets/css/css/font.css"  rel="stylesheet">
 
-    <script type="text/javascript" src="assets/build/init.js"></script>
-
-    <!-- <link rel="import" href="assets/templates/elements/layout.html"> -->
-    <!-- <link rel="import" href="assets/templates/elements/card.html"> -->
-    <!-- <link rel="import" href="assets/templates/elements/menu.html"> -->
-    <!-- <link rel="import" href="assets/templates/elements/user.html"> -->
-    <!-- <link rel="import" href="assets/templates/elements/spinner.html"> -->
-    <!-- <link rel="import" href="assets/templates/elements/application.html"> -->
-    <!-- <link rel="import" href="assets/templates/elements/progress.html"> -->
-    <!-- <link rel="import" href="assets/templates/elements/splashscreen.html"> -->
+    <script type="text/javascript">
+        'use strict';
+        var core = core || {};
+        window.onload  = function(){
+          core.global = {
+            user : {
+              id   : '<%= current_user._id %>',
+              name : '<%= current_user.official_name %>',
+            },
+            provider: {
+              id   : '<%= current_user.provider._id %>',
+              name : '<%= current_user.provider.name %>',
+            }
+          }
+          core.startAll();
+        };
+    </script>
   </head>
   
   <body>
-
     <script type="text/javascript" src="assets/build/application.min.js"></script>
     <script type="text/javascript" src="assets/js/shared/material.js"></script>
     <script type="text/javascript" src="assets/js/shared/jquery.js"></script>
     <script type="text/javascript" src="assets/js/shared/froala.js"></script>
-    <!-- <script type="text/javascript" src="assets/js/shared/webcomponents.min.js"></script> -->
   </body>
 </html>
