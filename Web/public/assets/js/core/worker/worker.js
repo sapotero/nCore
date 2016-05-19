@@ -204,6 +204,29 @@ onmessage = function(e) {
        throw new Error(e);
     });
   };
+  WebForms.prototype.id = function(id){
+    var data = [];
+
+    var request = new this.request({
+      type : 'GET',
+      url  : '/webforms/' + id + '.json'
+    });
+
+    var load = new Promise(function(resolve, reject){
+      request.send( function (data) {
+         resolve(data);
+      });
+    });
+
+    load.then(function (data) {
+      // console.log( 'WebForms WORKER REQUEST: ', data );
+      postMessage({
+        "web-form:loaded": data
+      });
+    }).catch(function (e) {
+       throw new Error(e);
+    });
+  };
 
   var Criterias = function(){};
   Criterias.prototype.request = Request;

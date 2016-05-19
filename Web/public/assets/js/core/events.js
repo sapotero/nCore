@@ -32,6 +32,10 @@ module.exports = function(){
       core.worker.postMessage( [ 'reports:id', id ] )
     });
 
+    core.events.subscribe( "core:web-form:load", function (id) {
+      core.worker.postMessage( [ 'web-forms:id', id ] )
+    });
+
     core.events.subscribe( "core:events:editor:set:html", function ( html ) {
       core.dom.content.innerHTML = '';
 
@@ -56,7 +60,7 @@ module.exports = function(){
     });
 
 
-    core.events.subscribe( "core:web-forms:load", function (template) {
+    core.events.subscribe( "core:web-forms:load", function ( id ) {
       console.log('Core <- core:web-forms:load' );
       core.worker.postMessage( [ 'web-forms:load', '' ] );
     });

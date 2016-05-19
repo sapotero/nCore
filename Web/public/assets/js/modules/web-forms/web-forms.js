@@ -1,47 +1,5 @@
 "use strict";
 
-var WebForm = function(config){
-  this.element     = {};
-  this._id         = config._id         || '';
-  this.name        = config.name        || '';
-  this.description = config.description || '';
-  this.authorId    = config.author_id;
-  this.providerId  = config.provider_id;
-};
-WebForm.prototype.init = function(){
-
-  this.detachEvents();
-  this.attachEvents();
-  this.destroyEditor();
-  
-  
-  console.log( 'WebForm -> init' );
-
-  this.element = document.createElement('div');
-  core.dom.application.querySelector('.core-layout-application').appendChild( this.element );
-  core.events.publish("core:web-forms:editor:template");
-  core.events.publish("core:web-form:load", this._id );
-};
-WebForm.prototype.load = function(){
-
-  console.log( 'WebForm -> bindEvents' );
-};
-WebForm.prototype.detachEvents = function(){
-  core.events.remove("core:template:web-forms:editor");
-  core.events.remove("core:web-form:loaded");
-};
-WebForm.prototype.attachEvents = function(){
-  var webForm = this;
-  
-  core.events.subscribe("core:template:web-forms:editor", function(template){
-    webForm.update( template.raw );
-  });
-  
-  core.events.subscribe("core:web-form:loaded", function(data){
-    webForm.loadEditor( data.raw.body );
-  });
-};
-
 var WebForms = function WebForms(){
   this.forms     = [];
   this.leftPanel = {};
@@ -55,7 +13,7 @@ var WebForms = function WebForms(){
   this.bindEvents();
 };
 
-WebForms.prototype.WebForm = WebForm;
+WebForms.prototype.WebForm = require('./web-form');
 
 WebForms.prototype.init = function(){
 };
@@ -93,13 +51,25 @@ WebForms.prototype.import = function( data ){
 WebForms.prototype.add = function( config ) {
   this.forms.push( new this.WebForm(config) );
 };
-WebForms.prototype.show = function(id) {
-  console.log( 'WebForms: show -> ', id);
-  var webForm = this.find(id);
+WebForms.prototype.find = function( id ) {
+  var form = {};
+
+  for (var i = 0; i < this.forms.length; i++) {
+    if ( this.forms[i]._id === id ) {
+      form = this.forms[i];
+    }
+  }
+  return form;
+};
+WebForms.prototype.show = function( form ) {
+  var webForm = this.find( form._id );
+  // console.log( 'WebForms: show -> ', form, webForm );
+
   if ( webForm ) {
-    webForm.init();
+    webForm.load(form);
+    this.active = webForm;
   } else {
-    throw new Error('template not found!');
+    throw new Error('web-form not found!');
   }
 };
 WebForms.prototype.clear = function(config) {
@@ -390,8 +360,27 @@ WebForms.prototype.bindEvents = function(){
         // webForms.renderContent();
       }
     });
+
+    core.events.on("core:web-form:ready", function( data ){
+      // console.log( 'WebForm :: core:web-form:ready > ', data );
+      var webForm = {};
+
+      try {
+        webForm = JSON.parse( data );
+        webForms.show( webForm );
+      } catch (e) {
+        throw new Error(e);
+      }
+    });
+    
+    core.events.on("core:web-form:render", function( form ){
+      console.log( 'WebForm :: core:web-form:render > ', form );
+    });
+
+    core.events.on("core:web-form:new", function( form ){
+      console.log( 'WebForm :: core:web-form:new > ', form );
+    });
   });
 };
 
 module.exports = WebForms;
-
