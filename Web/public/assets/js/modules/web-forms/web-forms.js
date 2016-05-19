@@ -183,7 +183,7 @@ WebForms.prototype.renderContent = function() {
 
       var form = core.elements.create({
         elementType : 'card',
-        class: [ 'mdl-cell', 'mdl-cell--3-col'],
+        class: [ 'mdl-cell', 'mdl-cell--3-col', 'mdl-cell--12-col-phone', 'mdl-cell--4-col-tablet'],
         shadow : 4,
         // height : 200,
         // width  : 300,
@@ -251,9 +251,7 @@ WebForms.prototype.renderContent = function() {
 }
 WebForms.prototype.renderInfoPanel = function( element ) {
   this.infoPanel = core.elements.create({
-    elementType : 'simple',
-    preventCopy : true,
-    name        : 'test-check',
+    elementType : 'button',
     fab         : true,
     icon        : 'star'
   });

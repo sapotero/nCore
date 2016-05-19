@@ -150,6 +150,10 @@ Dom.prototype.build = function () {
 
   // Сама приложулька
   this.createApplicationContent();
+  
+
+  this.createFooter();
+
 
   setTimeout( core.events.publish('core:dom:build:ready') ,1000);
 };
@@ -157,7 +161,7 @@ Dom.prototype.build = function () {
 
 
 /* Application */
-Dom.prototype.createApplication = function(argument){
+Dom.prototype.createApplication = function(){
   
   var application = core.elements.create({
     elementType: 'simple',
@@ -167,14 +171,20 @@ Dom.prototype.createApplication = function(argument){
   this.application = application.element;
 };
 
-Dom.prototype.createApplicationContent = function(argument){
+Dom.prototype.createApplicationContent = function(){
+
+  this.leftFakePanel = core.elements.create({
+    elementType: 'simple',
+    class : [ "mdl-cell", "mdl-cell--2-col", "mdl-cell--hide-tablet", "mdl-cell--hide-phone" ]
+  });
 
   this.leftPanel = core.elements.create({
     elementType: 'simple',
-    class : ["mdl-cell", "mdl-cell--2-col", "page-content-panel-animation", "content-leftPanel"]
+    class : ["mdl-cell", "mdl-cell--2-col", "page-content-panel-animation", "content-leftPanel", "mdl-cell--hide-tablet", "mdl-cell--hide-phone"]
   });
   this.content = core.elements.create({
     elementType: 'simple',
+    // mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col
     class : ["mdl-cell", "mdl-cell--8-col", "page-content-panel-animation", "content-content"]
   });
   this.infoPanel = core.elements.create({
@@ -194,7 +204,7 @@ Dom.prototype.createApplicationContent = function(argument){
 
   this.pageContent = core.elements.create({
     elementType: 'simple',
-    class : ["page-content"],
+    class : [ "page-content", "app-container-grid" ],
     items : [
       this.grid,
     ]
@@ -202,7 +212,8 @@ Dom.prototype.createApplicationContent = function(argument){
 
   this.main = core.elements.create({
     elementType: 'simple',
-    class : ["mdl-layout__content", "core-layout-offset"],
+    type  : 'main',
+    class : [ "app-main-ribbon-offset", "mdl-layout__content", "core-layout-offset"],
     items : [
       this.pageContent,
     ]
@@ -214,7 +225,7 @@ Dom.prototype.createApplicationContent = function(argument){
 };
 
 /* ProgressBar */
-Dom.prototype.createProgressBar = function(argument){
+Dom.prototype.createProgressBar = function(){
 
   this.logo = core.elements.create({
     elementType: 'simple',
@@ -247,7 +258,7 @@ Dom.prototype.createProgressBar = function(argument){
 
 
 /* MainMenu */
-Dom.prototype.createHeader = function(argument){
+Dom.prototype.createHeader = function(){
   
   this.title = core.elements.create({
     elementType : 'simple',
@@ -281,7 +292,7 @@ Dom.prototype.createHeader = function(argument){
   this.header = core.elements.create({
     elementType : 'simple',
     type        : 'header',
-    class       : ["mdl-layout__header", "core-fixed"],
+    class       : ["mdl-layout__header", "core-fixed", "mdl-color--grey-100", "mdl-color-text--grey-800"],
     items : [
       core.elements.create({
         elementType: 'simple',
@@ -295,7 +306,14 @@ Dom.prototype.createHeader = function(argument){
     ]
   });
 
+  var ribbon = core.elements.create({
+    elementType : 'simple',
+    class       : [ 'ribbon' ]
+  });
+  
+
   this.application.appendChild( this.header.element );
+  this.application.appendChild( ribbon.element );
   this.setTitle( 'App title' );
 };
 
@@ -308,12 +326,12 @@ Dom.prototype.setTitle = function ( title ) {
 
 
 /* DRAWER */
-Dom.prototype.createDrawer = function(argument){
+Dom.prototype.createDrawer = function(){
 
   this.drawerTitle = core.elements.create({
     elementType: 'simple',
     type  : 'span',
-    class : ["mdl-layout-title"]
+    class : [ "mdl-layout-title", "mdl-color-text--grey-800" ]
   });
 
   this.drawerNavigation = core.elements.create({
@@ -394,7 +412,6 @@ Dom.prototype.createDrawer = function(argument){
 
   this.application.appendChild( this.drawer.element );
   this.setDrawerTitle('App title');
-
 };
 
 Dom.prototype.setDrawerTitle = function ( title ) {
@@ -402,6 +419,16 @@ Dom.prototype.setDrawerTitle = function ( title ) {
     throw new Error('setDrawerTitle -> can`t set title')
   }
   this.drawerTitle.element.textContent = title;
+};
+
+Dom.prototype.createFooter = function(){
+  
+  this.footer = core.elements.create({
+    elementType: 'simple',
+    class: [ "mdl-mini-footer", "app-footer" ],
+  });
+  
+  this.main.element.appendChild( this.footer.element );
 };
 
 
