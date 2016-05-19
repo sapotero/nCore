@@ -70,9 +70,10 @@ Button.prototype.render = function() {
   }
 
   this.element._config = this.config;
-  
-  if ( typeof this.function === 'function' ) {
-    this.element.addEventListener( 'click', this.function.bind( this.context ) );
+
+  if ( this.config.hasOwnProperty('callback') && typeof this.config.callback.function === 'function' ) {
+    this.config.callback.context = this.config.callback.context || this;
+    this.element.addEventListener( 'click', this.config.callback.function.bind( this.config.callback.context ) );
   }
 
   return this;

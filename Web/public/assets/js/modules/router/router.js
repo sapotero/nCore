@@ -208,6 +208,11 @@ Router.prototype.destroy = function() {
 Router.prototype.bindEvents = function() {
   var router = this;
   document.addEventListener('DOMContentLoaded', function(){
+
+    core.events.subscribe("core:router:web-forms:show", function( _id ){
+      console.log('Router <- core:router:web-forms:show', _id );
+      location.hash = [ '#', core.modules['web-forms'].route, '/', _id ].join('');
+    });
     
     core.events.subscribe( 'core:router:reports:show', function (doc) {
       console.log( 'Router <- core:router:reports:show', doc );

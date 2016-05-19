@@ -51,11 +51,13 @@ Card.prototype.CSS = {
   EXPAND         : "mdl-card--expand",
   TITLE          : "mdl-card__title",
   TITLE_TEXT     : "mdl-card__title-text",
+  TITLE_ACTIVE   : 'mdl-card__title--active',
   SUB_TITLE_TEXT : "mdl-card__subtitle-text",
   MEDIA          : "mdl-card__media",
   SUPPORT_TEXT   : "mdl-card__supporting-text",
   ACTIONS        : "mdl-card__actions",
   MENU           : "mdl-card__menu",
+
 }
 
 
@@ -83,28 +85,27 @@ Card.prototype.render = function(){
       subTitle.textContent = this._config.subTitle;
       this.title.appendChild( subTitle );
     }
+
+    if ( this._config.hasOwnProperty('callback') && this._config.callback.function.constructor === Function ) {
+      
+      this._config.callback.context = this._config.callback.context || this;
+      this.title.addEventListener( 'click', this._config.callback.function.bind( this._config.callback.context ) );
+      this.title.classList.add( this.CSS.TITLE_ACTIVE );
+      this.title.classList.add( this.CSS.BORDER );
+
+    }
     
     df.appendChild( this.title );
   }
 
   if ( this._config.hasOwnProperty('media') ){
     if ( this.title ) {
-      this.title.style.height = '276px';
+      // this.title.style.height = '276px';
       // this.title.style.background = "url('" + this._config.media + "')";
       // this.title.style.backgroundPosition = 'top';
       // this.title.style.backgroundRepeat  = 'no-repeat';
-      this.title.style.backgroundColor   = '#C5CAE9';
+      // this.title.style.backgroundColor   = '#C5CAE9';
     }
-    // var media = document.createElement('div');
-    // media.classList.add( this.CSS.MEDIA );
-
-    // var image = document.createElement('img');
-    // image.setAttribute( 'src', this._config.media );
-    // image.setAttribute( 'height', '100%' );
-    // image.setAttribute( 'width',  '100%' );
-    // media.appendChild( image );
-
-    // df.appendChild( media );
   }
 
   if ( this._config.hasOwnProperty('description') ){

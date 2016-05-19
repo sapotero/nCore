@@ -83,7 +83,7 @@ Menu.prototype.render = function(){
   if ( this._config.hasOwnProperty('items') && this._config.items.constructor === Array ) {
     for (var i = 0, length = this._config.items.length; i < length; i++) {
       var item = this._config.items[i];
-      console.log( 'menu item', item );
+      // console.log( 'menu item', item );
 
       if ( item.hasOwnProperty('element') ) {
         this.element.appendChild( item.element );

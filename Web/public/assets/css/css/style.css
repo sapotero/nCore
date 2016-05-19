@@ -196,3 +196,19 @@
 .mdl-card__menu-hide{
   display: none;
 }
+
+.mdl-card__title--active {
+  transition: 0.25s ease;
+  height: 250px;
+}
+.mdl-card__title--active:hover {
+  cursor: pointer;
+  background-color: rgba(0,0,0,0.02);
+  transition: 0.25s ease;
+}
+
+.mdl-card__title--active:active {
+  cursor: pointer;
+  background-color: rgba(0,0,0,0.05);
+  transition: 0.25s ease;
+}

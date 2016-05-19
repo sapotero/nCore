@@ -47,6 +47,7 @@ var WebForms = function WebForms(){
   this.leftPanel = {};
   this.content   = {};
   this.infoPanel = {};
+  this.route     = 'web-forms';
   
   this.active    = {};
   
@@ -151,7 +152,13 @@ WebForms.prototype.renderLeftPanel = function() {
               preventCopy : true,
               name        : 'test-check',
               fab         : true,
-              icon        : 'star'
+              icon        : 'star',
+              callback : {
+                context : this,
+                function: function(e){
+                  console.log('event handler');
+                }
+              }
             })
           },
         },
@@ -197,7 +204,6 @@ WebForms.prototype.renderContent = function() {
                 callback : {
                   context: this,
                   function : function(e){
-                    e.preventDefault();
                     core.events.publish('core:dom:infoPanel:hide');
                   }
                 }
@@ -207,14 +213,20 @@ WebForms.prototype.renderContent = function() {
                 callback : {
                   context: this,
                   function : function(e){
-                    e.preventDefault();
                     core.events.publish('core:dom:infoPanel:show');
                   }
                 }
               }
             ]
           })
-        ]
+        ],
+        callback : {
+          context  : this,
+          function : function(e){
+            console.log('event handler');
+            core.events.emit("core:router:web-forms:show", data._id);
+          }
+        }
       });
 
       df.appendChild( form.element );
