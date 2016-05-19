@@ -57,6 +57,9 @@ Element.prototype.create = function( options ) {
     case 'menu':
       element = this.Menu;
       break;
+    case 'table':
+      element = this.Table;
+      break;
 
     default:
       break;
@@ -83,6 +86,7 @@ Element.prototype.Label    = require('./elements/label');
 
 // Element.prototype.Header   = require('./elements/header');
 Element.prototype.Simple   = require('./elements/simple');
+Element.prototype.Table     = require('./elements/table');
 Element.prototype.Menu     = require('./elements/menu');
 Element.prototype.Icon     = require('./elements/icon');
 Element.prototype.Spacer   = require('./elements/spacer');

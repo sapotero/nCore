@@ -111,7 +111,7 @@ WebForms.prototype.renderLeftPanel = function() {
 
   this.leftPanel = core.elements.create({
     elementType : 'simple',
-    class : 'webforms-leftPanel',
+    class : ['webforms-leftPanel'],
     items : [
       core.elements.create({
       elementType : 'list',
@@ -178,6 +178,11 @@ WebForms.prototype.renderContent = function() {
   if ( this.forms.length ) {
 
     var df = document.createDocumentFragment();
+    // this.menu = core.elements.create({
+    //   elementType: 'simple',
+    //   class : ["mdl-cell", "mdl-cell--12-col", "page-content-panel-animation", "menu-content"],
+    //   text: 'menu-panel'
+    // });
 
     for (var i = this.forms.length - 1; i >= 0; i--) {
       var data = this.forms[i];
@@ -236,14 +241,17 @@ WebForms.prototype.renderContent = function() {
       elementType : 'simple',
       class : ['mdl-grid']
     });
-
+    // this.content.element.appendChild( this.menu.element );
     this.content.element.appendChild( df );
     core.events.publish('core:dom:material:update');
   } else {
     // empty forms
     this.content = core.elements.create({
       elementType: 'simple',
-      class : [ "mdl-cell", "mdl-cell--12-col-phone", "mdl-cell--6-col-desktop", "mdl-cell--3-offset-desktop", "mdl-progress", "mdl-js-progress" ]
+      class : [ "mdl-cell", "mdl-cell--12-col-phone", "mdl-cell--6-col-desktop", "mdl-cell--3-offset-desktop", "mdl-progress", "mdl-js-progress" ],
+      items: [
+        this.menu
+      ]
     });
   }
 
@@ -251,15 +259,41 @@ WebForms.prototype.renderContent = function() {
   core.events.publish( "core:dom:content:set", this.content );
 }
 WebForms.prototype.renderInfoPanel = function( element ) {
-  this.infoPanel = core.elements.create({
+  var table = core.elements.create({
+    elementType : 'table',
+    selectable: true,
+    class : [ 'webforms-infopanel-table' ],
+    head  : [ 'id', 'name', 'test' ],
+    body  : [
+      [4 , 5, 5],
+      [1 , 2, 2],
+      [1 , 2, 2],
+      [1 , 2, 2],
+      [1 , 2, 2],
+      [1 , 2, 2],
+      [1 , 2, 2],
+    ]
+  });
+
+  var button = core.elements.create({
     elementType : 'button',
-    fab         : true,
-    icon        : 'star'
+    class       : [ 'menu-content-button' ],
+    text        : 'Создать',
+    color       : true,
+    raised      : true
+  });
+
+  this.infoPanel = core.elements.create({
+    elementType : 'simple',
+    // text        : 'Создать',
+    items : [
+      button,
+      table
+    ]
   });
 
   core.events.publish( "core:dom:infoPanel:clear" );
   core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
-  core.events.publish( "core:dom:infoPanel:hide" );
 }
 
 WebForms.prototype.render = function(){

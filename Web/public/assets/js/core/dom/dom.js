@@ -179,12 +179,6 @@ Dom.prototype.createApplication = function(){
 };
 
 Dom.prototype.createApplicationContent = function(){
-
-  this.leftFakePanel = core.elements.create({
-    elementType: 'simple',
-    class : [ "mdl-cell", "mdl-cell--2-col", "mdl-cell--hide-tablet", "mdl-cell--hide-phone" ]
-  });
-
   this.leftPanel = core.elements.create({
     elementType: 'simple',
     class : ["mdl-cell", "mdl-cell--2-col", "page-content-panel-animation", "content-leftPanel", "mdl-cell--hide-tablet", "mdl-cell--hide-phone"]
@@ -211,7 +205,7 @@ Dom.prototype.createApplicationContent = function(){
 
   this.pageContent = core.elements.create({
     elementType: 'simple',
-    class : [ "page-content", "app-container-grid" ],
+    class : [ "page-content", "app-container-grid", "mdl-shadow--4dp" ],
     items : [
       this.grid,
     ]

@@ -16,6 +16,7 @@
     opacity: 1;
   }
 }
+
 .inline{
   display: inline-block;
   margin: auto 20px;
@@ -53,6 +54,14 @@
   /*border: 1px dashed blue;*/
 }
 
+.menu-content {
+  border-bottom: 1px solid rgb(242,242,242);
+  /*margin: 8px 0px;*/
+}
+.menu-content-button {
+  padding-bottom: 8px;
+  margin: 8px 0px;
+}
 
 .drag-active{
   /*border: 1px solid purple;*/
@@ -103,20 +112,15 @@
 }
 
 .content-infoPanel {
-  /*transition: 0.3s ease;*/
-
-  /*position: absolute;*/
-  /*right: 0px;*/
-  background-color: #ffffff;
-  height: 96%;
-  /*width: 100%;*/
-
+  transition: 0.3s ease;
+  opacity: 1;
+  margin: -8px 0px;
+  padding: 32px 16px;
+  border-left: 1px solid rgb(66,66,66);
+  background: rgba(255,255,254, 0.5);
 }
 .zero-width {
-  /*transition: 0.3s ease;*/
   width: 0px;
-  /*position: absolute;*/
-  /*right: -16.7%;*/
 }
 
 .core-fixed {
@@ -127,13 +131,25 @@
   width: 100%;
 }
 
-.core-splashscreen-fixed{
+.core-splashscreen-fixed {
   position: fixed;
   height: 100%;
-  width: 95%;
+  width: 100%;
   background-color: white;
-  margin-top: 15%;
+  /*margin-top: 15%;*/
+/*  top: calc( 25% - 16px );*/
   z-index: 999;
+}
+.core-splashscreen-fixed > .mdl-cell--bottom {
+  position: absolute;
+  top: calc( 50% - 64px );
+}
+.core-splashscreen-fixed > .mdl-cell--bottom > i {
+  font-size: 32px;
+}
+.core-splashscreen-fixed > .mdl-js-progress {
+  position: absolute;
+  top: calc( 50% - 16px );
 }
 
 
@@ -250,7 +266,7 @@
 }
 
 .app-footer {
-  padding-left: 40px;
+  margin-top: 40px;
 }
 
 .mdl-layout__header .mdl-layout__drawer-button {

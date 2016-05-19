@@ -45,6 +45,16 @@ Button.prototype.setColor = function() {
 Button.prototype.setFlat = function() {
   return this;
 }
+Button.prototype.setClass = function( classes ){
+  if ( classes.length ) {
+    for (var i = classes.length - 1; i >= 0; i--) {
+      this.element.classList.add( classes[i] );
+    }
+  } else {
+    this.element.className += ' ' + classes;
+  }
+};
+
 Button.prototype.setIcon = function( _icon ) {
   this.element.classList.add( this.CSS.BUTTON_ICON );
 
@@ -68,6 +78,10 @@ Button.prototype.render = function() {
       // console.log('no method in prototype', action);
     }
   }
+
+  if ( this.config && this.config.hasOwnProperty('class') ) {
+    this.setClass( this.config.class );
+  };
 
   this.element._config = this.config;
 
