@@ -75,8 +75,15 @@ Dom.prototype.bindEvents = function () {
       componentHandler.upgradeAllRegistered();
     });
 
+    core.events.subscribe('core:dom:user:ready', function ( user ) {
+      dom.setUserName(user);
+    });
 
-    core.events.publish( "core:dom:clear" );
+    core.events.subscribe('core:dom:set:title', function ( title ) {
+      dom.setTitle(title);
+    });
+
+    // core.events.publish( "core:dom:clear" );
 
     core.events.subscribe('core:dom:build:application', function () {
       console.log('Dom <- core:dom:build:application');
@@ -269,24 +276,25 @@ Dom.prototype.createHeader = function(){
   this.navigation = core.elements.create({
     elementType : 'simple',
     type        : 'nav',
-    class       : ["mdl-navigation", "mdl-layout--large-screen-only"],
-    items       : [
-      core.elements.create( {
-        elementType : 'menu',
-        position    : 'right',
-        icon: 'star',
-        fab: true,
-        color: true,
-        items: [
-          {
-            text: 'lol'
-          },
-          {
-            text: 'lol'
-          }
-        ]
-      })
-    ]
+    class       : ["mdl-navigation", /*"mdl-layout--large-screen-only"*/],
+    // для теста
+    // items       : [
+    //   core.elements.create( {
+    //     elementType : 'menu',
+    //     position    : 'right',
+    //     icon: 'star',
+    //     fab: true,
+    //     color: true,
+    //     items: [
+    //       {
+    //         text: 'lol'
+    //       },
+    //       {
+    //         text: 'lol'
+    //       }
+    //     ]
+    //   })
+    // ]
   });
 
   this.header = core.elements.create({
@@ -314,7 +322,7 @@ Dom.prototype.createHeader = function(){
 
   this.application.appendChild( this.header.element );
   this.application.appendChild( ribbon.element );
-  this.setTitle( 'App title' );
+  // this.setTitle( 'App title' );
 };
 
 Dom.prototype.setTitle = function ( title ) {
@@ -324,6 +332,23 @@ Dom.prototype.setTitle = function ( title ) {
   this.title.element.textContent = title;
 };
 
+Dom.prototype.setUserName = function ( user ) {
+  // this.title.element.textContent = title;
+  var user = core.elements.create( {
+    elementType : 'menu',
+    position    : 'right',
+    class       : [ 'mdl-cell--hide-phone' ],
+    text        : user.name,
+    icon        : 'person',
+    // fab         : true,
+    items       : [
+      { text: user.name },
+      { text: user.provider.name }
+    ]
+  });
+
+  this.navigation.element.appendChild( user.element );
+};
 
 /* DRAWER */
 Dom.prototype.createDrawer = function(){

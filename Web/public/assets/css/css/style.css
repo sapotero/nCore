@@ -16,6 +16,15 @@
     opacity: 1;
   }
 }
+.inline{
+  display: inline-block;
+  margin: auto 20px;
+}
+.mdl-menu--wrapper{
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+}
 
 .fadeOut {
   animation-name: fadeOut;

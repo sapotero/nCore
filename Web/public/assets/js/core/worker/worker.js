@@ -59,7 +59,7 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'WORKER REQUEST: ', tmp, data, template );
+      // console.log( 'WORKER REQUEST: ', tmp, data, template );
       
       var _data  = {};
       _data[tmp] = data;
@@ -97,7 +97,7 @@ onmessage = function(e) {
 
     load.then(function (data) {
       var _data = JSON.parse(data);
-      console.log( 'Reports WORKER REQUEST: ', _data );
+      // console.log( 'Reports WORKER REQUEST: ', _data );
       postMessage({
         "reports:loaded": _data
       });
@@ -120,7 +120,7 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'Reports WORKER REQUEST: ', data );
+      // console.log( 'Reports WORKER REQUEST: ', data );
       postMessage({
         "report:loaded": data
       });
@@ -146,7 +146,7 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'Reports WORKER REQUEST: ', data );
+      // console.log( 'Reports WORKER REQUEST: ', data );
       postMessage({
         "bps:loaded": data
       });
@@ -171,7 +171,7 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'Reports WORKER REQUEST: ', data );
+      // console.log( 'Reports WORKER REQUEST: ', data );
       postMessage({
         "print-forms:loaded": data
       });
@@ -196,7 +196,7 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'Reports WORKER REQUEST: ', data );
+      // console.log( 'Reports WORKER REQUEST: ', data );
       postMessage({
         "web-forms:loaded": data
       });
@@ -222,7 +222,7 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'Reports WORKER REQUEST: ', data );
+      // console.log( 'Reports WORKER REQUEST: ', data );
       postMessage({
         "criterias:loaded": data
       });
@@ -248,7 +248,7 @@ onmessage = function(e) {
     });
 
     load.then(function (data) {
-      console.log( 'Reports WORKER REQUEST: ', data );
+      // console.log( 'Reports WORKER REQUEST: ', data );
       postMessage({
         "criteriaKeys:loaded": data
       });

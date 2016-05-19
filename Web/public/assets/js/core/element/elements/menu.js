@@ -26,23 +26,29 @@ Menu.prototype = Object.create( require('./simple').prototype );
 Menu.prototype.constructor = Menu;
 
 Menu.prototype.CSS = {
-  ROOT        : 'mdl-menu--wrapper',
-  BUTTON      : 'mdl-button',
-  BUTTON_JS   : 'mdl-js-button',
-  BUTTON_ICON : 'mdl-button--icon',
+  ROOT          : 'mdl-menu--wrapper',
+  BUTTON        : 'mdl-button',
+  BUTTON_JS     : 'mdl-js-button',
+  BUTTON_ICON   : 'mdl-button--icon',
   
-  FAB         : 'mdl-button--fab',
-  FAB_MINI    : 'mdl-button--mini-fab',
-  RAISED      : 'mdl-button--raised',
-  ACCENT      : 'mdl-button--accent',
+  FAB           : 'mdl-button--fab',
+  FAB_MINI      : 'mdl-button--mini-fab',
+  RAISED        : 'mdl-button--raised',
+  ACCENT        : 'mdl-button--accent',
   
-  MENU        : 'mdl-menu',
-  MENU_JS     : 'mdl-js-menu',
-  MENU_RIGHT  : 'mdl-menu--bottom-right',
-  // MENU_RIGHT  : 'mdl-menu--bottom-left',
-  MENU_ITEM   : 'mdl-menu__item',
-  ICON        : 'material-icons',
-  RIPPLE      : 'mdl-js-ripple-effect'
+  MENU          : 'mdl-menu',
+  MENU_JS       : 'mdl-js-menu',
+  MENU_RIGHT    : 'mdl-menu--bottom-right',
+  // MENU_RIGHT : 'mdl-menu--bottom-left',
+  MENU_ITEM     : 'mdl-menu__item',
+  ICON          : 'material-icons',
+  RIPPLE        : 'mdl-js-ripple-effect',
+  GRAY          : 'mdl-js-ripple-effect',
+  BOLD          : 'mdl-typography--font-bold',
+  GRAY_TEXT     : 'mdl-color-text--grey-800',
+  INLINE        : 'inline',
+  CELL          : 'mdl-cell',
+  CELL_HIDE     : 'mdl-cell--hide-phone',
 }
 
 Menu.prototype.setIcon = function( icon ){
@@ -54,7 +60,18 @@ Menu.prototype.setIcon = function( icon ){
 };
 
 Menu.prototype.setText = function( string ){
-  this.element.textContent = string;
+  if ( this.button ) {
+    var text = document.createElement('h5');
+    text.classList.add( this.CSS.GRAY_TEXT );
+    text.classList.add( this.CSS.INLINE );
+    // text.classList.add( this.CSS.CELL );
+    text.classList.add( this.CSS.CELL_HIDE );
+    // text.classList.add( this.CSS.BOLD );
+    text.textContent = string;
+    this.element.insertBefore( text, this.button );
+  } else {
+    this.element.textContent = string;
+  }
 };
 Menu.prototype.setFab = function() {
   this.button.classList.add( this.CSS.FAB );
@@ -73,6 +90,7 @@ Menu.prototype.render = function(){
   if ( this._config && this._config.hasOwnProperty('icon') ) {
     this.setIcon( this._config.icon );
   };
+
   if ( this._config && this._config.hasOwnProperty('fab') ) {
     this.setFab( this._config.fab );
   };

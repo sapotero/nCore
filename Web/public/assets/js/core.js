@@ -15,6 +15,7 @@ core = (function(){
       Reports    = require('./modules/reports/reports'),
       WebForms   = require('./modules/web-forms/web-forms'),
       PrintForms = require('./modules/print-forms/print-forms'),
+      User       = require('./modules/user/user'),
       Bps        = require('./modules/bp/bp');
 
   var Core = function( config ){
@@ -33,7 +34,8 @@ core = (function(){
       'web-forms'   : new WebForms(),
       'print-forms' : new PrintForms(),
       'bps'         : new Bps(),
-      'drag'        : new Draggy()
+      'drag'        : new Draggy(),
+      'user'        : new User(),
     };
 
     // какой модуль активный в данный момент

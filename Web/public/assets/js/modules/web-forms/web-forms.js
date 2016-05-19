@@ -48,6 +48,7 @@ var WebForms = function WebForms(){
   this.content   = {};
   this.infoPanel = {};
   this.route     = 'web-forms';
+  this.title     = 'Экранные формы';
   
   this.active    = {};
   
@@ -258,6 +259,7 @@ WebForms.prototype.renderInfoPanel = function( element ) {
 
   core.events.publish( "core:dom:infoPanel:clear" );
   core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
+  core.events.publish( "core:dom:infoPanel:hide" );
 }
 
 WebForms.prototype.render = function(){
@@ -271,6 +273,7 @@ WebForms.prototype.render = function(){
   
   // core.events.publish( "core:drag:attachEvents" );
   core.events.publish( "core:dom:material:update" );
+  core.events.publish( "core:dom:set:title", this.title );
 };
 
 WebForms.prototype.preview = function() {
