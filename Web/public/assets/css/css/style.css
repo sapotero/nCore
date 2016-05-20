@@ -272,3 +272,19 @@
 .mdl-layout__header .mdl-layout__drawer-button {
   color: rgb(66,66,66) !important;
 }
+
+.mdl-list__item-primary-content__hover {
+  transition: 0.25s ease;
+  border-radius: 2px;
+}
+.mdl-list__item-primary-content__hover:hover {
+  cursor: pointer;
+  background-color: rgba(0,0,0,0.01);
+  transition: 0.25s ease;
+}
+
+.mdl-list__item-primary-content__hover:active {
+  cursor: pointer;
+  background-color: rgba(0,0,0,0.03);
+  transition: 0.25s ease;
+}

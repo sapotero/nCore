@@ -87,7 +87,7 @@ Button.prototype.render = function() {
 
   if ( this.config.hasOwnProperty('callback') && typeof this.config.callback.function === 'function' ) {
     this.config.callback.context = this.config.callback.context || this;
-    this.element.addEventListener( 'click', this.config.callback.function.bind( this.config.callback.context ) );
+    this.element.addEventListener( 'click', this.config.callback.function.bind( this.config.callback.context ), false );
   }
 
   return this;

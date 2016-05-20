@@ -474,18 +474,4 @@ Dom.prototype.hideInfoPanel = function(){
   this.infoPanel.element.classList.add('zero-width');
 };
 
-
-
-Dom.prototype.start = function () {
-  console.log('Dom: start');
-};
-
-Dom.prototype.stop = function () {
-  console.log('Dom: stop');
-};
-
-Dom.prototype.destroy = function () {
-  console.log('Dom: destroy');
-};
-
 module.exports = Dom;

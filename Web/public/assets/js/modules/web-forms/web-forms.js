@@ -49,6 +49,7 @@ WebForms.prototype.import = function( data ){
   };
 };
 WebForms.prototype.add = function( config ) {
+
   this.forms.push( new this.WebForm(config) );
 };
 WebForms.prototype.find = function( id ) {
@@ -95,43 +96,60 @@ WebForms.prototype.renderLeftPanel = function() {
           }),
         },
         {
-          title : 'menu item',
-          icon  : 'event'
-        },
-        {
-          title : 'menu item',
-          icon  : 'event',
-          subTitle : 'menu item',
-        },
-        {
-          title : 'menu item',
-          subTitle : 'menu item',
-          icon  : 'event',
-          action : {
-            href : '#',
-            icon : 'star',
-            title : 'tesst'
+          title    : 'Шаблоны',
+          subTitle : '0 форм',
+          icon     : 'event',
+          action   : {
+            icon     : 'add',
+            color    : true,
+            // callback : {
+            //   context  : this,
+            //   function : function(e){
+            //     e.preventDefault();
+            //     console.log( 'webforms-leftMenu > template icon click' );
+            //   },
+            // }
+            // title : 'tesst'
           },
+          callback : {
+            context  : this,
+            function : function(e){
+              e.preventDefault();
+              console.log( 'webforms-leftMenu > template click' );
+            },
+          }
         },
         {
-          title : 'menu item',
-          subTitle : 'menu item',
-          icon  : 'event',
-          action : {
-            element: core.elements.create({
-              elementType : 'button',
-              preventCopy : true,
-              name        : 'test-check',
-              fab         : true,
-              icon        : 'star',
-              callback : {
-                context : this,
-                function: function(e){
-                  console.log('event handler');
-                }
-              }
-            })
+          title    : 'Общие формы',
+          subTitle : '0 форм',
+          icon     : 'event',
+          action   : {
+            icon     : 'add',
+            color    : true,
           },
+          callback : {
+            context  : this,
+            function : function(e){
+              e.preventDefault();
+              console.log( 'webforms-leftMenu > shared click' );
+            },
+          }
+        },
+        {
+          title    : 'Мои формы',
+          subTitle : '0 форм',
+          icon     : 'event',
+          action   : {
+            icon     : 'add',
+            color    : true,
+          },
+          callback : {
+            context  : this,
+            function : function(e){
+              e.preventDefault();
+              console.log( 'webforms-leftMenu > my click' );
+            },
+          }
         },
       ]
     })
@@ -229,41 +247,42 @@ WebForms.prototype.renderContent = function() {
   core.events.publish( "core:dom:content:set", this.content );
 }
 WebForms.prototype.renderInfoPanel = function( element ) {
-  var table = core.elements.create({
-    elementType : 'table',
-    selectable: true,
-    class : [ 'webforms-infopanel-table' ],
-    head  : [ 'id', 'name', 'test' ],
-    body  : [
-      [4 , 5, 5],
-      [1 , 2, 2],
-      [1 , 2, 2],
-      [1 , 2, 2],
-      [1 , 2, 2],
-      [1 , 2, 2],
-      [1 , 2, 2],
-    ]
-  });
+  // var table = core.elements.create({
+  //   elementType : 'table',
+  //   selectable: true,
+  //   class : [ 'webforms-infopanel-table' ],
+  //   head  : [ 'id', 'name', 'test' ],
+  //   body  : [
+  //     [4 , 5, 5],
+  //     [1 , 2, 2],
+  //     [1 , 2, 2],
+  //     [1 , 2, 2],
+  //     [1 , 2, 2],
+  //     [1 , 2, 2],
+  //     [1 , 2, 2],
+  //   ]
+  // });
 
-  var button = core.elements.create({
-    elementType : 'button',
-    class       : [ 'menu-content-button' ],
-    text        : 'Создать',
-    color       : true,
-    raised      : true
-  });
+  // var button = core.elements.create({
+  //   elementType : 'button',
+  //   class       : [ 'menu-content-button' ],
+  //   text        : 'Создать',
+  //   color       : true,
+  //   raised      : true
+  // });
 
-  this.infoPanel = core.elements.create({
-    elementType : 'simple',
-    // text        : 'Создать',
-    items : [
-      button,
-      table
-    ]
-  });
+  // this.infoPanel = core.elements.create({
+  //   elementType : 'simple',
+  //   // text        : 'Создать',
+  //   items : [
+  //     button,
+  //     table
+  //   ]
+  // });
 
   core.events.publish( "core:dom:infoPanel:clear" );
-  core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
+  core.events.publish( "core:dom:infoPanel:hide" );
+  // core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
 }
 
 WebForms.prototype.render = function(){
