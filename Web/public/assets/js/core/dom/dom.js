@@ -27,10 +27,10 @@ Dom.prototype.bindEvents = function () {
     });
     
     core.events.on( "core:dom:content:wrapper:show", function () {
-      dom.wrapper.element.style.display = 'block';
+      dom.wrapper.element.classList.remove('content-wrapper-hide');
     });
     core.events.on( "core:dom:content:wrapper:hide", function () {
-      dom.wrapper.element.style.display = 'none';
+      dom.wrapper.element.classList.add('content-wrapper-hide');
     });
 
     core.events.on('core:dom:infoPanel:clear', function () {
@@ -147,8 +147,6 @@ Dom.prototype.build = function () {
   console.log('Dom :: build application');
   // this.editor = document.querySelector('#editor');
 
-  // Загрузочный экран для документов
-  this.createContentWrapper();
 
   // Прелоадер
   this.createProgressBar();
@@ -165,9 +163,11 @@ Dom.prototype.build = function () {
   // Сама приложулька
   this.createApplicationContent();
   
-
+  // Футер
   this.createFooter();
 
+  // Загрузочный экран для документов
+  this.createContentWrapper();
 
   setTimeout( core.events.emit('core:dom:build:ready') ,1000);
 };
@@ -238,10 +238,19 @@ Dom.prototype.createContentWrapper = function(){
     items : [
       core.elements.create({
         elementType: 'simple',
-        class : [ "mdl-progress", "mdl-js-progress" ]
+        class : [ "wrapper-top", "mdl-spinner", "mdl-js-spinner", "is-active" ],
       }),
     ]
   });
+
+  var box = this.grid.element.getBoundingClientRect();
+
+
+  this.wrapper.element.style.position = 'absolute';
+  this.wrapper.element.style.left = box.left + 'px';
+  this.wrapper.element.style.width = box.width + 'px';
+
+  console.log( box, this.wrapper );
 
   this.grid.element.appendChild( this.wrapper.element );
 }

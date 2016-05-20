@@ -121,6 +121,9 @@
 }
 .zero-width {
   width: 0px;
+  border: 0px;
+  transition: 0.3s ease;
+  opacity: 0;
 }
 
 .core-fixed {
@@ -311,8 +314,25 @@
 }
 
 .content-wrapper {
-  
-}
-.content-wrapper-hide {
+  background: rgba(255,255,255,0.9);
+  z-index: 999999;
+  position: absolute;
+  top: 0px;
+  display: flex;
+  height: calc(100% - 104px );
+  transition: 0.3s ease;
 
+}
+
+.content-wrapper-hide {
+  display: none;
+  transition: 0.3s ease;
+
+}
+.wrapper-top {
+  display: flex;
+  flex-direction: row;
+  top: 50%;
+  /*width: 90%;*/
+  margin: 0px auto;
 }

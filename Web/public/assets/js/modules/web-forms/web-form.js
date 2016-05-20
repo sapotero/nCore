@@ -23,7 +23,6 @@ WebForm.prototype.load = function( data ){
 
 WebForm.prototype.initEditor = function(){
   this.body = core.utils.Base64.decode( this.raw.body );
-  
   core.events.emit('core:web-form:show', this );
 }
 

@@ -331,13 +331,6 @@ WebForms.prototype.showElementInfo = function( element ) {
   }
 }
 
-WebForms.prototype.renderWrapper = function() {
-  console.log( 'WebForms: renderWrapper' );
-  core.events.emit( "core:dom:content:wrapper:show", this );
-  // core.events.emit( "core:dom:content:wrapper:hide" );
-  this.renderEditor();
-};
-
 WebForms.prototype.renderEditorLeftPanel = function() {
   console.log( 'WebForms: renderEditorLeftPanel' );
 };
@@ -359,6 +352,10 @@ WebForms.prototype.renderEditor = function( form ) {
   core.events.emit( "core:dom:material:update" );
 
   core.events.emit( "core:dom:set:title", form.name );
+
+  setTimeout( function(){
+    core.events.emit( "core:dom:content:wrapper:hide");
+  }, 500 );
 };
 
 
@@ -460,6 +457,7 @@ WebForms.prototype.bindEvents = function(){
     
     core.events.on("core:web-form:render", function( form ){
       console.log( 'WebForm :: core:web-form:render > ', form );
+      core.events.emit( "core:dom:content:wrapper:show");
     });
 
     core.events.on("core:web-form:new", function( form ){
