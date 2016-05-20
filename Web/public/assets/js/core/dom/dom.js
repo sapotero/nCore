@@ -25,6 +25,13 @@ Dom.prototype.bindEvents = function () {
       dom.content.element.innerHTML   = '';
       dom.infoPanel.element.innerHTML = '';
     });
+    
+    core.events.on( "core:dom:content:wrapper:show", function () {
+      dom.wrapper.element.style.display = 'block';
+    });
+    core.events.on( "core:dom:content:wrapper:hide", function () {
+      dom.wrapper.element.style.display = 'none';
+    });
 
     core.events.on('core:dom:infoPanel:clear', function () {
       dom.infoPanel.element.innerHTML = '';
@@ -140,6 +147,9 @@ Dom.prototype.build = function () {
   console.log('Dom :: build application');
   // this.editor = document.querySelector('#editor');
 
+  // Загрузочный экран для документов
+  this.createContentWrapper();
+
   // Прелоадер
   this.createProgressBar();
   
@@ -219,8 +229,22 @@ Dom.prototype.createApplicationContent = function(){
 
   this.application.appendChild( this.main.element );
   document.body.appendChild( this.application );
-
 };
+
+Dom.prototype.createContentWrapper = function(){
+  this.wrapper = core.elements.create({
+    elementType: 'simple',
+    class: [ "content-wrapper", "content-wrapper-hide" ],
+    items : [
+      core.elements.create({
+        elementType: 'simple',
+        class : [ "mdl-progress", "mdl-js-progress" ]
+      }),
+    ]
+  });
+
+  this.grid.element.appendChild( this.wrapper.element );
+}
 
 /* ProgressBar */
 Dom.prototype.createProgressBar = function(){
@@ -257,6 +281,8 @@ Dom.prototype.removeProgressBar = function(){
 
   core.events.remove('core:dom:attach:progressbar');
   core.events.remove('core:dom:remove:progressbar');
+  core.events.remove('core:dom:splashscreen:progress:set');
+
   
   this.splashscreen.element.remove();
 

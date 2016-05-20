@@ -177,7 +177,7 @@ WebForms.prototype.renderContent = function() {
       var form = core.elements.create({
         elementType : 'card',
         class: [ 'mdl-cell', 'mdl-cell--3-col', 'mdl-cell--12-col-phone', 'mdl-cell--4-col-tablet'],
-        shadow : 4,
+        shadow : 8,
         // height : 200,
         // width  : 300,
         media: 'assets/img/doc.png',
@@ -213,11 +213,12 @@ WebForms.prototype.renderContent = function() {
             ]
           })
         ],
+        _data : data,
         callback : {
-          context  : this,
+          // context  : this,
           function : function(e){
-            console.log('event handler');
-            core.events.emit("core:router:web-forms:show", data._id);
+            // console.log('event handler', this._config._data._id);
+            core.events.emit("core:router:web-forms:show", this._config._data._id);
           }
         }
       });
@@ -280,20 +281,18 @@ WebForms.prototype.renderInfoPanel = function( element ) {
   // });
 
   core.events.emit( "core:dom:infoPanel:clear" );
-  core.events.emit( "core:dom:infoPanel:hide" );
   // core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
 }
 
 WebForms.prototype.render = function(){
-
-  core.events.emit( "core:dom:application:clear" );
   core.events.emit( "core:current:set", this );
+  core.events.emit( "core:dom:application:clear" );
 
   this.renderLeftPanel();
   this.renderContent();
   this.renderInfoPanel();
   
-  // core.events.emit( "core:drag:attachEvents" );
+  core.events.emit( "core:dom:infoPanel:hide" );
   core.events.emit( "core:dom:material:update" );
   core.events.emit( "core:dom:set:title", this.title );
 };
@@ -332,6 +331,37 @@ WebForms.prototype.showElementInfo = function( element ) {
   }
 }
 
+WebForms.prototype.renderWrapper = function() {
+  console.log( 'WebForms: renderWrapper' );
+  core.events.emit( "core:dom:content:wrapper:show", this );
+  // core.events.emit( "core:dom:content:wrapper:hide" );
+  this.renderEditor();
+};
+
+WebForms.prototype.renderEditorLeftPanel = function() {
+  console.log( 'WebForms: renderEditorLeftPanel' );
+};
+WebForms.prototype.renderEditorContent = function() {
+  console.log( 'WebForms: renderEditorContent' );
+};
+WebForms.prototype.renderEditorInfoPanel = function() {
+  console.log( 'WebForms: renderEditorInfoPanel' );
+};
+
+WebForms.prototype.renderEditor = function( form ) {
+  core.events.emit( "core:dom:application:clear" );
+
+  this.renderEditorLeftPanel();
+  this.renderEditorContent();
+  this.renderEditorInfoPanel();
+  
+  core.events.emit( "core:dom:infoPanel:hide" );
+  core.events.emit( "core:dom:material:update" );
+
+  core.events.emit( "core:dom:set:title", form.name );
+};
+
+
 WebForms.prototype.start = function() {
   console.log( 'WebForms: start' );
   this.bindEvents();
@@ -339,7 +369,6 @@ WebForms.prototype.start = function() {
 WebForms.prototype.stop = function() {
   console.log( 'WebForms: stop' );
   this.detachEvents();
-  
 };
 WebForms.prototype.destroy = function() {
   console.log( 'WebForms: destroy' );
@@ -352,10 +381,14 @@ WebForms.prototype.destroy = function() {
   this.detachEvents();
 };
 WebForms.prototype.detachEvents = function(){
+  core.events.remove("core:web-forms:start");
+  core.events.remove("core:web-forms:stop");
+  core.events.remove("core:web-forms:destroy");
   core.events.remove("core:web-forms:render");
   core.events.remove("core:web-forms:drag:export:result");
   core.events.remove("core:web-forms:infoPanel:show");
   core.events.remove("core:web-forms:loaded");
+  core.events.remove("core:web-form:show");
   core.events.remove("core:web-form:ready");
   core.events.remove("core:web-form:render");
   core.events.remove("core:web-form:new");
@@ -365,8 +398,25 @@ WebForms.prototype.bindEvents = function(){
   var webForms = this;
   document.addEventListener('DOMContentLoaded', function(){ 
     
-    core.events.on("core:web-forms:render", function( data ){
+    core.events.on("core:web-forms:render", function(){
       webForms.render();
+    });
+
+    core.events.on("core:web-forms:start", function(){
+      webForms.start();
+    });
+
+    core.events.on("core:web-forms:stop", function(){
+      webForms.stop();
+    });
+
+    core.events.on("core:web-forms:destroy", function(){
+      webForms.destroy();
+    });
+
+    core.events.on("core:web-form:show", function( form ){
+      console.log('WebForm :: core:web-form:show', form );
+      webForms.renderEditor( form );
     });
 
     core.events.on("core:web-forms:drag:export:result", function( result ){
@@ -404,7 +454,7 @@ WebForms.prototype.bindEvents = function(){
         webForm = JSON.parse( data );
         webForms.show( webForm );
       } catch (e) {
-        throw new Error(e);
+        // throw new Error(e);
       }
     });
     

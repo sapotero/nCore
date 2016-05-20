@@ -1,6 +1,4 @@
 'use strict';
-
-
 var Base64 = require('./base64');
 
 var Utils = function(){

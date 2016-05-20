@@ -3,11 +3,13 @@
 var WebForm = function(config){
   this.element     = {};
   this.raw         = {};
+  this.body        = {};
   this._id         = config._id         || '';
   this.name        = config.name        || '';
   this.description = config.description || '';
   this.authorId    = config.author_id   || '';
   this.providerId  = config.provider_id || '';
+
 };
 
 WebForm.prototype.load = function( data ){
@@ -20,7 +22,9 @@ WebForm.prototype.load = function( data ){
 };
 
 WebForm.prototype.initEditor = function(){
-  core.events.emit('core:web-forms:load:editor');
+  this.body = core.utils.Base64.decode( this.raw.body );
+  
+  core.events.emit('core:web-form:show', this );
 }
 
 WebForm.prototype.detachEvents = function(){
