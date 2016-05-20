@@ -155,9 +155,9 @@ WebForms.prototype.renderLeftPanel = function() {
     ]
   });
 
-  core.events.publish( "core:dom:leftPanel:clear" );
-  core.events.publish( "core:dom:leftPanel:set", this.leftPanel );
-  core.events.publish( "core:dom:material:update" );
+  core.events.emit( "core:dom:leftPanel:clear" );
+  core.events.emit( "core:dom:leftPanel:set", this.leftPanel );
+  core.events.emit( "core:dom:material:update" );
 }
 WebForms.prototype.renderContent = function() {
   this.content = {};
@@ -197,7 +197,7 @@ WebForms.prototype.renderContent = function() {
                 callback : {
                   context: this,
                   function : function(e){
-                    core.events.publish('core:dom:infoPanel:hide');
+                    core.events.emit('core:dom:infoPanel:hide');
                   }
                 }
               },
@@ -206,7 +206,7 @@ WebForms.prototype.renderContent = function() {
                 callback : {
                   context: this,
                   function : function(e){
-                    core.events.publish('core:dom:infoPanel:show');
+                    core.events.emit('core:dom:infoPanel:show');
                   }
                 }
               }
@@ -230,7 +230,7 @@ WebForms.prototype.renderContent = function() {
     });
     // this.content.element.appendChild( this.menu.element );
     this.content.element.appendChild( df );
-    core.events.publish('core:dom:material:update');
+    core.events.emit('core:dom:material:update');
   } else {
     // empty forms
     this.content = core.elements.create({
@@ -242,8 +242,8 @@ WebForms.prototype.renderContent = function() {
     });
   }
 
-  core.events.publish( "core:dom:content:clear" );
-  core.events.publish( "core:dom:content:set", this.content );
+  core.events.emit( "core:dom:content:clear" );
+  core.events.emit( "core:dom:content:set", this.content );
 }
 WebForms.prototype.renderInfoPanel = function( element ) {
   // var table = core.elements.create({
@@ -279,23 +279,23 @@ WebForms.prototype.renderInfoPanel = function( element ) {
   //   ]
   // });
 
-  core.events.publish( "core:dom:infoPanel:clear" );
-  core.events.publish( "core:dom:infoPanel:hide" );
-  // core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
+  core.events.emit( "core:dom:infoPanel:clear" );
+  core.events.emit( "core:dom:infoPanel:hide" );
+  // core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
 }
 
 WebForms.prototype.render = function(){
 
-  core.events.publish( "core:dom:application:clear" );
-  core.events.publish( "core:current:set", this );
+  core.events.emit( "core:dom:application:clear" );
+  core.events.emit( "core:current:set", this );
 
   this.renderLeftPanel();
   this.renderContent();
   this.renderInfoPanel();
   
-  // core.events.publish( "core:drag:attachEvents" );
-  core.events.publish( "core:dom:material:update" );
-  core.events.publish( "core:dom:set:title", this.title );
+  // core.events.emit( "core:drag:attachEvents" );
+  core.events.emit( "core:dom:material:update" );
+  core.events.emit( "core:dom:set:title", this.title );
 };
 
 WebForms.prototype.preview = function() {
@@ -312,7 +312,7 @@ WebForms.prototype.showElementInfo = function( element ) {
     console.log( 'renderInfoPanel render ->', element );
 
     if ( config && Object === config.constructor) {
-      core.events.publish( "core:dom:infoPanel:clear" );
+      core.events.emit( "core:dom:infoPanel:clear" );
 
       var form = document.createElement('div');
 
@@ -326,42 +326,59 @@ WebForms.prototype.showElementInfo = function( element ) {
       }
       this.infoPanel = form;
       
-      core.events.publish( "core:dom:infoPanel:set", this.infoPanel );
-      core.events.publish( "core:dom:material:update" );
+      core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
+      core.events.emit( "core:dom:material:update" );
     };
   }
 }
 
 WebForms.prototype.start = function() {
   console.log( 'WebForms: start' );
-  // this.init();
+  this.bindEvents();
 };
 WebForms.prototype.stop = function() {
   console.log( 'WebForms: stop' );
+  this.detachEvents();
+  
 };
 WebForms.prototype.destroy = function() {
   console.log( 'WebForms: destroy' );
-  this.element = [];
+  this.element.remove();
+
+  for( var key in this ){
+    delete this[ key ];
+  }
+
+  this.detachEvents();
 };
+WebForms.prototype.detachEvents = function(){
+  core.events.remove("core:web-forms:render");
+  core.events.remove("core:web-forms:drag:export:result");
+  core.events.remove("core:web-forms:infoPanel:show");
+  core.events.remove("core:web-forms:loaded");
+  core.events.remove("core:web-form:ready");
+  core.events.remove("core:web-form:render");
+  core.events.remove("core:web-form:new");
+}
 
 WebForms.prototype.bindEvents = function(){
   var webForms = this;
   document.addEventListener('DOMContentLoaded', function(){ 
     
-    core.events.subscribe("core:web-forms:render", function( data ){
+    core.events.on("core:web-forms:render", function( data ){
       webForms.render();
     });
 
-    core.events.subscribe("core:web-forms:drag:export:result", function( result ){
+    core.events.on("core:web-forms:drag:export:result", function( result ){
       console.log( 'core:web-forms:drag:export:result', result );
     });
 
-    core.events.subscribe("core:web-forms:infoPanel:show", function( config ){
+    core.events.on("core:web-forms:infoPanel:show", function( config ){
       console.log( 'core:web-forms:infoPanel:show', config );
       webForms.renderInfoPanel(config);
     });
 
-    core.events.subscribe("core:web-forms:loaded", function( data ){
+    core.events.on("core:web-forms:loaded", function( data ){
       var forms = [];
       
       try{

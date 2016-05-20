@@ -2,23 +2,34 @@
 
 var WebForm = function(config){
   this.element     = {};
+  this.raw         = {};
   this._id         = config._id         || '';
   this.name        = config.name        || '';
   this.description = config.description || '';
-  this.authorId    = config.author_id;
-  this.providerId  = config.provider_id;
-  this.raw         = {};
-  // this.detachEvents();
-  // this.destroyEditor();
-  // this.attachEvents();
+  this.authorId    = config.author_id   || '';
+  this.providerId  = config.provider_id || '';
 };
 
 WebForm.prototype.load = function( data ){
-  console.log( 'WebForm -> bindEvents', data );
+  console.log( 'WebForm -> load', data );
   this.raw = data;
+
+  this.detachEvents();
+  this.attachEvents();
+  this.initEditor();
 };
 
+WebForm.prototype.initEditor = function(){
+  core.events.emit('core:web-forms:load:editor');
+}
+
 WebForm.prototype.detachEvents = function(){
+  console.log('WebForm -> detachEvents');
+  // core.events.remove("core:template:web-forms:editor");
+  // core.events.remove("core:web-form:loaded");
+};
+WebForm.prototype.attachEvents = function(){
+  console.log('WebForm -> attachEvents');
   // core.events.remove("core:template:web-forms:editor");
   // core.events.remove("core:web-form:loaded");
 };

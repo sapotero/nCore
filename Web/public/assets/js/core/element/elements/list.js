@@ -93,12 +93,12 @@ List.prototype.render = function(){
 
         if ( item.action.hasOwnProperty('callback') ) {
           var button = document.createElement('button');
-          button.classList.add( this.CSS.SECONDARY_ACTION );
-          button.classList.add( this.CSS.SECONDARY_ACTION_PRIMARY );
+          // button.classList.add( this.CSS.SECONDARY_ACTION );
+          // button.classList.add( this.CSS.SECONDARY_ACTION_PRIMARY );
           button.classList.add( this.CSS.BUTTON );
-          button.classList.add( this.CSS.BUTTON_JS );
+          // button.classList.add( this.CSS.BUTTON_JS );
           button.classList.add( this.CSS.BUTTON_ICON );
-          button.href = '#';
+          // button.href = '#';
           action.appendChild( button );
 
           if ( item.action.hasOwnProperty('color') && item.action.color === true ) {

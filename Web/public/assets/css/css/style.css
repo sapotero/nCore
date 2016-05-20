@@ -295,3 +295,17 @@
 .mdl-button__flex {
   display: flex;
 }
+
+.mdl-card__supporting-text {
+  color: rgba(0,0,0, 0.54);
+  font-size: 1rem;
+  line-height: 18px;
+  overflow: hidden;
+  padding: 0px 16px;
+  width: 90%;
+  /*min-height: 52px;*/
+}
+
+.mdl-card__title-text.mdl-card__title-text {
+  font-size: 20px;
+}
