@@ -33,11 +33,8 @@ List.prototype.CSS = {
   ITEM_ICON                : "mdl-list__item-icon",
   ITEM_AVATAR              : "mdl-list__item-avatar",
   BUTTON                   : 'mdl-button',
-  BUTTON_JS                 : 'mdl-button-js',
-  BUTTON_ICON              : 'mdl-button-icon',
-  FAB                      : 'mdl-button--fab',
-  FAB_MINI                 : 'mdl-button--mini-fab',
-
+  BUTTON_JS                : 'mdl-button-js',
+  BUTTON_ICON              : 'mdl-button--icon',
 }
 
 List.prototype.render = function(){
@@ -96,13 +93,11 @@ List.prototype.render = function(){
 
         if ( item.action.hasOwnProperty('callback') ) {
           var button = document.createElement('button');
-          // button.classList.add( this.CSS.SECONDARY_ACTION );
-          // button.classList.add( this.CSS.SECONDARY_ACTION_PRIMARY );
+          button.classList.add( this.CSS.SECONDARY_ACTION );
+          button.classList.add( this.CSS.SECONDARY_ACTION_PRIMARY );
           button.classList.add( this.CSS.BUTTON );
-          // button.classList.add( this.CSS.BUTTON_JS );
+          button.classList.add( this.CSS.BUTTON_JS );
           button.classList.add( this.CSS.BUTTON_ICON );
-          // button.classList.add( this.CSS.FAB );
-          // button.classList.add( this.CSS.FAB_MINI );
           button.href = '#';
           action.appendChild( button );
 

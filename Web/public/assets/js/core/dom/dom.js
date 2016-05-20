@@ -334,8 +334,23 @@ Dom.prototype.setTitle = function ( title ) {
 };
 
 Dom.prototype.setUserName = function ( user ) {
+  
   // this.title.element.textContent = title;
-  var user = core.elements.create( {
+  
+  var settings = core.elements.create({
+    elementType : 'button',
+    icon : 'settings',
+    flex : true,
+    callback : {
+      context  : this,
+      function : function(e){
+        e.preventDefault();
+        console.log( 'dom-userMenu > settings click' );
+      },
+    }
+  });
+
+  var user = core.elements.create({
     elementType : 'menu',
     position    : 'right',
     class       : [ 'mdl-cell--hide-phone' ],
@@ -348,7 +363,16 @@ Dom.prototype.setUserName = function ( user ) {
     ]
   });
 
-  this.navigation.element.appendChild( user.element );
+  this.userPanel = core.elements.create({
+    elementType : 'simple',
+    class : [ 'list__flex' ],
+    items : [
+      user,
+      settings,
+    ]
+  });
+
+  this.navigation.element.appendChild( this.userPanel.element );
 };
 
 /* DRAWER */

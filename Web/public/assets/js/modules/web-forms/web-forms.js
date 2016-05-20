@@ -102,22 +102,21 @@ WebForms.prototype.renderLeftPanel = function() {
           action   : {
             icon     : 'add',
             color    : true,
-            // callback : {
-            //   context  : this,
-            //   function : function(e){
-            //     e.preventDefault();
-            //     console.log( 'webforms-leftMenu > template icon click' );
-            //   },
-            // }
-            // title : 'tesst'
+            callback : {
+              context  : this,
+              function : function(e){
+                e.preventDefault();
+                console.log( 'webforms-leftMenu > template icon click' );
+              },
+            }
           },
-          callback : {
-            context  : this,
-            function : function(e){
-              e.preventDefault();
-              console.log( 'webforms-leftMenu > template click' );
-            },
-          }
+          // callback : {
+          //   context  : this,
+          //   function : function(e){
+          //     e.preventDefault();
+          //     console.log( 'webforms-leftMenu > template click' );
+          //   },
+          // }
         },
         {
           title    : 'Общие формы',

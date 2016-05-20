@@ -11,8 +11,9 @@ var Button = function Button( config ) {
 
 Button.prototype.CSS = {
   BUTTON      : 'mdl-button',
+  BUTTON_FLEX : 'mdl-button__flex',
   BUTTON_JS   : 'mdl-js-button',
-  BUTTON_ICON : 'mdl-button-icon',
+  BUTTON_ICON : 'mdl-button--icon',
   FAB         : 'mdl-button--fab',
   FAB_MINI    : 'mdl-button--mini-fab',
   EFFECT      : 'mdl-js-ripple-effect',
@@ -24,6 +25,9 @@ Button.prototype.CSS = {
 
 Button.prototype.setText = function( text ) {
   this.element.textContent = text;
+}
+Button.prototype.setFlex = function( text ) {
+  this.element.classList.add( this.CSS.BUTTON_FLEX );
 }
 Button.prototype.setCallback = function( config ) {
   this.context  = config.context;
