@@ -112,6 +112,7 @@ Dom.prototype.bindEvents = function () {
         dom.splashscreen.element.style.display = 'none';
         dom.application.style.display  = 'block';
         core.events.publish("core:router:update");
+        dom.removeProgressBar();
       }, 500);
 
     });
@@ -256,7 +257,17 @@ Dom.prototype.createProgressBar = function(){
   this.splashscreen.element.style.display = 'none';
   document.body.appendChild( this.splashscreen.element );
 };
+Dom.prototype.removeProgressBar = function(){
 
+  core.events.remove('core:dom:attach:progressbar');
+  core.events.remove('core:dom:remove:progressbar');
+  
+  this.splashscreen.element.remove();
+
+  delete this.logo;
+  delete this.progressbar;
+  delete this.splashscreen;
+};
 
 /* MainMenu */
 Dom.prototype.createHeader = function(){
