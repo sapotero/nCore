@@ -15,121 +15,117 @@ Dom.prototype.bindEvents = function () {
 
   document.addEventListener('DOMContentLoaded', function () {
     
-    core.events.subscribe('core:start:all', function () {
+    core.events.on('core:start:all', function () {
       console.log('core  > dom > bindEvents > core:start:all');
       manager.start();
     }, { priority: 0 });
 
-    core.events.subscribe('core:dom:updateApplication', function (application) {
-      dom.root.body.appendChild(application);
-    }, { priority: 0 });
-
-    core.events.subscribe('core:dom:application:clear', function () {
+    core.events.on('core:dom:application:clear', function () {
       dom.leftPanel.element.innerHTML = '';
       dom.content.element.innerHTML   = '';
       dom.infoPanel.element.innerHTML = '';
     });
 
-    core.events.subscribe('core:dom:infoPanel:clear', function () {
+    core.events.on('core:dom:infoPanel:clear', function () {
       dom.infoPanel.element.innerHTML = '';
     });
 
-    core.events.subscribe('core:dom:infoPanel:hide', function () {
+    core.events.on('core:dom:infoPanel:hide', function () {
       dom.hideInfoPanel();
     });
 
-    core.events.subscribe('core:dom:infoPanel:show', function () {
+    core.events.on('core:dom:infoPanel:show', function () {
       dom.showInfoPanel();
     });
 
-    core.events.subscribe('core:dom:infoPanel:set', function ( _root ) {
+    core.events.on('core:dom:infoPanel:set', function ( _root ) {
       dom.infoPanel.element.appendChild( _root.element );
     });
 
-    core.events.subscribe('core:dom:content:set', function ( _root ) {
+    core.events.on('core:dom:content:set', function ( _root ) {
       dom.content.element.appendChild( _root.element );
     });
 
-    core.events.subscribe('core:dom:content:clear', function () {
+    core.events.on('core:dom:content:clear', function () {
       dom.content.element.innerHTML = '';
     });
 
-    core.events.subscribe('core:dom:leftPanel:clear', function () {
+    core.events.on('core:dom:leftPanel:clear', function () {
       dom.leftPanel.element.innerHTML = '';
     });
 
-    core.events.subscribe('core:dom:leftPanel:hide', function () {
+    core.events.on('core:dom:leftPanel:hide', function () {
       dom.hideleftPanel();
     });
 
-    core.events.subscribe('core:dom:leftPanel:show', function () {
+    core.events.on('core:dom:leftPanel:show', function () {
       dom.showleftPanel();
     });
 
-    core.events.subscribe('core:dom:leftPanel:set', function ( _root ) {
+    core.events.on('core:dom:leftPanel:set', function ( _root ) {
       dom.leftPanel.element.appendChild( _root.element );
     });
 
 
-    core.events.subscribe('core:dom:material:update', function () {
+    core.events.on('core:dom:material:update', function () {
       componentHandler.upgradeAllRegistered();
     });
 
-    core.events.subscribe('core:dom:user:ready', function ( user ) {
+    core.events.on('core:dom:user:ready', function ( user ) {
       dom.setUserName(user);
     });
 
-    core.events.subscribe('core:dom:set:title', function ( title ) {
+    core.events.on('core:dom:set:title', function ( title ) {
       dom.setTitle(title);
     });
 
-    // core.events.publish( "core:dom:clear" );
+    // core.events.emit( "core:dom:clear" );
 
-    core.events.subscribe('core:dom:build:application', function () {
+    core.events.on('core:dom:build:application', function () {
       console.log('Dom <- core:dom:build:application');
       dom.build();
     });
 
-    core.events.subscribe('core:dom:application:show', function () {
+    core.events.on('core:dom:application:show', function () {
       console.log( ' Dom <- core:dom:application:show' );
       // core.dom.application.application.showCards();
     });
 
-    core.events.subscribe('core:dom:application:hide', function () {
+    core.events.on('core:dom:application:hide', function () {
       console.log( ' Dom <- core:dom:application:hide' );
       // core.dom.application.application.hideCards();
     });
 
-    core.events.subscribe('core:dom:attach:progressbar', function () {
+    core.events.on('core:dom:attach:progressbar', function () {
       console.log( '* Dom <- core:dom:attach:progressbar' );
       dom.splashscreen.element.style.display = 'block';
     });
 
-    core.events.subscribe('core:dom:remove:progressbar', function () {
+    core.events.on('core:dom:remove:progressbar', function () {
       console.log( '* Dom <- core:dom:remove:progressbar' );
       
       setTimeout( function () {
         dom.splashscreen.element.style.display = 'none';
         dom.application.style.display  = 'block';
-        core.events.publish("core:router:update");
+        core.events.emit("core:router:update");
         dom.removeProgressBar();
       }, 500);
 
     });
 
-    core.events.subscribe('core:dom:editor:show', function () {
+    core.events.on('core:dom:editor:show', function () {
       console.log( ' Dom <- core:dom:editor:show' );
     });
-    core.events.subscribe('core:dom:editor:hide', function () {
+    core.events.on('core:dom:editor:hide', function () {
       console.log( ' Dom <- core:dom:editor:hide' );
     });
 
-    core.events.subscribe('core:dom:set:title', function (title) {
+    core.events.on('core:dom:set:title', function (title) {
       console.log( ' Dom <- core:dom:set:title' );
       // core.dom.application.application.setAttribute('caption', title);
     });
 
-    core.events.subscribe('core:dom:splashscreen:progress:set', function (percent) {
+    core.events.on('core:dom:splashscreen:progress:set', function (percent) {
       console.log( ' Dom <- core:dom:splashscreen:progress:set', percent );
       try {
         dom.progressbar.element.MaterialProgress.setProgress(percent);
@@ -163,7 +159,7 @@ Dom.prototype.build = function () {
   this.createFooter();
 
 
-  setTimeout( core.events.publish('core:dom:build:ready') ,1000);
+  setTimeout( core.events.emit('core:dom:build:ready') ,1000);
 };
 
 
@@ -380,7 +376,7 @@ Dom.prototype.createDrawer = function(){
           function : function(e){
             e.preventDefault();
             core.dom.application.MaterialLayout.toggleDrawer();
-            core.events.publish("core:router:check", 'reports')
+            core.events.emit("core:router:check", 'reports')
           },
           context  : this
         }
@@ -393,7 +389,7 @@ Dom.prototype.createDrawer = function(){
           function : function(e){
             e.preventDefault();
             core.dom.application.MaterialLayout.toggleDrawer();
-            core.events.publish("core:router:check", 'bps')
+            core.events.emit("core:router:check", 'bps')
           },
           context  : this
         }
@@ -409,7 +405,7 @@ Dom.prototype.createDrawer = function(){
           function : function(e){
             e.preventDefault();
             core.dom.application.MaterialLayout.toggleDrawer();
-            core.events.publish("core:router:check", 'web-forms')
+            core.events.emit("core:router:check", 'web-forms')
           },
           context  : this
         }
@@ -422,7 +418,7 @@ Dom.prototype.createDrawer = function(){
           function : function(e){
             e.preventDefault();
             core.dom.application.MaterialLayout.toggleDrawer();
-            core.events.publish("core:router:check", 'print-forms')
+            core.events.emit("core:router:check", 'print-forms')
           },
           context  : this
         }
