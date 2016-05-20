@@ -333,9 +333,45 @@ WebForms.prototype.showElementInfo = function( element ) {
 
 WebForms.prototype.renderEditorLeftPanel = function() {
   console.log( 'WebForms: renderEditorLeftPanel' );
+
+
+
 };
 WebForms.prototype.renderEditorContent = function() {
   console.log( 'WebForms: renderEditorContent' );
+  this.content = core.elements.create({
+    elementType : 'dialog',
+    title : 'TEST',
+    
+    content : core.elements.create({
+      elementType: 'icon',
+      icon: 'work',
+    }),
+
+    actions: [
+      {
+        text: 'submit',
+        submit :  {
+          // context  : this,
+          function : function(){
+            console.log( 'webforms-leftMenu > renderEditorContent submit  dialog click' );
+          },
+        }
+      },
+      {
+        text: 'cancel',
+        cancel : {
+          context  : this,
+          function : function(){
+            console.log( 'webforms-leftMenu > renderEditorContent  cancel dialog click' );
+          },
+        }
+      },
+    ]
+  });
+
+  core.events.emit( "core:dom:content:clear" );
+  core.events.emit( "core:dom:content:set", this.content );
 };
 WebForms.prototype.renderEditorInfoPanel = function() {
   console.log( 'WebForms: renderEditorInfoPanel' );

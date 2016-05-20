@@ -60,6 +60,9 @@ Element.prototype.create = function( options ) {
     case 'table':
       element = this.Table;
       break;
+    case 'dialog':
+      element = this.Dialog;
+      break;
 
     default:
       break;
@@ -84,9 +87,10 @@ Element.prototype.Switch   = require('./elements/switch');
 Element.prototype.Textarea = require('./elements/textarea');
 Element.prototype.Label    = require('./elements/label');
 
-// Element.prototype.Header   = require('./elements/header');
+Element.prototype.Dialog   = require('./elements/dialog');
+
 Element.prototype.Simple   = require('./elements/simple');
-Element.prototype.Table     = require('./elements/table');
+Element.prototype.Table    = require('./elements/table');
 Element.prototype.Menu     = require('./elements/menu');
 Element.prototype.Icon     = require('./elements/icon');
 Element.prototype.Spacer   = require('./elements/spacer');
@@ -94,7 +98,5 @@ Element.prototype.Spacer   = require('./elements/spacer');
 Element.prototype.Button   = require('./elements/button');
 Element.prototype.List     = require('./elements/list');
 Element.prototype.Card     = require('./elements/card');
-// Element.prototype.Progressbar = require('./elements/progressbar');
-
 
 module.exports = Element;

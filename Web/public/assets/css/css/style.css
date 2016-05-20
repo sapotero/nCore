@@ -336,3 +336,92 @@
   /*width: 90%;*/
   margin: 0px auto;
 }
+
+/* DIALOG */
+dialog {
+  position: absolute;
+  left : 0;
+  right: 0;
+  width: -moz-fit-content;
+  width: -webkit-fit-content;
+  width: fit-content;
+  height: -moz-fit-content;
+  height: -webkit-fit-content;
+  height: fit-content;
+  margin: auto;
+  border: solid;
+  padding: 1em;
+  background: white;
+  color: black;
+  display: none;
+}
+
+dialog[open] {
+  display: block;
+}
+dialog + .backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.2);
+}
+dialog.dark + .backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.2);
+}
+dialog::backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+dialog.dark::backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+@media screen and (max-width: 540px) {
+  dialog[_polyfill_modal] {
+    top: 0;
+    width: auto;
+    margin: 1em;
+  }
+}
+
+._dialog_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+/* DIALOG */
+
+.web-form-test-dialog{
+  border  : 0px;
+  padding : 0px;
+  margin  : 0px;
+}
+
+.dialog-offset-y {
+  z-index: 100001;
+  top: calc(30% - 32px);
+}
+
+@-moz-document url-prefix() {
+  .dialog-offset-y {
+    z-index: 100001;
+    top: calc(40% - 32px);
+  }
+}
