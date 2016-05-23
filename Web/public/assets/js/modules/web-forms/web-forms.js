@@ -369,6 +369,14 @@ WebForms.prototype.renderEditorLeftPanel = function() {
         name  : 'radio',
         value : 'radio',
       }),
+      core.elements.create({
+        elementType : 'textarea',
+        class : [ '_drag' ],
+        label : 'radio',
+        name  : 'area',
+        rows : 2,
+        cols : 10,
+      }),
     ]
   });
 

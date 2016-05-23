@@ -1,60 +1,68 @@
 var Textarea = function( config ) {
-  this.element = document.createElement( 'textarea' );
-  this.element.className = 'mdl-textfield__input';
-  this.element.id = core.utils.generateId();
+  this.element = document.createElement( 'div' );
+  this.element.classList.add( this.CSS.TEXTAREA );
+  this.element.classList.add( this.CSS.TEXTAREA_JS );
 
-  // this.elements.rows = 5;
-  // this.elements.cols = 5;
 
-  this.config = config;
+  this.textarea = document.createElement( 'textarea' );
+  this.textarea.classList.add( this.CSS.INPUT );
+  this.textarea.type = 'text';
+  this.textarea.id   = core.utils.generateId();
 
-  this.render();
-}
-Textarea.prototype = Object.create( require('./super').prototype );
-Textarea.prototype.constructor = Textarea;
+  this.element.setAttribute( 'for', this.textarea.id );
 
-Textarea.prototype.Label = require('./label');
+  this.label = document.createElement( 'label' );
+  this.label.classList.add( this.CSS.LABEL );
 
-Textarea.prototype.setLabel = function( string ){
+  this.element.appendChild( this.textarea );
+  this.element.appendChild( this.label );
 
-  var config = {
-    class : 'mdl-textfield__label',
-    for   : this.element,
-    text  : string
-  };
+  this._config = config;
+  this.element._config = config;
 
-  this.label = new this.Label( config );
-};
-
-Textarea.prototype.render = function() {
-  
   // <div class="mdl-textfield mdl-js-textfield">
   //   <textarea class="mdl-textfield__input" type="text" rows= "10" cols="200" id="sample5" ></textarea>
   //   <label class="mdl-textfield__label" for="sample5">Text lines...</label>
   // </div>
 
-  for( var key in this.config ){
-    var action = core.utils.toCamelCase( 'set.' + key );
+  this.render();
+}
+Textarea.prototype.setRows = function( string ){
+  this.textarea.rows = string;
+};
+Textarea.prototype.setCols = function( string ){
+  this.textarea.cols = string;
+};
+Textarea.prototype.setLabel = function( string ){
+  this.label.textContent = string;
+};
+Textarea.prototype.setClass = function( string ){
+  this.element.classList.add( string );
+};
 
-    try{
-      this[ action ]( this.config[ key ] );
-    } catch(e) {
-      // throw new Error('no method in prototype')
-    }
-  }
+Textarea.prototype.render = function( string ){
 
-  if ( this.hasOwnProperty('label') ) {
+  if ( this._config && this._config.hasOwnProperty('class') ) {
+    this.setClass( this._config.class );
+  };
+  if ( this._config && this._config.hasOwnProperty('label') ) {
+    this.setLabel( this._config.label );
+  };
+  if ( this._config && this._config.hasOwnProperty('rows') ) {
+    this.setRows( this._config.rows );
+  };
+  if ( this._config && this._config.hasOwnProperty('cols') ) {
+    this.setCols( this._config.cols );
+  };
 
-    var wrapper = document.createElement('div');
-    wrapper.className = 'mdl-textfield mdl-js-textfield';
-
-    wrapper.appendChild( this.label.element );
-    wrapper.appendChild( this.element );
-
-    this.element = wrapper;
-  }
-
-  this.element._config = this.config;
   return this;
 };
+
+Textarea.prototype.CSS = {
+  INPUT       : "mdl-textfield__input",
+  TEXTAREA    : "mdl-textfield",
+  TEXTAREA_JS : "mdl-js-textfield",
+  LABEL       : "mdl-textfield__label"
+};
+
 module.exports = Textarea;
