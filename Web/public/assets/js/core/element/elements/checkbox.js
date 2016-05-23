@@ -54,6 +54,7 @@ Checkbox.prototype.render = function( string ){
     this.setLabel( this._config.label );
   };
 
+  console.log( this.element.outerHTML );
   return this;
 };
 

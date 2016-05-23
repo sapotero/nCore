@@ -21,6 +21,10 @@ module.exports = function(){
       core.setCurrent( module );
     });
 
+    core.events.subscribe( "core:current:reload", function ( module ) {
+      core.current.reload();
+    });
+
     // загрузка всех отчетов
     // core.events.subscribe( "core:reports:loaded", function (data) {
     //   console.log( "core:reports:loaded", data );

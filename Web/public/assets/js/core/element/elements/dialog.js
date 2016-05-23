@@ -377,26 +377,6 @@ _Dialog.registerDialog = function(element) {
 
 _Dialog.dm = new DialogManager();
 
-// document.addEventListener('submit', function(e) {
-//   var target = e.target;
-//   if (!target || !target.hasAttribute('method')) { return; }
-//   if (target.getAttribute('method').toLowerCase() != 'dialog') { return; }
-//   e.preventDefault();
-
-//   var dialog = findNearestDialog( e.target );
-//   if (!dialog) { return; }
-
-//   var returnValue;
-//   var cands = [ document.activeElement, e.explicitOriginalTarget ];
-//   var els = ['BUTTON', 'INPUT'];
-//   cands.some(function(cand) {
-//     if (cand && cand.form == e.target && els.indexOf(cand.nodeName.toUpperCase()) != -1) {
-//       returnValue = cand.value;
-//       return true;
-//     }
-//   });
-//   dialog.close(returnValue);
-// }, true);
 
 var Dialog = function Dialog( config ) {
 
@@ -407,8 +387,9 @@ var Dialog = function Dialog( config ) {
   this.element._config = config;
   this.dialog = new this.DialogInfo( this.element );
 
-  this.title = document.createElement('div');
+  this.title = document.createElement('h4');
   this.title.classList.add( this.CSS.TITLE );
+  this.title.classList.add( this.CSS.DIALOG_HEADER );
   
   this.content = document.createElement('div');
   this.content.classList.add( this.CSS.CONTENT );
@@ -426,12 +407,18 @@ Dialog.prototype.constructor = Dialog;
 Dialog.prototype.DialogInfo  = DialogInfo;
 
 Dialog.prototype.CSS = {
-  ROOT         : 'mdl-dialog',
-  TITLE        : "mdl-dialog__title",
-  CONTENT      : "mdl-dialog__content",
-  ACTIONS      : "mdl-dialog__actions",
-  ACTIONS_FULL : "mdl-dialog__actions--full-width",
-  BUTTON       : "mdl-button",
+  ROOT          : 'mdl-dialog',
+  TITLE         : "mdl-dialog__title",
+  CONTENT       : "mdl-dialog__content",
+  ACTIONS       : "mdl-dialog__actions",
+  ACTIONS_FULL  : "mdl-dialog__actions--full-width",
+  BUTTON        : "mdl-button",
+  BUTTON_JS     : "mdl-js-button",
+  DIALOG_HEADER : "dialog-header",
+  FULL_WIDTH    : "mdl-dialog--full",
+  CONTENT_FULL_WIDTH : "mdl-dialog--full__content",
+  
+  // RIPPLE       : "mdl-js-ripple-effect",
 }
 
 // <dialog class="mdl-dialog">
@@ -469,6 +456,12 @@ Dialog.prototype.render = function(){
     this.element.appendChild( this.title );
   }
 
+  if ( this._config.hasOwnProperty('big') && this._config.big === true ) {
+    this.element.classList.add( this.CSS.FULL_WIDTH );
+    this.content.classList.add( this.CSS.CONTENT_FULL_WIDTH );
+    
+  }
+
   if ( this._config.hasOwnProperty('content') ) {
     if ( this._config.content.hasOwnProperty('element') ) {
       this.content.appendChild( this._config.content.element );
@@ -501,6 +494,13 @@ Dialog.prototype.render = function(){
 
       var button = document.createElement('button');
       button.classList.add( this.CSS.BUTTON );
+      button.classList.add( this.CSS.BUTTON_JS );
+
+      if ( item.hasOwnProperty('class') ) {
+        for (var z = item.class.length - 1; z >= 0; z--) {
+          button.classList.add( item.class[z] );
+        }
+      }
 
       if ( item.hasOwnProperty('submit') ) {
         button.addEventListener('click', item.submitCallback.bind( item ) );

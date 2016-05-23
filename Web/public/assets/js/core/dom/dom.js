@@ -6,6 +6,7 @@ var Dom = function () {
   this.editor       = {};
   this.snackbar     = {};
   this.splashscreen = {};
+  this.dialog = {};
 
   this.bindEvents();
 };
@@ -20,8 +21,24 @@ Dom.prototype.bindEvents = function () {
       manager.start();
     }, { priority: 0 });
 
+    core.events.subscribe( "core:dom:dialog:clear", function ( dialog ) {
+      if ( dom.dialog.hasOwnProperty('element') && dom.dialog.element.hasOwnProperty('showModal') ) {
+        dom.dialog.element.innerHTML = '';
+      }
+
+    });
+    core.events.subscribe( "core:dom:dialog:set", function ( dialog ) {
+      dom.dialog = dialog;
+      dom.content.element.appendChild( dom.dialog.element );
+    });
+    core.events.subscribe( "core:dom:dialog:show", function () {
+      if ( dom.dialog.hasOwnProperty('element') && dom.dialog.element.hasOwnProperty('showModal') ) {
+        dom.dialog.element.showModal();
+      }
+    });
+
     core.events.on('core:dom:application:clear', function () {
-      dom.leftPanel.element.innerHTML = '';
+      core.events.emit( "core:dom:dialog:show" );
       dom.content.element.innerHTML   = '';
       dom.infoPanel.element.innerHTML = '';
     });
@@ -181,7 +198,6 @@ Dom.prototype.createApplication = function(){
     elementType: 'simple',
     class: ["mdl-layout", "mdl-js-layout", "mdl-layout--fixed-header", "animated"],
   });
-  
   this.application = application.element;
 };
 
@@ -374,7 +390,7 @@ Dom.prototype.createHeader = function(){
                 elementType: 'button',
                 class: [ "mdl-color-text--grey-600" ],
                 icon: 'view_module',
-                tooltip: 'view_module'
+                tooltip: 'Изменить вид'
               }),
               core.elements.create({
                 elementType : 'menu',
@@ -392,6 +408,7 @@ Dom.prototype.createHeader = function(){
                   },
                   {
                     text: "По дате редактирования",
+                    devider: true,
                     // icon: 'sort',
                   },
                   {
@@ -410,7 +427,14 @@ Dom.prototype.createHeader = function(){
                 elementType: 'button',
                 class: [ "mdl-color-text--grey-600" ],
                 icon: 'refresh',
-                tooltip: 'refresh'
+                tooltip: 'Обновить страницу',
+                callback : {
+                  context: this,
+                  function : function(e){
+                    e.preventDefault();
+                    core.events.emit( 'core:current:reload' );
+                  }
+                }
               }),
             ]
           }),

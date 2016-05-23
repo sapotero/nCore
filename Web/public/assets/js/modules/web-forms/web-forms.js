@@ -378,6 +378,29 @@ WebForms.prototype.renderEditorLeftPanel = function() {
         rows : 2,
         cols : 10,
       }),
+      core.elements.create({
+        elementType : 'button',
+        icon: 'person',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            core.events.emit('core:web-forms:show:saveDialog');
+          }
+        }
+      }),
+      core.elements.create({
+        elementType : 'button',
+        icon: 'sort',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            core.events.emit('core:web-forms:show:configDialog');
+          }
+        }
+      }),
+      
     ]
   });
 
@@ -389,20 +412,113 @@ WebForms.prototype.renderEditorLeftPanel = function() {
 
 };
 
-WebForms.prototype.renderEditorContent = function() {
-  console.log( 'WebForms: renderEditorContent' );
-  this.content = core.elements.create({
+WebForms.prototype.saveDialog = function(){
+  var dialog = core.elements.create({
     elementType : 'dialog',
-    title : 'TEST',
+    title : 'Сохранение',
     
     content : core.elements.create({
-      elementType: 'icon',
-      icon: 'work',
+      elementType: 'simple',
+      text: 'Документ был изменен, вы хотите его сохранить?',
+      items: [],
     }),
 
     actions: [
       {
-        text: 'submit',
+        text: 'Сохранить',
+        class : [ 'mdl-color-text--green-500' ],
+        submit :  {
+          // context  : this,
+          function : function(event){
+            console.log( 'webforms-leftMenu > renderEditorContent submit  dialog click' );
+          },
+        }
+      },
+      {
+        text: 'Отмена',
+        cancel : {
+          context  : this,
+          function : function(e){
+            console.log( 'webforms-leftMenu > renderEditorContent  cancel dialog click' );
+          },
+        }
+      },
+    ],
+    after : {
+      context  : this,
+      function : function(e){
+        console.log( 'webforms-leftMenu > renderEditorContent  after dialog click', this );
+      },
+    }
+  });
+  core.events.emit( "core:dom:dialog:clear" );
+  core.events.emit( "core:dom:dialog:set", dialog );
+  // this.content.element.appendChild( dialog.element );
+  core.events.emit( "core:dom:dialog:show" );
+}
+
+WebForms.prototype.configDialog = function(){
+  var dialog = core.elements.create({
+    elementType : 'dialog',
+    title : 'Настройки формы',
+    big: true,
+    
+    content : core.elements.create({
+      elementType: 'simple',
+      text: 'Документ был изменен, вы хотите его сохранить?',
+      items: [],
+    }),
+
+    actions: [
+      {
+        text: 'Сохранить',
+        class : [ 'mdl-color-text--green-500' ],
+        submit :  {
+          // context  : this,
+          function : function(event){
+            console.log( 'webforms-leftMenu > config submit  dialog click' );
+          },
+        }
+      },
+      {
+        text: 'Отмена',
+        cancel : {
+          context  : this,
+          function : function(e){
+            console.log( 'webforms-leftMenu > config  cancel dialog click' );
+          },
+        }
+      },
+    ],
+    after : {
+      context  : this,
+      function : function(e){
+        console.log( 'webforms-leftMenu > config  after dialog click', this );
+      },
+    }
+  });
+  core.events.emit( "core:dom:dialog:clear" );
+  core.events.emit( "core:dom:dialog:set", dialog );
+  // this.content.element.appendChild( dialog.element );
+  core.events.emit( "core:dom:dialog:show" );
+}
+
+WebForms.prototype.renderEditorContent = function() {
+  console.log( 'WebForms: renderEditorContent' );
+  this.content = core.elements.create({
+    elementType : 'dialog',
+    title : 'Сохранение',
+    
+    content : core.elements.create({
+      elementType: 'simple',
+      text: 'Документ был изменен, вы хотите его сохранить?',
+      items: [],
+    }),
+
+    actions: [
+      {
+        text: 'Сохранить',
+        class : [ 'mdl-color-text--green-500' ],
         submit :  {
           // context  : this,
           function : function(){
@@ -411,7 +527,7 @@ WebForms.prototype.renderEditorContent = function() {
         }
       },
       {
-        text: 'cancel',
+        text: 'Отмена',
         cancel : {
           context  : this,
           function : function(){
@@ -468,6 +584,14 @@ WebForms.prototype.createNewForm = function() {
   this.show( form );
 };
 
+WebForms.prototype.reload = function() {
+  console.log( 'WebForms: start' );
+  // this.detachEvents();
+  // this.bindEvents();
+
+  this.render();
+
+};
 WebForms.prototype.start = function() {
   console.log( 'WebForms: start' );
   this.bindEvents();
@@ -494,6 +618,7 @@ WebForms.prototype.detachEvents = function(){
   core.events.remove("core:web-forms:drag:export:result");
   core.events.remove("core:web-forms:infoPanel:show");
   core.events.remove("core:web-forms:loaded");
+  core.events.remove('core:web-forms:show:saveDialog');
   core.events.remove("core:web-form:show");
   core.events.remove("core:web-form:ready");
   core.events.remove("core:web-form:render");
@@ -524,6 +649,17 @@ WebForms.prototype.bindEvents = function(){
       console.log('WebForm :: core:web-form:show', form );
       webForms.renderEditor( form );
     });
+
+    core.events.on("core:web-forms:show:saveDialog", function(){
+      console.log('WebForm :: core:web-forms:show:saveDialog');
+      webForms.saveDialog();
+    });
+
+    core.events.on("core:web-forms:show:configDialog", function(){
+      console.log('WebForm :: core:web-forms:show:configDialog');
+      webForms.configDialog();
+    });
+
 
     core.events.on("core:web-forms:drag:export:result", function( result ){
       console.log( 'core:web-forms:drag:export:result', result );

@@ -21,11 +21,19 @@ WebForm.prototype.load = function( data ){
   this.initEditor();
 };
 
+
+WebForm.prototype.reload = function(){
+  this.detachEvents();
+  this.attachEvents();
+  core.events.emit('core:web-form:show', this );
+};
+
 WebForm.prototype.initEditor = function(){
   if ( this.hasOwnProperty('raw') && this.raw.hasOwnProperty('body') ) {
     this.body = core.utils.Base64.decode( this.raw.body );
   }
   // console.log( 'web-form -> initEditor : ', this );
+  core.events.emit( "core:current:set", this );
   core.events.emit('core:web-form:show', this );
 }
 
