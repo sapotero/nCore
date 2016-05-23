@@ -1,4 +1,6 @@
 var Menu = function Menu( config ) {
+  this.active  = {};
+
   this._config = config;
 
   this.element = document.createElement('div');
@@ -49,6 +51,7 @@ Menu.prototype.CSS = {
   INLINE        : 'inline',
   CELL          : 'mdl-cell',
   CELL_HIDE     : 'mdl-cell--hide-phone',
+  DEVIDER       : 'mdl-menu__item--full-bleed-divider',
 }
 
 Menu.prototype.setIcon = function( icon ){
@@ -106,14 +109,45 @@ Menu.prototype.render = function(){
       if ( item.hasOwnProperty('element') ) {
         this.element.appendChild( item.element );
       }
+      // mdl-layout-spacer
       var _item = document.createElement('li');
       _item.classList.add( this.CSS.MENU_ITEM );
       _item.textContent = item.text;
+
+      if ( item.hasOwnProperty('disabled') && item.disabled === true ) {
+        _item.setAttribute( 'disabled', true );
+      }
+      if ( item.hasOwnProperty('devider') && item.devider === true ) {
+        _item.classList.add( this.CSS.DEVIDER );
+      }
+
+      if ( item.hasOwnProperty('icon') ) {
+        _item.textContent = '';
+
+        var wrapper = document.createElement('span');
+        wrapper.classList.add( this.CSS.WRAPPER );
+        wrapper.classList.add( this.CSS.ROOT );
+
+        var icon = document.createElement('i');
+        icon.classList.add( this.CSS.ICON );
+        icon.classList.add( this.CSS.ROOT );
+        icon.textContent = item.icon;
+
+        var text = document.createElement('div');
+        text.classList.add( this.CSS.INLINE );
+        text.textContent = item.text;
+        
+        wrapper.appendChild( icon );
+        wrapper.appendChild( text );
+
+        _item.appendChild( wrapper );
+      }
 
       if ( item.hasOwnProperty('callback') && typeof item.callback.function === 'function' ) {
         item.callback.context = item.callback.context || this;
         _item.addEventListener( 'click', item.callback.function.bind( item.callback.context ) );
       }
+
 
       this.list.appendChild( _item );
       
@@ -124,3 +158,8 @@ Menu.prototype.render = function(){
 
 
 module.exports = Menu;
+
+
+
+
+

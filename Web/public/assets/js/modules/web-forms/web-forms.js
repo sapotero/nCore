@@ -350,7 +350,8 @@ WebForms.prototype.renderEditorLeftPanel = function() {
         elementType : 'input',
         class : [ '_drag' ],
         name : 'test',
-        text : 'test'
+        label : 'test',
+        float : true,
       }),
       core.elements.create({
         elementType : 'label',

@@ -306,7 +306,20 @@ Dom.prototype.createHeader = function(){
   this.title = core.elements.create({
     elementType : 'simple',
     type        : 'span',
-    class       : ["mdl-layout-title"]
+    class       : ["mdl-layout-title"],
+    text : 'Конструктор отчетов',
+  });
+
+  this.subTitle = core.elements.create({
+    elementType: 'simple',
+    class: ['mdl-navigation'],
+    items : [
+      
+    ]
+  });
+
+  this.search = core.elements.create({
+    elementType: 'search',
   });
 
   this.navigation = core.elements.create({
@@ -340,11 +353,67 @@ Dom.prototype.createHeader = function(){
     items : [
       core.elements.create({
         elementType: 'simple',
-        class: ["mdl-layout__header-row"],
+        class: ["mdl-layout__header-row", "mdl-layout__header-row--primary" ],
         items : [
           this.title,
           core.elements.create({ elementType: 'spacer' }),
           this.navigation,
+        ]
+      }),
+      core.elements.create({
+        elementType: 'simple',
+        class: ["mdl-layout__header-row", "mdl-layout__header-row--secondary", "mdl-color--grey-50" ],
+        items : [
+          this.subTitle,
+          core.elements.create({ elementType: 'spacer' }),
+          core.elements.create({
+            elementType: 'simple',
+            class: ['mdl-navigation'],
+            items : [
+              core.elements.create({
+                elementType: 'button',
+                class: [ "mdl-color-text--grey-600" ],
+                icon: 'view_module',
+                tooltip: 'view_module'
+              }),
+              core.elements.create({
+                elementType : 'menu',
+                position    : 'right',
+                class       : [ 'mdl-cell--hide-phone' ],
+                icon        : 'sort',
+                items       : [
+                  {
+                    text: "По дате редактирования",
+                    // icon: 'sort',
+                  },
+                  {
+                    text: "По дате редактирования",
+                    // icon: 'sort',
+                  },
+                  {
+                    text: "По дате редактирования",
+                    // icon: 'sort',
+                  },
+                  {
+                    text: "По дате создания",
+                    disabled: true,
+                    icon: 'sort',
+                    devider: true,
+                  },
+                  {
+                    text: "По дате редактирования",
+                    // icon: 'sort',
+                  }
+                ]
+              }),
+              core.elements.create({
+                elementType: 'button',
+                class: [ "mdl-color-text--grey-600" ],
+                icon: 'refresh',
+                tooltip: 'refresh'
+              }),
+            ]
+          }),
         ]
       })
     ]
@@ -365,7 +434,8 @@ Dom.prototype.setTitle = function ( title ) {
   if ( !title ) {
     throw new Error('setTitle -> can`t set title')
   }
-  this.title.element.textContent = title;
+  // this.title.element.textContent = title;
+  this.subTitle.element.textContent = title;
 };
 
 Dom.prototype.setUserName = function ( user ) {

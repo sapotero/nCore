@@ -2832,6 +2832,7 @@ MaterialTooltip.prototype.CssClasses_ = {
    * @param {Event} event The event that fired.
    * @private
    */
+
 MaterialTooltip.prototype.handleMouseEnter_ = function (event) {
     var props = event.target.getBoundingClientRect();
     var left = props.left + props.width / 2;

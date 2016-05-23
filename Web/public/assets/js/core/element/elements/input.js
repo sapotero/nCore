@@ -1,64 +1,65 @@
 var Input = function( config ) {
-  this.element = document.createElement( 'input' );
-  this.element.className = 'mdl-textfield__input';
-  this.element.id = core.utils.generateId();
+  this.element = document.createElement( 'div' );
+  this.element.classList.add( this.CSS.ROOT );
+  this.element.classList.add( this.CSS.ROOT_JS );
 
-  this.config = config;
 
-  this.render();
-}
-Input.prototype = Object.create( require('./super').prototype );
-Input.prototype.constructor = Input;
+  this.input = document.createElement( 'input' );
+  this.input.classList.add( this.CSS.INPUT );
+  this.input.type = 'text';
+  this.input.id   = core.utils.generateId();
 
-Input.prototype.Label = require('./label');
-Input.prototype.setValue = function( data ){
-  this.element.value = data;
-};
-Input.prototype.setLabel = function( string ){
+  this.element.setAttribute( 'for', this.input.id );
 
-  var config = {
-    class : 'mdl-textfield__label',
-    for   : this.element,
-    text  : string
-  };
+  this.label = document.createElement( 'label' );
+  this.label.classList.add( this.CSS.LABEL );
 
-  this.label = new this.Label( config );
-  console.log(' ++ Input.prototype.setLabel', string, this.label );
-};
+  this.element.appendChild( this.input );
+  this.element.appendChild( this.label );
 
-Input.prototype.render = function() {
-  
+  this._config = config;
+  this.element._config = config;
+
   // <!-- Textfield with Floating Label -->
   //   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
   //     <input class="mdl-textfield__input" type="text" id="sample3">
   //     <label class="mdl-textfield__label" for="sample3">Text...</label>
   //   </div>
 
-  for( var key in this.config ){
-    var action = core.utils.toCamelCase( 'set.' + key );
+  this.render();
+}
 
-    try{
-      this[ action ]( this.config[ key ] );
-    } catch(e) {
-      // throw new Error('no method in prototype')
-      // console.log('no method in prototype', action);
-    }
-  }
+Input.prototype.setLabel = function( string ){
+  this.label.textContent = string;
+};
+Input.prototype.setFloat = function(){
+  this.element.classList.add( this.CSS.LABEL_FLOAT );
+};
+Input.prototype.setClass = function( string ){
+  this.element.classList.add( string );
+};
 
-  if ( this.hasOwnProperty('label') ) {
-    
-    console.log( 'label++', this.label );
+Input.prototype.render = function( string ){
 
-    var wrapper = document.createElement('div');
-    wrapper.className = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label';
+  if ( this._config && this._config.hasOwnProperty('class') ) {
+    this.setClass( this._config.class );
+  };
+  if ( this._config && this._config.hasOwnProperty('label') ) {
+    this.setLabel( this._config.label );
+  };
+  if ( this._config && this._config.hasOwnProperty('float') && this._config.float === true ) {
+    this.setFloat();
+  };
 
-    wrapper.appendChild( this.label.element );
-    wrapper.appendChild( this.element );
-
-    this.element = wrapper;
-  }
-
-  this.element._config = this.config;
   return this;
 };
+
+Input.prototype.CSS = {
+  ROOT        : "mdl-textfield",
+  ROOT_JS     : "mdl-js-textfield",
+  INPUT       : "mdl-textfield__input",
+  LABEL       : "mdl-textfield__label",
+  LABEL_FLOAT : "mdl-textfield--floating-label",
+};
+
 module.exports = Input;

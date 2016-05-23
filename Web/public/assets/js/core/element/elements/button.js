@@ -20,7 +20,8 @@ Button.prototype.CSS = {
   RAISED      : 'mdl-button--raised',
   ACCENT      : 'mdl-button--accent',
   ICON        : 'material-icons',
-  RIPPLE      : 'mdl-js-ripple-effect'
+  RIPPLE      : 'mdl-js-ripple-effect',
+  TOOLTIP     : 'mdl-tooltip',
 }
 
 Button.prototype.setText = function( text ) {
@@ -39,6 +40,13 @@ Button.prototype.setFab = function() {
 }
 Button.prototype.setRipple = function() {
   this.element.classList.add( this.CSS.EFFECT );
+}
+Button.prototype.setTooltip = function( text ) {
+  this.tooltip = document.createElement('div');
+  this.tooltip.classList.add( this.CSS.TOOLTIP );
+  this.tooltip.textContent = text;
+  this.tooltip.setAttribute( 'for', this.element.id );
+  this.element.appendChild( this.tooltip );
 }
 Button.prototype.setRaised = function() {
   this.element.classList.add( this.CSS.RAISED );
