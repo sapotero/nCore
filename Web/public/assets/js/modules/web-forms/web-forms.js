@@ -49,7 +49,6 @@ WebForms.prototype.import = function( data ){
   };
 };
 WebForms.prototype.add = function( config ) {
-
   this.forms.push( new this.WebForm(config) );
 };
 WebForms.prototype.find = function( id ) {
@@ -82,7 +81,7 @@ WebForms.prototype.renderLeftPanel = function() {
 
   this.leftPanel = core.elements.create({
     elementType : 'simple',
-    class : ['webforms-leftPanel'],
+    class : [ this.CSS.LEFT_PANEL ],
     items : [
       core.elements.create({
       elementType : 'list',
@@ -176,7 +175,7 @@ WebForms.prototype.renderContent = function() {
 
       var form = core.elements.create({
         elementType : 'card',
-        class: [ 'mdl-cell', 'mdl-cell--3-col', 'mdl-cell--12-col-phone', 'mdl-cell--4-col-tablet'],
+        class: [ this.CSS.CELL, 'mdl-cell--3-col', 'mdl-cell--12-col-phone', 'mdl-cell--4-col-tablet'],
         shadow : 8,
         // height : 200,
         // width  : 300,
@@ -236,7 +235,7 @@ WebForms.prototype.renderContent = function() {
     // empty forms
     this.content = core.elements.create({
       elementType: 'simple',
-      class : [ "mdl-cell", "mdl-cell--12-col-phone", "mdl-cell--6-col-desktop", "mdl-cell--3-offset-desktop", "mdl-progress", "mdl-js-progress" ],
+      class : [ this.CSS.CELL, "mdl-cell--12-col-phone", "mdl-cell--6-col-desktop", "mdl-cell--3-offset-desktop", "mdl-progress", "mdl-js-progress" ],
       items: [
         this.menu
       ]
@@ -394,7 +393,34 @@ WebForms.prototype.renderEditor = function( form ) {
   }, 500 );
 };
 
+WebForms.prototype.CSS = {
+  LEFT_PANEL : 'webforms-leftPanel',
+  CELL : 'mdl-cell',
+};
 
+WebForms.prototype.CONFIG = {
+  EMPTY_FORM : {
+    _id        : "56fb886c7f22000060000001",
+    name       : "Новая форма",
+    description: "Новая форма",
+    authorId   : core.global.user.id,
+    providerId : core.provider.user.id
+  }
+};
+
+WebForms.prototype.createNewForm = function() {
+  console.log( 'WebForms: createNewForm' );
+  
+
+  CSS: {
+    LEFT_PANEL : 'webforms-leftPanel',
+    LEFT_PANEL : 'webforms-leftPanel',
+  },
+this.active = form;
+  this.show( form );
+};
+
+  var form = this.add( this.CONFIG.EMPTY_FORM );
 WebForms.prototype.start = function() {
   console.log( 'WebForms: start' );
   this.bindEvents();
@@ -496,9 +522,11 @@ WebForms.prototype.bindEvents = function(){
       core.events.emit( "core:dom:content:wrapper:show");
     });
 
-    core.events.on("core:web-form:new", function( form ){
-      console.log( 'WebForm :: core:web-form:new > ', form );
+    core.events.on("core:web-forms:new", function(){
+      webForms.createNewForm();
+      console.log( 'WebForm :: core:web-form:new > ');
     });
+
   });
 };
 

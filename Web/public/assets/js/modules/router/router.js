@@ -187,6 +187,7 @@ Router.prototype.start = function() {
       },
       'web-forms/new' : function(params) {
         console.log('[web-forms/new]: ', params);
+        core.events.publish( "core:web-forms:new" );
       },
       'web-forms/{id}' : function(params) {
         core.events.publish( "core:web-form:load",   params.id );
