@@ -3,7 +3,7 @@
 var WebForm = function(config){
   this.element     = {};
   this.raw         = {};
-  this.body        = {};
+  this.body        = '';
   this._id         = config._id         || '';
   this.name        = config.name        || '';
   this.description = config.description || '';
@@ -22,7 +22,10 @@ WebForm.prototype.load = function( data ){
 };
 
 WebForm.prototype.initEditor = function(){
-  this.body = core.utils.Base64.decode( this.raw.body );
+  if ( this.hasOwnProperty('raw') && this.raw.hasOwnProperty('body') ) {
+    this.body = core.utils.Base64.decode( this.raw.body );
+  }
+  // console.log( 'web-form -> initEditor : ', this );
   core.events.emit('core:web-form:show', this );
 }
 
