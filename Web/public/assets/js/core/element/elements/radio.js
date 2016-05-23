@@ -1,64 +1,79 @@
 var Radio = function( config ) {
-  this.element      = document.createElement( 'input' );
-  this.element.className = 'mdl-radio__button';
-  this.element.type = 'radio';
-  this.element.id   = core.utils.generateId();
+  this.element = document.createElement( 'label' );
+  this.element.classList.add( this.CSS.CHECKBOX );
+  this.element.classList.add( this.CSS.CHECKBOX_JS );
+  this.element.classList.add( this.CSS.RIPPLE );
 
 
-  this.config = config;
+  this.radio = document.createElement( 'input' );
+  this.radio.classList.add( this.CSS.INPUT );
+  this.radio.type = 'radio';
+  this.radio.id   = core.utils.generateId();
+
+  this.element.setAttribute( 'for', this.radio.id );
+
+  this.label = document.createElement( 'span' );
+  this.label.classList.add( this.CSS.LABEL );
+
+  this.element.appendChild( this.radio );
+  this.element.appendChild( this.label );
+
+  this._config = config;
   this.element._config = config;
 
-  this.render();
-}
-Radio.prototype = Object.create( require('./checkbox').prototype );
-Radio.prototype.constructor = Radio;
-
-Radio.prototype.setLabel = function( string ){
-  this._label = string;
-
-  var config = {
-    class : 'mdl-radio mdl-js-radio mdl-js-ripple-effect',
-    for   : this.element
-  };
-
-  this.label = new this.Label( config );
-};
-
-Radio.prototype.render = function( string ){
-  //////////////
-  // Radio //
-  //////////////
   // <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
   //   <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
   //   <span class="mdl-radio__label">First</span>
   // </label>
 
-  
-  for( var key in this.config ){
-    var action = core.utils.toCamelCase( 'set.' + key );
+  this.render();
+}
+Radio.prototype = Object.create( require('./input').prototype );
+Radio.prototype.constructor = Radio;
 
-    try{
-      this[ action ]( this.config[ key ] );
-    } catch(e) {
-      // throw new Error('no method in prototype')
-    }
-  }
+Radio.prototype.setChecked = function( checked ){
+  this.radio.setAttribute('checked', checked);
+}
+Radio.prototype.setLabel = function( string ){
+  this.label.textContent = string;
+};
+Radio.prototype.setClass = function( string ){
+  this.element.classList.add( string );
+};
+Radio.prototype.setName = function( string ){
+  this.radio.name = string;
+};
+Radio.prototype.setValue = function( string ){
+  this.radio.value = string;
+};
 
-  if ( this.hasOwnProperty('_label') ) {
-    
+Radio.prototype.render = function( string ){
 
-    var span = document.createElement('span');
-    span.className = 'mdl-checkbox__label';
-    span.textContent = this.config.label;
+  if ( this._config && this._config.hasOwnProperty('class') ) {
+    this.setClass( this._config.class );
+  };
+  if ( this._config && this._config.hasOwnProperty('checked') ) {
+    this.setChecked( this._config.checked );
+  };
+  if ( this._config && this._config.hasOwnProperty('label') ) {
+    this.setLabel( this._config.label );
+  };
+  if ( this._config && this._config.hasOwnProperty('name') ) {
+    this.setName( this._config.name );
+  };
+  if ( this._config && this._config.hasOwnProperty('value') ) {
+    this.setValue( this._config.value );
+  };
 
-    this.label.element.appendChild( this.element );
-    this.label.element.appendChild( span );
-
-    this.element = this.label.element;
-  }
-  this.element._config = this.config;
   return this;
 };
 
+Radio.prototype.CSS = {
+  INPUT       : "mdl-radio__button",
+  CHECKBOX    : "mdl-radio",
+  CHECKBOX_JS : "mdl-js-radio",
+  LABEL       : "mdl-radio__label",
+  RIPPLE      : "mdl-js-ripple-effect",
+};
 
 module.exports = Radio;

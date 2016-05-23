@@ -173,12 +173,12 @@ Draggy.prototype.Drag = Drag;
 
 Draggy.prototype.copy = function () {
   
-  this.dropZone     = core.dom.content.element.querySelector('#web-forms-container');
-  this.dragElements = core.dom.leftPanel.element.querySelectorAll('#web-forms-left > *');
+  this.dropZone     = core.dom.content.element;
+  this.dragElements = core.dom.leftPanel.element.querySelectorAll('._drag');
   this.elementDragged = null;
 
   for (var i = 0; i < this.dragElements.length; i++) {
-    // console.log( 'el++ ', this.dragElements[i]._config );
+    console.log( 'el++ ', this.dragElements[i]._config );
     this.dragElementAttachEvents( this.dragElements[i] );
   };
 

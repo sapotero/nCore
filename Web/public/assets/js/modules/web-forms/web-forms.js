@@ -342,84 +342,41 @@ WebForms.prototype.showElementInfo = function( element ) {
 WebForms.prototype.renderEditorLeftPanel = function() {
   console.log( 'WebForms: renderEditorLeftPanel' );
 
-    this.leftPanel = core.elements.create({
+  this.leftPanel = core.elements.create({
     elementType : 'simple',
     class : [ this.CSS.LEFT_PANEL ],
     items : [
       core.elements.create({
-      elementType : 'list',
-      items: [
-        {
-          title : core.elements.create({
-            elementType : 'button',
-            text        : 'Создать',
-            raised: true,
-            color: true,
-          }),
-        },
-        {
-          title    : 'Шаблоны',
-          subTitle : '0 форм',
-          icon     : 'event',
-          action   : {
-            icon     : 'add',
-            color    : true,
-            callback : {
-              context  : this,
-              function : function(e){
-                e.preventDefault();
-                console.log( 'webforms-leftMenu > template icon click' );
-              },
-            }
-          },
-          // callback : {
-          //   context  : this,
-          //   function : function(e){
-          //     e.preventDefault();
-          //     console.log( 'webforms-leftMenu > template click' );
-          //   },
-          // }
-        },
-        {
-          title    : 'Общие формы',
-          subTitle : '0 форм',
-          icon     : 'event',
-          action   : {
-            icon     : 'add',
-            color    : true,
-          },
-          callback : {
-            context  : this,
-            function : function(e){
-              e.preventDefault();
-              console.log( 'webforms-leftMenu > shared click' );
-            },
-          }
-        },
-        {
-          title    : 'Мои формы',
-          subTitle : '0 форм',
-          icon     : 'event',
-          action   : {
-            icon     : 'add',
-            color    : true,
-          },
-          callback : {
-            context  : this,
-            function : function(e){
-              e.preventDefault();
-              console.log( 'webforms-leftMenu > my click' );
-            },
-          }
-        },
-      ]
-    })
+        elementType : 'input',
+        class : [ '_drag' ],
+        name : 'test',
+        text : 'test'
+      }),
+      core.elements.create({
+        elementType : 'label',
+        class : [ '_drag' ],
+        text : 'label'
+      }),
+      core.elements.create({
+        elementType : 'checkbox',
+        class : [ '_drag' ],
+        label : 'checkbox'
+      }),
+      core.elements.create({
+        elementType : 'radio',
+        class : [ '_drag' ],
+        label : 'radio',
+        name  : 'radio',
+        value : 'radio',
+      }),
     ]
   });
 
   core.events.emit( "core:dom:leftPanel:clear" );
   core.events.emit( "core:dom:leftPanel:set", this.leftPanel );
   core.events.emit( "core:dom:material:update" );
+  
+  core.events.emit( "core:drag:attachEvents" );
 
 };
 
