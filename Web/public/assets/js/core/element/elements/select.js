@@ -57,6 +57,7 @@ Select.prototype.render = function(){
   };
 
   if ( this._config.hasOwnProperty('items') && this._config.items.constructor === Array ) {
+
     for (var i = 0, length = this._config.items.length; i < length; i++) {
       var item = this._config.items[i];
       // console.log( 'menu item', item );
@@ -66,12 +67,12 @@ Select.prototype.render = function(){
       } else {
         var option = document.createElement('option');
         option.textContent = item.text;
-        option.name = item.name;
+        option.value = item.value;
 
-        if ( item.hasOwnProperty('disabled') && item.disabled === true ) {
+        if ( item.hasOwnProperty('disabled') && item.disabled == true ) {
           option.setAttribute( 'disabled', true );
         }
-        if ( item.hasOwnProperty('default') && item.default === true ) {
+        if ( item.hasOwnProperty('default') && item.default == true ) {
           option.setAttribute( 'default', true );
         }
 
@@ -84,6 +85,7 @@ Select.prototype.render = function(){
   if ( this._config.hasOwnProperty('select') && typeof this._config.select.function === 'function' ) {
     this._config.select.context = this._config.select.context || this;
     this._config.select.function.bind( this._config.select.context );
+    this.select.addEventListener( 'change', this._config.select.function.bind( this._config.select.context ) );
   }
 
 

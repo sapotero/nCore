@@ -512,21 +512,21 @@ select:focus {
   outline: none;
 }
 
-.mdl-selectfield label {
+.mdl-select label {
   display: none;
 }
 
-.mdl-selectfield select {
+.mdl-select select {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
 }
 
-.mdl-selectfield {
+.mdl-select {
   font-family: 'Roboto','Helvetica','Arial',sans-serif;
   position: relative;
 }
-.mdl-selectfield:after {
+.mdl-select:after {
   position: absolute;
   top: 0.75em;
   right: 0.5em;

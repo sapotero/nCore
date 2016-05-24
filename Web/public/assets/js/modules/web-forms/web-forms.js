@@ -258,7 +258,7 @@ WebForms.prototype.renderInfoPanel = function( element ) {
 
   var items = [];
 
-  if ( element.hasOwnProperty('_conf') ) {
+  if ( element && element.hasOwnProperty('_conf') ) {
     console.log( 'renderInfoPanel', element.element, element._conf, element._conf.constructor.name );
     
     items.push(
@@ -393,30 +393,67 @@ WebForms.prototype.renderInfoPanel = function( element ) {
       case 'Label':
         items.push(
           core.elements.create({
+            elementType : 'input',
+            label : 'Текст',
+            float : true,
+            value : element._conf.element.textContent,
+            input : {
+              function : function( value ){
+                element._conf.element.textContent = this.input.value;
+              }
+            }
+          })
+        );
+        items.push(
+          core.elements.create({
             elementType : 'select',
-            text : 'Имя',
+            label : '++Размер шрифта',
             items : [
               {
-                text: 'text',
-                value: 'value',
+                text  : '12',
+                value : '12',
               },
               {
-                text: 'text',
-                value: 'value',
+                text  : '14',
+                value : '14',
               },
               {
-                text: 'text',
-                value: 'value',
+                text  : '16',
+                value : '16',
               },
               {
-                text: 'text',
-                value: 'value',
+                text  : '18',
+                value : '18',
               },
               {
-                text: 'text',
-                value: 'value',
+                text  : '20',
+                value : '20',
               },
-            ]
+              {
+                text  : '22',
+                value : '22',
+              },
+              {
+                text  : '24',
+                value : '24',
+              },
+              {
+                text  : '26',
+                value : '26',
+              },
+              {
+                text  : '28',
+                value : '28',
+              },
+
+            ],
+            select: {
+              // context: this,
+              function: function( e ){
+                console.log( 'select', this.select.value, element._conf.element );
+                element._conf.element.style.fontSize = this.select.value + 'px';
+              }
+            }
           })
         );
         break;
