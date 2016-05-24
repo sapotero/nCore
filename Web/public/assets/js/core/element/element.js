@@ -66,6 +66,9 @@ Element.prototype.create = function( options ) {
     case 'search':
       element = this.Search;
       break;
+    case 'select':
+      element = this.Select;
+      break;
 
     default:
       break;
@@ -90,6 +93,7 @@ Element.prototype.Switch   = require('./elements/switch');
 Element.prototype.Textarea = require('./elements/textarea');
 Element.prototype.Label    = require('./elements/label');
 
+Element.prototype.Select   = require('./elements/select');
 Element.prototype.Search   = require('./elements/search');
 Element.prototype.Dialog   = require('./elements/dialog');
 

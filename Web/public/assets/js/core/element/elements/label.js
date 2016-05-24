@@ -20,23 +20,19 @@ var Label = function Label( config ) {
 }
 
 Label.prototype.setName = function( string ){
-  // console.log('Label.prototype.setName', string);
   this.element.name = string;
 };
 Label.prototype.setText = function( string ){
-  // console.log('Label.prototype.setText', string);
   this.element.textContent = string;
 };
 Label.prototype.setClass = function( string ){
-  // console.log('Label.prototype.setClass', string);
   this.element.className = string;
 };
 Label.prototype.setFor = function( element ){
-  // console.log('Label.prototype.setFor', element);
   this.element.setAttribute( 'for', element.id );
 };
 Label.prototype.render = function(){
-  // console.log( 'Label.prototype.render' );
+  this.element._conf = this;
   return this;
 };
 

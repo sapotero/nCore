@@ -496,6 +496,51 @@ dialog.dark::backdrop {
   top: calc(30% - 32px);
 }
 
+/* SELECT */
+select {
+  font-family: inherit;
+  background-color: transparent;
+  width: 100%;
+  padding: 4px 0;
+  font-size: 16px;
+  color: rgba(0,0,0, 0.26);
+  border: none;
+  border-bottom: 1px solid rgba(0,0,0, 0.12);
+}
+
+select:focus {
+  outline: none;
+}
+
+.mdl-selectfield label {
+  display: none;
+}
+
+.mdl-selectfield select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+
+.mdl-selectfield {
+  font-family: 'Roboto','Helvetica','Arial',sans-serif;
+  position: relative;
+}
+.mdl-selectfield:after {
+  position: absolute;
+  top: 0.75em;
+  right: 0.5em;
+  width: 0;
+  height: 0;
+  padding: 0;
+  content: '';
+  border-left: .25em solid transparent;
+  border-right: .25em solid transparent;
+  border-top: 0.375em solid rgba(0,0,0, 0.12);
+  pointer-events: none;
+}
+/* SELECT */
+
 @-moz-document url-prefix() {
   .dialog-offset-y {
     z-index: 100001;

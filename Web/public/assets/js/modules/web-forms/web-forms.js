@@ -265,6 +265,8 @@ WebForms.prototype.renderInfoPanel = function( element ) {
       core.elements.create({
         elementType : 'simple',
         type : 'h3',
+        class : [ 'mdl-color-text--grey-400' ],
+
         text : 'Свойства',
       })
     );
@@ -388,6 +390,36 @@ WebForms.prototype.renderInfoPanel = function( element ) {
           })
         );
         break;
+      case 'Label':
+        items.push(
+          core.elements.create({
+            elementType : 'select',
+            text : 'Имя',
+            items : [
+              {
+                text: 'text',
+                value: 'value',
+              },
+              {
+                text: 'text',
+                value: 'value',
+              },
+              {
+                text: 'text',
+                value: 'value',
+              },
+              {
+                text: 'text',
+                value: 'value',
+              },
+              {
+                text: 'text',
+                value: 'value',
+              },
+            ]
+          })
+        );
+        break;
       default:
         break;
     }
@@ -395,8 +427,7 @@ WebForms.prototype.renderInfoPanel = function( element ) {
 
   this.infoPanel = core.elements.create({
     elementType : 'simple',
-    // text        : 'Создать',
-    items       : items
+    items : items,
   });
 
   core.events.emit( "core:dom:infoPanel:clear" );
