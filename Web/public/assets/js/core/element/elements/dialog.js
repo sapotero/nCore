@@ -250,6 +250,8 @@ DialogManager.prototype.handleFocus_ = function(event) {
 
 DialogManager.prototype.handleKey_ = function(event) {
   if (event.keyCode == 27) {
+    console.log('esc ++');
+
     event.preventDefault();
     event.stopPropagation();
     var cancelEvent = new supportCustomEvent('cancel', {
@@ -258,7 +260,8 @@ DialogManager.prototype.handleKey_ = function(event) {
     });
     var dialog = this.topDialogElement();
     if (dialog.dispatchEvent(cancelEvent)) {
-      dialog.close();
+      core.events.emit( "core:dom:dialog:clear" );
+      // dialog.close();
     }
   }
 };
@@ -396,6 +399,7 @@ var Dialog = function Dialog( config ) {
 
   this.actions = document.createElement('div');
   this.actions.classList.add( this.CSS.ACTIONS );
+  this.actions.classList.add( this.CSS.ACTIONS_FLEX );
 
 
   this.populate();
@@ -412,11 +416,13 @@ Dialog.prototype.CSS = {
   CONTENT       : "mdl-dialog__content",
   ACTIONS       : "mdl-dialog__actions",
   ACTIONS_FULL  : "mdl-dialog__actions--full-width",
+  ACTIONS_FLEX  : "mdl-dialog__actions--flex",
   BUTTON        : "mdl-button",
   BUTTON_JS     : "mdl-js-button",
   DIALOG_HEADER : "dialog-header",
   FULL_WIDTH    : "mdl-dialog--full",
   CONTENT_FULL_WIDTH : "mdl-dialog--full__content",
+
   
   // RIPPLE       : "mdl-js-ripple-effect",
 }

@@ -23,20 +23,32 @@ Dom.prototype.bindEvents = function () {
       priority: 0
     });
 
-    core.events.subscribe( "core:dom:dialog:clear", function () {
+    core.events.on( "core:dom:dialog:clear", function () {
+      console.log( 'dialog clear' );
+
+      dom.dialog = {};
+      
       var dialogs = document.body.querySelectorAll('dialog');
       for (var i = dialogs.length - 1; i >= 0; i--) {
         dialogs[i].remove();
+        try{
+          dialogs[i].close();
+        } catch(e) {
+          // console.log(e);
+        }
+        dialogs[i].remove();
       }
+
     });
 
-    core.events.subscribe( "core:dom:dialog:set", function ( dialog ) {
+    core.events.on( "core:dom:dialog:set", function ( dialog ) {
       core.events.emit( "core:dom:dialog:clear" );
+      
       dom.dialog = dialog;
       dom.application.appendChild( dom.dialog.element );
     });
-    
-    core.events.subscribe( "core:dom:dialog:show", function () {
+
+    core.events.on( "core:dom:dialog:show", function () {
       if ( dom.dialog.hasOwnProperty('element') && dom.dialog.element.hasOwnProperty('showModal') ) {
         dom.dialog.element.showModal();
       }
@@ -587,7 +599,7 @@ Dom.prototype.createDrawer = function(){
 
   this.drawer = core.elements.create({
     elementType : 'simple',
-    class       : ["mdl-layout__drawer"],
+    class       : ["mdl-layout__drawer", 'core-fixed'],
     items: [
       this.drawerTitle,
       this.drawerNavigation,

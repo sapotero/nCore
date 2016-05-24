@@ -413,9 +413,9 @@ WebForms.prototype.renderEditorLeftPanel = function() {
 };
 
 WebForms.prototype.saveDialog = function(){
-  core.events.emit( "core:dom:dialog:clear" );
+  // core.events.emit( "core:dom:dialog:clear" );
 
-  var dialog = core.elements.create({
+  this.dialog = core.elements.create({
     elementType : 'dialog',
     title : 'Сохранение',
     
@@ -453,6 +453,9 @@ WebForms.prototype.saveDialog = function(){
       },
     }
   });
+
+  core.events.emit( "core:dom:dialog:set", this.dialog );
+  core.events.emit( "core:dom:dialog:show" );
   
   // core.events.emit( "core:dom:dialog:set", dialog );
   // this.content.element.appendChild( dialog.element );
@@ -504,18 +507,17 @@ WebForms.prototype.configDialog = function(){
       // context  : this,
       function : function(){
         console.log( 'webforms-leftMenu > config  after callback', this );
+        core.events.emit( "core:dom:dialog:clear" );
       },
     },
   });
 
-  console.log( this, this.content, this.dialog );
+  // console.log( this, this.content, this.dialog );
+  // this.content.element.appendChild( this.dialog.element );
+  // this.dialog.element.showModal();
 
-  this.content.element.appendChild( this.dialog.element );
-  this.dialog.element.showModal();
-
-
-
-  // core.events.emit( "core:dom:dialog:set", dialog );
+  core.events.emit( "core:dom:dialog:set", this.dialog );
+  core.events.emit( "core:dom:dialog:show" );
   // this.content.element.appendChild( dialog.element );
 }
 

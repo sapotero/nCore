@@ -27,10 +27,6 @@
   align-items: center;
 }
 
-.dialog-header {
-  font-size: 1.75rem;
-}
-
 .fadeOut {
   animation-name: fadeOut;
 }
@@ -139,6 +135,13 @@
 .core-fixed {
   position: fixed;
 }
+.mdl-layout__obfuscator.is-visible {
+  pointer-events: auto;
+  opacity: 1;
+  position: fixed;
+
+}
+
 .core-layout-offset {
   margin-top: 64px;
   width: 100%;
@@ -379,10 +382,18 @@ dialog {
   display: none;
 }
 
-dialog[open] {
-  display: block;
-  transition: 0.5s ease;
+.dialog-header {
+  font-size: 1.75rem;
+  display: flex;
+  flex-flow: inherit;
+  flex-direction: row;
+}
 
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+  transition: 0.5s ease;
+  min-height: 172px;
 }
 dialog + .backdrop {
   transition: 0.5s ease;
@@ -434,17 +445,22 @@ dialog.dark::backdrop {
   }
 }
 .mdl-dialog--full {
-  width: 80%;
-  height: 75%;
-  top: 24px;
+  width: 50vw;
+  height: 51vh;
+  top: 20vh;
 }
 
 .mdl-dialog--full__content {
   display: flex;
   flex-grow: 1;
   flex-direction: row;
-  height: 80%;
   position: relative;
+}
+
+.mdl-dialog__actions--flex {
+  vertical-align: bottom;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 ._dialog_overlay {
