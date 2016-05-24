@@ -331,6 +331,63 @@ WebForms.prototype.renderInfoPanel = function( element ) {
           })
         );
         break;
+      case 'Radio':
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Подпись',
+            float : true,
+            value : element._conf.label.textContent,
+            input : {
+              function : function( value ){
+                element._conf.label.textContent = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Имя',
+            float : true,
+            value : element._conf.radio.name,
+            input : {
+              function : function( value ){
+                element._conf.radio.name = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label   : 'Активный',
+            checked : element._conf.radio.checked,
+            toggle  : {
+              function : function( value ){
+                var _el = element.MaterialCheckbox;
+                this.radio.checked === true ? _el.check() : _el.uncheck();
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label : 'Обязательный параметр',
+            require : element._conf.radio.getAttribute('required'),
+            toggle : {
+              function : function( value ){
+                console.log( 'required', this.checkbox );
+                element._conf.radio.setAttribute( 'required', this.checkbox.checked );
+              }
+            }
+          })
+        );
+        break;
       default:
         break;
     }

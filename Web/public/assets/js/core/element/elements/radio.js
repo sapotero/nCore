@@ -1,4 +1,4 @@
-var Radio = function( config ) {
+var Radio = function Radio( config ) {
   this.element = document.createElement( 'label' );
   this.element.classList.add( this.CSS.CHECKBOX );
   this.element.classList.add( this.CSS.CHECKBOX_JS );
@@ -64,6 +64,8 @@ Radio.prototype.render = function( string ){
   if ( this._config && this._config.hasOwnProperty('value') ) {
     this.setValue( this._config.value );
   };
+
+  this.element._conf = this;
 
   return this;
 };
