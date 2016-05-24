@@ -436,8 +436,8 @@ Dialog.prototype.CSS = {
 
 Dialog.prototype.initCallback = function( call ){
   if ( this._config.hasOwnProperty( call ) && typeof this._config[ call ].function === 'function' ) {
-    this._config[ call ].context = this._config[ call ].context || this;
-    this._config[ call ].function.bind( this._config[ call ].context );
+    var context = this._config[ call ].context || this;
+    this._config[ call ].function.call( context );
   }
 }
 
@@ -482,6 +482,7 @@ Dialog.prototype.render = function(){
         if ( typeof this.submit.function === 'function' ) {
           this.submit.context = this.submit.context || this;
           this.submit.function();
+          dialog.initCallback('after');
         }
       };
       item.cancelCallback = function(){
@@ -489,6 +490,7 @@ Dialog.prototype.render = function(){
         if ( typeof this.cancel.function === 'function' ) {
           this.cancel.context = this.cancel.context || this;
           this.cancel.function();
+          dialog.initCallback('after');
         }
       };
 
@@ -520,8 +522,6 @@ Dialog.prototype.render = function(){
     this.actions.appendChild( df );
     this.element.appendChild( this.actions );
   }
-
-  this.initCallback('after');
 
   return this.element;
 }

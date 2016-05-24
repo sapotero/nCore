@@ -19,18 +19,23 @@ Dom.prototype.bindEvents = function () {
     core.events.on('core:start:all', function () {
       console.log('core  > dom > bindEvents > core:start:all');
       manager.start();
-    }, { priority: 0 });
+    }, {
+      priority: 0
+    });
 
-    core.events.subscribe( "core:dom:dialog:clear", function ( dialog ) {
-      if ( dom.dialog.hasOwnProperty('element') && dom.dialog.element.hasOwnProperty('showModal') ) {
-        dom.dialog.element.innerHTML = '';
+    core.events.subscribe( "core:dom:dialog:clear", function () {
+      var dialogs = document.body.querySelectorAll('dialog');
+      for (var i = dialogs.length - 1; i >= 0; i--) {
+        dialogs[i].remove();
       }
+    });
 
-    });
     core.events.subscribe( "core:dom:dialog:set", function ( dialog ) {
+      core.events.emit( "core:dom:dialog:clear" );
       dom.dialog = dialog;
-      dom.content.element.appendChild( dom.dialog.element );
+      dom.application.appendChild( dom.dialog.element );
     });
+    
     core.events.subscribe( "core:dom:dialog:show", function () {
       if ( dom.dialog.hasOwnProperty('element') && dom.dialog.element.hasOwnProperty('showModal') ) {
         dom.dialog.element.showModal();

@@ -393,7 +393,7 @@ WebForms.prototype.renderEditorLeftPanel = function() {
         elementType : 'button',
         icon: 'sort',
         callback : {
-          context: this,
+          // context: this,
           function : function(e){
             e.preventDefault();
             core.events.emit('core:web-forms:show:configDialog');
@@ -413,6 +413,8 @@ WebForms.prototype.renderEditorLeftPanel = function() {
 };
 
 WebForms.prototype.saveDialog = function(){
+  core.events.emit( "core:dom:dialog:clear" );
+
   var dialog = core.elements.create({
     elementType : 'dialog',
     title : 'Сохранение',
@@ -451,14 +453,16 @@ WebForms.prototype.saveDialog = function(){
       },
     }
   });
-  core.events.emit( "core:dom:dialog:clear" );
-  core.events.emit( "core:dom:dialog:set", dialog );
+  
+  // core.events.emit( "core:dom:dialog:set", dialog );
   // this.content.element.appendChild( dialog.element );
-  core.events.emit( "core:dom:dialog:show" );
+  // core.events.emit( "core:dom:dialog:show" );
 }
 
 WebForms.prototype.configDialog = function(){
-  var dialog = core.elements.create({
+  // core.events.emit( "core:dom:dialog:clear" );
+
+  this.dialog = core.elements.create({
     elementType : 'dialog',
     title : 'Настройки формы',
     big: true,
@@ -490,52 +494,36 @@ WebForms.prototype.configDialog = function(){
         }
       },
     ],
-    after : {
+    before : {
       context  : this,
-      function : function(e){
-        console.log( 'webforms-leftMenu > config  after dialog click', this );
+      function : function(){
+        console.log( 'webforms-leftMenu > config  before callback', this );
       },
-    }
+    },
+    after : {
+      // context  : this,
+      function : function(){
+        console.log( 'webforms-leftMenu > config  after callback', this );
+      },
+    },
   });
-  core.events.emit( "core:dom:dialog:clear" );
-  core.events.emit( "core:dom:dialog:set", dialog );
+
+  console.log( this, this.content, this.dialog );
+
+  this.content.element.appendChild( this.dialog.element );
+  this.dialog.element.showModal();
+
+
+
+  // core.events.emit( "core:dom:dialog:set", dialog );
   // this.content.element.appendChild( dialog.element );
-  core.events.emit( "core:dom:dialog:show" );
 }
 
 WebForms.prototype.renderEditorContent = function() {
   console.log( 'WebForms: renderEditorContent' );
   this.content = core.elements.create({
-    elementType : 'dialog',
-    title : 'Сохранение',
-    
-    content : core.elements.create({
-      elementType: 'simple',
-      text: 'Документ был изменен, вы хотите его сохранить?',
-      items: [],
-    }),
-
-    actions: [
-      {
-        text: 'Сохранить',
-        class : [ 'mdl-color-text--green-500' ],
-        submit :  {
-          // context  : this,
-          function : function(){
-            console.log( 'webforms-leftMenu > renderEditorContent submit  dialog click' );
-          },
-        }
-      },
-      {
-        text: 'Отмена',
-        cancel : {
-          context  : this,
-          function : function(){
-            console.log( 'webforms-leftMenu > renderEditorContent  cancel dialog click' );
-          },
-        }
-      },
-    ]
+    elementType : 'simple',
+    class : [ this.CSS.CONTENT ],
   });
 
   core.events.emit( "core:dom:content:clear" );

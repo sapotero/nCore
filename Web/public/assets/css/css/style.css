@@ -472,6 +472,7 @@ dialog.dark::backdrop {
 @-moz-document url-prefix() {
   .dialog-offset-y {
     z-index: 100001;
+    position: fixed;
     top: calc(40% - 32px);
   }
 }
