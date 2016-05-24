@@ -23,6 +23,9 @@ Simple.prototype.populate = function(){
   if ( this._config && this._config.hasOwnProperty('items') ) {
     this.addItems();
   };
+  if ( this._config && this._config.hasOwnProperty('after') ) {
+    this.addAfter();
+  };
 };
 Simple.prototype.setText = function( string ){
   this.element.textContent = string;
@@ -49,6 +52,20 @@ Simple.prototype.addItems = function(){
 
       if ( item.hasOwnProperty('element') ) {
         this.element.appendChild( item.element );
+      }
+
+    }
+  }
+};
+Simple.prototype.addAfter = function(){
+  if ( this._config.hasOwnProperty('after') && this._config.after.constructor === Array ) {
+    for (var a = 0, length = this._config.after.length; a < length; a++) {
+      var item = this._config.after[a];
+      console.log( 'after+++++');
+
+      if ( item.hasOwnProperty('element') ) {
+        console.log( 'after++');
+        this.element.insertAdjacentHTML( 'beforeEnd', item.element.innerHTML );
       }
 
     }

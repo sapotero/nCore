@@ -1,6 +1,6 @@
 var Search = function( config ) {
-  this.element = document.createElement( 'form' );
-  this.element.action = "#";
+  this.element = document.createElement( 'div' );
+  // this.element.action = "#";
   
   this.wrapper = document.createElement( 'div' );
   this.wrapper.classList.add( this.CSS.ROOT );
@@ -67,6 +67,7 @@ Search.prototype.setClass = function( string ){
 };
 
 Search.prototype.render = function( string ){
+  var scope = this;
 
   if ( this._config && this._config.hasOwnProperty('class') ) {
     this.setClass( this._config.class );
@@ -74,6 +75,29 @@ Search.prototype.render = function( string ){
   if ( this._config && this._config.hasOwnProperty('icon') ) {
     this.setIcon( this._config.icon );
   };
+
+  if ( this._config.hasOwnProperty('input') && typeof this._config.input.function === 'function' ) {
+    this._config.input.context = this._config.input.context || this;
+    this.input.addEventListener( 'input', this._config.input.function.bind( this._config.input.context ) );
+  }
+
+  if ( this._config.hasOwnProperty('submit') && typeof this._config.submit.function === 'function' ) {
+    this._config.submit.context = this._config.submit.context || this;
+    this.input.addEventListener( 'keydown', function(e){
+      if ( e.keyCode === 27 ) {
+        e.preventDefault();
+        console.log( 'press esc', e );
+      } else if ( e.keyCode === 13 ) {
+        e.preventDefault();
+        console.log( 'press enter', e, this, scope );
+        scope._config.submit.function.call( this, scope._config.submit.context );
+      } else {
+        scope._config.input.function.call( this, scope._config.input.context );
+      }
+
+
+    });
+  }
 
   return this;
 };

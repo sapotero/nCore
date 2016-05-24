@@ -337,10 +337,32 @@ Dom.prototype.removeProgressBar = function(){
 Dom.prototype.createHeader = function(){
   
   this.title = core.elements.create({
-    elementType : 'simple',
-    type        : 'span',
-    class       : ["mdl-layout-title"],
-    text : 'Конструктор отчетов',
+    elementType : 'search',
+    input : {
+      context: this,
+      function : function(e){
+        // e.preventDefault();
+        // console.log( 'input', e, this );
+      }
+    },
+    submit : {
+      context: this,
+      function : function(e){
+        // e.preventDefault();
+        // console.log( 'onsubmit', e, this );
+      }
+    }
+    // type        : 'span',
+    // class       : ["mdl-layout-title"],
+    // text        : 'Конструктор отчетов',
+    // after : [
+    //   core.elements.create({
+    //     elementType : 'simple',
+    //     type        : 'span',
+    //     class       : ["mdl-layout-title"],
+    //     text        : 'Конструктор отчетов',
+    //   })
+    // ]
   });
 
   this.subTitle = core.elements.create({
