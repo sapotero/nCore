@@ -449,12 +449,16 @@ dialog.dark::backdrop {
   height: 51vh;
   top: 20vh;
 }
+.mdl-dialog--small {
+  width: 30vw;
+  height: 30vh;
+  top: 20vh;
+}
 
 .mdl-dialog--full__content {
   display: flex;
   flex-grow: 1;
   flex-direction: row;
-  position: relative;
 }
 
 .mdl-dialog__actions--flex {

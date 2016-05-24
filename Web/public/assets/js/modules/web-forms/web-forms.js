@@ -391,6 +391,17 @@ WebForms.prototype.renderEditorLeftPanel = function() {
       }),
       core.elements.create({
         elementType : 'button',
+        icon: 'star',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            core.events.emit('core:web-forms:show:deleteDialog');
+          }
+        }
+      }),
+      core.elements.create({
+        elementType : 'button',
         icon: 'sort',
         callback : {
           // context: this,
@@ -429,6 +440,56 @@ WebForms.prototype.saveDialog = function(){
       {
         text: 'Сохранить',
         class : [ 'mdl-color-text--green-500' ],
+        submit :  {
+          // context  : this,
+          function : function(event){
+            console.log( 'webforms-leftMenu > renderEditorContent submit  dialog click' );
+          },
+        }
+      },
+      {
+        text: 'Отмена',
+        cancel : {
+          context  : this,
+          function : function(e){
+            console.log( 'webforms-leftMenu > renderEditorContent  cancel dialog click' );
+          },
+        }
+      },
+    ],
+    after : {
+      context  : this,
+      function : function(e){
+        console.log( 'webforms-leftMenu > renderEditorContent  after dialog click', this );
+      },
+    }
+  });
+
+  core.events.emit( "core:dom:dialog:set", this.dialog );
+  core.events.emit( "core:dom:dialog:show" );
+  
+  // core.events.emit( "core:dom:dialog:set", dialog );
+  // this.content.element.appendChild( dialog.element );
+  // core.events.emit( "core:dom:dialog:show" );
+}
+
+WebForms.prototype.deleteDialog = function(){
+  // core.events.emit( "core:dom:dialog:clear" );
+
+  this.dialog = core.elements.create({
+    elementType : 'dialog',
+    title : 'Удаление',
+    
+    content : core.elements.create({
+      elementType: 'simple',
+      text: 'Вы действительно хотите удалалить документ?',
+      items: [],
+    }),
+
+    actions: [
+      {
+        text: 'Удалить',
+        class : [ 'mdl-color-text--red-500' ],
         submit :  {
           // context  : this,
           function : function(event){
@@ -608,7 +669,11 @@ WebForms.prototype.detachEvents = function(){
   core.events.remove("core:web-forms:drag:export:result");
   core.events.remove("core:web-forms:infoPanel:show");
   core.events.remove("core:web-forms:loaded");
+  
   core.events.remove('core:web-forms:show:saveDialog');
+  core.events.remove('core:web-forms:show:deleteDialog');
+  core.events.remove('core:web-forms:show:configDialog');
+  
   core.events.remove("core:web-form:show");
   core.events.remove("core:web-form:ready");
   core.events.remove("core:web-form:render");
@@ -643,6 +708,11 @@ WebForms.prototype.bindEvents = function(){
     core.events.on("core:web-forms:show:saveDialog", function(){
       console.log('WebForm :: core:web-forms:show:saveDialog');
       webForms.saveDialog();
+    });
+
+    core.events.on("core:web-forms:show:deleteDialog", function(){
+      console.log('WebForm :: core:web-forms:show:deleteDialog');
+      webForms.deleteDialog();
     });
 
     core.events.on("core:web-forms:show:configDialog", function(){

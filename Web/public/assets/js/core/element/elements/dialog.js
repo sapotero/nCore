@@ -387,6 +387,8 @@ var Dialog = function Dialog( config ) {
 
   this.element = document.createElement('dialog');
   this.element.classList.add( this.CSS.ROOT );
+  this.element.classList.add( this.CSS.SMALL_WIDTH );
+
   this.element._config = config;
   this.dialog = new this.DialogInfo( this.element );
 
@@ -396,6 +398,7 @@ var Dialog = function Dialog( config ) {
   
   this.content = document.createElement('div');
   this.content.classList.add( this.CSS.CONTENT );
+  this.content.classList.add( this.CSS.CONTENT_FULL_WIDTH );
 
   this.actions = document.createElement('div');
   this.actions.classList.add( this.CSS.ACTIONS );
@@ -421,6 +424,7 @@ Dialog.prototype.CSS = {
   BUTTON_JS     : "mdl-js-button",
   DIALOG_HEADER : "dialog-header",
   FULL_WIDTH    : "mdl-dialog--full",
+  SMALL_WIDTH   : "mdl-dialog--small",
   CONTENT_FULL_WIDTH : "mdl-dialog--full__content",
 
   
@@ -464,8 +468,6 @@ Dialog.prototype.render = function(){
 
   if ( this._config.hasOwnProperty('big') && this._config.big === true ) {
     this.element.classList.add( this.CSS.FULL_WIDTH );
-    this.content.classList.add( this.CSS.CONTENT_FULL_WIDTH );
-    
   }
 
   if ( this._config.hasOwnProperty('content') ) {
