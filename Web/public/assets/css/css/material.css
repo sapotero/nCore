@@ -10102,8 +10102,8 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   text-align: center; }
 
 .mdl-tooltip.is-active {
-  -webkit-animation: pulse 800ms cubic-bezier(1,.02,1,-0.8) forwards;
-          animation: pulse 800ms cubic-bezier(1,.02,1,-0.8) forwards; }
+  -webkit-animation: pulse 500ms cubic-bezier(1,.02,1,-0.8) forwards;
+          animation: pulse 500ms cubic-bezier(1,.02,1,-0.8) forwards; }
 
 .mdl-tooltip--large {
   line-height: 14px;

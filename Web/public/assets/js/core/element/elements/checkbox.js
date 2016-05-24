@@ -1,4 +1,4 @@
-var Checkbox = function( config ) {
+var Checkbox = function Checkbox( config ) {
   this.element = document.createElement( 'label' );
   this.element.classList.add( this.CSS.CHECKBOX );
   this.element.classList.add( this.CSS.CHECKBOX_JS );
@@ -55,6 +55,10 @@ Checkbox.prototype.render = function( string ){
   };
 
   console.log( this.element.outerHTML );
+  this.element._config = this._config;
+  
+  this.element._conf = this;
+
   return this;
 };
 

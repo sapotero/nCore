@@ -300,32 +300,30 @@ Draggy.prototype.addConfigButton = function( element ){
   // <button class="mdl-button mdl-js-button mdl-button--icon">
   //   <i class="material-icons">mood</i>
   // </button>
-  
-  var configButton = document.createElement('button');
-  configButton.className = 'mdl-button mdl-js-button mdl-button--icon';
-  var icon = document.createElement('icon');
-  icon.className = 'material-icons drag-small-font';
-  icon.textContent = 'settings';
-  configButton.appendChild( icon );
+    
+  var configButton = core.elements.create({
+    elementType : 'button',
+    icon : 'settings',
+    flex : true,
+  });
+  var deleteButton = core.elements.create({
+    elementType : 'button',
+    icon : 'clear',
+    flex : true,
+  });
 
-  var deleteButton = document.createElement('button');
-  deleteButton.className = 'mdl-button mdl-js-button mdl-button--icon';
-  var icon = document.createElement('icon');
-  icon.className = 'material-icons drag-small-font';
-  icon.textContent = 'clear';
-  deleteButton.appendChild( icon );
-
-  configButton.addEventListener( 'click', this.showInfoPanel.bind(this, element ) );
-  deleteButton.addEventListener( 'click', this.deleteElement.bind(this, element ) );
+  configButton.element.addEventListener( 'click', this.showInfoPanel.bind(this, element ) );
+  deleteButton.element.addEventListener( 'click', this.deleteElement.bind(this, element ) );
   
-  config.appendChild( configButton );
-  config.appendChild( deleteButton );
+  config.appendChild( configButton.element );
+  config.appendChild( deleteButton.element );
 
   element.appendChild( config );
 }
 
 Draggy.prototype.showInfoPanel = function( element, e ){
-  console.log( 'showInfoPanel', element, element._DragOptions, element._config );
+  console.log('---------------');
+  console.log( 'showInfoPanel', element, element.firstElementChild._config );
   
   core.events.publish("core:web-forms:infoPanel:show", element.firstElementChild );
   core.events.publish("core:dom:infoPanel:show");

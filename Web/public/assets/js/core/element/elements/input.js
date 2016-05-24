@@ -38,6 +38,9 @@ Input.prototype.setFloat = function(){
 Input.prototype.setClass = function( string ){
   this.element.classList.add( string );
 };
+Input.prototype.setValue = function( string ){
+  this.input.value = string;
+};
 
 Input.prototype.render = function( string ){
 
@@ -50,6 +53,14 @@ Input.prototype.render = function( string ){
   if ( this._config && this._config.hasOwnProperty('float') && this._config.float === true ) {
     this.setFloat();
   };
+  if ( this._config && this._config.hasOwnProperty('value') ) {
+    this.setValue( this._config.value );
+  };
+
+  if ( this._config.hasOwnProperty('input') && typeof this._config.input.function === 'function' ) {
+    this._config.input.context = this._config.input.context || this;
+    this.input.addEventListener( 'input', this._config.input.function.bind( this._config.input.context, this.input.value ) );
+  }
 
   return this;
 };

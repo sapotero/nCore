@@ -255,41 +255,102 @@ WebForms.prototype.renderContent = function() {
   core.events.emit( "core:dom:content:set", this.content );
 }
 WebForms.prototype.renderInfoPanel = function( element ) {
-  // var table = core.elements.create({
-  //   elementType : 'table',
-  //   selectable: true,
-  //   class : [ 'webforms-infopanel-table' ],
-  //   head  : [ 'id', 'name', 'test' ],
-  //   body  : [
-  //     [4 , 5, 5],
-  //     [1 , 2, 2],
-  //     [1 , 2, 2],
-  //     [1 , 2, 2],
-  //     [1 , 2, 2],
-  //     [1 , 2, 2],
-  //     [1 , 2, 2],
-  //   ]
-  // });
 
-  // var button = core.elements.create({
-  //   elementType : 'button',
-  //   class       : [ 'menu-content-button' ],
-  //   text        : 'Создать',
-  //   color       : true,
-  //   raised      : true
-  // });
+  var items = [];
 
-  // this.infoPanel = core.elements.create({
-  //   elementType : 'simple',
-  //   // text        : 'Создать',
-  //   items : [
-  //     button,
-  //     table
-  //   ]
-  // });
+  if ( element.hasOwnProperty('_conf') ) {
+    console.log( 'renderInfoPanel', element.element, element._conf, element._conf.constructor.name );
+    
+    items.push(
+      core.elements.create({
+        elementType : 'simple',
+        type : 'h3',
+        text : 'Свойства',
+      })
+    );
+
+    if ( !element._conf.constructor.name ) {
+      throw new Error('no constructor name given');
+    }
+
+    switch( element._conf.constructor.name ){
+      case 'Checkbox':
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Подпись',
+            float : true,
+            value : element._conf.label.textContent,
+            input : {
+              function : function( value ){
+                element._conf.label.textContent = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Имя',
+            float : true,
+            value : element._conf.checkbox.name,
+            input : {
+              function : function( value ){
+                element._conf.checkbox.name = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label : 'Активный',
+            value : element._conf.checkbox.checked,
+            toggle : {
+              // context  : this,
+              function : function( value ){
+                console.log( 'label', element._conf.checkbox );
+                console.log( 'value', this.checkbox.checked );
+                // element._conf.checkbox.checked = this.checkbox.checked;
+                element._conf.checkbox.setAttribute( 'checked', this.checkbox.checked );
+
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label : 'Обязательный параметр',
+            value : 'checkbox',
+            toggle : {
+              // context  : this,
+              function : function( value ){
+                console.log( 'label', this );
+                // console.log( 'value', this.input.value );
+                // element._conf.label.textContent = this.input.value;
+              }
+            }
+          })
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  this.infoPanel = core.elements.create({
+    elementType : 'simple',
+    // text        : 'Создать',
+    items       : items
+  });
 
   core.events.emit( "core:dom:infoPanel:clear" );
-  // core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
+  core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
+  core.events.emit( "core:dom:material:update" );
 }
 
 WebForms.prototype.render = function(){
