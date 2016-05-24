@@ -34,12 +34,14 @@ Switch.prototype.constructor = Switch;
 Switch.prototype.setChecked = function( checked ){
   this.checkbox.setAttribute('checked', checked);
 }
-
 Switch.prototype.setLabel = function( string ){
   this.label.textContent = string;
 };
 Switch.prototype.setClass = function( string ){
   this.element.classList.add( string );
+};
+Switch.prototype.setRequire = function( string ){
+  this.checkbox.setAttribute( 'required', string );
 };
 
 Switch.prototype.render = function( string ){
@@ -52,6 +54,9 @@ Switch.prototype.render = function( string ){
   };
   if ( this._config && this._config.hasOwnProperty('label') ) {
     this.setLabel( this._config.label );
+  };
+  if ( this._config && this._config.hasOwnProperty('require') ) {
+    this.setRequire( this._config.require );
   };
 
   if ( this._config.hasOwnProperty('toggle') && typeof this._config.toggle.function === 'function' ) {

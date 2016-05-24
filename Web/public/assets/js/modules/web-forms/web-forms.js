@@ -306,16 +306,12 @@ WebForms.prototype.renderInfoPanel = function( element ) {
         items.push(
           core.elements.create({
             elementType : 'switch',
-            label : 'Активный',
-            value : element._conf.checkbox.checked,
-            toggle : {
-              // context  : this,
+            label   : 'Активный',
+            checked : element._conf.checkbox.checked,
+            toggle  : {
               function : function( value ){
-                console.log( 'label', element._conf.checkbox );
-                console.log( 'value', this.checkbox.checked );
-                // element._conf.checkbox.checked = this.checkbox.checked;
-                element._conf.checkbox.setAttribute( 'checked', this.checkbox.checked );
-
+                var _el = element.MaterialCheckbox;
+                this.checkbox.checked === true ? _el.check() : _el.uncheck();
               }
             }
           })
@@ -325,13 +321,11 @@ WebForms.prototype.renderInfoPanel = function( element ) {
           core.elements.create({
             elementType : 'switch',
             label : 'Обязательный параметр',
-            value : 'checkbox',
+            require : element._conf.checkbox.getAttribute('required'),
             toggle : {
-              // context  : this,
               function : function( value ){
-                console.log( 'label', this );
-                // console.log( 'value', this.input.value );
-                // element._conf.label.textContent = this.input.value;
+                console.log( 'required', this.checkbox );
+                element._conf.checkbox.setAttribute( 'required', this.checkbox.checked );
               }
             }
           })
