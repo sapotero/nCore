@@ -434,15 +434,20 @@ Draggy.prototype.export = function(){
     var box = this.elements[k].el.getBoundingClientRect();
 
     result.push({
-      element : this.elements[k].el._conf,
+      element : this.elements[k].el.firstElementChild._config,
       options : {
-        top  : box.top  - this.top ,
-        left : box.left - this.left ,
-      }
+        top  : box.top  - this.top,
+        left : box.left - this.left,
+      },
+      drag : {
+        snapX: 10,
+        snapY: 10,
+        activeClass: "active-border"
+      },
     });
   }
 
-  return result;
+  return JSON.stringify(result);
 };
 
 
