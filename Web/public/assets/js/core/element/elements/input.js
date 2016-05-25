@@ -1,4 +1,4 @@
-var Input = function( config ) {
+var Input = function Input( config ) {
   this.element = document.createElement( 'div' );
   this.element.classList.add( this.CSS.ROOT );
   this.element.classList.add( this.CSS.ROOT_JS );

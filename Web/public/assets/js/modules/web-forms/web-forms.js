@@ -457,6 +457,50 @@ WebForms.prototype.renderInfoPanel = function( element ) {
           })
         );
         break;
+      case 'Input':
+        
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Подпись',
+            float : true,
+            value : element._conf.label.textContent,
+            input : {
+              function : function( value ){
+                element._conf.label.textContent = this.input.value;
+              }
+            }
+          })
+        );
+        
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Имя',
+            float : true,
+            value : element._conf.radio.name,
+            input : {
+              function : function( value ){
+                element._conf.radio.name = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label : 'Обязательный параметр',
+            require : element._conf.radio.getAttribute('required'),
+            toggle : {
+              function : function( value ){
+                console.log( 'required', this.checkbox );
+                element._conf.radio.setAttribute( 'required', this.checkbox.checked );
+              }
+            }
+          })
+        );
+        break;
       default:
         break;
     }

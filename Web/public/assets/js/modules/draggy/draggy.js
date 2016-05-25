@@ -55,14 +55,13 @@ var Drag = function(el, config) {
   };
 };
 Drag.prototype.mousedownHandler = function(e) {
-
   var event = document.all ? window.event : e,
     scope   = this,
     mouseX  = document.all ? window.event.clientX : e.pageX,
     mouseY  = document.all ? window.event.clientY : e.pageY;
 
-  if (event.preventDefault) {
-    event.preventDefault();
+  if (event.preventDefault && !this.el.nodeName === 'INPUT') {
+    // event.preventDefault();
   }
   else {
     document.onselectstart = function() {
@@ -137,8 +136,15 @@ Drag.prototype.mousemoveHandler = function(e) {
   }
 };
 Drag.prototype.mouseupHandler = function(e) {
-  if (isDrag === false)
+  if (isDrag === false){
     return;
+  }
+
+  var event = document.all ? window.event : e;
+
+  console.log( 'mouseupHandler', event );
+  event.preventDefault();
+  event.stopPropagation();
 
   if ( this.options.activeClass ) {
     this.el.classList.remove( this.options.activeClass );
@@ -215,7 +221,16 @@ Draggy.prototype.dropZoneAttachEvents = function(){
   this.dropZone.addEventListener('dragenter', this.dropZoneDragEnter.bind( this, this.dropZone ) );
   this.dropZone.addEventListener('dragleave', this.dropZoneDragLeave.bind( this, this.dropZone ) );
   this.dropZone.addEventListener('drop',      this.dropZoneDrop.bind( this, this.dropZone ) );
+  this.dropZone.addEventListener('click',     this.dropZoneClearSelection.bind( this, this.dropZone ) );
 };
+
+
+Draggy.prototype.dropZoneClearSelection  = function( element, e ){
+  console.log('dropZoneClearSelection');
+  // e.preventDefault();
+  core.events.emit("core:dom:infoPanel:clear");
+  core.events.emit("core:dom:infoPanel:hide");
+}
 
 Draggy.prototype.dropZoneDragOver  = function( element, e ){
   // console.log('dragover');
@@ -248,7 +263,17 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
   var _element = core.elements.create( _config );
 
   var _drag = document.createElement('div');
-  _drag.appendChild( _element.element );
+  
+  console.log( 'element._config', element._config );
+  console.log( '_element._config', _element._config );
+
+  var _createdElement = core.elements.create( _element._config );
+  _drag.appendChild( _createdElement.element );
+  // _drag.appendChild( _element.element );
+
+
+
+
 
   _drag._DragOptions = { snapX: 10,  snapY: 10, activeClass: "active-border" };
 
@@ -256,10 +281,12 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
 
   this.dragElementRemoveEvents( _drag );
   this.clonedElementAttachEvents( _drag );
-  core.modules.drag.add( _drag , _drag._DragOptions );
+
+  // core.modules.drag.add( _drag , _drag._DragOptions );
   
+  core.events.emit( "core:drag:add", { el: _drag , options: _drag._DragOptions } )
   element.elementDragged = null;
-  core.events.publish( "core:dom:material:update" );
+  core.events.emit( "core:dom:material:update" );
   
 }
 
@@ -291,16 +318,6 @@ Draggy.prototype.addConfigButton = function( element ){
   var config = document.createElement('div');
   config.classList.add('drag-config-button')
 
-  config.style.positions = 'absolute';
-  config.style.top       = box.top + 'px';
-  config.style.left      = box.left + 'px';
-  config.style.height    = box.height + 'px';
-  config.style.width     = box.width + 20 + 'px';
-
-  // <button class="mdl-button mdl-js-button mdl-button--icon">
-  //   <i class="material-icons">mood</i>
-  // </button>
-    
   var configButton = core.elements.create({
     elementType : 'button',
     icon : 'settings',
@@ -322,11 +339,14 @@ Draggy.prototype.addConfigButton = function( element ){
 }
 
 Draggy.prototype.showInfoPanel = function( element, e ){
+  e.preventDefault();
+  e.stopPropagation();
+
   console.log('---------------');
   console.log( 'showInfoPanel', element, element.firstElementChild._config );
   
-  core.events.publish("core:web-forms:infoPanel:show", element.firstElementChild );
-  core.events.publish("core:dom:infoPanel:show");
+  core.events.emit("core:web-forms:infoPanel:show", element.firstElementChild );
+  core.events.emit("core:dom:infoPanel:show");
 }
 
 Draggy.prototype.deleteElement = function( element, e ){
@@ -343,8 +363,8 @@ Draggy.prototype.remove = function( element ){
       this.elements[i].el.remove();
       this.elements.splice(i, 1);
 
-      core.events.publish("core:dom:infoPanel:hide");
-      setTimeout( function(){ core.events.publish("core:dom:infoPanel:clear") } , 500);
+      core.events.emit("core:dom:infoPanel:hide");
+      setTimeout( function(){ core.events.emit("core:dom:infoPanel:clear") } , 500);
       break;
     };
 
@@ -360,6 +380,9 @@ Draggy.prototype.removeConfigButton = function( element ){
 
 Draggy.prototype.setActive = function( element, e ){
   // console.log( 'setActive', e, element, element._config);
+  if ( element.classList.contains( this.Constant.ACTIVE ) ) {
+    return false;
+  }
 
   for(var k = 0, length = this.elements.length; k < length; k++){
     if ( this.elements[k].el !== element ) {
@@ -376,7 +399,7 @@ Draggy.prototype.add = function( element, config ){
   console.log( 'Draggy.prototype.add', element, element._config );
   
   this.elements.push( new this.Drag( element, config ) );
-  element.addEventListener('click', this.setActive.bind(this, element) );
+  element.addEventListener('mouseover', this.setActive.bind(this, element) );
 };
 
 Draggy.prototype.export = function(){
@@ -402,15 +425,19 @@ Draggy.prototype.attachEvents = function(){
   var draggy = this;
   document.addEventListener('DOMContentLoaded', function(){
 
-    core.events.subscribe("core:drag:attachEvents", function(){
+    core.events.on("core:drag:add", function( config ){
+      draggy.add( config.el , config.options );
+    });
+
+    core.events.on("core:drag:attachEvents", function(){
       console.log('Draggy <- core:drag:attachEvents');
       draggy.copy();
     });
 
-    core.events.subscribe("core:drag:export", function(){
+    core.events.on("core:drag:export", function(){
       console.log('Draggy <- core:drag:export');
 
-      core.events.publish("core:web-forms:drag:export:result", draggy.export() );
+      core.events.emit("core:web-forms:drag:export:result", draggy.export() );
     });
 
   });

@@ -64,7 +64,6 @@ Switch.prototype.render = function( string ){
     this.checkbox.addEventListener( 'change', this._config.toggle.function.bind( this._config.toggle.context ) );
   }
 
-  console.log( this.element.outerHTML );
   this.element._config = this._config;
   
   this.element._conf = this;

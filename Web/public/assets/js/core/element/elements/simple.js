@@ -73,6 +73,7 @@ Simple.prototype.addAfter = function(){
 };
 
 Simple.prototype.render = function(){
+  this.element._conf = this;
   return this;
 };
 
