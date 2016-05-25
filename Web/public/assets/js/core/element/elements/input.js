@@ -62,6 +62,8 @@ Input.prototype.render = function( string ){
     this.input.addEventListener( 'input', this._config.input.function.bind( this._config.input.context, this.input.value ) );
   }
 
+  this.element._conf = this;
+  
   return this;
 };
 

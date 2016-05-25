@@ -478,10 +478,10 @@ WebForms.prototype.renderInfoPanel = function( element ) {
             elementType : 'input',
             label : 'Имя',
             float : true,
-            value : element._conf.radio.name,
+            value : element._conf.input.name,
             input : {
               function : function( value ){
-                element._conf.radio.name = this.input.value;
+                element._conf.input.name = this.input.value;
               }
             }
           })
@@ -491,11 +491,11 @@ WebForms.prototype.renderInfoPanel = function( element ) {
           core.elements.create({
             elementType : 'switch',
             label : 'Обязательный параметр',
-            require : element._conf.radio.getAttribute('required'),
+            require : element._conf.input.getAttribute('required'),
             toggle : {
               function : function( value ){
                 console.log( 'required', this.checkbox );
-                element._conf.radio.setAttribute( 'required', this.checkbox.checked );
+                element._conf.input.setAttribute( 'required', this.checkbox.checked );
               }
             }
           })
