@@ -146,7 +146,7 @@ Router.prototype.start = function() {
       // отчёты - начальная страница
       'reports' : function(params) {
         console.log('[reports]: ', params);
-        core.events.publish( "core:reports:render" );
+        core.events.emit( "core:reports:render" );
       },
       // отчёты - шаблоны
       'reports/templates' : function(params) {
@@ -162,14 +162,14 @@ Router.prototype.start = function() {
       },
       'reports/{id}' : function(params) {
         console.log('[reports/{id}]: ', params);
-        core.events.publish( "core:report:load", params.id );
-        // core.events.publish( "core:dom:application:hide" );
-        // core.events.publish( "core:dom:editor:show" );
+        core.events.emit( "core:report:load", params.id );
+        // core.events.emit( "core:dom:application:hide" );
+        // core.events.emit( "core:dom:editor:show" );
       },
       
       'bps' : function(params) {
         console.log('[bps]: ', params);
-        core.events.publish( "bps:reports:render" );
+        core.events.emit( "bps:reports:render" );
       },
       'bps/{id}' : function(params) {
         console.log('[bps/{id}]: ', params);
@@ -183,15 +183,17 @@ Router.prototype.start = function() {
       },
       
       'web-forms' : function(params) {
-        core.events.publish( "core:web-forms:render" );
+        core.events.emit( "core:web-forms:render" );
       },
       'web-forms/new' : function(params) {
         console.log('[web-forms/new]: ', params);
-        core.events.publish( "core:web-forms:new" );
+        core.events.emit( "core:dom:primaryHeader:hide" );
+        core.events.emit( "core:web-forms:new" );
       },
       'web-forms/{id}' : function(params) {
-        core.events.publish( "core:web-form:load",   params.id );
-        core.events.publish( "core:web-form:render", params.id );
+        core.events.emit( "core:dom:primaryHeader:hide" );
+        core.events.emit( "core:web-form:load",   params.id );
+        core.events.emit( "core:web-form:render", params.id );
       },
 
       'preview/{id}' : function(params) {
@@ -211,46 +213,46 @@ Router.prototype.bindEvents = function() {
   var router = this;
   document.addEventListener('DOMContentLoaded', function(){
 
-    core.events.subscribe("core:router:web-forms:new", function(){
+    core.events.on("core:router:web-forms:new", function(){
       console.log('Router <- core:router:web-forms:new');
       location.hash = [ '#', core.modules['web-forms'].route, '/', 'new' ].join('');
     });
     
 
-    core.events.subscribe("core:router:web-forms:show", function( _id ){
+    core.events.on("core:router:web-forms:show", function( _id ){
       console.log('Router <- core:router:web-forms:show', _id );
       location.hash = [ '#', core.modules['web-forms'].route, '/', _id ].join('');
     });
     
-    core.events.subscribe( 'core:router:reports:show', function (doc) {
+    core.events.on( 'core:router:reports:show', function (doc) {
       console.log( 'Router <- core:router:reports:show', doc );
-      core.events.publish( "core:dom:set:title", doc.name );
+      core.events.emit( "core:dom:set:title", doc.name );
       // location.hash = `#reports/${doc.id}`;
       location.hash = '#reports/'+doc.id;
     });
 
-    core.events.subscribe("core:router:default", function(){
+    core.events.on("core:router:default", function(){
       console.log('Router <- core:router:default');
       location.hash = '#reports';
     });
 
-    core.events.subscribe("core:router:go", function( url ){
+    core.events.on("core:router:go", function( url ){
       console.log('Router <- core:router:go', url);
       location.hash = [ core.dom.application.application.getAttribute('type'), url ].join('/');
     });
 
-    core.events.subscribe("core:router:check", function(route){
+    core.events.on("core:router:check", function(route){
       console.log('Router <- core:router:check', route);
       location.hash = '#' + route;
     });
 
-    core.events.subscribe("core:router:start", function(){
+    core.events.on("core:router:start", function(){
       console.log('Router <- core:router:start');
-      core.events.publish( "core:preloader:task:ready" );
+      core.events.emit( "core:preloader:task:ready" );
       router.hashChange();
     });
 
-    core.events.subscribe("core:router:update", function(){
+    core.events.on("core:router:update", function(){
       console.log('Router <- core:router:update');
       router.start();
     });

@@ -6,8 +6,6 @@ var SnapDecorator        = require('./SnapDecorator');
 var PositionDecorator    = require('./PositionDecorator');
 var Positions            = require('./Positions');
 
-var isDrag = false;
-
 var Drag = function(el, config) {
   var scope = this;
 
@@ -77,7 +75,7 @@ Drag.prototype.mousedownHandler = function(e) {
     this.options.onStart(event, this.el);
   }
 
-  isDrag = true;
+  this.isDrag = true;
   this.el.style.zIndex = 99999;
 
   this.Positions.setPoints({
@@ -116,7 +114,7 @@ Drag.prototype.mousemoveHandler = function(e) {
     lastMouseY: mouseY
   });
 
-  if (isDrag === false){
+  if (this.isDrag === false){
     return;
   }
 
@@ -136,13 +134,13 @@ Drag.prototype.mousemoveHandler = function(e) {
   }
 };
 Drag.prototype.mouseupHandler = function(e) {
-  if (isDrag === false){
+  if (this.isDrag === false){
     return;
   }
 
   var event = document.all ? window.event : e;
 
-  console.log( 'mouseupHandler', event );
+  // console.log( 'mouseupHandler', event );
   event.preventDefault();
   event.stopPropagation();
 
@@ -158,14 +156,18 @@ Drag.prototype.mouseupHandler = function(e) {
   }
 
   this.el.style.zIndex = '';
-  isDrag = false;
+  this.isDrag = false;
 };
-
-
 
 var Draggy = function( config ){
   this.elements = [];
   this.active   = {};
+  this.events   = true;
+  
+  this.top  = 0;
+  this.left = 0;
+
+  this.detachEvents();
   this.attachEvents();
 };
 
@@ -177,18 +179,29 @@ Draggy.prototype.Constant = {
 
 Draggy.prototype.Drag = Drag;
 
-Draggy.prototype.copy = function () {
+Draggy.prototype.editorStart = function () {
   
   this.dropZone     = core.dom.content.element;
   this.dragElements = core.dom.leftPanel.element.querySelectorAll('._drag');
   this.elementDragged = null;
 
+  var box = this.dropZone.getBoundingClientRect();
+  this.top  = box.top;
+  this.left = box.left;
+
   for (var i = 0; i < this.dragElements.length; i++) {
-    console.log( 'el++ ', this.dragElements[i]._config );
+    // console.log( 'el++ ', this.dragElements[i]._config );
     this.dragElementAttachEvents( this.dragElements[i] );
   };
+  
+  if ( this.events ) {
+    this.dropZoneAttachEvents();
+    this.events = false
+  }
 
-  this.dropZoneAttachEvents();
+}
+Draggy.prototype.editorStop = function () {
+  this.dropZoneRemoveEvents();
 }
 
 Draggy.prototype.dragElementAttachEvents = function( element ){
@@ -204,7 +217,7 @@ Draggy.prototype.dragElementRemoveEvents = function( element ){
 };
 
 Draggy.prototype.dragElementDragStart = function( element, e ){
-  console.log('dragstart', element, element._config);
+  // console.log('dragstart', element, element._config);
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text', element.outerHTML);
   e.dataTransfer.setData('config', JSON.stringify(element._config) );
@@ -222,6 +235,17 @@ Draggy.prototype.dropZoneAttachEvents = function(){
   this.dropZone.addEventListener('dragleave', this.dropZoneDragLeave.bind( this, this.dropZone ) );
   this.dropZone.addEventListener('drop',      this.dropZoneDrop.bind( this, this.dropZone ) );
   this.dropZone.addEventListener('click',     this.dropZoneClearSelection.bind( this, this.dropZone ) );
+};
+
+Draggy.prototype.dropZoneRemoveEvents = function(){
+  // console.log( 'dropZoneRemoveEvents' );
+  this.dropZone = core.dom.content.element;
+
+  this.dropZone.removeEventListener('dragover',  this.dropZoneDragOver.bind(this) );
+  this.dropZone.removeEventListener('dragenter', this.dropZoneDragEnter.bind(this) );
+  this.dropZone.removeEventListener('dragleave', this.dropZoneDragLeave.bind(this) );
+  this.dropZone.removeEventListener('drop',      this.dropZoneDrop.bind(this) );
+  this.dropZone.removeEventListener('click',     this.dropZoneClearSelection.bind(this) );
 };
 
 
@@ -251,7 +275,7 @@ Draggy.prototype.dropZoneDragLeave = function( element, e ){
 }
 
 Draggy.prototype.dropZoneDrop = function( element, e ){
-  console.log('drop', element, element._config );
+  // console.log('drop', element, element._config );
   e.preventDefault();
   e.stopPropagation();
   
@@ -264,8 +288,8 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
 
   var _drag = document.createElement('div');
   
-  console.log( 'element._config', element._config );
-  console.log( '_element._config', _element._config );
+  // console.log( 'element._config', element._config );
+  // console.log( '_element._config', _element._config );
 
   var _createdElement = core.elements.create( _element._config );
   _drag.appendChild( _createdElement.element );
@@ -342,20 +366,20 @@ Draggy.prototype.showInfoPanel = function( element, e ){
   e.preventDefault();
   e.stopPropagation();
 
-  console.log('---------------');
-  console.log( 'showInfoPanel', element, element.firstElementChild._config );
+  // console.log('---------------');
+  // console.log( 'showInfoPanel', element, element.firstElementChild._config );
   
   core.events.emit("core:web-forms:infoPanel:show", element.firstElementChild );
   core.events.emit("core:dom:infoPanel:show");
 }
 
 Draggy.prototype.deleteElement = function( element, e ){
-  console.log( 'deleteElement', element );
+  // console.log( 'deleteElement', element );
   this.remove( element );
 }
 
 Draggy.prototype.remove = function( element ){
-  console.log( 'Draggy.prototype.remove', element );
+  // console.log( 'Draggy.prototype.remove', element );
   
   for (var i = 0, length = this.elements.length; i < length; i++) {
     
@@ -396,7 +420,7 @@ Draggy.prototype.setActive = function( element, e ){
 };
 
 Draggy.prototype.add = function( element, config ){
-  console.log( 'Draggy.prototype.add', element, element._config );
+  // console.log( 'Draggy.prototype.add', element, element._config );
   
   this.elements.push( new this.Drag( element, config ) );
   element.addEventListener('mouseover', this.setActive.bind(this, element) );
@@ -406,19 +430,29 @@ Draggy.prototype.export = function(){
   var result = [];
 
   for(var k = 0, length = this.elements.length; k < length; k++){
+    console.log( 'export el', this.elements[k] );
+    var box = this.elements[k].el.getBoundingClientRect();
+
     result.push({
-      element : this.elements[k].el.outerHTML,
+      element : this.elements[k].el._conf,
       options : {
-        drag    : this.elements[k].options,
-        id      : this.elements[k].el.id,
-        name    : this.elements[k].el.name,
-        title   : this.elements[k].el.title,
-        require : this.elements[k].el.require
+        top  : box.top  - this.top ,
+        left : box.left - this.left ,
       }
     });
   }
 
-  return JSON.stringify(result);
+  return result;
+};
+
+
+Draggy.prototype.detachEvents = function(){
+  document.addEventListener('DOMContentLoaded', function(){
+    core.events.remove( "core:drag:add" );
+    core.events.remove( "core:drag:editor:start" );
+    core.events.remove( "core:drag:editor:stop" );
+    core.events.remove( "core:drag:export" );
+  });
 };
 
 Draggy.prototype.attachEvents = function(){
@@ -429,9 +463,14 @@ Draggy.prototype.attachEvents = function(){
       draggy.add( config.el , config.options );
     });
 
-    core.events.on("core:drag:attachEvents", function(){
-      console.log('Draggy <- core:drag:attachEvents');
-      draggy.copy();
+    core.events.on("core:drag:editor:start", function(){
+      console.log('Draggy <- core:drag:editor:start');
+      draggy.editorStart();
+    });
+
+    core.events.on("core:drag:editor:stop", function(){
+      console.log('Draggy <- core:drag:editor:stop');
+      draggy.editorStop();
     });
 
     core.events.on("core:drag:export", function(){

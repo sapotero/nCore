@@ -523,7 +523,11 @@ WebForms.prototype.render = function(){
   this.renderLeftPanel();
   this.renderContent();
   this.renderInfoPanel();
-  
+
+  setTimeout(function(){
+    core.events.emit( "core:dom:primaryHeader:show" );
+  }, 100);
+
   core.events.emit( "core:dom:infoPanel:hide" );
   core.events.emit( "core:dom:material:update" );
   core.events.emit( "core:dom:set:title", this.title );
@@ -565,6 +569,44 @@ WebForms.prototype.showElementInfo = function( element ) {
 
 WebForms.prototype.renderEditorLeftPanel = function() {
   console.log( 'WebForms: renderEditorLeftPanel' );
+
+    this.headerSubMenu = core.elements.create({
+    elementType: 'simple',
+    class: ['mdl-navigation'],
+    items : [
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'refresh',
+        tooltip: 'Обновить страницу++',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            // core.events.emit( 'core:current:reload' );
+            this.deleteDialog();
+          }
+        }
+      }),
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'settings',
+        tooltip: 'Настройки страницы++',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            this.configDialog();
+          }
+        }
+      }),
+    ]
+  });
+
+  core.events.emit( "core:dom:headerSubMenu:clear" );
+  core.events.emit( "core:dom:headerSubMenu:set", this.headerSubMenu );
+
 
   this.leftPanel = core.elements.create({
     elementType : 'simple',
@@ -639,12 +681,46 @@ WebForms.prototype.renderEditorLeftPanel = function() {
     ]
   });
 
+  core.events.emit( "core:drag:editor:stop" );
+
   core.events.emit( "core:dom:leftPanel:clear" );
   core.events.emit( "core:dom:leftPanel:set", this.leftPanel );
   core.events.emit( "core:dom:material:update" );
   
-  core.events.emit( "core:drag:attachEvents" );
+  core.events.emit( "core:drag:editor:start" );
+};
 
+WebForms.prototype.renderEditorContent = function() {
+  console.log( 'WebForms: renderEditorContent' );
+  this.content = core.elements.create({
+    elementType : 'simple',
+    class : [ this.CSS.CONTENT ],
+  });
+
+  core.events.emit( "core:drag:editor:stop" );
+  
+  core.events.emit( "core:dom:content:clear" );
+  core.events.emit( "core:dom:content:set", this.content );
+};
+WebForms.prototype.renderEditorInfoPanel = function() {
+  console.log( 'WebForms: renderEditorInfoPanel' );
+};
+
+WebForms.prototype.renderEditor = function( form ) {
+  core.events.emit( "core:dom:application:clear" );
+
+  this.renderEditorLeftPanel();
+  this.renderEditorContent();
+  this.renderEditorInfoPanel();
+  
+  core.events.emit( "core:dom:infoPanel:hide" );
+  core.events.emit( "core:dom:material:update" );
+
+  core.events.emit( "core:dom:set:title", form.name );
+
+  setTimeout( function(){
+    core.events.emit( "core:dom:content:wrapper:hide");
+  }, 500 );
 };
 
 WebForms.prototype.saveDialog = function(){
@@ -806,36 +882,6 @@ WebForms.prototype.configDialog = function(){
   // this.content.element.appendChild( dialog.element );
 }
 
-WebForms.prototype.renderEditorContent = function() {
-  console.log( 'WebForms: renderEditorContent' );
-  this.content = core.elements.create({
-    elementType : 'simple',
-    class : [ this.CSS.CONTENT ],
-  });
-
-  core.events.emit( "core:dom:content:clear" );
-  core.events.emit( "core:dom:content:set", this.content );
-};
-WebForms.prototype.renderEditorInfoPanel = function() {
-  console.log( 'WebForms: renderEditorInfoPanel' );
-};
-
-WebForms.prototype.renderEditor = function( form ) {
-  core.events.emit( "core:dom:application:clear" );
-
-  this.renderEditorLeftPanel();
-  this.renderEditorContent();
-  this.renderEditorInfoPanel();
-  
-  core.events.emit( "core:dom:infoPanel:hide" );
-  core.events.emit( "core:dom:material:update" );
-
-  core.events.emit( "core:dom:set:title", form.name );
-
-  setTimeout( function(){
-    core.events.emit( "core:dom:content:wrapper:hide");
-  }, 500 );
-};
 
 WebForms.prototype.CSS = {
   LEFT_PANEL : 'webforms-leftPanel',

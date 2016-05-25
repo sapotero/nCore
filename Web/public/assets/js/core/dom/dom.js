@@ -38,7 +38,6 @@ Dom.prototype.bindEvents = function () {
         }
         dialogs[i].remove();
       }
-
     });
 
     core.events.on( "core:dom:dialog:set", function ( dialog ) {
@@ -54,12 +53,31 @@ Dom.prototype.bindEvents = function () {
       }
     });
 
+    core.events.on( "core:dom:headerSubMenu:clear", function () {
+      dom.headerSubMenu.element.innerHTML = '';
+    });
+    core.events.on( "core:dom:headerSubMenu:set", function ( _root ) {
+      dom.headerSubMenu.element.appendChild( _root.element );
+    });
+
+    core.events.on( "core:dom:primaryHeader:show", function () {
+      dom.primaryHeader.element.classList.remove('header-hide');
+    });
+    core.events.on( "core:dom:primaryHeader:hide", function () {
+      dom.primaryHeader.element.classList.add('header-hide');
+    });
+    core.events.on( "core:dom:secondaryHeader:show", function () {
+      dom.secondaryHeader.element.classList.remove('header-hide');
+    });
+    core.events.on( "core:dom:secondaryHeader:hide", function () {
+      dom.secondaryHeader.element.classList.add('header-hide');
+    });
+
     core.events.on('core:dom:application:clear', function () {
       core.events.emit( "core:dom:dialog:show" );
       dom.content.element.innerHTML   = '';
       dom.infoPanel.element.innerHTML = '';
     });
-    
     core.events.on( "core:dom:content:wrapper:show", function () {
       dom.wrapper.element.classList.remove('content-wrapper-hide');
     });
@@ -400,85 +418,90 @@ Dom.prototype.createHeader = function(){
     //   })
     // ]
   });
+  this.headerSubMenu = core.elements.create({
+    elementType: 'simple',
+    class: ['mdl-navigation'],
+    items : [
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'view_module',
+        tooltip: 'Изменить вид'
+      }),
+      core.elements.create({
+        elementType : 'menu',
+        position    : 'right',
+        class       : [ 'mdl-cell--hide-phone' ],
+        icon        : 'sort',
+        items       : [
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          },
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          },
+          {
+            text: "По дате редактирования",
+            devider: true,
+            // icon: 'sort',
+          },
+          {
+            text: "По дате создания",
+            disabled: true,
+            icon: 'sort',
+            devider: true,
+          },
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          }
+        ]
+      }),
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'refresh',
+        tooltip: 'Обновить страницу',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            core.events.emit( 'core:current:reload' );
+          }
+        }
+      }),
+    ]
+  });
+
+  this.primaryHeader = core.elements.create({
+    elementType: 'simple',
+    class: ["mdl-layout__header-row", "mdl-layout__header-row--primary" ],
+    items : [
+      this.title,
+      core.elements.create({ elementType: 'spacer' }),
+      this.navigation,
+    ]
+  });
+  
+  this.secondaryHeader = core.elements.create({
+    elementType: 'simple',
+    class: ["mdl-layout__header-row", "mdl-layout__header-row--secondary", "mdl-color--grey-50" ],
+    items : [
+      this.subTitle,
+      core.elements.create({ elementType: 'spacer' }),
+      this.headerSubMenu,
+    ]
+  });
 
   this.header = core.elements.create({
     elementType : 'simple',
     type        : 'header',
     class       : ["mdl-layout__header", "core-fixed", "mdl-color--grey-100", "mdl-color-text--grey-800"],
     items : [
-      core.elements.create({
-        elementType: 'simple',
-        class: ["mdl-layout__header-row", "mdl-layout__header-row--primary" ],
-        items : [
-          this.title,
-          core.elements.create({ elementType: 'spacer' }),
-          this.navigation,
-        ]
-      }),
-      core.elements.create({
-        elementType: 'simple',
-        class: ["mdl-layout__header-row", "mdl-layout__header-row--secondary", "mdl-color--grey-50" ],
-        items : [
-          this.subTitle,
-          core.elements.create({ elementType: 'spacer' }),
-          core.elements.create({
-            elementType: 'simple',
-            class: ['mdl-navigation'],
-            items : [
-              core.elements.create({
-                elementType: 'button',
-                class: [ "mdl-color-text--grey-600" ],
-                icon: 'view_module',
-                tooltip: 'Изменить вид'
-              }),
-              core.elements.create({
-                elementType : 'menu',
-                position    : 'right',
-                class       : [ 'mdl-cell--hide-phone' ],
-                icon        : 'sort',
-                items       : [
-                  {
-                    text: "По дате редактирования",
-                    // icon: 'sort',
-                  },
-                  {
-                    text: "По дате редактирования",
-                    // icon: 'sort',
-                  },
-                  {
-                    text: "По дате редактирования",
-                    devider: true,
-                    // icon: 'sort',
-                  },
-                  {
-                    text: "По дате создания",
-                    disabled: true,
-                    icon: 'sort',
-                    devider: true,
-                  },
-                  {
-                    text: "По дате редактирования",
-                    // icon: 'sort',
-                  }
-                ]
-              }),
-              core.elements.create({
-                elementType: 'button',
-                class: [ "mdl-color-text--grey-600" ],
-                icon: 'refresh',
-                tooltip: 'Обновить страницу',
-                callback : {
-                  context: this,
-                  function : function(e){
-                    e.preventDefault();
-                    core.events.emit( 'core:current:reload' );
-                  }
-                }
-              }),
-            ]
-          }),
-        ]
-      })
+      this.primaryHeader,
+      this.secondaryHeader,
     ]
   });
 
@@ -505,18 +528,18 @@ Dom.prototype.setUserName = function ( user ) {
   
   // this.title.element.textContent = title;
   
-  var settings = core.elements.create({
-    elementType : 'button',
-    icon : 'settings',
-    flex : true,
-    callback : {
-      context  : this,
-      function : function(e){
-        e.preventDefault();
-        console.log( 'dom-userMenu > settings click' );
-      },
-    }
-  });
+  // var settings = core.elements.create({
+  //   elementType : 'button',
+  //   icon : 'settings',
+  //   flex : true,
+  //   callback : {
+  //     context  : this,
+  //     function : function(e){
+  //       e.preventDefault();
+  //       console.log( 'dom-userMenu > settings click' );
+  //     },
+  //   }
+  // });
 
   var user = core.elements.create({
     elementType : 'menu',
@@ -536,7 +559,7 @@ Dom.prototype.setUserName = function ( user ) {
     class : [ 'list__flex' ],
     items : [
       user,
-      settings,
+      // settings,
     ]
   });
 
