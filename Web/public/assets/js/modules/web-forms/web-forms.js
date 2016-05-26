@@ -18,7 +18,7 @@ WebForms.prototype.WebForm = require('./web-form');
 WebForms.prototype.init = function(){
 };
 WebForms.prototype.import = function( data ){
-  var elements = JSON.parse( '[{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false},"options":{"top":134,"left":147.515625}}]' );
+  var elements = JSON.parse('[{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false},"options":{"top":124,"left":287.515625},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false},"options":{"top":34,"left":217.515625},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false},"options":{"top":234,"left":147.515625},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]');
 
   var box = this.content.element.getBoundingClientRect();
   console.log( 'import box', box.top, box.left );
@@ -33,18 +33,22 @@ WebForms.prototype.import = function( data ){
       var _element = core.elements.create( elements[k].element );
 
       // core.modules.drag.clonedElementAttachEvents( element );
-      core.events.on("core:drag:add", { el: _element.element, options: elements[k].drag } );
+      core.events.publish("core:drag:add", {
+        el      : _element.element,
+        options : elements[k].drag
+      });
       // core.modules.drag.add( element, { snapX: 10,  snapY: 10, activeClass: "active-border" } );
-      // _element.element.style.options.top  = box.top  + elements[k].options.top  + 'px';
-      // _element.element.style.options.left = box.left + elements[k].options.left + 'px';
 
       df.appendChild( _element.element );
+      // _element.element.style.position = 'absolute';
+      _element.element.style.top  = box.top  + elements[k].options.top  + 'px';
+      _element.element.style.left = box.left + elements[k].options.left + 'px';
 
     }
 
   this.content.element.appendChild( df );
   core.events.emit( "core:dom:material:update" );
-  
+
 
   };
 };
@@ -357,6 +361,20 @@ WebForms.prototype.renderInfoPanel = function( element ) {
             input : {
               function : function( value ){
                 element._conf.radio.name = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Значение',
+            float : true,
+            value : element._conf.radio.value,
+            input : {
+              function : function( value ){
+                element._conf.radio.value = this.input.value;
               }
             }
           })
@@ -824,8 +842,6 @@ WebForms.prototype.deleteDialog = function(){
 }
 
 WebForms.prototype.configDialog = function(){
-  // core.events.emit( "core:dom:dialog:clear" );
-
   this.dialog = core.elements.create({
     elementType : 'dialog',
     title : 'Настройки формы',
@@ -865,21 +881,136 @@ WebForms.prototype.configDialog = function(){
       },
     },
     after : {
-      // context  : this,
       function : function(){
         console.log( 'webforms-leftMenu > config  after callback', this );
         core.events.emit( "core:dom:dialog:clear" );
       },
     },
   });
-
-  // console.log( this, this.content, this.dialog );
-  // this.content.element.appendChild( this.dialog.element );
-  // this.dialog.element.showModal();
-
   core.events.emit( "core:dom:dialog:set", this.dialog );
   core.events.emit( "core:dom:dialog:show" );
-  // this.content.element.appendChild( dialog.element );
+}
+
+
+WebForms.prototype.previewDialog = function( form ){
+  // form
+
+  var rawForm  = '[{"element":{"elementType":"radio","class":["_drag"],"label":"radio label","name":"radio name","value":"radio value","preventCopy":false},"options":{"top":160,"left":280},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false,"name":""},"options":{"top":40,"left":130},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"input","class":["_drag"],"name":"","label":"test","float":true,"preventCopy":false,"value":""},"options":{"top":230,"left":90},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]',
+      parsedFormElement = JSON.parse( rawForm ),
+      elements = [];
+
+  // element : this.elements[k].el.firstElementChild._config,
+  
+  // options : {
+  //   top    : box.top  - this.top,
+  //   left   : box.left - this.left,
+  //   width  : this.width,
+  //   height : this.height,
+  // }
+
+  // ищем минимальные значения в масииве
+  var minTopArray  = [],
+      minLeftArray = [],
+      minTop  = 0,
+      minLeft = 0;
+  for ( var z = 0, length = parsedFormElement.length; z < length; z++ ) {
+    var item = parsedFormElement[z];
+    minTopArray.push(  item.options.top );
+    minLeftArray.push( item.options.left );
+  }
+  minTop  = Math.min(...minTopArray);
+  minLeft = Math.min(...minLeftArray);
+
+
+  // создаем элементы для превьюхи
+  for ( var i = 0, length = parsedFormElement.length; i < length; i++ ) {
+    var item = parsedFormElement[i];
+    var _element = core.elements.create( item.element );
+    _element._options = item.options;
+    elements.push( _element );
+  }
+
+
+  this.dialog = core.elements.create({
+    elementType : 'dialog',
+    
+    title: this.active.name,
+
+    // title : core.elements.create({
+    //   elementType: 'simple',
+    //   class : [ 'mdl-color-text--grey-50' ],
+    //   text: this.active.name,
+    // }),
+
+    big: true,
+    
+    content : core.elements.create({
+      elementType: 'simple',
+      class : [ 'mdl-dialog__content--auto-height' ],
+      items: elements,
+    }),
+
+    actions: [
+      {
+        text: 'Сохранить',
+        class : [ 'mdl-color-text--grey-50', 'mdl-color--green-500' ],
+        submit :  {
+          // context  : this,
+          function : function(event){
+            console.log( 'webforms-leftMenu > config submit  dialog click' );
+          },
+        }
+      },
+      {
+        text: 'Отмена',
+        class : [ 'mdl-color-text--grey-50', 'mdl-color--red-400' ],
+        cancel : {
+          context  : this,
+          function : function(e){
+            console.log( 'webforms-leftMenu > config  cancel dialog click' );
+          },
+        }
+      },
+    ],
+    before : {
+      context  : this,
+      function : function(){
+        console.log( 'webforms-leftMenu > config  before callback', this );
+      },
+    },
+    after : {
+      function : function(){
+        console.log( 'webforms-leftMenu > config  after callback', this );
+        core.events.emit( "core:dom:dialog:clear" );
+      },
+    },
+  });
+  core.events.emit( "core:dom:dialog:set", this.dialog );
+  core.events.emit( "core:dom:dialog:show" );
+
+  var contentBox = this.dialog.content.getBoundingClientRect(),
+      actionsBox = this.dialog.actions.getBoundingClientRect(),
+      titleBox   = this.dialog.title.getBoundingClientRect();
+
+  var maxTop = 0;
+
+  // обновляем позиции элементов
+  for ( var z = 0, length = elements.length; z < length; z++ ) {
+    var item = elements[z];
+    
+    var top = titleBox.height + item._options.top  - minTop;
+    if ( maxTop < top ) {
+      maxTop = top;
+    }
+
+    item.element.style.position = 'absolute';
+    item.element.style.top  = 32 + top + 'px';
+    item.element.style.left = 32 + item._options.left - minLeft + 'px';
+  }
+
+  this.dialog.element.style.height = 128 + maxTop + actionsBox.height + 'px';
+
+  core.events.emit( "core:dom:material:update" );
 }
 
 
@@ -943,6 +1074,7 @@ WebForms.prototype.detachEvents = function(){
   core.events.remove('core:web-forms:show:saveDialog');
   core.events.remove('core:web-forms:show:deleteDialog');
   core.events.remove('core:web-forms:show:configDialog');
+  core.events.remove('core:web-forms:show:previewDialog');
   
   core.events.remove("core:web-form:show");
   core.events.remove("core:web-form:ready");
@@ -990,6 +1122,10 @@ WebForms.prototype.bindEvents = function(){
       webForms.configDialog();
     });
 
+    core.events.on("core:web-forms:show:previewDialog", function(){
+      console.log('WebForm :: core:web-forms:show:previewDialog');
+      webForms.previewDialog();
+    });
 
     core.events.on("core:web-forms:drag:export:result", function( result ){
       console.log( 'core:web-forms:drag:export:result', result );

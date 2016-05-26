@@ -85,13 +85,13 @@
 }
 
 .drag-over {
-  transition: 0.5s ease;
+  transition: 0.25s ease;
   background: #F7F7F7;
-  margin: 0px;
+  /*margin: 0px;*/
 }
 .drag-end {
-  transition: 0.5s ease;
-  background: #FFFFFF;
+  /*transition: 0.5s ease;*/
+  /*background: #FFFFFF;*/
 }
 
 .drag-me{
@@ -473,6 +473,10 @@ dialog.dark::backdrop {
   width: 30vw;
   height: 30vh;
   top: 20vh;
+}
+
+.mdl-dialog__content--auto-height{
+  height: auto;
 }
 
 .mdl-dialog--full__content {

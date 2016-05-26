@@ -172,9 +172,9 @@ var Draggy = function( config ){
 };
 
 Draggy.prototype.Constant = {
-  'ACTIVE'   : 'drag-active',
-  'DRAG_OVER': 'drag-over',
-  'DRAG_END':  'drag-end'
+  ACTIVE    : 'drag-active',
+  DRAG_OVER : 'drag-over',
+  DRAG_END  : 'drag-end'
 }
 
 Draggy.prototype.Drag = Drag;
@@ -250,7 +250,7 @@ Draggy.prototype.dropZoneRemoveEvents = function(){
 
 
 Draggy.prototype.dropZoneClearSelection  = function( element, e ){
-  console.log('dropZoneClearSelection');
+  // console.log('dropZoneClearSelection', element, e);
   // e.preventDefault();
   core.events.emit("core:dom:infoPanel:clear");
   core.events.emit("core:dom:infoPanel:hide");
@@ -265,16 +265,18 @@ Draggy.prototype.dropZoneDragOver  = function( element, e ){
 Draggy.prototype.dropZoneDragEnter = function( element , e ){
   // console.log('dragenter');
   element.classList.add(this.Constant.DRAG_OVER)
-  element.classList.remove(this.Constant.DRAG_END)
+  // element.classList.remove(this.Constant.DRAG_END)
 }
 
 Draggy.prototype.dropZoneDragLeave = function( element, e ){
   // console.log('dragleave');
   element.classList.remove(this.Constant.DRAG_OVER)
-  element.classList.add(this.Constant.DRAG_END)
+  // element.classList.remove(this.Constant.DRAG_END)
 }
 
 Draggy.prototype.dropZoneDrop = function( element, e ){
+  element.classList.remove(this.Constant.DRAG_OVER)
+
   // console.log('drop', element, element._config );
   e.preventDefault();
   e.stopPropagation();
@@ -285,21 +287,17 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
   _config.preventCopy = false;
 
   var _element = core.elements.create( _config );
-
   var _drag = document.createElement('div');
-  
-  // console.log( 'element._config', element._config );
-  // console.log( '_element._config', _element._config );
 
   var _createdElement = core.elements.create( _element._config );
   _drag.appendChild( _createdElement.element );
-  // _drag.appendChild( _element.element );
 
-
-
-
-
-  _drag._DragOptions = { snapX: 10,  snapY: 10, activeClass: "active-border" };
+  _drag._DragOptions = {
+    snapX: 10,
+    snapY: 10,
+    activeClass: "active-border",
+    restrict : this.dropZone,
+  };
 
   element.appendChild( _drag );
 
@@ -430,14 +428,42 @@ Draggy.prototype.export = function(){
   var result = [];
 
   for(var k = 0, length = this.elements.length; k < length; k++){
-    console.log( 'export el', this.elements[k] );
+    console.log( 'export el', this.elements[k].el.firstElementChild._conf.constructor.name );
     var box = this.elements[k].el.getBoundingClientRect();
 
+    var elementConfig   = this.elements[k].el.firstElementChild._config;
+    elementConfig.label = this.elements[k].el.firstElementChild._conf.label.textContent;
+
+    switch( this.elements[k].el.firstElementChild._conf.constructor.name ){
+      case 'Checkbox':
+        elementConfig.name    = this.elements[k].el.firstElementChild._conf.checkbox.name;
+        elementConfig.checked = this.elements[k].el.firstElementChild._conf.checkbox.checkbox;
+        break;
+      case 'Radio':
+        elementConfig.name    = this.elements[k].el.firstElementChild._conf.radio.name;
+        elementConfig.value   = this.elements[k].el.firstElementChild._conf.radio.value;
+        elementConfig.checked = this.elements[k].el.firstElementChild._conf.radio.checkbox;
+        break;
+      case 'Input':
+        elementConfig.name  = this.elements[k].el.firstElementChild._conf.input.name;
+        elementConfig.value = this.elements[k].el.firstElementChild._conf.input.value;
+        break;
+      case 'Textarea':
+        elementConfig.name  = this.elements[k].el.firstElementChild._conf.textarea.name;
+        elementConfig.value = this.elements[k].el.firstElementChild._conf.textarea.value;
+        break;
+      default:
+        break;
+    }
+    // elementConfig.name  = this.elements[k].el.firstElementChild._conf.checkbox.textContent;
+
     result.push({
-      element : this.elements[k].el.firstElementChild._config,
+      element : elementConfig,
       options : {
-        top  : box.top  - this.top,
-        left : box.left - this.left,
+        top    : box.top  - this.top,
+        left   : box.left - this.left,
+        width  : this.width,
+        height : this.height,
       },
       drag : {
         snapX: 10,
