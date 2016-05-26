@@ -394,7 +394,11 @@ var Dialog = function Dialog( config ) {
 
   this.title = document.createElement('h4');
   this.title.classList.add( this.CSS.TITLE );
+  this.title.classList.add( this.CSS.TITLE_SMALL );
   this.title.classList.add( this.CSS.DIALOG_HEADER );
+
+  this.error = document.createElement('h5');
+  this.error.classList.add( this.CSS.ERROR );
   
   this.content = document.createElement('form');
   this.content.classList.add( this.CSS.CONTENT );
@@ -416,6 +420,8 @@ Dialog.prototype.DialogInfo  = DialogInfo;
 Dialog.prototype.CSS = {
   ROOT          : 'mdl-dialog',
   TITLE         : "mdl-dialog__title",
+  TITLE_SMALL   : "mdl-dialog__title--small",
+  ERROR         : "mdl-dialog__title--error",
   CONTENT       : "mdl-dialog__content",
   ACTIONS       : "mdl-dialog__actions",
   ACTIONS_FULL  : "mdl-dialog__actions--full-width",
@@ -453,13 +459,12 @@ Dialog.prototype.initCallback = function( call ){
 }
 
 Dialog.prototype.validate = function(){
-  
   for(var i=0; i < this.content.elements.length; i++){
     if( this.content.elements[i].value === '' && this.content.elements[i].hasAttribute('required') ){
       console.log( 'ELEMET', this.content.elements[i] );
       this.content.elements[i].parentElement.classList.add( this.CSS.IS_INVALID );
       this.showError({
-        message: 'validate -> Заполнены не все поля!'
+        message: 'Заполнены не все поля!'
       })
       return false;
     }
@@ -469,6 +474,7 @@ Dialog.prototype.validate = function(){
 }
 Dialog.prototype.showError = function( conf ){
   console.log( conf.message );
+  this.error.textContent = conf.message;
   return true;
 }
 
@@ -486,6 +492,8 @@ Dialog.prototype.render = function(){
 
     this.element.appendChild( this.title );
   }
+  
+  this.element.appendChild( this.error );
 
   if ( this._config.hasOwnProperty('big') && this._config.big === true ) {
     this.element.classList.add( this.CSS.FULL_WIDTH );
@@ -506,6 +514,7 @@ Dialog.prototype.render = function(){
 
     for (var i = 0, length = this._config.actions.length; i < length; i++) {
       var item = this._config.actions[i];
+      
       item.submitCallback = function(){
         if ( typeof this.submit.function === 'function' ) {
           this.submit.context = this.submit.context || this;
@@ -519,6 +528,7 @@ Dialog.prototype.render = function(){
           }
         }
       };
+
       item.cancelCallback = function(){
         dialog.element.close();
         if ( typeof this.cancel.function === 'function' ) {

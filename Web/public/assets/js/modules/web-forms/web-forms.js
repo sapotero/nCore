@@ -1006,7 +1006,7 @@ WebForms.prototype.previewDialog = function( form ){
     }
 
     item.element.style.position = 'absolute';
-    item.element.style.top  = 32 + top + 'px';
+    item.element.style.top  = 48 + top + 'px';
     item.element.style.left = 32 + item._options.left - minLeft + 'px';
   }
 

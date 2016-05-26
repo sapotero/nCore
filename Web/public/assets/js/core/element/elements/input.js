@@ -41,6 +41,9 @@ Input.prototype.setClass = function( string ){
 Input.prototype.setValue = function( string ){
   this.input.value = string;
 };
+Input.prototype.setRequire = function(){
+  this.input.setAttribute( 'required', true );
+};
 
 Input.prototype.render = function( string ){
 
@@ -55,6 +58,9 @@ Input.prototype.render = function( string ){
   };
   if ( this._config && this._config.hasOwnProperty('value') ) {
     this.setValue( this._config.value );
+  };
+  if ( this._config && this._config.hasOwnProperty('require') && this._config.require === true ) {
+    this.setRequire();
   };
 
   if ( this._config.hasOwnProperty('input') && typeof this._config.input.function === 'function' ) {

@@ -2687,9 +2687,10 @@ MaterialTextfield.prototype['checkFocus'] = MaterialTextfield.prototype.checkFoc
 MaterialTextfield.prototype.checkValidity = function () {
     if (this.input_.validity) {
         if (this.input_.validity.valid) {
+            // по умолчвнию ставит всем полям с required стиль is-invalid, игнорируя проверки
             this.element_.classList.remove(this.CssClasses_.IS_INVALID);
         } else {
-            this.element_.classList.add(this.CssClasses_.IS_INVALID);
+            // this.element_.classList.add(this.CssClasses_.IS_INVALID);
         }
     }
 };
