@@ -438,19 +438,26 @@ Draggy.prototype.export = function(){
       case 'Checkbox':
         elementConfig.name    = this.elements[k].el.firstElementChild._conf.checkbox.name;
         elementConfig.checked = this.elements[k].el.firstElementChild._conf.checkbox.checkbox;
+        elementConfig.require = this.elements[k].el.firstElementChild._conf.checkbox.required;
         break;
       case 'Radio':
         elementConfig.name    = this.elements[k].el.firstElementChild._conf.radio.name;
         elementConfig.value   = this.elements[k].el.firstElementChild._conf.radio.value;
         elementConfig.checked = this.elements[k].el.firstElementChild._conf.radio.checkbox;
+        elementConfig.require = this.elements[k].el.firstElementChild._conf.radio.required;
+
         break;
       case 'Input':
-        elementConfig.name  = this.elements[k].el.firstElementChild._conf.input.name;
-        elementConfig.value = this.elements[k].el.firstElementChild._conf.input.value;
+        elementConfig.name    = this.elements[k].el.firstElementChild._conf.input.name;
+        elementConfig.value   = this.elements[k].el.firstElementChild._conf.input.value;
+        elementConfig.require = this.elements[k].el.firstElementChild._conf.input.required;
+
         break;
       case 'Textarea':
-        elementConfig.name  = this.elements[k].el.firstElementChild._conf.textarea.name;
-        elementConfig.value = this.elements[k].el.firstElementChild._conf.textarea.value;
+        elementConfig.name    = this.elements[k].el.firstElementChild._conf.textarea.name;
+        elementConfig.value   = this.elements[k].el.firstElementChild._conf.textarea.value;
+        elementConfig.require = this.elements[k].el.firstElementChild._conf.textarea.required;
+
         break;
       default:
         break;

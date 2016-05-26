@@ -513,6 +513,11 @@ dialog.dark::backdrop {
   top: calc(30% - 32px);
 }
 
+.mdl-textfield.is-invalid .mdl-textfield__input {
+  box-shadow: 0px 4px 8px 0px rgba(213,0,0,0.2); !important;
+}
+
+
 /* SELECT */
 select {
   font-family: inherit;

@@ -894,8 +894,9 @@ WebForms.prototype.configDialog = function(){
 
 WebForms.prototype.previewDialog = function( form ){
   // form
+  var scope = this;
 
-  var rawForm  = '[{"element":{"elementType":"radio","class":["_drag"],"label":"radio label","name":"radio name","value":"radio value","preventCopy":false},"options":{"top":160,"left":280},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false,"name":""},"options":{"top":40,"left":130},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"input","class":["_drag"],"name":"","label":"test","float":true,"preventCopy":false,"value":""},"options":{"top":230,"left":90},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]',
+  var rawForm  = '[{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkboxtest","preventCopy":false,"name":"test","require":true},"options":{"top":159.40625,"left":432.484375},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"input","class":["_drag"],"name":"testt","label":"test","float":true,"preventCopy":false,"value":"","require":true},"options":{"top":200,"left":120},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]',
       parsedFormElement = JSON.parse( rawForm ),
       elements = [];
 
@@ -934,7 +935,7 @@ WebForms.prototype.previewDialog = function( form ){
   this.dialog = core.elements.create({
     elementType : 'dialog',
     
-    title: this.active.name,
+    title: this.active.name + ' - Preview',
 
     // title : core.elements.create({
     //   elementType: 'simple',
@@ -942,7 +943,8 @@ WebForms.prototype.previewDialog = function( form ){
     //   text: this.active.name,
     // }),
 
-    big: true,
+    big      : true,
+    validate : true,
     
     content : core.elements.create({
       elementType: 'simple',
@@ -965,23 +967,23 @@ WebForms.prototype.previewDialog = function( form ){
         text: 'Отмена',
         class : [ 'mdl-color-text--grey-50', 'mdl-color--red-400' ],
         cancel : {
-          context  : this,
+          // context  : this,
           function : function(e){
-            console.log( 'webforms-leftMenu > config  cancel dialog click' );
+            console.log( 'webforms-leftMenu > config  cancel dialog click',e, scope.dialog );
           },
         }
       },
     ],
     before : {
-      context  : this,
+      // context  : this,
       function : function(){
-        console.log( 'webforms-leftMenu > config  before callback', this );
+        // console.log( 'webforms-leftMenu > config  before callback', this );
       },
     },
     after : {
       function : function(){
-        console.log( 'webforms-leftMenu > config  after callback', this );
-        core.events.emit( "core:dom:dialog:clear" );
+        // console.log( 'webforms-leftMenu > config  after callback', this );
+        // core.events.emit( "core:dom:dialog:clear" );
       },
     },
   });

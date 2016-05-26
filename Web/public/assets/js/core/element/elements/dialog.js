@@ -396,7 +396,7 @@ var Dialog = function Dialog( config ) {
   this.title.classList.add( this.CSS.TITLE );
   this.title.classList.add( this.CSS.DIALOG_HEADER );
   
-  this.content = document.createElement('div');
+  this.content = document.createElement('form');
   this.content.classList.add( this.CSS.CONTENT );
   this.content.classList.add( this.CSS.CONTENT_FULL_WIDTH );
 
@@ -425,6 +425,7 @@ Dialog.prototype.CSS = {
   DIALOG_HEADER : "dialog-header",
   FULL_WIDTH    : "mdl-dialog--full",
   SMALL_WIDTH   : "mdl-dialog--small",
+  IS_INVALID    : "is-invalid",
   CONTENT_FULL_WIDTH : "mdl-dialog--full__content",
 
   
@@ -449,6 +450,26 @@ Dialog.prototype.initCallback = function( call ){
     var context = this._config[ call ].context || this;
     this._config[ call ].function.call( context );
   }
+}
+
+Dialog.prototype.validate = function(){
+  
+  for(var i=0; i < this.content.elements.length; i++){
+    if( this.content.elements[i].value === '' && this.content.elements[i].hasAttribute('required') ){
+      console.log( 'ELEMET', this.content.elements[i] );
+      this.content.elements[i].parentElement.classList.add( this.CSS.IS_INVALID );
+      this.showError({
+        message: 'validate -> Заполнены не все поля!'
+      })
+      return false;
+    }
+  }
+
+  return true;
+}
+Dialog.prototype.showError = function( conf ){
+  console.log( conf.message );
+  return true;
 }
 
 Dialog.prototype.render = function(){
@@ -486,11 +507,16 @@ Dialog.prototype.render = function(){
     for (var i = 0, length = this._config.actions.length; i < length; i++) {
       var item = this._config.actions[i];
       item.submitCallback = function(){
-        dialog.element.close();
         if ( typeof this.submit.function === 'function' ) {
           this.submit.context = this.submit.context || this;
-          this.submit.function();
-          dialog.initCallback('after');
+          
+          if ( dialog._config.hasOwnProperty('validate') && dialog._config.validate === true ) {
+            if ( dialog.validate() ) {
+              this.submit.function(arguments);
+              dialog.initCallback('after');
+              dialog.element.close();
+            }
+          }
         }
       };
       item.cancelCallback = function(){
@@ -513,10 +539,12 @@ Dialog.prototype.render = function(){
       }
 
       if ( item.hasOwnProperty('submit') ) {
+        // button.type = 'submit';
         button.addEventListener('click', item.submitCallback.bind( item ) );
       }
 
       if ( item.hasOwnProperty('cancel') ) {
+        // button.type = 'cancel';
         button.addEventListener('click', item.cancelCallback.bind( item ) );
       }
 
