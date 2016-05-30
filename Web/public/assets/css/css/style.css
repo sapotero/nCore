@@ -496,13 +496,15 @@ dialog.dark::backdrop {
 
 .list__flex--empty{
   display: flex;
-  padding: 64px;
+  padding: 32px;
 }
 .empty--image {
   display: flex;
   flex-grow: 1;
   flex-direction: row;
-  background: url('../../img/empty_screen_webforms.png') no-repeat;
+  /*background: url('../../img/empty_screen_webforms.png') no-repeat;*/
+  background: url('../../img/folder.png') no-repeat;
+  background-size: 150px 150px;
   width: 300px;
 }
 .empty--content {

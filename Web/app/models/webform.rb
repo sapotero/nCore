@@ -9,6 +9,9 @@ class Webform
 
   field :name,        type: String
   field :description, type: String
+  field :action,      type: String
+
+  field :archived,    type: Boolean, default: false
 
   # body и preview лежат в GridFs
   field :body_id
@@ -18,25 +21,8 @@ class Webform
   index ( { name: 1 } )
   
   # default_scope order_by({_id: 1})
-
-  def author
-    # переделать на ошс?
-    # Core::OshsMvd::Official.find( author_id ) unless author_id.blank?
-    User.find( author_id ) unless author_id.blank?
-  end
-
-  def self.autocomplete( current_user, search_params = {} )
-    query = active( current_user )
-    query = query.where( provider_id: current_user['provider_id'] ) if current_user['provider_id']
-    query = query.where( name: /#{Regexp.escape(search_params[:term])}/i ) unless search_params[:term].blank?
-    query = query.order_by( created_at: -1 )
-    query
-  end
-
-  def self.find_templates( with_images = false )
-    documents = self.where( template: true )
-    documents = self.with_images( documents ) if with_images
-    documents
+  def self.active( current_user )
+    self.where( user_id: current_user, archived: false )
   end
 
   def body=(base64)
@@ -58,15 +44,15 @@ class Webform
   end
 
   def self.by_provider( provider )
-    documents = self.where( provider_id: provider )
-    documents = documents.where( template: false )
-    documents
+    forms = self.where( provider_id: provider )
+    forms = forms.where( template: false )
+    forms
   end
 
-  def self.with_images( documents )
+  def self.with_images( forms )
     new_docs = []
     
-    documents.each do |document|
+    forms.each do |document|
       document['img'] = ( document.image_id.nil? ? '' : document.image )
       new_docs.push( document )
     end

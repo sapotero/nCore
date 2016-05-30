@@ -3,6 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   layout 'design/application'
   
-  protect_from_forgery with: :exception
+  # protect_from_forgery with: :exception
   I18n.locale = 'ru'
 end

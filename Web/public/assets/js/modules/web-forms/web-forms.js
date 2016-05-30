@@ -601,34 +601,6 @@ WebForms.prototype.render = function(){
   core.events.emit( "core:dom:clear:subTitleMenu" );
 };
 
-WebForms.prototype.showElementInfo = function( element ) {
-  if ( element ) {
-    
-    this.active = element;
-
-    var config  = element._config;
-    console.log( 'renderInfoPanel render ->', element );
-
-    if ( config && Object === config.constructor) {
-      core.events.emit( "core:dom:infoPanel:clear" );
-
-      var form = document.createElement('div');
-
-      for ( var key in config ) {
-        var item = core.elements.create({
-          elementType : 'input',
-          name   : config[key],
-          value  : key + '__' +  config[key],
-        });
-        form.appendChild( item.element );
-      }
-      this.infoPanel = form;
-      
-      core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
-      core.events.emit( "core:dom:material:update" );
-    };
-  }
-}
 
 WebForms.prototype.renderEditorLeftPanel = function() {
   console.log( 'WebForms: renderEditorLeftPanel' );
@@ -752,7 +724,6 @@ WebForms.prototype.renderEditorLeftPanel = function() {
   
   core.events.emit( "core:drag:editor:start" );
 };
-
 WebForms.prototype.renderEditorContent = function() {
   console.log( 'WebForms: renderEditorContent' );
   this.content = core.elements.create({
@@ -766,54 +737,8 @@ WebForms.prototype.renderEditorContent = function() {
   core.events.emit( "core:dom:content:set", this.content );
 };
 WebForms.prototype.renderEditorInfoPanel = function() {
+ 
   console.log( 'WebForms: renderEditorInfoPanel' );
-};
-
-WebForms.prototype.setSubTitleMenu = function() {
-
-  var user = core.elements.create({
-    elementType : 'menu',
-    class       : [ 'mdl-menu--bottom-left' ],
-    text        : 'file',
-    small: true,
-    items       : [
-      { text: 'open' },
-      { text: 'close' }
-    ]
-  });
-
-  var user1 = core.elements.create({
-    elementType : 'menu',
-    class       : [ 'mdl-menu--bottom-left' ],
-    text        : 'edit',
-    small: true,
-    items       : [
-      { text: 'user.name' },
-      { text: 'user.provider.name' }
-    ]
-  });
-
-  var user2 = core.elements.create({
-    elementType : 'menu',
-    class       : [ 'mdl-menu--bottom-left' ],
-    text        : 'print',
-    small: true,
-    items : [
-      { text: 'user.name', size: 10, },
-      { text: 'user.provider.name' }
-    ]
-  });
-
-  this.subTitleMenu = core.elements.create({
-    elementType : 'simple',
-    class : [ 'list__flex' ],
-    items : [
-      user,
-      user1,
-      user2,
-      // settings,
-    ]
-  });
 };
 
 WebForms.prototype.renderEditor = function( form ) {
@@ -843,7 +768,6 @@ WebForms.prototype.renderEditor = function( form ) {
     core.events.emit( "core:dom:material:update" );
   }, 500 );
 };
-
 WebForms.prototype.saveDialog = function(){
   // core.events.emit( "core:dom:dialog:clear" );
 
@@ -893,7 +817,6 @@ WebForms.prototype.saveDialog = function(){
   // this.content.element.appendChild( dialog.element );
   // core.events.emit( "core:dom:dialog:show" );
 }
-
 WebForms.prototype.deleteDialog = function(){
   // core.events.emit( "core:dom:dialog:clear" );
 
@@ -943,7 +866,6 @@ WebForms.prototype.deleteDialog = function(){
   // this.content.element.appendChild( dialog.element );
   // core.events.emit( "core:dom:dialog:show" );
 }
-
 WebForms.prototype.configDialog = function(){
   this.dialog = core.elements.create({
     elementType : 'dialog',
@@ -1135,6 +1057,81 @@ WebForms.prototype.CONFIG = {
     authorId    : '', // core.global.user.id,
     providerId  : '', // core.global.provider.id,
   }
+};
+
+WebForms.prototype.showElementInfo = function( element ) {
+  if ( element ) {
+    
+    this.active = element;
+
+    var config  = element._config;
+    console.log( 'renderInfoPanel render ->', element );
+
+    if ( config && Object === config.constructor) {
+      core.events.emit( "core:dom:infoPanel:clear" );
+
+      var form = document.createElement('div');
+
+      for ( var key in config ) {
+        var item = core.elements.create({
+          elementType : 'input',
+          name   : config[key],
+          value  : key + '__' +  config[key],
+        });
+        form.appendChild( item.element );
+      }
+      this.infoPanel = form;
+      
+      core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
+      core.events.emit( "core:dom:material:update" );
+    };
+  }
+}
+WebForms.prototype.setSubTitleMenu = function() {
+
+  var user = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'file',
+    small: true,
+    items       : [
+      { text: 'open' },
+      { text: 'close' }
+    ]
+  });
+
+  var user1 = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'edit',
+    small: true,
+    items       : [
+      { text: 'user.name' },
+      { text: 'user.provider.name' }
+    ]
+  });
+
+  var user2 = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'print',
+    small: true,
+    items : [
+      { text: 'user.name', size: 10, },
+      { text: 'user.provider.name' }
+    ]
+  });
+
+  this.subTitleMenu = core.elements.create({
+    elementType : 'simple',
+    class : [ 'list__flex' ],
+    items : [
+      user,
+      user1,
+      user2,
+      // settings,
+    ]
+  });
 };
 
 WebForms.prototype.createNewForm = function() {
