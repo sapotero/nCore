@@ -137,6 +137,15 @@ Dom.prototype.bindEvents = function () {
     core.events.on('core:dom:set:title', function ( title ) {
       dom.setTitle(title);
     });
+    core.events.on('core:dom:set:subTitleMenu', function ( menu ) {
+      console.log('Dom <- core:dom:set:subTitleMenu', menu);
+      dom.setSubTitleMenu( menu );
+    });
+    core.events.on('core:dom:clear:subTitleMenu', function () {
+      console.log('Dom <- core:dom:clear:subTitleMenu');
+      dom.clearSubTitleMenu();
+    });
+    
 
     // core.events.emit( "core:dom:clear" );
 
@@ -360,34 +369,33 @@ Dom.prototype.createHeader = function(){
       context: this,
       function : function(e){
         // e.preventDefault();
-        // console.log( 'input', e, this );
+        console.log( 'input', e, this );
       }
     },
     submit : {
       context: this,
       function : function(e){
         // e.preventDefault();
-        // console.log( 'onsubmit', e, this );
+        console.log( 'onsubmit', e, this );
       }
     }
-    // type        : 'span',
-    // class       : ["mdl-layout-title"],
-    // text        : 'Конструктор отчетов',
-    // after : [
-    //   core.elements.create({
-    //     elementType : 'simple',
-    //     type        : 'span',
-    //     class       : ["mdl-layout-title"],
-    //     text        : 'Конструктор отчетов',
-    //   })
-    // ]
   });
 
   this.subTitle = core.elements.create({
     elementType: 'simple',
-    class: ['mdl-navigation'],
-    items : [
-      
+    class: [ 'subTitleMenu--item__primary'],
+  });
+  this.subTitleMenu = core.elements.create({
+    elementType: 'simple',
+    class: [ 'subTitleMenu--item__secondary' ],
+  });
+
+  this._title = core.elements.create({
+    elementType: 'simple',
+    class: ['mdl-navigation', 'subTitle'],
+    items: [
+      this.subTitle,
+      this.subTitleMenu,
     ]
   });
 
@@ -399,24 +407,6 @@ Dom.prototype.createHeader = function(){
     elementType : 'simple',
     type        : 'nav',
     class       : ["mdl-navigation", /*"mdl-layout--large-screen-only"*/],
-    // для теста
-    // items       : [
-    //   core.elements.create( {
-    //     elementType : 'menu',
-    //     position    : 'right',
-    //     icon: 'star',
-    //     fab: true,
-    //     color: true,
-    //     items: [
-    //       {
-    //         text: 'lol'
-    //       },
-    //       {
-    //         text: 'lol'
-    //       }
-    //     ]
-    //   })
-    // ]
   });
   this.headerSubMenu = core.elements.create({
     elementType: 'simple',
@@ -489,7 +479,7 @@ Dom.prototype.createHeader = function(){
     elementType: 'simple',
     class: ["mdl-layout__header-row", "mdl-layout__header-row--secondary", "mdl-color--grey-50" ],
     items : [
-      this.subTitle,
+      this._title,
       core.elements.create({ elementType: 'spacer' }),
       this.headerSubMenu,
     ]
@@ -520,9 +510,30 @@ Dom.prototype.setTitle = function ( title ) {
   if ( !title ) {
     throw new Error('setTitle -> can`t set title')
   }
+  console.log( '******setTitle', title );
+  
   // this.title.element.textContent = title;
-  this.subTitle.element.textContent = title;
+  // this.subTitle.element.textContent = title;
+  this.subTitle.element.classList.remove('subTitleMenu--item__primary-full');
+  this.subTitle.element.innerHTML = "";
+  this.subTitle.element.appendChild( title.element );
+
 };
+
+Dom.prototype.setSubTitleMenu = function ( menu ) {
+  if ( !menu ) {
+    throw new Error('subTitleMenu -> can`t set menu')
+  }
+  console.log( '******setSubTitleMenu', menu );
+  
+  this.subTitleMenu.element.innerHTML = "";
+  this.subTitleMenu.element.appendChild( menu.element );
+};
+Dom.prototype.clearSubTitleMenu = function () {
+  this.subTitleMenu.element.innerHTML = "";
+  this.subTitle.element.classList.add('subTitleMenu--item__primary-full');
+};
+
 
 Dom.prototype.setUserName = function ( user ) {
   
@@ -544,8 +555,9 @@ Dom.prototype.setUserName = function ( user ) {
   var user = core.elements.create({
     elementType : 'menu',
     position    : 'right',
-    class       : [ 'mdl-cell--hide-phone' ],
+    class       : [ 'mdl-menu--bottom-right' ],
     text        : user.name,
+    before      : true,
     icon        : 'person',
     // fab         : true,
     items       : [

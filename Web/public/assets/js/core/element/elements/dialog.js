@@ -459,18 +459,19 @@ Dialog.prototype.initCallback = function( call ){
 }
 
 Dialog.prototype.validate = function(){
+  var VALID = true;
+  
   for(var i=0; i < this.content.elements.length; i++){
-    if( this.content.elements[i].value === '' && this.content.elements[i].hasAttribute('required') ){
-      console.log( 'ELEMET', this.content.elements[i] );
+    if( !this.content.elements[i].validity.valid && this.content.elements[i].hasAttribute('required') ){
       this.content.elements[i].parentElement.classList.add( this.CSS.IS_INVALID );
-      this.showError({
-        message: 'Заполнены не все поля!'
-      })
-      return false;
+      this.showError({ message: 'Заполнены не все поля!' });
+      VALID = false;
+    } else {
+      this.content.elements[i].parentElement.classList.remove( this.CSS.IS_INVALID );
     }
   }
-
-  return true;
+  
+  return VALID;
 }
 Dialog.prototype.showError = function( conf ){
   console.log( conf.message );

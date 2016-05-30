@@ -15,7 +15,7 @@ var Menu = function Menu( config ) {
   this.list.setAttribute( 'for', this.button.id );
   this.list.classList.add( this.CSS.MENU );
   this.list.classList.add( this.CSS.MENU_JS );
-  this.list.classList.add( this.CSS.MENU_RIGHT );
+  // this.list.classList.add( this.CSS.MENU_RIGHT );
 
   this.list.classList.add( this.CSS.RIPPLE );
 
@@ -32,6 +32,7 @@ Menu.prototype.CSS = {
   BUTTON        : 'mdl-button',
   BUTTON_JS     : 'mdl-js-button',
   BUTTON_ICON   : 'mdl-button--icon',
+  BUTTON_SMALL  : 'mdl-menu--button-small',
   
   FAB           : 'mdl-button--fab',
   FAB_MINI      : 'mdl-button--mini-fab',
@@ -40,7 +41,7 @@ Menu.prototype.CSS = {
   
   MENU          : 'mdl-menu',
   MENU_JS       : 'mdl-js-menu',
-  MENU_RIGHT    : 'mdl-menu--bottom-right',
+  // MENU_RIGHT    : 'mdl-menu--bottom-right',
   // MENU_RIGHT : 'mdl-menu--bottom-left',
   MENU_ITEM     : 'mdl-menu__item',
   ICON          : 'material-icons',
@@ -61,9 +62,17 @@ Menu.prototype.setIcon = function( icon ){
   this.icon.textContent = icon;
   this.button.appendChild( this.icon );
 };
-
+Menu.prototype.setClass = function( classes ){
+  if ( classes.length ) {
+    for (var i = classes.length - 1; i >= 0; i--) {
+      this.list.classList.add( classes[i] );
+    }
+  } else {
+    this.list.className += ' ' + classes;
+  }
+};
 Menu.prototype.setText = function( string ){
-  if ( this.button ) {
+  if ( this._config && this._config.hasOwnProperty('before') && this._config.before === true ) {
     var text = document.createElement('h5');
     text.classList.add( this.CSS.GRAY_TEXT );
     text.classList.add( this.CSS.INLINE );
@@ -73,9 +82,16 @@ Menu.prototype.setText = function( string ){
     text.textContent = string;
     this.element.insertBefore( text, this.button );
   } else {
-    this.element.textContent = string;
+    // this.button.textContent = string;
+    this.button.textContent = string;
+    this.button.classList.add( this.CSS.BUTTON_SMALL );
   }
+
 };
+Menu.prototype.setSize = function( size ){
+  this.button.style.fontSize = size + 'px';
+}
+
 Menu.prototype.setFab = function() {
   this.button.classList.add( this.CSS.FAB );
   this.button.classList.add( this.CSS.FAB_MINI );
@@ -89,17 +105,21 @@ Menu.prototype.render = function(){
   if ( this._config && this._config.hasOwnProperty('text') ) {
     this.setText( this._config.text );
   };
-
   if ( this._config && this._config.hasOwnProperty('icon') ) {
     this.setIcon( this._config.icon );
   };
-
   if ( this._config && this._config.hasOwnProperty('fab') ) {
     this.setFab( this._config.fab );
   };
   if ( this._config && this._config.hasOwnProperty('color') ) {
     this.setColor( this._config.color );
   };
+  if ( this._config && this._config.hasOwnProperty('class') ) {
+    this.setClass( this._config.class );
+  };
+  if ( this._config && this._config.hasOwnProperty('size') ) {
+    this.setSize( this._config.size );
+  }
   
   if ( this._config.hasOwnProperty('items') && this._config.items.constructor === Array ) {
     for (var i = 0, length = this._config.items.length; i < length; i++) {
@@ -119,6 +139,9 @@ Menu.prototype.render = function(){
       }
       if ( item.hasOwnProperty('devider') && item.devider === true ) {
         _item.classList.add( this.CSS.DEVIDER );
+      }
+      if ( item.hasOwnProperty('size') ) {
+        _item.style.fontSize =  item.size + 'px';
       }
 
       if ( item.hasOwnProperty('icon') ) {

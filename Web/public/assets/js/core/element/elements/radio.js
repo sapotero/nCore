@@ -46,6 +46,10 @@ Radio.prototype.setName = function( string ){
 Radio.prototype.setValue = function( string ){
   this.radio.value = string;
 };
+Radio.prototype.setRequire = function(){
+  this.radio.setAttribute( 'required', true );
+};
+
 
 Radio.prototype.render = function( string ){
 
@@ -63,6 +67,9 @@ Radio.prototype.render = function( string ){
   };
   if ( this._config && this._config.hasOwnProperty('value') ) {
     this.setValue( this._config.value );
+  };
+  if ( this._config && this._config.hasOwnProperty('require') && this._config.require === true ) {
+    this.setRequire();
   };
 
   this.element._conf = this;

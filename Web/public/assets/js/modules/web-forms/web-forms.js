@@ -6,10 +6,7 @@ var WebForms = function WebForms(){
   this.content   = {};
   this.infoPanel = {};
   this.route     = 'web-forms';
-  this.title     = 'Экранные формы';
-  
-  this.active    = {};
-  
+  this.active    = {};  
   this.bindEvents();
 };
 
@@ -546,9 +543,17 @@ WebForms.prototype.render = function(){
     core.events.emit( "core:dom:primaryHeader:show" );
   }, 100);
 
+  this.title = core.elements.create({
+    elementType : 'simple',
+    type: 'h5',
+    class: [ 'subTitleMenu--item', 'mdl-color-text--grey-800' ],
+    text: 'Экранные формы',
+  });
+
   core.events.emit( "core:dom:infoPanel:hide" );
   core.events.emit( "core:dom:material:update" );
   core.events.emit( "core:dom:set:title", this.title );
+  core.events.emit( "core:dom:clear:subTitleMenu" );
 };
 
 WebForms.prototype.preview = function() {
@@ -724,9 +729,57 @@ WebForms.prototype.renderEditorInfoPanel = function() {
   console.log( 'WebForms: renderEditorInfoPanel' );
 };
 
+WebForms.prototype.setSubTitleMenu = function() {
+
+  var user = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'file',
+    small: true,
+    items       : [
+      { text: 'open' },
+      { text: 'close' }
+    ]
+  });
+
+  var user1 = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'edit',
+    small: true,
+    items       : [
+      { text: 'user.name' },
+      { text: 'user.provider.name' }
+    ]
+  });
+
+  var user2 = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'print',
+    small: true,
+    items : [
+      { text: 'user.name', size: 10, },
+      { text: 'user.provider.name' }
+    ]
+  });
+
+  this.subTitleMenu = core.elements.create({
+    elementType : 'simple',
+    class : [ 'list__flex' ],
+    items : [
+      user,
+      user1,
+      user2,
+      // settings,
+    ]
+  });
+};
+
 WebForms.prototype.renderEditor = function( form ) {
   core.events.emit( "core:dom:application:clear" );
 
+  this.setSubTitleMenu();
   this.renderEditorLeftPanel();
   this.renderEditorContent();
   this.renderEditorInfoPanel();
@@ -734,10 +787,20 @@ WebForms.prototype.renderEditor = function( form ) {
   core.events.emit( "core:dom:infoPanel:hide" );
   core.events.emit( "core:dom:material:update" );
 
-  core.events.emit( "core:dom:set:title", form.name );
+  var _form = core.elements.create({
+    elementType : 'simple',
+    type: 'h5',
+    class: [ 'subTitleMenu--item', 'mdl-color-text--grey-600' ],
+    text: form.name,
+  });
+
+
+  core.events.emit( "core:dom:set:title", _form );
+  core.events.emit( "core:dom:set:subTitleMenu", this.subTitleMenu );
 
   setTimeout( function(){
     core.events.emit( "core:dom:content:wrapper:hide");
+    core.events.emit( "core:dom:material:update" );
   }, 500 );
 };
 
@@ -896,7 +959,7 @@ WebForms.prototype.previewDialog = function( form ){
   // form
   var scope = this;
 
-  var rawForm  = '[{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkboxtest","preventCopy":false,"name":"test","require":true},"options":{"top":159.40625,"left":432.484375},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"input","class":["_drag"],"name":"testt","label":"test","float":true,"preventCopy":false,"value":"","require":true},"options":{"top":200,"left":120},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]',
+  var rawForm  = '[{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false,"name":"checkbox","require":true},"options":{"top":140,"left":150},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"radio","class":["_drag"],"label":"radio","name":"radio","value":"radio0","preventCopy":false,"require":true},"options":{"top":200,"left":160},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"input","class":["_drag"],"name":"test","label":"test_label","float":true,"preventCopy":false,"value":"","require":true},"options":{"top":270,"left":140},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]',
       parsedFormElement = JSON.parse( rawForm ),
       elements = [];
 

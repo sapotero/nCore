@@ -26,6 +26,15 @@
   box-sizing: border-box;
   align-items: center;
 }
+.mdl-menu--button-small{
+  padding: 0 4px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 12px;
+}
+.subTitleMenu--item__primary-full{
+  height: 100% !important;
+}
 
 .fadeOut {
   animation-name: fadeOut;
@@ -528,12 +537,41 @@ dialog.dark::backdrop {
   padding: 0 4px;
 }
 
+.is-invalid .mdl-radio__label::after, .is-invalid .mdl-checkbox__label::after {
+transition: 0.25s ease;
+  color: rgb(213,0,0);
+  font-size: 22px;
+  padding: 0 4px;
+  content: "*";
+}
+
 .mdl-dialog__title--error {
   font-size: 1em;
   color: rgba(213,0,0,1);
-  padding: 0px 12px;
+  padding: 0px 0px 0px 16px;
+  margin-top: 4px;
 }
 
+.subTitle{
+  display: flex !important;
+  flex-flow: 1 !important;
+  flex-direction: column !important;
+}
+
+.subTitleMenu--item__primary {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center;
+  height: 60%;
+}
+.subTitleMenu--item__secondary {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center;
+  height: 40%;
+}
 
 /* SELECT */
 select {

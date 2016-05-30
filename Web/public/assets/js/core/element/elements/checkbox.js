@@ -41,6 +41,10 @@ Checkbox.prototype.setLabel = function( string ){
 Checkbox.prototype.setClass = function( string ){
   this.element.classList.add( string );
 };
+Checkbox.prototype.setRequire = function(){
+  this.checkbox.setAttribute( 'required', true );
+};
+
 
 Checkbox.prototype.render = function( string ){
 
@@ -52,6 +56,9 @@ Checkbox.prototype.render = function( string ){
   };
   if ( this._config && this._config.hasOwnProperty('label') ) {
     this.setLabel( this._config.label );
+  };
+  if ( this._config && this._config.hasOwnProperty('require') && this._config.require === true ) {
+    this.setRequire();
   };
 
   // console.log( this.element.outerHTML );

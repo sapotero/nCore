@@ -34,6 +34,7 @@ Label.prototype.setFor = function( element ){
 };
 Label.prototype.render = function(){
   this.element._conf = this;
+  this.label = this.element;
   return this;
 };
 
