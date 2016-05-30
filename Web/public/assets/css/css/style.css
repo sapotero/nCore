@@ -494,6 +494,26 @@ dialog.dark::backdrop {
   flex-direction: row;
 }
 
+.list__flex--empty{
+  display: flex;
+  padding: 64px;
+}
+.empty--image {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  background: url('../../img/empty_screen_webforms.png') no-repeat;
+  width: 300px;
+}
+.empty--content {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+}
+.empty--content > div + div {
+  padding: 16px 0px;
+}
+
 .mdl-dialog__actions--flex {
   vertical-align: bottom;
   display: flex;
