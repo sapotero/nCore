@@ -462,6 +462,8 @@ Dialog.prototype.validate = function(){
   var VALID = true;
   
   for(var i=0; i < this.content.elements.length; i++){
+    console.log( this.content.elements[i].validity );
+
     if( !this.content.elements[i].validity.valid && this.content.elements[i].hasAttribute('required') ){
       this.content.elements[i].parentElement.classList.add( this.CSS.IS_INVALID );
       this.showError({ message: 'Заполнены не все поля!' });
@@ -519,7 +521,6 @@ Dialog.prototype.render = function(){
       item.submitCallback = function(){
         if ( typeof this.submit.function === 'function' ) {
           this.submit.context = this.submit.context || this;
-          
           if ( dialog._config.hasOwnProperty('validate') && dialog._config.validate === true ) {
             if ( dialog.validate() ) {
               this.submit.function(arguments);

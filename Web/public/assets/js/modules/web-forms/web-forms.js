@@ -867,25 +867,52 @@ WebForms.prototype.deleteDialog = function(){
   // core.events.emit( "core:dom:dialog:show" );
 }
 WebForms.prototype.configDialog = function(){
+  var scope = this;
+
   this.dialog = core.elements.create({
     elementType : 'dialog',
-    title : 'Настройки формы',
-    big: true,
-    
+    class       : [ 'mdl-dialog__content--auto-height', 'mdl-dialog__content--auto-width' ],
+    title       : 'Настройки формы',
+    big         : true,
+    validate    : true,
     content : core.elements.create({
       elementType: 'simple',
-      text: 'Документ был изменен, вы хотите его сохранить?',
-      items: [],
+      class: [ 'flex--container-row', 'flex--align-left' ],
+      items: [
+        core.elements.create({
+          elementType : 'input',
+          class : [ 'flex--column' ],
+          float   : true,
+          require : true,
+          label   : 'Название формы',
+        }),
+        core.elements.create({
+          elementType : 'input',
+          class : [ 'flex--column' ],
+          float   : true,
+          require : true,
+          label   : 'URL запроса',
+          value   : this.active.action,
+        }),
+        core.elements.create({
+          elementType : 'textarea',
+          class : [ 'flex--column' ],
+          float   : true,
+          require : true,
+          label   : 'Описание',
+          value   : this.active.description,
+        }),
+      ],
     }),
-
     actions: [
       {
         text: 'Сохранить',
         class : [ 'mdl-color-text--green-500' ],
         submit :  {
           // context  : this,
-          function : function(event){
-            console.log( 'webforms-leftMenu > config submit  dialog click' );
+          function : function(){
+            console.log( 'webforms-leftMenu > config submit  dialog click', this );
+            
           },
         }
       },
@@ -899,21 +926,25 @@ WebForms.prototype.configDialog = function(){
         }
       },
     ],
-    before : {
-      context  : this,
-      function : function(){
-        console.log( 'webforms-leftMenu > config  before callback', this );
-      },
-    },
+    // before : {
+    //   context  : this,
+    //   function : function(){
+    //     console.log( 'webforms-leftMenu > config  before callback', this );
+    //   },
+    // },
     after : {
       function : function(){
         console.log( 'webforms-leftMenu > config  after callback', this );
+        scope.saveFromConfigForm( this.content );
         core.events.emit( "core:dom:dialog:clear" );
+
+
       },
     },
   });
   core.events.emit( "core:dom:dialog:set", this.dialog );
   core.events.emit( "core:dom:dialog:show" );
+  core.events.emit( "core:dom:material:update" );
 }
 
 
@@ -1054,10 +1085,15 @@ WebForms.prototype.CONFIG = {
     _id         : "__new",
     name        : "Новая форма",
     description : "Новая форма",
+    action      : "/actons/new",
     authorId    : '', // core.global.user.id,
     providerId  : '', // core.global.provider.id,
   }
 };
+WebForms.prototype.saveFromConfigForm = function( dialog ) {
+  console.log( 'From Dialog ->', dialog, dialog.elements );
+  this.active.update( dialog.elements );
+}
 
 WebForms.prototype.showElementInfo = function( element ) {
   if ( element ) {

@@ -6,6 +6,7 @@ var WebForm = function(config){
   this.body        = '';
   this._id         = config._id         || '';
   this.name        = config.name        || '';
+  this.action      = config.action || '';
   this.description = config.description || '';
   this.authorId    = config.author_id   || '';
   this.providerId  = config.provider_id || '';
@@ -21,6 +22,9 @@ WebForm.prototype.load = function( data ){
   this.initEditor();
 };
 
+WebForm.prototype.update = function( elements ){
+  console.log( 'WebForm.prototype.update', elements );
+};
 
 WebForm.prototype.reload = function(){
   this.detachEvents();

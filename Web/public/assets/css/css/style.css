@@ -487,6 +487,9 @@ dialog.dark::backdrop {
 .mdl-dialog__content--auto-height{
   height: auto;
 }
+.mdl-dialog__content--auto-width{
+  width: 20vw;
+}
 
 .mdl-dialog--full__content {
   display: flex;
@@ -646,4 +649,39 @@ select:focus {
     position: fixed;
     top: calc(40% - 32px);
   }
+}
+
+.flex--container-column {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.flex--container-row {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.flex--align-center {
+  align-items: center;
+}
+.flex--align-left {
+  align-items: flex-start;
+}
+.flex--align-right {
+  align-items: flex-end;
+}
+.flex--justify-content {
+  justify-content: center;
+}
+.flex--row {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+
+}
+.flex--column {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
 }
