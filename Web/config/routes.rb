@@ -23,9 +23,7 @@ Settings::Web::Application.routes.draw do
     post :remove
   end
 
-  resources :webforms do
-    post :remove
-  end
+  resources :webforms
   
   # resources :forms
   # resources :queries

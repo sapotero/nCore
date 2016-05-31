@@ -932,12 +932,6 @@ WebForms.prototype.configDialog = function(){
         }
       },
     ],
-    // before : {
-    //   context  : this,
-    //   function : function(){
-    //     console.log( 'webforms-leftMenu > config  before callback', this );
-    //   },
-    // },
     after : {
       function : function(){
         console.log( 'webforms-leftMenu > config  after callback', this );
@@ -1001,12 +995,6 @@ WebForms.prototype.previewDialog = function( form ){
     elementType : 'dialog',
     
     title: this.active.name + ' - Preview',
-
-    // title : core.elements.create({
-    //   elementType: 'simple',
-    //   class : [ 'mdl-color-text--grey-50' ],
-    //   text: this.active.name,
-    // }),
 
     big      : true,
     validate : true,
@@ -1088,7 +1076,7 @@ WebForms.prototype.CSS = {
 
 WebForms.prototype.CONFIG = {
   EMPTY_FORM : {
-    _id         : "__new",
+    _id         : "",
     name        : "Новая форма",
     description : "Новая форма",
     action      : "/actons/new",

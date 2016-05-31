@@ -28,6 +28,7 @@ Utils.prototype.merge = function (from, to) {
 
 Utils.prototype.request = function( type, url, data, callback ) {
   var request = new XMLHttpRequest();
+
   request.open( type.toUpperCase(), url, true);
 
   request.onload = function() {
@@ -42,7 +43,8 @@ Utils.prototype.request = function( type, url, data, callback ) {
     callback( new Error( this.response ) );
   };
 
-  request.send();
+  request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  request.send( JSON.stringify(data) );
 };
 Utils.prototype.log = function(msg, color) {
   var color = color || "black";

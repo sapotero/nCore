@@ -1,43 +1,46 @@
 class WebformsController < ApplicationController
-  before_filter :set_form, only: [ :show, :create, :update, :delete ]
   skip_before_filter :verify_authenticity_token, if: :json_request_and_logged_in?
+
+  before_filter :set_form, only: [ :show, :create, :update, :delete ]
+  
   respond_to :json
 
   def index
-    forms = Webform.active( current_user._id ) rescue []
-    render :json => forms;
+    render :json => Webform.active( current_user._id );
   end
 
 
   def show
     data = []
 
-    if @document
-      data        = @document.as_json
-      data[:body] = @document.body
+    if @form
+      data        = @form.as_json
+      data[:body] = @form.body
     end
 
     render json: data
   end
 
   def new
-    @document = Webform.new
+    @form = Webform.new
   end
 
   def create
     data = []
 
-    if @document
-      @document = Webform.new({
-        :author_id   => params[ :author_id ]   || '',
-        :provider_id => params[ :provider_id ] || '',
-        :name        => params[ :name ]        || '',
-        :description => params[ :description ] || '',
-        :action      => params[ :action ]      || '',
-      })
+    @form = Webform.new({
+      :author_id   => current_user._id,
+      :provider_id => current_user.provider_id,
+      :name        => params[ :name ]        || '',
+      :description => params[ :description ] || '',
+      :action      => params[ :action ]      || '',
+    })
 
-      data = @document.save ? @document : { error: @document.error }
-    end
+    @form.body  = params[ :body ]  unless params[ :body ].blank?
+    @form.image = params[ :image ] unless params[ :image ].blank?
+
+
+    data = @form.save ? @form : { error: @form.error }
 
     render :json => data
   end
@@ -45,13 +48,13 @@ class WebformsController < ApplicationController
   def update
     data = []
 
-    if @document
-      @document.body        = params[ :body ]        unless params[ :body ].blank?
-      @document.image       = params[ :image ]       unless params[ :image ].blank?
-      @document.name        = params[ :name ]        unless params[ :name ].blank?
-      @document.description = params[ :description ] unless params[ :description ].blank?
-      @document.action      = params[ :action ]      unless params[ :action ].blank?
-      data = @document.save ? @document : { error: @document.error }
+    if @form
+      @form.body        = params[ :body ]        unless params[ :body ].blank?
+      @form.image       = params[ :image ]       unless params[ :image ].blank?
+      @form.name        = params[ :name ]        unless params[ :name ].blank?
+      @form.description = params[ :description ] unless params[ :description ].blank?
+      @form.action      = params[ :action ]      unless params[ :action ].blank?
+      data = @form.save ? @form : { error: @form.error }
     end
 
     render :json => data
@@ -60,9 +63,9 @@ class WebformsController < ApplicationController
   def delete
     data = []
 
-    if @document
-      @document.archived = true
-      data = @document.save ? @document : { error: @document.error }
+    if @form
+      @form.archived = true
+      data = @form.save ? @form : { error: @form.error }
     end
 
     render :json => data
@@ -75,11 +78,7 @@ class WebformsController < ApplicationController
     end
 
     def set_form
-      @document = Webform.find(params[:id]) rescue []
-    end
-
-    def redirect_to_root
-      
+      @form = Webform.find( params[:id] ) rescue []
     end
 
     def form_params

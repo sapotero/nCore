@@ -46,6 +46,13 @@ core = (function(){
     this.current  = {};
     this.debug    = true;
 
+    this.config = {
+      webforms : {
+        index  : '/webforms.json',
+        update : '/webforms/'
+      },
+    };
+
     this.bindEvents();
   };
 

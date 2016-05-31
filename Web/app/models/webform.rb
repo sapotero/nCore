@@ -21,8 +21,8 @@ class Webform
   index ( { name: 1 } )
   
   # default_scope order_by({_id: 1})
-  def self.active( current_user )
-    self.where( user_id: current_user, archived: false )
+  def self.active( user_id )
+    self.where( author_id: user_id )
   end
 
   def body=(base64)
@@ -31,7 +31,7 @@ class Webform
   end
 
   def body
-    Mongoid::GridFs.get(body_id).data
+    Mongoid::GridFs.get(body_id).data rescue ''
   end
 
   def image=(canvas)
@@ -40,7 +40,7 @@ class Webform
   end
 
   def image
-    Mongoid::GridFs.get(image_id).data
+    Mongoid::GridFs.get(image_id).data rescue ''
   end
 
   def self.by_provider( provider )

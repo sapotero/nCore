@@ -513,8 +513,11 @@ Draggy.prototype.attachEvents = function(){
 
     core.events.on("core:drag:export", function(){
       console.log('Draggy <- core:drag:export');
+      
+      var _export = draggy.export();
 
-      core.events.emit("core:web-forms:drag:export:result", draggy.export() );
+      core.events.emit("core:web-forms:drag:export:result", _export );
+      core.events.emit("core:web-form:export:result",       _export );
     });
 
   });
