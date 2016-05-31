@@ -145,13 +145,16 @@ DialogInfo.prototype = {
 
   showModal: function() {
     if (this.dialog_.hasAttribute('open')) {
-      throw new Error('Failed to execute "showModal" on dialog: The element is already open, and therefore cannot be opened modally.');
+      // throw new Error('Failed to execute "showModal" on dialog: The element is already open, and therefore cannot be opened modally.');
+      console.log('Failed to execute "showModal" on dialog: The element is already open, and therefore cannot be opened modally.');
     }
     if (!document.body.contains(this.dialog_)) {
-      throw new Error('Failed to execute "showModal" on dialog: The element is not in a Document.');
+      // throw new Error('Failed to execute "showModal" on dialog: The element is not in a Document.');
+      console.log('Failed to execute "showModal" on dialog: The element is not in a Document.');
     }
     if (!_Dialog.dm.pushDialog(this)) {
-      throw new Error('Failed to execute "showModal" on dialog: There are too many open modal dialogs.');
+      // throw new Error('Failed to execute "showModal" on dialog: There are too many open modal dialogs.');
+      console.log('Failed to execute "showModal" on dialog: There are too many open modal dialogs.');
     }
     this.show();
     this.openAsModal_ = true;
@@ -169,7 +172,8 @@ DialogInfo.prototype = {
 
   close: function(opt_returnValue) {
     if (!this.dialog_.hasAttribute('open')) {
-      throw new Error('Failed to execute "close" on dialog: The element does not have an "open" attribute, and therefore cannot be closed.');
+      // throw new Error('Failed to execute "close" on dialog: The element does not have an "open" attribute, and therefore cannot be closed.');
+      console.log('Failed to execute "close" on dialog: The element does not have an "open" attribute, and therefore cannot be closed.');
     }
     this.setOpen(false);
 
@@ -365,7 +369,8 @@ _Dialog.forceRegisterDialog = function(element) {
     // console.warn('This browser already supports <dialog>, the polyfill may not work correctly', element);
   }
   if (element.nodeName.toUpperCase() != 'DIALOG') {
-    throw new Error('Failed to register dialog: The element is not a dialog.');
+    // throw new Error('Failed to register dialog: The element is not a dialog.');
+    console.log('Failed to register dialog: The element is not a dialog.');
   }
   new DialogInfo(element);
 };

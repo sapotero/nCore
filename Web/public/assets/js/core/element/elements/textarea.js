@@ -6,7 +6,6 @@ var Textarea = function( config ) {
 
   this.textarea = document.createElement( 'textarea' );
   this.textarea.classList.add( this.CSS.INPUT );
-  this.textarea.type = 'text';
   this.textarea.id   = core.utils.generateId();
 
   this.element.setAttribute( 'for', this.textarea.id );
@@ -39,6 +38,12 @@ Textarea.prototype.setLabel = function( string ){
 Textarea.prototype.setClass = function( string ){
   this.element.classList.add( string );
 };
+Textarea.prototype.setName = function( string ){
+  this.textarea.name = string;
+};
+Textarea.prototype.setValue = function( string ){
+  this.textarea.value = string;
+};
 
 Textarea.prototype.render = function( string ){
 
@@ -53,6 +58,12 @@ Textarea.prototype.render = function( string ){
   };
   if ( this._config && this._config.hasOwnProperty('cols') ) {
     this.setCols( this._config.cols );
+  };
+  if ( this._config && this._config.hasOwnProperty('name') ) {
+    this.setName( this._config.name );
+  };
+  if ( this._config && this._config.hasOwnProperty('value') ) {
+    this.setValue( this._config.value );
   };
 
   return this;

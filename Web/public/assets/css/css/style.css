@@ -193,6 +193,8 @@
 
 
 
+
+
 .report-card-full{
   margin: 6px;
   padding: 8px;
@@ -500,7 +502,9 @@ dialog.dark::backdrop {
 .list__flex--empty{
   display: flex;
   padding: 32px;
+  width: 100vw;
 }
+
 .empty--image {
   display: flex;
   flex-grow: 1;
@@ -508,6 +512,7 @@ dialog.dark::backdrop {
   /*background: url('../../img/empty_screen_webforms.png') no-repeat;*/
   background: url('../../img/folder.png') no-repeat;
   background-size: 150px 150px;
+  min-width: 200px;
   width: 300px;
 }
 .empty--content {
@@ -684,4 +689,27 @@ select:focus {
   display: flex;
   flex-grow: 1;
   width: 100%;
+}
+
+
+@media (max-width: 839px) and (min-width: 480px){
+  .mdl-progress.mdl-cell {
+    margin: 8px;
+    width: calc( 98% - 32px );
+  }
+
+  .mdl-dialog__content--auto-width {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 480px){
+  .mdl-progress.mdl-cell {
+    margin: 8px;
+    width: calc( 98% - 32px );
+  }
+
+  .mdl-dialog__content--auto-width {
+    width: 80vw;
+  }
 }

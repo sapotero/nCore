@@ -6,6 +6,8 @@ core = (function(){
       Utils      = require('./core/utils/utils'),
       Dom        = require('./core/dom/dom'),
       Element    = require('./core/element/element'),
+
+      Polygon    = require('./core/polygon.js6').default,
       
       Draggy     = require('./modules/draggy/draggy'),
       Preloader  = require('./modules/preloader/preloader'),
@@ -24,6 +26,8 @@ core = (function(){
     this.utils    = new Utils();
     this.dom      = new Dom();
     this.elements = new Element();
+
+    this.Polygon    = new Polygon(1,2);
 
     this.modules  = {
       'preloader'   : new Preloader(),

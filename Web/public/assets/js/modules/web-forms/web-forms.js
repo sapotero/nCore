@@ -884,6 +884,8 @@ WebForms.prototype.configDialog = function(){
           class : [ 'flex--column' ],
           float   : true,
           require : true,
+          name    : 'name',
+          value   : this.active.name,
           label   : 'Название формы',
         }),
         core.elements.create({
@@ -891,6 +893,7 @@ WebForms.prototype.configDialog = function(){
           class : [ 'flex--column' ],
           float   : true,
           require : true,
+          name    : 'action',
           label   : 'URL запроса',
           value   : this.active.action,
         }),
@@ -899,6 +902,9 @@ WebForms.prototype.configDialog = function(){
           class : [ 'flex--column' ],
           float   : true,
           require : true,
+          cols    : 20,
+          rows    : 10,
+          name    : 'description',
           label   : 'Описание',
           value   : this.active.description,
         }),
@@ -1086,8 +1092,7 @@ WebForms.prototype.CONFIG = {
     name        : "Новая форма",
     description : "Новая форма",
     action      : "/actons/new",
-    authorId    : '', // core.global.user.id,
-    providerId  : '', // core.global.provider.id,
+    new         : true,
   }
 };
 WebForms.prototype.saveFromConfigForm = function( dialog ) {

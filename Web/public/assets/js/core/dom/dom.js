@@ -420,8 +420,8 @@ Dom.prototype.createHeader = function(){
       }),
       core.elements.create({
         elementType : 'menu',
-        position    : 'right',
-        class       : [ 'mdl-cell--hide-phone' ],
+        // position    : 'right',
+        class       : [ 'mdl-cell--hide-phone', 'mdl-menu--bottom-right' ],
         icon        : 'sort',
         items       : [
           {
