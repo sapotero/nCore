@@ -81,6 +81,8 @@ WebForm.prototype.reload = function(){
 };
 
 WebForm.prototype.initEditor = function(){
+  this._body = [];
+  
   if ( this.hasOwnProperty('raw') && this.raw.hasOwnProperty('body') ) {
     
     try {

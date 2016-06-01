@@ -31,7 +31,7 @@ var Drag = function(el, config) {
   if ( this.el.hasOwnProperty('_options') ) {
     var __content = core.dom.content.element.getBoundingClientRect();
     this.el.style.top  = this.el._options.top  + 'px';
-    this.el.style.left = __content.left + this.el._options.left + 'px';
+    this.el.style.left = this.el._options.left + 'px';
   }
 
   this.Positions = new Positions(this.options);

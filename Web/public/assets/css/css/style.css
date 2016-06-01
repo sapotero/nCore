@@ -27,10 +27,10 @@
   align-items: center;
 }
 .mdl-menu--button-small{
-  padding: 0 4px;
-  height: 24px;
-  line-height: 24px;
-  font-size: 12px;
+  padding     : 0 8px;
+  height      : 24px;
+  line-height : 24px;
+  font-size   : 12px;
 }
 .subTitleMenu--item__primary-full{
   height: 100% !important;
@@ -692,8 +692,11 @@ select:focus {
 }
 
 .mdl-menu__item--small {
-  height      : 24px;
-  line-height : 24px;
+  height      : 32px;
+  line-height : 32px;
+}
+.mdl-menu--no-padding {
+  padding: 0px;
 }
 
 

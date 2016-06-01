@@ -1114,14 +1114,24 @@ WebForms.prototype.setSubTitleMenu = function() {
     class       : [ 'mdl-menu--bottom-left' ],
     text        : 'file',
     small: true,
+    padding: false,
     items       : [
       {
-        text: 'open',
-        small: true,
+        text  : 'Очнь длинный пункт меню',
+        small : true,
+        icon  : 'save',
+        devider: true,
+        hotkey : 'Ctrl+B',
       },
       {
-        text: 'close',
-        small: true,
+        text  : 'open',
+        small : true,
+      },
+      {
+        text   : 'close',
+        small  : true,
+        icon   : 'folder',
+        hotkey : 'Ctrl+A',
       }
     ]
   });

@@ -14,6 +14,10 @@ var Menu = function Menu( config ) {
   this.list = document.createElement('ul');
   this.list.setAttribute( 'for', this.button.id );
   this.list.classList.add( this.CSS.MENU );
+  
+  if ( this._config && this._config.hasOwnProperty('padding') && this._config.padding === false ) {
+    this.list.classList.add( this.CSS.MENU_NO_PADDING );
+  }
   this.list.classList.add( this.CSS.MENU_JS );
   // this.list.classList.add( this.CSS.MENU_RIGHT );
 
@@ -40,9 +44,12 @@ Menu.prototype.CSS = {
   ACCENT          : 'mdl-button--accent',
   
   MENU            : 'mdl-menu',
+  MENU_NO_PADDING : 'mdl-menu--no-padding',
   MENU_JS         : 'mdl-js-menu',
   MENU_ITEM       : 'mdl-menu__item',
   MENU_ITEM_SMALL : 'mdl-menu__item--small',
+
+  HOTKEY          : 'mdl-color-text--grey-400',
 
   ICON            : 'material-icons',
   RIPPLE          : 'mdl-js-ripple-effect',
@@ -50,6 +57,7 @@ Menu.prototype.CSS = {
   BOLD            : 'mdl-typography--font-bold',
   GRAY_TEXT       : 'mdl-color-text--grey-800',
   INLINE          : 'inline',
+  SPACER          : 'mdl-layout-spacer',
   CELL            : 'mdl-cell',
   CELL_HIDE       : 'mdl-cell--hide-phone',
   DEVIDER         : 'mdl-menu__item--full-bleed-divider',
@@ -149,7 +157,7 @@ Menu.prototype.render = function(){
         _item.style.fontSize =  item.size + 'px';
       }
 
-      if ( item.hasOwnProperty('icon') ) {
+      if ( item.hasOwnProperty('icon') || item.hasOwnProperty('small') && item.small === true ) {
         _item.textContent = '';
 
         var wrapper = document.createElement('span');
@@ -159,14 +167,25 @@ Menu.prototype.render = function(){
         var icon = document.createElement('i');
         icon.classList.add( this.CSS.ICON );
         icon.classList.add( this.CSS.ROOT );
-        icon.textContent = item.icon;
+        icon.textContent = item.icon || '_';
 
         var text = document.createElement('div');
         text.classList.add( this.CSS.INLINE );
         text.textContent = item.text;
+
+        var spacer = document.createElement('div');
+        spacer.classList.add( this.CSS.SPACER );
+        
+        var hotkey = document.createElement('div');
+        hotkey.classList.add( this.CSS.INLINE );
+        hotkey.classList.add( this.CSS.HOTKEY );
+        hotkey.textContent = item.hotkey || '';
         
         wrapper.appendChild( icon );
         wrapper.appendChild( text );
+        wrapper.appendChild( spacer );
+        wrapper.appendChild( hotkey );
+
 
         _item.appendChild( wrapper );
       }
