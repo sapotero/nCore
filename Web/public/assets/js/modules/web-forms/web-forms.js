@@ -1112,26 +1112,34 @@ WebForms.prototype.setSubTitleMenu = function() {
   var user = core.elements.create({
     elementType : 'menu',
     class       : [ 'mdl-menu--bottom-left' ],
-    text        : 'file',
+    text        : 'Файл',
     small: true,
     padding: false,
     items       : [
       {
-        text  : 'Очнь длинный пункт меню',
+        text  : 'Создать',
         small : true,
-        icon  : 'save',
+        // icon  : 'open',
+        hotkey : 'Ctrl+N',
+      },
+      {
+        text  : 'Открыть',
+        small : true,
+        // icon  : 'open',
+        hotkey : 'Ctrl+O',
+      },
+      {
+        text  : 'Сохранить',
+        small : true,
+        // icon  : 'save',
         devider: true,
-        hotkey : 'Ctrl+B',
+        hotkey : 'Ctrl+S',
       },
       {
-        text  : 'open',
-        small : true,
-      },
-      {
-        text   : 'close',
+        text   : 'Удалить',
         small  : true,
-        icon   : 'folder',
-        hotkey : 'Ctrl+A',
+        icon   : 'delete',
+        // hotkey : 'Ctrl+A',
       }
     ]
   });
@@ -1139,11 +1147,22 @@ WebForms.prototype.setSubTitleMenu = function() {
   var user1 = core.elements.create({
     elementType : 'menu',
     class       : [ 'mdl-menu--bottom-left' ],
-    text        : 'edit',
+    text        : 'Правка',
     small: true,
+    padding: false,
     items       : [
-      { text: 'user.name' },
-      { text: 'user.provider.name' }
+      {
+        text  : 'Переименовать',
+        small : true,
+        // icon  : 'open',
+        hotkey : 'Ctrl+N',
+      },
+      {
+        text  : 'Открыть',
+        small : true,
+        // icon  : 'open',
+        hotkey : 'Ctrl+O',
+      }
     ]
   });
 

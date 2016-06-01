@@ -22,13 +22,19 @@ var Drag = function(el, config) {
     onStop      : config && config.hasOwnProperty('onStop')      ? config.onStop      : function(e, obj) {}
   };
   
-  var box = this.el.getBoundingClientRect();
+  var box     = this.el.getBoundingClientRect();
+  var content = core.dom.content.element.getBoundingClientRect();
 
   // this.el.style.top      = box.top  + 'px';
   // this.el.style.left     = box.left + 'px';
   this.el.style.position = "absolute";
 
   if ( this.el.hasOwnProperty('_options') ) {
+    
+    console.log( '-----------' );
+    console.log( content );
+    console.log( this.el._options );
+
     var __content = core.dom.content.element.getBoundingClientRect();
     this.el.style.top  = this.el._options.top  + 'px';
     this.el.style.left = this.el._options.left + 'px';
