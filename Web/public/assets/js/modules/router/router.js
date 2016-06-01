@@ -190,14 +190,10 @@ Router.prototype.start = function() {
         core.events.emit( "core:dom:primaryHeader:hide" );
         core.events.emit( "core:web-forms:new" );
       },
-      'web-forms/{id}' : function(params) {
+      'web-forms/{id}' : function( params ) {
+        console.log( 'params', params );
         core.events.emit( "core:dom:primaryHeader:hide" );
-        core.events.emit( "core:web-form:load",   params.id );
-        core.events.emit( "core:web-form:render", params.id );
-      },
-
-      'preview/{id}' : function(params) {
-        console.log('[web-forms/{id}]: ', params);
+        core.events.emit( "core:web-form:load", params.id );
       },
     }
   });

@@ -691,6 +691,11 @@ select:focus {
   width: 100%;
 }
 
+.mdl-menu__item--small {
+  height      : 24px;
+  line-height : 24px;
+}
+
 
 @media (max-width: 839px) and (min-width: 480px){
   .mdl-progress.mdl-cell {

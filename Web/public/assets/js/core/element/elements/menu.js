@@ -28,31 +28,31 @@ Menu.prototype = Object.create( require('./simple').prototype );
 Menu.prototype.constructor = Menu;
 
 Menu.prototype.CSS = {
-  ROOT          : 'mdl-menu--wrapper',
-  BUTTON        : 'mdl-button',
-  BUTTON_JS     : 'mdl-js-button',
-  BUTTON_ICON   : 'mdl-button--icon',
-  BUTTON_SMALL  : 'mdl-menu--button-small',
+  ROOT            : 'mdl-menu--wrapper',
+  BUTTON          : 'mdl-button',
+  BUTTON_JS       : 'mdl-js-button',
+  BUTTON_ICON     : 'mdl-button--icon',
+  BUTTON_SMALL    : 'mdl-menu--button-small',
   
-  FAB           : 'mdl-button--fab',
-  FAB_MINI      : 'mdl-button--mini-fab',
-  RAISED        : 'mdl-button--raised',
-  ACCENT        : 'mdl-button--accent',
+  FAB             : 'mdl-button--fab',
+  FAB_MINI        : 'mdl-button--mini-fab',
+  RAISED          : 'mdl-button--raised',
+  ACCENT          : 'mdl-button--accent',
   
-  MENU          : 'mdl-menu',
-  MENU_JS       : 'mdl-js-menu',
-  // MENU_RIGHT    : 'mdl-menu--bottom-right',
-  // MENU_RIGHT : 'mdl-menu--bottom-left',
-  MENU_ITEM     : 'mdl-menu__item',
-  ICON          : 'material-icons',
-  RIPPLE        : 'mdl-js-ripple-effect',
-  GRAY          : 'mdl-js-ripple-effect',
-  BOLD          : 'mdl-typography--font-bold',
-  GRAY_TEXT     : 'mdl-color-text--grey-800',
-  INLINE        : 'inline',
-  CELL          : 'mdl-cell',
-  CELL_HIDE     : 'mdl-cell--hide-phone',
-  DEVIDER       : 'mdl-menu__item--full-bleed-divider',
+  MENU            : 'mdl-menu',
+  MENU_JS         : 'mdl-js-menu',
+  MENU_ITEM       : 'mdl-menu__item',
+  MENU_ITEM_SMALL : 'mdl-menu__item--small',
+
+  ICON            : 'material-icons',
+  RIPPLE          : 'mdl-js-ripple-effect',
+  GRAY            : 'mdl-js-ripple-effect',
+  BOLD            : 'mdl-typography--font-bold',
+  GRAY_TEXT       : 'mdl-color-text--grey-800',
+  INLINE          : 'inline',
+  CELL            : 'mdl-cell',
+  CELL_HIDE       : 'mdl-cell--hide-phone',
+  DEVIDER         : 'mdl-menu__item--full-bleed-divider',
 }
 
 Menu.prototype.setIcon = function( icon ){
@@ -132,6 +132,11 @@ Menu.prototype.render = function(){
       // mdl-layout-spacer
       var _item = document.createElement('li');
       _item.classList.add( this.CSS.MENU_ITEM );
+
+      if ( item.hasOwnProperty('small') && item.small === true ) {
+        _item.classList.add( this.CSS.MENU_ITEM_SMALL );
+      }
+
       _item.textContent = item.text;
 
       if ( item.hasOwnProperty('disabled') && item.disabled === true ) {

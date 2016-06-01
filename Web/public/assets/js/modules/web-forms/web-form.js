@@ -1,9 +1,10 @@
 "use strict";
 
 var WebForm = function(config){
-  this.element     = {};
+  this.element     = document.createElement('div');
   this.raw         = {};
   this.body        = '';
+  this._body       = [];
   this._id         = config._id         || '';
   this.name        = config.name        || '';
   this.action      = config.action      || '';
@@ -81,11 +82,41 @@ WebForm.prototype.reload = function(){
 
 WebForm.prototype.initEditor = function(){
   if ( this.hasOwnProperty('raw') && this.raw.hasOwnProperty('body') ) {
-    this.body = core.utils.Base64.decode( this.raw.body );
+    
+    try {
+      this.body = JSON.parse( this.raw.body );
+      var _render = [];
+
+      if ( this.body.length ) {
+
+        for ( var i = 0, length = this.body.length; i < length; i++ ) {
+          
+          var item = this.body[i];
+          
+          console.log( 'elements', item );
+          core.events.emit( "core:drag:create:element", item.element, item.options );
+
+          // var _element = core.elements.create( item.element );
+          // _element._options = item.options;
+          
+          // console.info( '_element', _element, item );
+          // _element.element.style.position = 'absolute';
+          // _element.element.style.top = item.options.top + 'px';
+          // _element.element.style.left = item.options.left + 'px';
+          // _render.push( _element );
+        }
+      
+        this.body = _render;
+      };
+    } catch (e) {
+      // throw new Error(e);
+      console.log( e );
+    }
+
   }
   // console.log( 'web-form -> initEditor : ', this );
   core.events.emit( "core:current:set", this );
-  core.events.emit('core:web-form:show', this );
+  core.events.emit('core:web-form:content:show', this );
 }
 
 WebForm.prototype.detachEvents = function(){
@@ -95,6 +126,7 @@ WebForm.prototype.detachEvents = function(){
   core.events.remove("core:web-form:set:action");
   core.events.remove("core:web-form:set:description");
   core.events.remove("core:web-form:set:body");
+  core.events.remove("core:web-form:add:body");
   core.events.remove("core:web-form:export:result");
 
 };
@@ -133,6 +165,14 @@ WebForm.prototype.attachEvents = function(){
     core.events.on("core:web-form:set:body", function( body ){
       console.log( 'WebForm <- core:web-form:set:body',  body);
       form.body = body;
+    });
+
+    core.events.on('core:web-form:add:body', function ( _root ) {
+      console.log('**** core:web-form:add:body', _root)
+      form._body.push( {element: _root} );
+
+      // core.events.emit( "core:web-form:content:add", _root );
+      
     });
   // });
 };
