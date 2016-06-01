@@ -6,7 +6,7 @@ class WebformsController < ApplicationController
   respond_to :json
 
   def index
-    render :json => Webform.active( current_user._id );
+    render :json => Webform.with_images( current_user._id );
   end
 
 

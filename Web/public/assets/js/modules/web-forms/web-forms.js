@@ -46,7 +46,7 @@ WebForms.prototype.remove = function( id ) {
 };
 WebForms.prototype.show = function( form ) {
   var webForm = this.find( form._id );
-  console.log( 'WebForms: show -> ', webForm );
+  console.log( 'WebForms: show -> ', webForm, form );
 
   if ( webForm && webForm.hasOwnProperty('_id') ) {
     webForm.load(form);
@@ -176,7 +176,7 @@ WebForms.prototype.renderContent = function() {
         shadow : 8,
         // height : 200,
         // width  : 300,
-        media: 'assets/img/doc.png',
+        media : data.image,//'assets/img/doc.png',
         title : data.name,
         // title : '',
         // subTitle: data.name,
@@ -186,7 +186,7 @@ WebForms.prototype.renderContent = function() {
             elementType : 'menu',
             class       : [ 'mdl-menu--bottom-right' ],
             position    : 'right',
-            icon: 'more_vert',
+            icon        : 'more_vert',
             // color: true,
             items: [
               {
@@ -734,6 +734,7 @@ WebForms.prototype.renderEditorInfoPanel = function() {
 
 WebForms.prototype.renderEditor = function( form ) {
   core.events.emit( "core:dom:application:clear" );
+  core.events.emit( "core:dom:content:wrapper:show");
 
   this.setSubTitleMenu();
   this.renderEditorLeftPanel();
@@ -1139,6 +1140,13 @@ WebForms.prototype.setSubTitleMenu = function() {
         text   : 'Удалить',
         small  : true,
         icon   : 'delete',
+        callback : {
+          context: this,
+          function : function(e){
+            console.log( '+++' );
+            core.events.emit('core:web-forms:show:deleteDialog');
+          }
+        }
         // hotkey : 'Ctrl+A',
       }
     ]
@@ -1241,8 +1249,9 @@ WebForms.prototype.detachEvents = function(){
   
   core.events.remove("core:web-form:content:show");
   core.events.remove("core:web-form:content:add");
-
+  
   core.events.remove("core:web-form:load:form");
+  core.events.remove("core:web-form:load:new");
   core.events.remove("core:web-form:ready");
   core.events.remove("core:web-form:render");
 }
@@ -1357,6 +1366,11 @@ WebForms.prototype.bindEvents = function(){
       webForms.show({
         _id : form
       });
+    });
+
+    core.events.on("core:web-form:load:new", function( form ){
+      console.log('WebForms :: core:web-form:load:new', form );
+      webForms.show( form );
     });
 
     core.events.on("core:web-form:load:data", function( form ){

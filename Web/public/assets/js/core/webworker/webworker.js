@@ -43,7 +43,7 @@ var WebWorker = function(){
             core.events.publish("core:web-forms:loaded", data[key] );
             break;
           case 'web-form:loaded':
-            console.log( 'web-form:loaded --> '/*, data[key]*/);
+            console.log( 'web-form:loaded --> ', data[key]);
             core.events.emit("core:web-form:ready", data[key] );
             break;
           case 'bps:loaded':

@@ -7,6 +7,7 @@ var WebForm = function(config){
   this._body       = [];
   this._id         = config._id         || '';
   this.name        = config.name        || '';
+  this.image       = config.image       || '';
   this.action      = config.action      || '';
   this.description = config.description || '';
   this.authorId    = config.author_id   || core.global.user.id;
@@ -21,9 +22,22 @@ WebForm.prototype.setBody = function( body ){
   console.log( 'WebForm.prototype.setBody ->', body );
   this.body = body;
 }
+WebForm.prototype.saveImage = function(){
+  console.log( 'WebForm.prototype.setBody ->' );
+  var scope = this;
+  domtoimage.toPng( core.dom.content.element, { height: 600, width: 600 } ).then(function ( image ) {
+    
+    core.utils.put( core.config.webforms.update + scope._id + '.json' , { image : image }, function(){} );
+    
+  }).catch(function (error) {
+    console.error('oops, something went wrong!', error);
+  });
+}
+
 
 WebForm.prototype.config = function(){
   this.getBody();
+  this.saveImage();
 
   var config = {
     name        : this.name,
@@ -55,10 +69,19 @@ WebForm.prototype.save = function(){
 }
 WebForm.prototype.create = function(){
   var config = this.config();
+  var scope  = this;
 
   core.utils.post( core.config.webforms.index, config, function( data ){
-    console.log( 'data++++', config );
+    // console.log( 'data++++', config );
     console.log( 'data', data );
+
+    try{
+      var formData = JSON.parse( data );
+      scope._id = formData._id;
+      location.hash = location.hash.replace( /new/g, formData._id )
+    } catch(e) {
+      throw new Error( e )
+    }
   });
 }
 
@@ -82,7 +105,7 @@ WebForm.prototype.reload = function(){
 
 WebForm.prototype.initEditor = function(){
   this._body = [];
-  
+
   if ( this.hasOwnProperty('raw') && this.raw.hasOwnProperty('body') ) {
     
     try {
@@ -123,13 +146,12 @@ WebForm.prototype.initEditor = function(){
 
 WebForm.prototype.detachEvents = function(){
   console.log('WebForm -> detachEvents');
-  // core.events.remove("core:template:web-forms:editor");
+  core.events.remove("core:web-form:export:result");
+  core.events.remove("core:web-form:add:body");
   core.events.remove("core:web-form:set:name");
+  core.events.remove("core:web-form:set:body");
   core.events.remove("core:web-form:set:action");
   core.events.remove("core:web-form:set:description");
-  core.events.remove("core:web-form:set:body");
-  core.events.remove("core:web-form:add:body");
-  core.events.remove("core:web-form:export:result");
 
 };
 WebForm.prototype.attachEvents = function(){

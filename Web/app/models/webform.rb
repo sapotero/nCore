@@ -49,14 +49,17 @@ class Webform
     forms
   end
 
-  def self.with_images( forms )
-    new_docs = []
-    
-    forms.each do |document|
-      document['img'] = ( document.image_id.nil? ? '' : document.image )
-      new_docs.push( document )
+  def self.with_images( user_id )
+    forms_with_image = []
+
+    forms = self.where( author_id: user_id )
+
+    forms.each do |form|
+      form['image'] = ( form.image_id.nil? ? '' : form.image )
+      forms_with_image.push( form )
     end
-    new_docs
+
+    forms_with_image
   end
 
 end

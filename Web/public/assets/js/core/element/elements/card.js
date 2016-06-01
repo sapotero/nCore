@@ -99,12 +99,12 @@ Card.prototype.render = function(){
   }
 
   if ( this._config.hasOwnProperty('media') ){
+    console.log( 'this._config.media', this._config.media );
+
     if ( this.title ) {
-      // this.title.style.height = '276px';
-      // this.title.style.background = "url('" + this._config.media + "')";
-      // this.title.style.backgroundPosition = 'top';
-      // this.title.style.backgroundRepeat  = 'no-repeat';
-      // this.title.style.backgroundColor   = '#C5CAE9';
+      this.title.style.background = "url('" + this._config.media + "')";
+      this.title.style.backgroundSize = "cover";
+      this.title.style.backgroundPosition = "16px 16px";
     }
   }
 
