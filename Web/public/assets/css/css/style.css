@@ -210,6 +210,9 @@
   /*background-color: #fafafa;*/
 
 }
+.content-content{
+  position: relative;
+}
 
 .report-card {
   background-color: white;
