@@ -258,7 +258,7 @@ WebForms.prototype.renderContent = function() {
               elementType : 'simple',
               type: 'h5',
               class : [ 'mdl-color-text--grey-800' ],
-              text: 'Мои документы',
+              text: 'Экранные формы',
             }),
             core.elements.create({
               elementType : 'simple',
@@ -552,6 +552,7 @@ WebForms.prototype.renderInfoPanel = function( element ) {
 
   this.infoPanel = core.elements.create({
     elementType : 'simple',
+    class: [ 'mdl-cell--22-col' ],
     items : items,
   });
 
@@ -583,13 +584,76 @@ WebForms.prototype.render = function(){
   core.events.emit( "core:dom:material:update" );
   core.events.emit( "core:dom:set:title", this.title );
   core.events.emit( "core:dom:clear:subTitleMenu" );
+
+  this.headerSubMenu = core.elements.create({
+    elementType: 'simple',
+    class: ['mdl-navigation'],
+    items : [
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'view_module',
+        tooltip: 'Изменить вид'
+      }),
+      core.elements.create({
+        elementType : 'menu',
+        // position    : 'right',
+        class       : [ 'mdl-cell--hide-phone', 'mdl-menu--bottom-right' ],
+        icon        : 'sort',
+        items       : [
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          },
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          },
+          {
+            text: "По дате редактирования",
+            devider: true,
+            // icon: 'sort',
+          },
+          {
+            text: "По дате создания",
+            disabled: true,
+            icon: 'sort',
+            devider: true,
+          },
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          }
+        ]
+      }),
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'refresh',
+        tooltip: 'Обновить страницу',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            core.events.emit( 'core:current:reload' );
+          }
+        }
+      }),
+    ]
+  });
+  core.events.emit( "core:dom:headerSubMenu:clear" );
+  core.events.emit( "core:dom:headerSubMenu:set", this.headerSubMenu );
+
+
 };
 
 
 WebForms.prototype.renderEditorLeftPanel = function() {
   console.log( 'WebForms: renderEditorLeftPanel' );
 
-    this.headerSubMenu = core.elements.create({
+  core.events.emit( "core:drag:editor:stop" );
+
+  this.headerSubMenu = core.elements.create({
     elementType: 'simple',
     class: ['mdl-navigation'],
     items : [
@@ -622,7 +686,6 @@ WebForms.prototype.renderEditorLeftPanel = function() {
       }),
     ]
   });
-
   core.events.emit( "core:dom:headerSubMenu:clear" );
   core.events.emit( "core:dom:headerSubMenu:set", this.headerSubMenu );
 
@@ -663,44 +726,9 @@ WebForms.prototype.renderEditorLeftPanel = function() {
         rows : 2,
         cols : 10,
       }),
-      core.elements.create({
-        elementType : 'button',
-        icon: 'person',
-        callback : {
-          context: this,
-          function : function(e){
-            e.preventDefault();
-            core.events.emit('core:web-forms:show:saveDialog');
-          }
-        }
-      }),
-      core.elements.create({
-        elementType : 'button',
-        icon: 'star',
-        callback : {
-          context: this,
-          function : function(e){
-            e.preventDefault();
-            core.events.emit('core:web-forms:show:deleteDialog');
-          }
-        }
-      }),
-      core.elements.create({
-        elementType : 'button',
-        icon: 'sort',
-        callback : {
-          // context: this,
-          function : function(e){
-            e.preventDefault();
-            core.events.emit('core:web-forms:show:configDialog');
-          }
-        }
-      }),
-      
     ]
   });
 
-  core.events.emit( "core:drag:editor:stop" );
 
   core.events.emit( "core:dom:leftPanel:clear" );
   core.events.emit( "core:dom:leftPanel:set", this.leftPanel );
@@ -708,6 +736,7 @@ WebForms.prototype.renderEditorLeftPanel = function() {
   
   core.events.emit( "core:drag:editor:start" );
 };
+
 WebForms.prototype.renderEditorContent = function( form ) {
   console.log( 'WebForms: renderEditorContent', form );
 
@@ -721,17 +750,16 @@ WebForms.prototype.renderEditorContent = function( form ) {
   }
 
   this.content = core.elements.create( config );
-
-  core.events.emit( "core:drag:editor:stop" );
   
   core.events.emit( "core:dom:content:clear" );
   core.events.emit( "core:dom:content:set", this.content );
+
+  core.events.emit( "core:drag:editor:check" );
 };
 WebForms.prototype.renderEditorInfoPanel = function() {
  
   console.log( 'WebForms: renderEditorInfoPanel' );
 };
-
 WebForms.prototype.renderEditor = function( form ) {
   core.events.emit( "core:dom:application:clear" );
   core.events.emit( "core:dom:content:wrapper:show");
@@ -760,6 +788,7 @@ WebForms.prototype.renderEditor = function( form ) {
     core.events.emit( "core:dom:material:update" );
   }, 500 );
 };
+
 WebForms.prototype.saveDialog = function(){
   // core.events.emit( "core:dom:dialog:clear" );
 
@@ -938,8 +967,6 @@ WebForms.prototype.configDialog = function(){
   core.events.emit( "core:dom:dialog:show" );
   core.events.emit( "core:dom:material:update" );
 }
-
-
 WebForms.prototype.previewDialog = function( form ){
   // form
   var scope = this;
@@ -1236,7 +1263,6 @@ WebForms.prototype.detachEvents = function(){
   core.events.remove("core:web-forms:stop");
   core.events.remove("core:web-forms:destroy");
   core.events.remove("core:web-forms:render");
-  core.events.remove("core:web-forms:drag:export:result");
   core.events.remove("core:web-forms:infoPanel:show");
   core.events.remove("core:web-forms:loaded");
   core.events.remove("core:web-forms:new");
@@ -1298,10 +1324,6 @@ WebForms.prototype.bindEvents = function(){
     core.events.on("core:web-forms:show:previewDialog", function(){
       console.log('WebForm :: core:web-forms:show:previewDialog');
       webForms.previewDialog();
-    });
-
-    core.events.on("core:web-forms:drag:export:result", function( result ){
-      console.log( 'core:web-forms:drag:export:result', result );
     });
 
     core.events.on("core:web-forms:infoPanel:show", function( config ){

@@ -255,16 +255,16 @@ Dom.prototype.createApplicationContent = function(){
   this.content = core.elements.create({
     elementType: 'simple',
     // mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col
-    class : ["mdl-cell", "mdl-cell--8-col", "page-content-panel-animation", "content-content"]
+    class : ["mdl-cell", "mdl-cell--8-col", "mdl-cell--8-col-tablet", "page-content-panel-animation", "content-content"]
   });
   this.infoPanel = core.elements.create({
     elementType: 'simple',
-    class : ["mdl-cell", "mdl-cell--2-col", "page-content-panel-animation", "content-infoPanel"]
+    class : ["mdl-cell", "mdl-cell--2-col", "mdl-cell--2-col-tablet", "page-content-panel-animation", "content-infoPanel"]
   });
 
   this.grid = core.elements.create({
     elementType: 'simple',
-    class : ["mdl-grid"],
+    class : [ "mdl-grid", "mdl-grid--no-padding" ],
     items : [
       this.leftPanel,
       this.content,
@@ -512,7 +512,7 @@ Dom.prototype.setTitle = function ( title ) {
   if ( !title ) {
     throw new Error('setTitle -> can`t set title')
   }
-  console.log( '******setTitle', title );
+  // console.log( '******setTitle', title );
   
   // this.title.element.textContent = title;
   // this.subTitle.element.textContent = title;

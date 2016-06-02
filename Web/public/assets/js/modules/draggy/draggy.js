@@ -21,6 +21,9 @@ var Drag = function(el, config) {
     onDrag      : config && config.hasOwnProperty('onDrag')      ? config.onDrag      : function(e, obj) {},
     onStop      : config && config.hasOwnProperty('onStop')      ? config.onStop      : function(e, obj) {}
   };
+
+  this.delay   = 1000;
+  this.timeout = {};
   
   var box     = this.el.getBoundingClientRect();
   var content = core.dom.content.element.getBoundingClientRect();
@@ -31,9 +34,9 @@ var Drag = function(el, config) {
 
   if ( this.el.hasOwnProperty('_options') ) {
     
-    console.log( '-----------' );
-    console.log( content );
-    console.log( this.el._options );
+    // console.log( '-----------' );
+    // console.log( content );
+    // console.log( this.el._options );
 
     var __content = core.dom.content.element.getBoundingClientRect();
     this.el.style.top  = this.el._options.top  + 'px';
@@ -176,28 +179,14 @@ Drag.prototype.mouseupHandler = function(e) {
   this.isDrag = false;
 };
 
-Drag.prototype.saveForm = (function() {
-
-  var delay   = 5000,
-      scope   = this,
-      timeout = 0;
-
-  var save = function(args) {
-     core.events.publish( "core:web-form:save" );
-     core.events.publish( "core:snackbar:show", { message: 'save!' } );
-  };
-
-  return function() {
-    var context = this;
-    var args = arguments;
-    
-    clearTimeout(timeout);
-    
-    timeout = setTimeout(function() {
-      save.apply(context, args);
-    }, delay);
-  };
-}());
+Drag.prototype.saveFormEvent = function() {
+  core.events.publish( "core:web-form:save" );
+  core.events.publish( "core:snackbar:show", { message: 'save!' } );
+}
+Drag.prototype.saveForm = function() {
+  clearTimeout( this.timeout );
+  this.timeout = setTimeout( this.saveFormEvent, this.delay);
+};
 
 var Draggy = function( config ){
   this.elements = [];
@@ -221,6 +210,8 @@ Draggy.prototype.Drag = Drag;
 
 Draggy.prototype.editorStart = function () {
   
+  console.log( 'EDITOR START', this.elements );
+
   this.dropZone     = core.dom.content.element;
   this.dragElements = core.dom.leftPanel.element.querySelectorAll('._drag');
   this.elementDragged = null;
@@ -230,7 +221,9 @@ Draggy.prototype.editorStart = function () {
   this.left = box.left;
 
   for (var i = 0; i < this.dragElements.length; i++) {
-    // console.log( 'el++ ', this.dragElements[i]._config );
+    
+    console.log( 'el++ ', this.dragElements[i] );
+
     this.dragElementAttachEvents( this.dragElements[i] );
   };
   
@@ -240,8 +233,25 @@ Draggy.prototype.editorStart = function () {
   }
 
 }
+Draggy.prototype.editorCheck = function () {
+  var _elements = [];
+
+  for (var v = 0; v < this.elements.length; v++) {
+    console.log( '**', this.elements[v] );
+    if ( document.body.contains( this.elements[v].el ) ) {
+      _elements.push( this.elements[v] )
+    }
+  }
+  this.elements = _elements;
+
+  console.log( 'EDITOR CHECK', this.elements, _elements );
+}
+
 Draggy.prototype.editorStop = function () {
+  // this.elements = [];
+  console.log( 'EDITOR STOP', this.elements );
   this.dropZoneRemoveEvents();
+  this.detachEvents();
 }
 
 Draggy.prototype.dragElementAttachEvents = function( element ){
@@ -346,8 +356,6 @@ Draggy.prototype.createDragElement = function( _config, position ){
     activeClass: "active-border",
     restrict : this.dropZone,
   };
-
-  // core.dom.content.element.appendChild(  );
 
   core.events.emit( "core:web-form:add:body", _drag );
 
@@ -475,11 +483,24 @@ Draggy.prototype.setActive = function( element, e ){
 Draggy.prototype.add = function( element, config ){
   console.log( 'Draggy.prototype.add', element, element._config );
   
+  // debugger
+
   this.elements.push( new this.Drag( element, config ) );
   element.addEventListener('mouseover', this.setActive.bind(this, element) );
 };
 
 Draggy.prototype.export = function(){
+  
+  console.log( this.elements );
+  // var _elements = [],
+  //     _temp = [];
+  // for(var z = 0, length = this.elements.length; z < length; z++){
+  //   document.body.contains( this.elements[z].el ) ? _elements.push[ this.elements[z] ] : false ;
+  // }
+  
+  // _temp = this.elements;
+  // this.elements = _elements;
+
   var result = [];
 
   for(var k = 0, length = this.elements.length; k < length; k++){
@@ -487,37 +508,37 @@ Draggy.prototype.export = function(){
     var box = this.elements[k].el.getBoundingClientRect();
 
     var elementConfig   = this.elements[k].el.firstElementChild._config;
-    elementConfig.label = this.elements[k].el.firstElementChild._conf.label.textContent;
+  //   elementConfig.label = this.elements[k].el.firstElementChild._conf.label.textContent;
 
-    switch( this.elements[k].el.firstElementChild._conf.constructor.name ){
-      case 'Checkbox':
-        elementConfig.name    = this.elements[k].el.firstElementChild._conf.checkbox.name;
-        elementConfig.checked = this.elements[k].el.firstElementChild._conf.checkbox.checkbox;
-        elementConfig.require = this.elements[k].el.firstElementChild._conf.checkbox.required;
-        break;
-      case 'Radio':
-        elementConfig.name    = this.elements[k].el.firstElementChild._conf.radio.name;
-        elementConfig.value   = this.elements[k].el.firstElementChild._conf.radio.value;
-        elementConfig.checked = this.elements[k].el.firstElementChild._conf.radio.checkbox;
-        elementConfig.require = this.elements[k].el.firstElementChild._conf.radio.required;
+  //   switch( this.elements[k].el.firstElementChild._conf.constructor.name ){
+  //     case 'Checkbox':
+  //       elementConfig.name    = this.elements[k].el.firstElementChild._conf.checkbox.name;
+  //       elementConfig.checked = this.elements[k].el.firstElementChild._conf.checkbox.checkbox;
+  //       elementConfig.require = this.elements[k].el.firstElementChild._conf.checkbox.required;
+  //       break;
+  //     case 'Radio':
+  //       elementConfig.name    = this.elements[k].el.firstElementChild._conf.radio.name;
+  //       elementConfig.value   = this.elements[k].el.firstElementChild._conf.radio.value;
+  //       elementConfig.checked = this.elements[k].el.firstElementChild._conf.radio.checkbox;
+  //       elementConfig.require = this.elements[k].el.firstElementChild._conf.radio.required;
 
-        break;
-      case 'Input':
-        elementConfig.name    = this.elements[k].el.firstElementChild._conf.input.name;
-        elementConfig.value   = this.elements[k].el.firstElementChild._conf.input.value;
-        elementConfig.require = this.elements[k].el.firstElementChild._conf.input.required;
+  //       break;
+  //     case 'Input':
+  //       elementConfig.name    = this.elements[k].el.firstElementChild._conf.input.name;
+  //       elementConfig.value   = this.elements[k].el.firstElementChild._conf.input.value;
+  //       elementConfig.require = this.elements[k].el.firstElementChild._conf.input.required;
 
-        break;
-      case 'Textarea':
-        elementConfig.name    = this.elements[k].el.firstElementChild._conf.textarea.name;
-        elementConfig.value   = this.elements[k].el.firstElementChild._conf.textarea.value;
-        elementConfig.require = this.elements[k].el.firstElementChild._conf.textarea.required;
+  //       break;
+  //     case 'Textarea':
+  //       elementConfig.name    = this.elements[k].el.firstElementChild._conf.textarea.name;
+  //       elementConfig.value   = this.elements[k].el.firstElementChild._conf.textarea.value;
+  //       elementConfig.require = this.elements[k].el.firstElementChild._conf.textarea.required;
 
-        break;
-      default:
-        break;
-    }
-    // elementConfig.name  = this.elements[k].el.firstElementChild._conf.checkbox.textContent;
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   // elementConfig.name  = this.elements[k].el.firstElementChild._conf.checkbox.textContent;
 
     result.push({
       element : elementConfig,
@@ -535,6 +556,8 @@ Draggy.prototype.export = function(){
     });
   }
 
+  // this.elements = [];
+
   return JSON.stringify(result);
 };
 
@@ -545,6 +568,7 @@ Draggy.prototype.detachEvents = function(){
     core.events.remove( "core:drag:export" );
     core.events.remove( "core:drag:editor:start" );
     core.events.remove( "core:drag:editor:stop" );
+    core.events.remove( "core:drag:editor:check" );
     core.events.remove( "core:drag:create:element" );
   });
 };
@@ -567,13 +591,19 @@ Draggy.prototype.attachEvents = function(){
       draggy.editorStop();
     });
 
+    core.events.on("core:drag:editor:check", function(){
+      console.log('Draggy <- core:drag:editor:check');
+      draggy.editorCheck();
+    });
+
+    
+
     core.events.on("core:drag:export", function(){
       console.log('Draggy <- core:drag:export');
       
       var _export = draggy.export();
 
-      core.events.emit("core:web-forms:drag:export:result", _export );
-      core.events.emit("core:web-form:export:result",       _export );
+      core.events.emit("core:web-form:export:result", _export );
     });
 
     core.events.on("core:drag:create:element", function( config, position ){

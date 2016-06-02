@@ -46,49 +46,6 @@ Utils.prototype.request = function( type, url, data, callback ) {
   request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   request.send( JSON.stringify(data) );
 };
-Utils.prototype.log = function(msg, color) {
-  var color = color || "black";
-  var background = "White";
-
-  switch (color) {
-      case "success":
-        color      = "Green";
-        background = "LimeGreen";
-        break;
-      case "info":
-        color      = "DodgerBlue";
-        background = "Turquoise";
-        break;
-      case "error":
-        color      = "Red";
-        background = "Black";
-        break;
-      case "start":
-        color      = "OliveDrab";
-        background = "PaleGreen";
-        break;
-      case "warning":
-        color      = "Tomato";
-        background = "Black";
-        break;
-      case "end":
-        color      = "Orchid";
-        background = "MediumVioletRed";
-        break;
-      default:
-        color = color;
-        break;
-    };
-
-  if ( typeof msg == "object" ) {
-      console.log(msg);
-  } else if ( typeof color == "object" ) {
-      console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
-      console.log(color);
-  } else {
-      console.log("%c" + msg, "color:" + color + ";font-weight:bold; background-color: " + background + ";");
-  }
-};
 Utils.prototype.get = function( url, data, callback ) {
   this.request( 'get', url, data, callback );
 };

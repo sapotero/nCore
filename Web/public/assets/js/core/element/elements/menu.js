@@ -21,7 +21,9 @@ var Menu = function Menu( config ) {
   this.list.classList.add( this.CSS.MENU_JS );
   // this.list.classList.add( this.CSS.MENU_RIGHT );
 
-  this.list.classList.add( this.CSS.RIPPLE );
+  if ( this._config && this._config.hasOwnProperty('ripple') && this._config.ripple === false ) {
+    this.list.classList.add( this.CSS.RIPPLE );
+  }
 
   this.element.appendChild( this.button );
   this.element.appendChild( this.list );
@@ -53,7 +55,6 @@ Menu.prototype.CSS = {
 
   ICON            : 'material-icons',
   RIPPLE          : 'mdl-js-ripple-effect',
-  GRAY            : 'mdl-js-ripple-effect',
   BOLD            : 'mdl-typography--font-bold',
   GRAY_TEXT       : 'mdl-color-text--grey-800',
   INLINE          : 'inline',

@@ -1121,6 +1121,7 @@ MaterialMenu.prototype.init = function () {
         // Find the "for" element and bind events to it.
         var forElId = this.element_.getAttribute('for') || this.element_.getAttribute('data-mdl-for');
         var forEl = null;
+        
         if (forElId) {
             forEl = document.getElementById(forElId);
             if (forEl) {
@@ -1129,9 +1130,11 @@ MaterialMenu.prototype.init = function () {
                 forEl.addEventListener('keydown', this.handleForKeyboardEvent_.bind(this));
             }
         }
+
         var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM);
         this.boundItemKeydown_ = this.handleItemKeyboardEvent_.bind(this);
-        this.boundItemClick_ = this.handleItemClick_.bind(this);
+        this.boundItemClick_   = this.handleItemClick_.bind(this);
+        
         for (var i = 0; i < items.length; i++) {
             // Add a listener to each menu item.
             items[i].addEventListener('click', this.boundItemClick_);
@@ -1140,6 +1143,7 @@ MaterialMenu.prototype.init = function () {
             // Add a keyboard listener to each menu item.
             items[i].addEventListener('keydown', this.boundItemKeydown_);
         }
+        
         // Add ripple classes to each item, if the user has enabled ripples.
         if (this.element_.classList.contains(this.CssClasses_.RIPPLE_EFFECT)) {
             this.element_.classList.add(this.CssClasses_.RIPPLE_IGNORE_EVENTS);
@@ -1212,8 +1216,11 @@ MaterialMenu.prototype.handleForClick_ = function (evt) {
    * @private
    */
 MaterialMenu.prototype.handleForKeyboardEvent_ = function (evt) {
+
     if (this.element_ && this.container_ && this.forElement_) {
+
         var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM + ':not([disabled])');
+        
         if (items && items.length > 0 && this.container_.classList.contains(this.CssClasses_.IS_VISIBLE)) {
             if (evt.keyCode === this.Keycodes_.UP_ARROW) {
                 evt.preventDefault();
@@ -1273,6 +1280,7 @@ MaterialMenu.prototype.handleItemKeyboardEvent_ = function (evt) {
    * @private
    */
 MaterialMenu.prototype.handleItemClick_ = function (evt) {
+    
     if (evt.target.hasAttribute('disabled')) {
         evt.stopPropagation();
     } else {
@@ -1338,15 +1346,18 @@ MaterialMenu.prototype.show = function (evt) {
     if (this.element_ && this.container_ && this.outline_) {
         // Measure the inner element.
         var height = this.element_.getBoundingClientRect().height;
-        var width = this.element_.getBoundingClientRect().width;
+        var width  = this.element_.getBoundingClientRect().width;
         // Apply the inner element's size to the container and outline.
-        this.container_.style.width = width + 'px';
+        this.container_.style.width  = width + 'px';
         this.container_.style.height = height + 'px';
-        this.outline_.style.width = width + 'px';
+        this.outline_.style.width  = width + 'px';
         this.outline_.style.height = height + 'px';
+        
+
         var transitionDuration = this.Constant_.TRANSITION_DURATION_SECONDS * this.Constant_.TRANSITION_DURATION_FRACTION;
         // Calculate transition delays for individual menu items, so that they fade
         // in one at a time.
+        
         var items = this.element_.querySelectorAll('.' + this.CssClasses_.ITEM);
         for (var i = 0; i < items.length; i++) {
             var itemDelay = null;

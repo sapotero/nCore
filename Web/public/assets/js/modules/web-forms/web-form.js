@@ -19,11 +19,11 @@ WebForm.prototype.getBody = function(){
   core.events.emit("core:drag:export");
 }
 WebForm.prototype.setBody = function( body ){
-  console.log( 'WebForm.prototype.setBody ->', body );
+  // console.log( 'WebForm.prototype.setBody ->', body );
   this.body = body;
 }
 WebForm.prototype.saveImage = function(){
-  console.log( 'WebForm.prototype.setBody ->' );
+  console.log( 'WebForm.prototype.saveImage ->' );
   var scope = this;
   domtoimage.toPng( core.dom.content.element, { height: 600, width: 600 } ).then(function ( image ) {
     
@@ -124,6 +124,7 @@ WebForm.prototype.initEditor = function(){
       };
     } catch (e) {
       // throw new Error(e);
+      this.body = [];
       console.log( e );
     }
 
@@ -164,7 +165,7 @@ WebForm.prototype.attachEvents = function(){
     });
 
     core.events.on("core:web-form:export:result", function( body ){
-      console.log( 'WebForm <- core:web-form:export:result', body );
+      // console.log( 'WebForm <- core:web-form:export:result', body );
       form.setBody(body);
     });
 
