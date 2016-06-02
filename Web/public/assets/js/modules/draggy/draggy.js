@@ -117,7 +117,10 @@ Drag.prototype.mousedownHandler = function(e) {
     var event = e.changedTouches[0];
     scope.mouseupHandler(event);
   };
+
+  this.saveForm();
 };
+
 Drag.prototype.mousemoveHandler = function(e) {
   var mouseX = document.all ? window.event.clientX : e.pageX,
       mouseY = document.all ? window.event.clientY : e.pageY;
@@ -146,6 +149,7 @@ Drag.prototype.mousemoveHandler = function(e) {
     this.options.onDrag(e, this.el);
   }
 };
+
 Drag.prototype.mouseupHandler = function(e) {
   if (this.isDrag === false){
     return;
@@ -171,6 +175,29 @@ Drag.prototype.mouseupHandler = function(e) {
   this.el.style.zIndex = '';
   this.isDrag = false;
 };
+
+Drag.prototype.saveForm = (function() {
+
+  var delay   = 5000,
+      scope   = this,
+      timeout = 0;
+
+  var save = function(args) {
+     core.events.publish( "core:web-form:save" );
+     core.events.publish( "core:snackbar:show", { message: 'save!' } );
+  };
+
+  return function() {
+    var context = this;
+    var args = arguments;
+    
+    clearTimeout(timeout);
+    
+    timeout = setTimeout(function() {
+      save.apply(context, args);
+    }, delay);
+  };
+}());
 
 var Draggy = function( config ){
   this.elements = [];
@@ -515,9 +542,10 @@ Draggy.prototype.export = function(){
 Draggy.prototype.detachEvents = function(){
   document.addEventListener('DOMContentLoaded', function(){
     core.events.remove( "core:drag:add" );
+    core.events.remove( "core:drag:export" );
     core.events.remove( "core:drag:editor:start" );
     core.events.remove( "core:drag:editor:stop" );
-    core.events.remove( "core:drag:export" );
+    core.events.remove( "core:drag:create:element" );
   });
 };
 

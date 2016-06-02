@@ -27,6 +27,7 @@ WebForm.prototype.saveImage = function(){
   var scope = this;
   domtoimage.toPng( core.dom.content.element, { height: 600, width: 600 } ).then(function ( image ) {
     
+    scope.image = image;
     core.utils.put( core.config.webforms.update + scope._id + '.json' , { image : image }, function(){} );
     
   }).catch(function (error) {
@@ -115,20 +116,8 @@ WebForm.prototype.initEditor = function(){
       if ( this.body.length ) {
 
         for ( var i = 0, length = this.body.length; i < length; i++ ) {
-          
           var item = this.body[i];
-          
-          console.log( 'elements', item );
           core.events.emit( "core:drag:create:element", item.element, item.options );
-
-          // var _element = core.elements.create( item.element );
-          // _element._options = item.options;
-          
-          // console.info( '_element', _element, item );
-          // _element.element.style.position = 'absolute';
-          // _element.element.style.top = item.options.top + 'px';
-          // _element.element.style.left = item.options.left + 'px';
-          // _render.push( _element );
         }
       
         this.body = _render;
@@ -148,6 +137,7 @@ WebForm.prototype.detachEvents = function(){
   console.log('WebForm -> detachEvents');
   core.events.remove("core:web-form:export:result");
   core.events.remove("core:web-form:add:body");
+  core.events.remove("core:web-form:save");
   core.events.remove("core:web-form:set:name");
   core.events.remove("core:web-form:set:body");
   core.events.remove("core:web-form:set:action");
@@ -182,6 +172,12 @@ WebForm.prototype.attachEvents = function(){
       console.log( 'WebForm <- core:web-form:set:action', action );
       form.action = action;
     });
+
+    core.events.on("core:web-form:save", function( action ){
+      console.log( 'WebForm <- core:web-form:save', action );
+      form.save();
+    });
+
     core.events.on("core:web-form:set:description", function( description ){
       console.log( 'WebForm <- core:web-form:set:description', description );
       form.description = description;

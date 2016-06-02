@@ -8464,7 +8464,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   left: 50%;
   cursor: default;
   background-color: #323232;
-  z-index: 3;
+  z-index: 103;
   display: block;
   display: -webkit-flex;
   display: -ms-flexbox;

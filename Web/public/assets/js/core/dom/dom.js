@@ -62,9 +62,11 @@ Dom.prototype.bindEvents = function () {
 
     core.events.on( "core:dom:primaryHeader:show", function () {
       dom.primaryHeader.element.classList.remove('header-hide');
+      dom.main.element.classList.remove('app-main-ribbon-offset--hide');
     });
     core.events.on( "core:dom:primaryHeader:hide", function () {
       dom.primaryHeader.element.classList.add('header-hide');
+      dom.main.element.classList.add('app-main-ribbon-offset--hide');
     });
     core.events.on( "core:dom:secondaryHeader:show", function () {
       dom.secondaryHeader.element.classList.remove('header-hide');
@@ -225,7 +227,7 @@ Dom.prototype.build = function () {
   this.createApplicationContent();
   
   // Футер
-  this.createFooter();
+  // this.createFooter();
 
   // Загрузочный экран для документов
   this.createContentWrapper();

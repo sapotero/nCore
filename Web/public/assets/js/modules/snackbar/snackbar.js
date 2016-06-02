@@ -12,6 +12,7 @@ var Snackbar = function() {
   this.actionText    = undefined;
   this.queuedNotifications = [];
   this.setActionHidden(true);
+
   this.bindEvents();
 };
 Snackbar.prototype.Constant = {
@@ -102,7 +103,6 @@ Snackbar.prototype.setActionHidden = function(value) {
 
 Snackbar.prototype.start = function() {
   console.log( 'Snackbar: start' );
-  
   // <div id="mdl-snackbar" class="mdl-snackbar">
   //   <div class="mdl-snackbar__text"></div>
   //   <button class="mdl-snackbar__action" type="button"></button>
@@ -127,6 +127,7 @@ Snackbar.prototype.start = function() {
   this.element       = coreSnackbar;
   this.textElement   = this.element.querySelector('.' + this.cssClasses.MESSAGE);
   this.actionElement = this.element.querySelector('.' + this.cssClasses.ACTION);
+  
 };
 Snackbar.prototype.stop = function() {
   console.log( 'Snackbar: stop' );
@@ -137,17 +138,33 @@ Snackbar.prototype.destroy = function() {
   delete this.element;
 };
 
+
 Snackbar.prototype.bindEvents = function() {
   var snackbar = this;
+  
   document.addEventListener('DOMContentLoaded', function(){
-
-    core.events.subscribe("core:snackbar:start", function(){
-      console.log('Snackbar <- core:snackbar:start');
-      core.events.publish( "core:preloader:task:ready" );
-      snackbar.start();
-    });
-
+    snackbar.removeEvents();
+    snackbar.attachEvents();
   });
+}
+Snackbar.prototype.removeEvents = function() {
+  core.events.remove( "core:snackbar:start" );
+  core.events.remove( "core:snackbar:show"  );
+};
+
+Snackbar.prototype.attachEvents = function() {
+  var snackbar = this;
+
+  core.events.on("core:snackbar:start", function(){
+    console.log('Snackbar <- core:snackbar:start');
+    core.events.emit( "core:preloader:task:ready" );
+    snackbar.start();
+  });
+
+  core.events.on("core:snackbar:show", function( msg ){
+    snackbar.showSnackbar( msg );
+  });
+
 };
 
 
