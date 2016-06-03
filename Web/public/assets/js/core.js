@@ -10,6 +10,7 @@ core = (function(){
       Polygon    = require('./core/polygon.js6').default,
       
       Draggy     = require('./modules/draggy/draggy'),
+      Shortcut   = require('./modules/shortcut/shortcut'),
       Preloader  = require('./modules/preloader/preloader'),
       Router     = require('./modules/router/router'),
       Snackbar   = require('./modules/snackbar/snackbar'),
@@ -39,6 +40,7 @@ core = (function(){
       'print-forms' : new PrintForms(),
       'bps'         : new Bps(),
       'drag'        : new Draggy(),
+      'shortcut'    : new Shortcut(),
       'user'        : new User(),
     };
 
