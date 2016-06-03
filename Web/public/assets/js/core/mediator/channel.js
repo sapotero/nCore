@@ -94,7 +94,7 @@ Channel.prototype.publish = function(data) {
   var x = 0,
       y = this._subscribers.length,
       shouldCall = false,
-      subscriber, l,
+      subscriber,
       subsBefore,subsAfter;
 
   for(x, y; x < y; x++) {

@@ -69,10 +69,10 @@ Select.prototype.render = function(){
         option.textContent = item.text;
         option.value = item.value;
 
-        if ( item.hasOwnProperty('disabled') && item.disabled == true ) {
+        if ( item.hasOwnProperty('disabled') && item.disabled === true ) {
           option.setAttribute( 'disabled', true );
         }
-        if ( item.hasOwnProperty('default') && item.default == true ) {
+        if ( item.hasOwnProperty('default') && item.default === true ) {
           option.setAttribute( 'default', true );
         }
 

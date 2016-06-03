@@ -145,26 +145,17 @@ Router.prototype.start = function() {
 
       // отчёты - начальная страница
       'reports' : function(params) {
-        console.log('[reports]: ', params);
         core.events.emit( "core:reports:render" );
       },
-      // отчёты - шаблоны
-      'reports/templates' : function(params) {
-        console.log('[reports/templates/]: ', params);
+      'reports/new' : function(params) {
+        console.log('[reports/new]: ', params);
+        core.events.emit( "core:dom:primaryHeader:hide" );
+        core.events.emit( "core:reports:new" );
       },
-      // отчёты - общие документы провайдера
-      'reports/shared' : function(params) {
-        console.log('[reports/shared/]: ', params);
-      },
-      // отчёты - мои документы
-      'reports/my' : function(params) {
-        console.log('[reports/my/]: ', params);
-      },
-      'reports/{id}' : function(params) {
-        console.log('[reports/{id}]: ', params);
+      'reports/{id}' : function( params ) {
+        console.log( 'params', params );
+        core.events.emit( "core:dom:primaryHeader:hide" );
         core.events.emit( "core:report:load", params.id );
-        // core.events.emit( "core:dom:application:hide" );
-        // core.events.emit( "core:dom:editor:show" );
       },
       
       'bps' : function(params) {
@@ -219,13 +210,17 @@ Router.prototype.bindEvents = function() {
       console.log('Router <- core:router:web-forms:show', _id );
       location.hash = [ '#', core.modules['web-forms'].route, '/', _id ].join('');
     });
-    
-    core.events.on( 'core:router:reports:show', function (doc) {
-      console.log( 'Router <- core:router:reports:show', doc );
-      core.events.emit( "core:dom:set:title", doc.name );
-      // location.hash = `#reports/${doc.id}`;
-      location.hash = '#reports/'+doc.id;
+
+    core.events.on("core:router:reports:new", function(){
+      console.log('Router <- core:router:reports:new');
+      location.hash = [ '#', core.modules.reports.route, '/', 'new' ].join('');
     });
+
+    core.events.on("core:router:reports:show", function( _id ){
+      console.log('Router <- core:router:reports:show', _id );
+      location.hash = [ '#', core.modules.reports.route, '/', _id ].join('');
+    });
+    
 
     core.events.on("core:router:default", function(){
       console.log('Router <- core:router:default');

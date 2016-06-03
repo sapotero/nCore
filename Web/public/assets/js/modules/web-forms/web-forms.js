@@ -1266,6 +1266,8 @@ WebForms.prototype.detachEvents = function(){
   core.events.remove("core:web-forms:infoPanel:show");
   core.events.remove("core:web-forms:loaded");
   core.events.remove("core:web-forms:new");
+  core.events.remove("core:web-forms:new:hash");
+
   core.events.remove("core:web-forms:content:clear");
   
   core.events.remove('core:web-forms:show:saveDialog');
@@ -1405,6 +1407,12 @@ WebForms.prototype.bindEvents = function(){
       console.log( 'WebForm :: core:web-form:new > ');
       core.events.emit( "core:dom:content:wrapper:show");
       webForms.createNewForm();
+    });
+
+    core.events.on("core:web-forms:new:hash", function(){
+      console.log( 'WebForm :: core:web-form:new:hash > ');
+      var hash = [ webForms.route, '/new' ].join('');
+      core.events.emit( "core:router:check", hash );
     });
 
   });

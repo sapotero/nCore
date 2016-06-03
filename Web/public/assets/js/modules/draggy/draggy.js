@@ -25,8 +25,8 @@ var Drag = function(el, config) {
   this.delay   = 1000;
   this.timeout = {};
   
-  var box     = this.el.getBoundingClientRect();
-  var content = core.dom.content.element.getBoundingClientRect();
+  // var box     = this.el.getBoundingClientRect();
+  // var content = core.dom.content.element.getBoundingClientRect();
 
   // this.el.style.top      = box.top  + 'px';
   // this.el.style.left     = box.left + 'px';
@@ -38,14 +38,14 @@ var Drag = function(el, config) {
     // console.log( content );
     // console.log( this.el._options );
 
-    var __content = core.dom.content.element.getBoundingClientRect();
+    // var __content = core.dom.content.element.getBoundingClientRect();
     this.el.style.top  = this.el._options.top  + 'px';
     this.el.style.left = this.el._options.left + 'px';
   }
 
   this.Positions = new Positions(this.options);
 
-  if (this.options.axisX == false || this.options.axisY == false) {
+  if (this.options.axisX === false || this.options.axisY === false) {
     this.Positions = new AxisDecorator(this.Positions);
   }
 
@@ -342,7 +342,7 @@ Draggy.prototype.dropZoneDrop = function( element, e ){
 }
 
 Draggy.prototype.createDragElement = function( _config, position ){
-  console.warn( 'Draggy.prototype.createDragElement', _config, position );
+  // console.warn( 'Draggy.prototype.createDragElement', _config, position );
 
   var _element = core.elements.create( _config );
   var _createdElement = core.elements.create( _element._config );
@@ -363,7 +363,7 @@ Draggy.prototype.createDragElement = function( _config, position ){
   this.dragElementRemoveEvents( _drag );
   this.clonedElementAttachEvents( _drag );
 
-  var box = core.dom.content.element.getBoundingClientRect();
+  // var box = core.dom.content.element.getBoundingClientRect();
 
   if ( position ) {
     _drag._options = position;
@@ -398,7 +398,7 @@ Draggy.prototype.clonedElementMouseOut = function( element, e ){
 }
 
 Draggy.prototype.addConfigButton = function( element ){
-  var box = element.getBoundingClientRect();
+  // var box = element.getBoundingClientRect();
 
   var config = document.createElement('div');
   config.classList.add('drag-config-button')
@@ -481,7 +481,7 @@ Draggy.prototype.setActive = function( element, e ){
 };
 
 Draggy.prototype.add = function( element, config ){
-  console.log( 'Draggy.prototype.add', element, element._config );
+  // console.log( 'Draggy.prototype.add', element, element._config );
   
   // debugger
 
@@ -491,7 +491,7 @@ Draggy.prototype.add = function( element, config ){
 
 Draggy.prototype.export = function(){
   
-  console.log( this.elements );
+  // console.log( this.elements );
   // var _elements = [],
   //     _temp = [];
   // for(var z = 0, length = this.elements.length; z < length; z++){

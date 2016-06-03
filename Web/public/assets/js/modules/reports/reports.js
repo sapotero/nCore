@@ -1,436 +1,1424 @@
 "use strict";
 
-var ReportSettings = function ReportSettings(config){
-  this.currentDate = new Date();
-  this.currentYear  = this.currentDate.getFullYear();
-  this.periodStart  = this.currentDate;
-  this.periodEnd    = this.currentDate;
-  this.main         = this.currentDate.getFullYear();
-  this.compare      = this.currentDate.getFullYear()-1;
-  
-  this.isYearReport = config.isYearReport || false;
-  this.isTemplate   = config.isTemplate || false;
-  this.isNew        = config.isNew || true;
-};
-
-var Report = function Report(config){
-  this.element     = {};
-  this._id         = config._id         || '';
-  this.name        = config.name        || '';
-  this.description = config.description || '';
-  this.author      = config.author;
-  this.providerId  = config.provider_id;
-  this.query       = {};
-  this.globalQuery = {};
-  this.settings    = new ReportSettings(config.settings);
-};
-Report.prototype.init = function(){
-
-  this.detachEvents();
-  this.attachEvents();
-  this.destroyEditor();
-  
-  console.log( 'Report -> init' );
-
-  core.events.publish("core:reports:editor:template");
-  core.events.publish("core:report:load", this._id );
-};
-Report.prototype.update = function(html){
-  console.log( 'Report -> update' );
-  this.element.innerHTML = html;
-  this.element.classList.add('animated');
-  this.element.classList.add('fadeIn');
-  this.render();
-};
-Report.prototype.load = function(){
-  console.log( 'Report -> bindEvents' );
-};
-
-Report.prototype.detachEvents = function(){
-  core.events.remove("core:template:reports:editor");
-  core.events.remove("core:report:loaded");
-};
-
-Report.prototype.attachEvents = function(){
-  var report = this;
-  
-  core.events.subscribe("core:template:reports:editor", function(template){
-    report.update( template.raw );
-  });
-};
-
-Report.prototype.cardClickHandler = function(e){
-  console.log( 'Report: cardClickHandler', e, this );
-  location.hash = '#reports/' + this._id;
-};
-
-Report.prototype.editor = function( config ){
-};
-
-
-Report.prototype.render = function( config ){
-
-  this.element = core.elements.create({
-    elementType : 'card',
-    preventCopy : true,
-
-    // height : 200,
-    // width  : 200,
-    class: [ "mdl-cell", "mdl-cell--4-col" ],
-    title    : this.name,
-    // subTitle : this.description,
-    shadow : 8,
-    // media  : {
-    //   // image src
-    //   src: '',
-    // },
-    description : this.name,
-    actions : [
-      core.elements.create({
-        elementType : 'button',
-        preventCopy : true,
-        name        : 'test-check',
-        icon        : 'star'
-      }),
-
-      core.elements.create({
-        elementType : 'spacer'
-      }),
-
-      core.elements.create({
-        elementType : 'icon',
-        icon: 'star'
-      }),
-    ],
-    menu : [
-      core.elements.create({
-        elementType : 'button',
-        preventCopy : true,
-        name        : 'test-check',
-        icon        : 'star'
-      }),
-    ]
-  })
-
-  return this.element.element;
-};
-
-
 var Reports = function Reports(){
-  this.element   = {};
-  this.documents = [];
-  this.current   = {};
-
+  this.reports     = [];
   this.leftPanel = {};
   this.content   = {};
   this.infoPanel = {};
-
+  this.route     = 'reports';
+  this.active    = {};  
   this.bindEvents();
 };
 
+Reports.prototype.Report = require('./report');
 
-Reports.prototype.renderLeftPanel = function(){
-  var list = core.elements.create( {
-    elementType : 'list',
-    items: [
-      // минимальный вариант
-      {
-        title : 'menu item'
-      },
+Reports.prototype.init = function(){
+};
 
-      // минимальный вариант + иконка
-      {
-        title : 'menu item',
-        icon  : 'event'
-      },
+Reports.prototype.add = function( config ) {
+  var form = new this.Report(config);
+  this.reports.push( form );
+  return form;
+};
+Reports.prototype.find = function( id ) {
+  var form = {};
 
-      {
-        title : 'menu item',
-        icon  : 'event',
-        subTitle : 'menu item',
-      },
+  for (var i = 0; i < this.reports.length; i++) {
+    if ( this.reports[i]._id == id ) {
+      form = this.reports[i];
+    }
+  }
 
-      {
-        title : 'menu item',
-        icon  : 'event',
-        action : {
-          icon : 'star',
-        },
-      },
-      {
-        title : 'menu item',
-        icon  : 'event',
-        action : {
-          href : '#',
-          icon : 'star',
-          title : 'tesst'
-        },
-      },
-      {
-        title : 'menu item',
-        subTitle : 'menu item',
-        icon  : 'event',
-        action : {
-          href : '#',
-          icon : 'star',
-          title : 'tesst'
-        },
-      },
-      {
-        title : 'menu item',
-        subTitle : 'menu item',
-        icon  : 'event',
-        action : {
-          element: core.elements.create({
+  return form;
+};
+Reports.prototype.remove = function( id ) {
+  var index = -1;
+
+  for (var i = 0; i < this.reports.length; i++) {
+    if ( this.reports[i]._id === id ) {
+      index = i;
+      break;
+    }
+  }
+  if (index > -1) {
+    this.reports.splice(index, 1);
+  }
+};
+Reports.prototype.show = function( form ) {
+  var webForm = this.find( form._id );
+  console.log( 'Reports: show -> ', webForm, form );
+
+  if ( webForm && webForm.hasOwnProperty('_id') ) {
+    webForm.load(form);
+    this.active = webForm;
+  } else {
+    throw new Error('report not found!');
+  }
+};
+Reports.prototype.clear = function(config) {
+  this.reports = {};
+};
+Reports.prototype.loadForm = function( id ) {
+  console.info( 'Reports: load', id );
+
+  // var form = this.find( id );
+  // console.log( 'form load', form );
+
+};
+
+Reports.prototype.renderLeftPanel = function() {
+
+
+  this.leftPanel = core.elements.create({
+    elementType : 'simple',
+    class : [ this.CSS.LEFT_PANEL ],
+    items : [
+      core.elements.create({
+      elementType : 'list',
+      items: [
+        {
+          title : core.elements.create({
             elementType : 'button',
-            preventCopy : true,
-            name        : 'test-check',
-            fab         : true,
-            icon        : 'star'
-          })
+            text        : 'Создать',
+            raised: true,
+            color: true,
+            callback : {
+              context  : this,
+              function : function(e){
+                e.preventDefault();
+                core.events.publish( "core:router:reports:new" );
+              },
+            }
+          }),
         },
-      },
+        {
+          title    : 'Шаблоны',
+          subTitle : '0 форм',
+          icon     : 'event',
+          action   : {
+            icon     : 'add',
+            color    : true,
+            callback : {
+              context  : this,
+              function : function(e){
+                e.preventDefault();
+                console.log( 'webforms-leftMenu > template icon click' );
+              },
+            }
+          },
+          // callback : {
+          //   context  : this,
+          //   function : function(e){
+          //     e.preventDefault();
+          //     console.log( 'webforms-leftMenu > template click' );
+          //   },
+          // }
+        },
+        {
+          title    : 'Общие формы',
+          subTitle : '0 форм',
+          icon     : 'event',
+          action   : {
+            icon     : 'add',
+            color    : true,
+          },
+          callback : {
+            context  : this,
+            function : function(e){
+              e.preventDefault();
+              console.log( 'webforms-leftMenu > shared click' );
+            },
+          }
+        },
+        {
+          title    : 'Мои формы',
+          subTitle : '0 форм',
+          icon     : 'event',
+          action   : {
+            icon     : 'add',
+            color    : true,
+          },
+          callback : {
+            context  : this,
+            function : function(e){
+              e.preventDefault();
+              console.log( 'webforms-leftMenu > my click' );
+            },
+          }
+        },
+      ]
+    })
     ]
   });
 
-  core.dom.leftPanel.element.appendChild( list.element );
+  core.events.emit( "core:dom:leftPanel:clear" );
+  core.events.emit( "core:dom:leftPanel:set", this.leftPanel );
+  core.events.emit( "core:dom:material:update" );
 }
+Reports.prototype.renderContent = function() {
+  this.content = {};
 
-Reports.prototype.renderInfoPanel = function(){
-  var list = core.elements.create( {
-    elementType : 'list',
-    items: [
-      // минимальный вариант
-      {
-        title : 'menu item'
-      },
+  if ( this.reports.length ) {
 
-      // минимальный вариант + иконка
-      {
-        title : 'menu item',
-        icon  : 'event'
-      },
+    var df = document.createDocumentFragment();
+    // this.menu = core.elements.create({
+    //   elementType: 'simple',
+    //   class : ["mdl-cell", "mdl-cell--12-col", "page-content-panel-animation", "menu-content"],
+    //   text: 'menu-panel'
+    // });
 
-      {
-        title : 'menu item',
-        icon  : 'event',
-        subTitle : 'menu item',
-      },
+    for (var i = this.reports.length - 1; i >= 0; i--) {
+      var data = this.reports[i];
 
-      {
-        title : 'menu item',
-        icon  : 'event',
-        action : {
-          icon : 'star',
-        },
-      },
-      {
-        title : 'menu item',
-        icon  : 'event',
-        action : {
-          href : '#',
-          icon : 'star',
-          title : 'tesst'
-        },
-      },
-      {
-        title : 'menu item',
-        subTitle : 'menu item',
-        icon  : 'event',
-        action : {
-          href : '#',
-          icon : 'star',
-          title : 'tesst'
-        },
-      },
-      {
-        title : 'menu item',
-        subTitle : 'menu item',
-        icon  : 'event',
-        action : {
-          element: core.elements.create({
-            elementType : 'button',
-            preventCopy : true,
-            name        : 'test-check',
-            fab         : true,
-            icon        : 'star'
+      var form = core.elements.create({
+        elementType : 'card',
+        class: [ this.CSS.CELL, 'mdl-cell--3-col', 'mdl-cell--12-col-phone', 'mdl-cell--4-col-tablet'],
+        shadow : 8,
+        // height : 200,
+        // width  : 300,
+        media : data.image,//'assets/img/doc.png',
+        title : data.name,
+        // title : '',
+        // subTitle: data.name,
+        description: data.description,
+        menu: [
+          core.elements.create( {
+            elementType : 'menu',
+            class       : [ 'mdl-menu--bottom-right' ],
+            position    : 'right',
+            icon        : 'more_vert',
+            // color: true,
+            items: [
+              {
+                text: 'Информация',
+                callback : {
+                  context: this,
+                  function : function(e){
+                    core.events.emit('core:dom:infoPanel:hide');
+                  }
+                }
+              },
+              {
+                text: 'Предпросмотр',
+                devider: true,
+                callback : {
+                  context: this,
+                  function : function(e){
+                    core.events.emit('core:dom:infoPanel:show');
+                  }
+                }
+              },
+              {
+                text: 'Удалить',
+                callback : {
+                  context: this,
+                  function : function(e){
+                    core.events.emit('core:dom:infoPanel:show');
+                  }
+                }
+              },
+            ]
           })
-        },
-      },
-    ]
+        ],
+        _data : data,
+        callback : {
+          // context  : this,
+          function : function(e){
+            // console.log('event handler', this._config._data._id);
+            core.events.emit("core:router:reports:show", this._config._data._id);
+          }
+        }
+      });
+
+      df.appendChild( form.element );
+    }
+    this.content = core.elements.create({
+      elementType : 'simple',
+      class : ['mdl-grid']
+    });
+    // this.content.element.appendChild( this.menu.element );
+    this.content.element.appendChild( df );
+    core.events.emit('core:dom:material:update');
+  } else {
+    console.log( 'empty forms' );
+    // empty forms
+    this.content = core.elements.create({
+      elementType: 'simple',
+      class : [ this.CSS.CELL, "mdl-cell--12-col-phone", "mdl-cell--12-col-desktop", 'list__flex--empty' ],
+      items: [
+        core.elements.create({
+          elementType : 'simple',
+          class : [ 'empty--image' ],
+        }),
+        core.elements.create({
+          elementType : 'simple',
+          class : [ 'empty--content' ],
+          items: [
+            core.elements.create({
+              elementType : 'simple',
+              type: 'h5',
+              class : [ 'mdl-color-text--grey-800' ],
+              text: 'Отчёты',
+            }),
+            core.elements.create({
+              elementType : 'simple',
+              class : [ 'mdl-color-text--grey-600' ],
+              text: 'В этом разделе нет файлов для отображения',
+            }),
+            core.elements.create({
+              elementType : 'simple',
+              class : [ 'mdl-color-text--grey-600' ],
+              text: 'В разделе "Мои документы" хранятся документы и графические файлы, которые вы создаете или загружаете на портал. Вы можете открывать и редактировать их с помощью редактора EDITOR™, предоставить к ним доступ друзьям или коллегам, организовать по папкам.',
+            }),
+            core.elements.create({
+              elementType : 'simple',
+              class : [ 'mdl-color-text--grey-400' ],
+              text: 'Перетащите сюда файлы с компьютера, чтобы загрузить их на портал еще более простым способом.',
+            }),
+          ],
+        })
+      ],
+    });
+  }
+
+  core.events.emit( "core:dom:content:clear" );
+  core.events.emit( "core:dom:content:set", this.content );
+}
+Reports.prototype.renderInfoPanel = function( element ) {
+
+  var items = [];
+
+  if ( element && element.hasOwnProperty('_conf') ) {
+    console.log( 'renderInfoPanel', element.element, element._conf, element._conf.constructor.name );
+    
+    items.push(
+      core.elements.create({
+        elementType : 'simple',
+        type : 'h3',
+        class : [ 'mdl-color-text--grey-400' ],
+
+        text : 'Свойства',
+      })
+    );
+
+    if ( !element._conf.constructor.name ) {
+      throw new Error('no constructor name given');
+    }
+
+    switch( element._conf.constructor.name ){
+      case 'Checkbox':
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Подпись',
+            float : true,
+            value : element._conf.label.textContent,
+            input : {
+              function : function( value ){
+                element._conf.label.textContent = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Имя',
+            float : true,
+            value : element._conf.checkbox.name,
+            input : {
+              function : function( value ){
+                element._conf.checkbox.name = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label   : 'Активный',
+            checked : element._conf.checkbox.checked,
+            toggle  : {
+              function : function( value ){
+                var _el = element.MaterialCheckbox;
+                this.checkbox.checked === true ? _el.check() : _el.uncheck();
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label : 'Обязательный параметр',
+            require : element._conf.checkbox.getAttribute('required'),
+            toggle : {
+              function : function( value ){
+                console.log( 'required', this.checkbox );
+                element._conf.checkbox.setAttribute( 'required', this.checkbox.checked );
+              }
+            }
+          })
+        );
+        break;
+      case 'Radio':
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Подпись',
+            float : true,
+            value : element._conf.label.textContent,
+            input : {
+              function : function( value ){
+                element._conf.label.textContent = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Имя',
+            float : true,
+            value : element._conf.radio.name,
+            input : {
+              function : function( value ){
+                element._conf.radio.name = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Значение',
+            float : true,
+            value : element._conf.radio.value,
+            input : {
+              function : function( value ){
+                element._conf.radio.value = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label   : 'Активный',
+            checked : element._conf.radio.checked,
+            toggle  : {
+              function : function( value ){
+                var _el = element.MaterialCheckbox;
+                this.radio.checked === true ? _el.check() : _el.uncheck();
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label : 'Обязательный параметр',
+            require : element._conf.radio.getAttribute('required'),
+            toggle : {
+              function : function( value ){
+                console.log( 'required', this.checkbox );
+                element._conf.radio.setAttribute( 'required', this.checkbox.checked );
+              }
+            }
+          })
+        );
+        break;
+      case 'Label':
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Текст',
+            float : true,
+            value : element._conf.element.textContent,
+            input : {
+              function : function( value ){
+                element._conf.element.textContent = this.input.value;
+              }
+            }
+          })
+        );
+        items.push(
+          core.elements.create({
+            elementType : 'select',
+            label : '++Размер шрифта',
+            items : [
+              {
+                text  : '12',
+                value : '12',
+              },
+              {
+                text  : '14',
+                value : '14',
+              },
+              {
+                text  : '16',
+                value : '16',
+              },
+              {
+                text  : '18',
+                value : '18',
+              },
+              {
+                text  : '20',
+                value : '20',
+              },
+              {
+                text  : '22',
+                value : '22',
+              },
+              {
+                text  : '24',
+                value : '24',
+              },
+              {
+                text  : '26',
+                value : '26',
+              },
+              {
+                text  : '28',
+                value : '28',
+              },
+
+            ],
+            select: {
+              // context: this,
+              function: function( e ){
+                console.log( 'select', this.select.value, element._conf.element );
+                element._conf.element.style.fontSize = this.select.value + 'px';
+              }
+            }
+          })
+        );
+        break;
+      case 'Input':
+        
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Подпись',
+            float : true,
+            value : element._conf.label.textContent,
+            input : {
+              function : function( value ){
+                element._conf.label.textContent = this.input.value;
+              }
+            }
+          })
+        );
+        
+        items.push(
+          core.elements.create({
+            elementType : 'input',
+            label : 'Имя',
+            float : true,
+            value : element._conf.input.name,
+            input : {
+              function : function( value ){
+                element._conf.input.name = this.input.value;
+              }
+            }
+          })
+        );
+
+        items.push(
+          core.elements.create({
+            elementType : 'switch',
+            label : 'Обязательный параметр',
+            require : element._conf.input.getAttribute('required'),
+            toggle : {
+              function : function( value ){
+                console.log( 'required', this.checkbox );
+                element._conf.input.setAttribute( 'required', this.checkbox.checked );
+              }
+            }
+          })
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  this.infoPanel = core.elements.create({
+    elementType : 'simple',
+    class: [ 'mdl-cell--22-col' ],
+    items : items,
   });
 
-  core.dom.infoPanel.element.appendChild( list.element );
-
+  core.events.emit( "core:dom:infoPanel:clear" );
+  core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
+  core.events.emit( "core:dom:material:update" );
 }
 
-
-Reports.prototype.renderContent = function(){
-  var reports = this;
-
-  this.content = document.createElement('div');
-  this.content.className = 'mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active';
-
-  core.dom.content.element.appendChild( this.content );
-  core.events.publish('core:dom:material:update');
-  
-
-  var load = new Promise( function( resolve, reject ){
-     setTimeout( function(){
-       if ( reports.documents.length ) {
-         var df = document.createDocumentFragment();
-         
-         for(var j = 0, length = reports.documents.length; j < length; j++){
-           console.log( reports.documents[j] );
-           var report = reports.documents[j];
-           df.appendChild( report.render() );
-         }
-
-         resolve( df );
-       } else {
-         reject( false );
-       }
-      
-     }, 5000 );
-  });
-
-  load.then( function( documentFragment ){
-    reports.content.className   = 'mdl-grid documentCards animated';
-    reports.content.textContent = '';
-    reports.content.appendChild( documentFragment );
-  }).catch( function ( error ) {
-    reports.content.className = '';
-    reports.content.innerHTML = 'no elements';
-    throw new Error( 'Reports -> renderContent', error );
-  });
-}
-
-Reports.prototype.render = function() {
-  
-  core.events.publish( "core:dom:application:clear" );
-  core.events.publish( "core:current:set", this );
-
+Reports.prototype.render = function(){
+  core.events.emit( "core:current:set", this );
+  core.events.emit( "core:dom:application:clear" );
 
   this.renderLeftPanel();
   this.renderContent();
   this.renderInfoPanel();
 
-  core.events.publish('core:dom:material:update');
+  setTimeout(function(){
+    core.events.emit( "core:dom:primaryHeader:show" );
+  }, 100);
+
+  this.title = core.elements.create({
+    elementType : 'simple',
+    type: 'h5',
+    class: [ 'subTitleMenu--item', 'mdl-color-text--grey-800' ],
+    text: 'Отчёты',
+  });
+
+  core.events.emit( "core:dom:infoPanel:hide" );
+  core.events.emit( "core:dom:material:update" );
+  core.events.emit( "core:dom:set:title", this.title );
+  core.events.emit( "core:dom:clear:subTitleMenu" );
+
+  this.headerSubMenu = core.elements.create({
+    elementType: 'simple',
+    class: ['mdl-navigation'],
+    items : [
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'view_module',
+        tooltip: 'Изменить вид'
+      }),
+      core.elements.create({
+        elementType : 'menu',
+        // position    : 'right',
+        class       : [ 'mdl-cell--hide-phone', 'mdl-menu--bottom-right' ],
+        icon        : 'sort',
+        items       : [
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          },
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          },
+          {
+            text: "По дате редактирования",
+            devider: true,
+            // icon: 'sort',
+          },
+          {
+            text: "По дате создания",
+            disabled: true,
+            icon: 'sort',
+            devider: true,
+          },
+          {
+            text: "По дате редактирования",
+            // icon: 'sort',
+          }
+        ]
+      }),
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'refresh',
+        tooltip: 'Обновить страницу',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            core.events.emit( 'core:current:reload' );
+          }
+        }
+      }),
+    ]
+  });
+  core.events.emit( "core:dom:headerSubMenu:clear" );
+  core.events.emit( "core:dom:headerSubMenu:set", this.headerSubMenu );
+
+
+};
+
+
+Reports.prototype.renderEditorLeftPanel = function() {
+  console.log( 'Reports: renderEditorLeftPanel' );
+
+  core.events.emit( "core:drag:editor:stop" );
+
+  this.headerSubMenu = core.elements.create({
+    elementType: 'simple',
+    class: ['mdl-navigation'],
+    items : [
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'refresh',
+        tooltip: 'Обновить страницу++',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            // core.events.emit( 'core:current:reload' );
+            this.deleteDialog();
+          }
+        }
+      }),
+      core.elements.create({
+        elementType: 'button',
+        class: [ "mdl-color-text--grey-600" ],
+        icon: 'settings',
+        tooltip: 'Настройки страницы++',
+        callback : {
+          context: this,
+          function : function(e){
+            e.preventDefault();
+            this.configDialog();
+          }
+        }
+      }),
+    ]
+  });
+  core.events.emit( "core:dom:headerSubMenu:clear" );
+  core.events.emit( "core:dom:headerSubMenu:set", this.headerSubMenu );
+
+
+  this.leftPanel = core.elements.create({
+    elementType : 'simple',
+    class : [ this.CSS.LEFT_PANEL ],
+    items : [
+      core.elements.create({
+        elementType : 'input',
+        class : [ '_drag' ],
+        name : 'test',
+        label : 'test',
+        float : true,
+      }),
+      core.elements.create({
+        elementType : 'label',
+        class : [ '_drag' ],
+        text : 'label'
+      }),
+      core.elements.create({
+        elementType : 'checkbox',
+        class : [ '_drag' ],
+        label : 'checkbox'
+      }),
+      core.elements.create({
+        elementType : 'radio',
+        class : [ '_drag' ],
+        label : 'radio',
+        name  : 'radio',
+        value : 'radio',
+      }),
+      core.elements.create({
+        elementType : 'textarea',
+        class : [ '_drag' ],
+        label : 'radio',
+        name  : 'area',
+        rows : 2,
+        cols : 10,
+      }),
+    ]
+  });
+
+
+  core.events.emit( "core:dom:leftPanel:clear" );
+  core.events.emit( "core:dom:leftPanel:set", this.leftPanel );
+  core.events.emit( "core:dom:material:update" );
+  
+  core.events.emit( "core:drag:editor:start" );
+};
+
+Reports.prototype.renderEditorContent = function( form ) {
+  console.log( 'Reports: renderEditorContent', form );
+
+  var config = {
+    elementType : 'simple',
+    class : [ this.CSS.CONTENT ],
+  };
+
+  if ( form && form._body.length ) {
+    config.items = form._body
+  }
+
+  this.content = core.elements.create( config );
+  
+  core.events.emit( "core:dom:content:clear" );
+  core.events.emit( "core:dom:content:set", this.content );
+
+  core.events.emit( "core:drag:editor:check" );
+};
+Reports.prototype.renderEditorInfoPanel = function() {
+ 
+  console.log( 'Reports: renderEditorInfoPanel' );
+};
+Reports.prototype.renderEditor = function( form ) {
+  core.events.emit( "core:dom:application:clear" );
+  core.events.emit( "core:dom:content:wrapper:show");
+
+  this.setSubTitleMenu();
+  this.renderEditorLeftPanel();
+  this.renderEditorContent( form );
+  this.renderEditorInfoPanel();
+  
+  core.events.emit( "core:dom:infoPanel:hide" );
+  core.events.emit( "core:dom:material:update" );
+
+  var _form = core.elements.create({
+    elementType : 'simple',
+    type: 'h5',
+    class: [ 'subTitleMenu--item', 'mdl-color-text--grey-600' ],
+    text: form.name,
+  });
+
+
+  core.events.emit( "core:dom:set:title", _form );
+  core.events.emit( "core:dom:set:subTitleMenu", this.subTitleMenu );
+
+  setTimeout( function(){
+    core.events.emit( "core:dom:content:wrapper:hide");
+    core.events.emit( "core:dom:material:update" );
+  }, 500 );
+};
+
+Reports.prototype.saveDialog = function(){
+  // core.events.emit( "core:dom:dialog:clear" );
+
+  this.dialog = core.elements.create({
+    elementType : 'dialog',
+    title : 'Сохранение',
+    
+    content : core.elements.create({
+      elementType: 'simple',
+      text: 'Документ был изменен, вы хотите его сохранить?',
+      items: [],
+    }),
+
+    actions: [
+      {
+        text: 'Сохранить',
+        class : [ 'mdl-color-text--green-500' ],
+        submit :  {
+          // context  : this,
+          function : function(event){
+            console.log( 'webforms-leftMenu > renderEditorContent submit  dialog click' );
+          },
+        }
+      },
+      {
+        text: 'Отмена',
+        cancel : {
+          context  : this,
+          function : function(e){
+            console.log( 'webforms-leftMenu > renderEditorContent  cancel dialog click' );
+          },
+        }
+      },
+    ],
+    after : {
+      context  : this,
+      function : function(e){
+        console.log( 'webforms-leftMenu > renderEditorContent  after dialog click', this );
+      },
+    }
+  });
+
+  core.events.emit( "core:dom:dialog:set", this.dialog );
+  core.events.emit( "core:dom:dialog:show" );
+  
+  // core.events.emit( "core:dom:dialog:set", dialog );
+  // this.content.element.appendChild( dialog.element );
+  // core.events.emit( "core:dom:dialog:show" );
+}
+Reports.prototype.deleteDialog = function(){
+  // core.events.emit( "core:dom:dialog:clear" );
+
+  this.dialog = core.elements.create({
+    elementType : 'dialog',
+    title : 'Удаление',
+    
+    content : core.elements.create({
+      elementType: 'simple',
+      text: 'Вы действительно хотите удалалить документ?',
+      items: [],
+    }),
+
+    actions: [
+      {
+        text: 'Удалить',
+        class : [ 'mdl-color-text--red-500' ],
+        submit :  {
+          // context  : this,
+          function : function(event){
+            console.log( 'webforms-leftMenu > renderEditorContent submit  dialog click' );
+          },
+        }
+      },
+      {
+        text: 'Отмена',
+        cancel : {
+          context  : this,
+          function : function(e){
+            console.log( 'webforms-leftMenu > renderEditorContent  cancel dialog click' );
+          },
+        }
+      },
+    ],
+    after : {
+      context  : this,
+      function : function(e){
+        console.log( 'webforms-leftMenu > renderEditorContent  after dialog click', this );
+      },
+    }
+  });
+
+  core.events.emit( "core:dom:dialog:set", this.dialog );
+  core.events.emit( "core:dom:dialog:show" );
+  
+  // core.events.emit( "core:dom:dialog:set", dialog );
+  // this.content.element.appendChild( dialog.element );
+  // core.events.emit( "core:dom:dialog:show" );
+}
+Reports.prototype.configDialog = function(){
+  var scope = this;
+
+  this.dialog = core.elements.create({
+    elementType : 'dialog',
+    class       : [ 'mdl-dialog__content--auto-height', 'mdl-dialog__content--auto-width' ],
+    title       : 'Настройки формы',
+    big         : true,
+    validate    : true,
+    content : core.elements.create({
+      elementType: 'simple',
+      class: [ 'flex--container-row', 'flex--align-left' ],
+      items: [
+        core.elements.create({
+          elementType : 'input',
+          class : [ 'flex--column' ],
+          float   : true,
+          require : true,
+          name    : 'name',
+          value   : this.active.name,
+          label   : 'Название формы',
+        }),
+        core.elements.create({
+          elementType : 'input',
+          class : [ 'flex--column' ],
+          float   : true,
+          require : true,
+          name    : 'action',
+          label   : 'URL запроса',
+          value   : this.active.action,
+        }),
+        core.elements.create({
+          elementType : 'textarea',
+          class : [ 'flex--column' ],
+          float   : true,
+          require : true,
+          cols    : 20,
+          rows    : 10,
+          name    : 'description',
+          label   : 'Описание',
+          value   : this.active.description,
+        }),
+      ],
+    }),
+    actions: [
+      {
+        text: 'Сохранить',
+        class : [ 'mdl-color-text--green-500' ],
+        submit :  {
+          // context  : this,
+          function : function(){
+            console.log( 'webforms-leftMenu > config submit  dialog click', this );
+            
+          },
+        }
+      },
+      {
+        text: 'Отмена',
+        cancel : {
+          context  : this,
+          function : function(e){
+            console.log( 'webforms-leftMenu > config  cancel dialog click' );
+          },
+        }
+      },
+    ],
+    after : {
+      function : function(){
+        console.log( 'webforms-leftMenu > config  after callback', this );
+        scope.saveFromConfigForm( this.content );
+        core.events.emit( "core:dom:dialog:clear" );
+
+
+      },
+    },
+  });
+  core.events.emit( "core:dom:dialog:set", this.dialog );
+  core.events.emit( "core:dom:dialog:show" );
+  core.events.emit( "core:dom:material:update" );
+}
+Reports.prototype.previewDialog = function( form ){
+  // form
+  var scope = this;
+
+  // var rawForm = '[{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false},"options":{"top":124,"left":287.515625},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false},"options":{"top":34,"left":217.515625},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false},"options":{"top":234,"left":147.515625},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]';
+  // var rawForm  = '[{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false,"name":"checkbox","require":true},"options":{"top":140,"left":150},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"radio","class":["_drag"],"label":"radio","name":"radio","value":"radio0","preventCopy":false,"require":true},"options":{"top":200,"left":160},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"input","class":["_drag"],"name":"test","label":"test_label","float":true,"preventCopy":false,"value":"","require":true},"options":{"top":270,"left":140},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]',
+  var rawForm = '[{"element":{"elementType":"checkbox","class":["_drag"],"label":"checkbox","preventCopy":false,"name":"","require":false},"options":{"top":140,"left":130},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"label","class":["_drag"],"text":"label","preventCopy":false,"label":"label"},"options":{"top":100,"left":130},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}},{"element":{"elementType":"radio","class":["_drag"],"label":"radio","name":"radio","value":"radio","preventCopy":false,"require":false},"options":{"top":180,"left":130},"drag":{"snapX":10,"snapY":10,"activeClass":"active-border"}}]';
+
+  var parsedFormElement = JSON.parse( rawForm ),
+      elements = [];
+
+  // element : this.elements[k].el.firstElementChild._config,
+  
+  // options : {
+  //   top    : box.top  - this.top,
+  //   left   : box.left - this.left,
+  //   width  : this.width,
+  //   height : this.height,
+  // }
+
+  // ищем минимальные значения в масииве
+  var minTopArray  = [],
+      minLeftArray = [],
+      minTop  = 0,
+      minLeft = 0;
+  for ( var z = 0, length = parsedFormElement.length; z < length; z++ ) {
+    var item = parsedFormElement[z];
+    minTopArray.push(  item.options.top );
+    minLeftArray.push( item.options.left );
+  }
+  minTop  = Math.min(...minTopArray);
+  minLeft = Math.min(...minLeftArray);
+
+
+  // создаем элементы для превьюхи
+  for ( var i = 0, length = parsedFormElement.length; i < length; i++ ) {
+    var item = parsedFormElement[i];
+    var _element = core.elements.create( item.element );
+    _element._options = item.options;
+    elements.push( _element );
+  }
+
+
+  this.dialog = core.elements.create({
+    elementType : 'dialog',
+    
+    title: this.active.name + ' - Preview',
+
+    big      : true,
+    validate : true,
+    
+    content : core.elements.create({
+      elementType: 'simple',
+      class : [ 'mdl-dialog__content--auto-height' ],
+      items: elements,
+    }),
+
+    actions: [
+      {
+        text: 'Сохранить',
+        class : [ 'mdl-color-text--grey-50', 'mdl-color--green-500' ],
+        submit :  {
+          // context  : this,
+          function : function(event){
+            console.log( 'webforms-leftMenu > config submit  dialog click' );
+          },
+        }
+      },
+      {
+        text: 'Отмена',
+        class : [ 'mdl-color-text--grey-50', 'mdl-color--red-400' ],
+        cancel : {
+          // context  : this,
+          function : function(e){
+            console.log( 'webforms-leftMenu > config  cancel dialog click',e, scope.dialog );
+          },
+        }
+      },
+    ],
+    before : {
+      // context  : this,
+      function : function(){
+        // console.log( 'webforms-leftMenu > config  before callback', this );
+      },
+    },
+    after : {
+      function : function(){
+        // console.log( 'webforms-leftMenu > config  after callback', this );
+        // core.events.emit( "core:dom:dialog:clear" );
+      },
+    },
+  });
+  core.events.emit( "core:dom:dialog:set", this.dialog );
+  core.events.emit( "core:dom:dialog:show" );
+
+  var contentBox = this.dialog.content.getBoundingClientRect(),
+      actionsBox = this.dialog.actions.getBoundingClientRect(),
+      titleBox   = this.dialog.title.getBoundingClientRect();
+
+  var maxTop = 0;
+
+  // обновляем позиции элементов
+  for ( var z = 0, length = elements.length; z < length; z++ ) {
+    var item = elements[z];
+    
+    var top = titleBox.height + item._options.top  - minTop;
+    if ( maxTop < top ) {
+      maxTop = top;
+    }
+
+    item.element.style.position = 'absolute';
+    item.element.style.top  = 48 + top + 'px';
+    item.element.style.left = 32 + item._options.left - minLeft + 'px';
+  }
+
+  this.dialog.element.style.height = 128 + maxTop + actionsBox.height + 'px';
+
+  core.events.emit( "core:dom:material:update" );
 }
 
-Reports.prototype.Report = Report;
-Reports.prototype.init = function(){
-  core.events.publish( "[ + ] core:reports:init" );
 
-  this.element = document.createElement('div');
-  this.render();
+Reports.prototype.CSS = {
+  LEFT_PANEL : 'webforms-leftPanel',
+  CELL : 'mdl-cell',
 };
-Reports.prototype.bindEvents = function(){
-  var reports = this;
 
-  document.addEventListener('DOMContentLoaded', function(){
+Reports.prototype.CONFIG = {
+  EMPTY_FORM : {
+    _id         : "",
+    name        : "Новая форма",
+    description : "Новая форма",
+    action      : "/actons/new",
+    new         : true,
+  }
+};
+Reports.prototype.saveFromConfigForm = function( dialog ) {
+  console.log( 'From Dialog ->', dialog, dialog.elements );
+  this.active.update( dialog.elements );
+}
 
+Reports.prototype.showElementInfo = function( element ) {
+  if ( element ) {
     
-    core.events.subscribe("core:reports:render", function(){
-      reports.render();
-    });
+    this.active = element;
 
-    core.events.subscribe("core:report:loaded", function(data){
-      
-      var report = JSON.parse( data.raw );
-      report.settings = {
-        isYearReport : report.yearReport,
-        isTemplate   : report.template,
-        isNew        : report.new
-      };
+    var config  = element._config;
+    console.log( 'renderInfoPanel render ->', element );
 
-      console.log( 'core:report:loaded', report );
-      reports.current = new reports.Report( report );
+    if ( config && Object === config.constructor) {
+      core.events.emit( "core:dom:infoPanel:clear" );
 
-      core.events.publish("core:events:editor:set:html", core.utils.Base64.decode( report.body ) );
+      var form = document.createElement('div');
 
-      // report.loadEditor( data.raw.body );
-    });
-
-    core.events.subscribe("core:reports:loaded", function(data){
-      for (var i = data.length - 1; i >= 0; i--) {
-        var _d = data[i];
-        var report = {
-          _id         : _d._id,
-          name        : _d.name,
-          description : _d.description,
-          update_at   : _d.updated_at,
-          
-          author : {
-            id   : _d.author_id,
-            name : _d.author_id
-          },
-
-          providerId  : _d.provider_id,
-
-          query       : _d.query,
-          globalQuery : _d.globalQuery,
-
-          settings : {
-            periodStart  : _d.periodStart,
-            periodEnd    : _d.periodEnd,
-            main         : _d.main,
-            compare      : _d.compare,
-            isYearReport : _d.yearReport,
-            isTemplate   : _d.template,
-            providerSelected : _d.providerSelected
-          }
-        };
-        reports.add( report );
+      for ( var key in config ) {
+        var item = core.elements.create({
+          elementType : 'input',
+          name   : config[key],
+          value  : key + '__' +  config[key],
+        });
+        form.appendChild( item.element );
       }
-      core.events.publish( "core:preloader:task:ready" );
-    });
-
-    core.events.subscribe("core:reports:start", function( template ){
-      console.log('Reports <- core:reports:start');
-      core.events.publish( "core:preloader:task:ready" );
-    });
-
-    core.events.subscribe("core:template:reports", function( template ){
+      this.infoPanel = form;
       
-      reports.updateRootElement( template.raw );
-    });
+      core.events.emit( "core:dom:infoPanel:set", this.infoPanel );
+      core.events.emit( "core:dom:material:update" );
+    };
+  }
+}
+Reports.prototype.setSubTitleMenu = function() {
 
-    // клик по меню с документами
-    core.events.subscribe("core:reports:menu:select", function( menuItem ){
-      // console.log( 'Reports <- core:reports:menu:select', menuItem );
-      core.events.publish( "core:router:go", menuItem.getAttribute('action') );
-    });
+  var user = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'Файл',
+    small: true,
+    padding: false,
+    items       : [
+      {
+        text  : 'Создать',
+        small : true,
+        // icon  : 'open',
+        hotkey : 'Ctrl+N',
+      },
+      {
+        text  : 'Открыть',
+        small : true,
+        // icon  : 'open',
+        hotkey : 'Ctrl+O',
+      },
+      {
+        text  : 'Сохранить',
+        small : true,
+        // icon  : 'save',
+        devider: true,
+        hotkey : 'Ctrl+S',
+      },
+      {
+        text   : 'Удалить',
+        small  : true,
+        icon   : 'delete',
+        callback : {
+          context: this,
+          function : function(e){
+            console.log( '+++' );
+            core.events.emit('core:reports:show:deleteDialog');
+          }
+        }
+        // hotkey : 'Ctrl+A',
+      }
+    ]
+  });
 
+  var user1 = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'Правка',
+    small: true,
+    padding: false,
+    items       : [
+      {
+        text  : 'Переименовать',
+        small : true,
+        // icon  : 'open',
+        hotkey : 'Ctrl+N',
+      },
+      {
+        text  : 'Открыть',
+        small : true,
+        // icon  : 'open',
+        hotkey : 'Ctrl+O',
+      }
+    ]
+  });
+
+  var user2 = core.elements.create({
+    elementType : 'menu',
+    class       : [ 'mdl-menu--bottom-left' ],
+    text        : 'print',
+    small: true,
+    items : [
+      { text: 'user.name', size: 10, },
+      { text: 'user.provider.name' }
+    ]
+  });
+
+  this.subTitleMenu = core.elements.create({
+    elementType : 'simple',
+    class : [ 'list__flex' ],
+    items : [
+      user,
+      user1,
+      user2,
+      // settings,
+    ]
   });
 };
 
-Reports.prototype.add = function(  config ) {
-  this.documents.push( new this.Report(config) );
+Reports.prototype.createNewForm = function() {
+  console.log( 'Reports: createNewForm' );
+  var form = this.add( this.CONFIG.EMPTY_FORM );
+  this.active = form;
+  this.show( form );
 };
-Reports.prototype.clear = function(config) {
-  this.documents = {};
-};
-Reports.prototype.find = function(id) {
-  for (var type in this.documents) {
-    for (var i = this.documents[type].length - 1; i >= 0; i--) {
-      if( this.documents[type][i]._id === id ){
-        return this.documents[type][i];
-      }
-    }
-  }
+
+Reports.prototype.reload = function() {
+  console.log( 'Reports: start' );
+  // this.detachEvents();
+  // this.bindEvents();
+
+  this.render();
+
 };
 
 Reports.prototype.start = function() {
   console.log( 'Reports: start' );
-  this.init();
+  this.bindEvents();
 };
 Reports.prototype.stop = function() {
   console.log( 'Reports: stop' );
+  this.detachEvents();
 };
 Reports.prototype.destroy = function() {
   console.log( 'Reports: destroy' );
-  this.element = [];
+  this.element.remove();
+
+  for( var key in this ){
+    delete this[ key ];
+  }
+
+  this.detachEvents();
+};
+Reports.prototype.detachEvents = function(){
+  core.events.remove("core:reports:start");
+  core.events.remove("core:reports:stop");
+  core.events.remove("core:reports:destroy");
+  core.events.remove("core:reports:render");
+  core.events.remove("core:reports:infoPanel:show");
+  core.events.remove("core:reports:loaded");
+  core.events.remove("core:reports:new");
+  core.events.remove("core:reports:new:hash");
+
+  core.events.remove("core:reports:content:clear");
+  
+  core.events.remove('core:reports:show:saveDialog');
+  core.events.remove('core:reports:show:deleteDialog');
+  core.events.remove('core:reports:show:configDialog');
+  core.events.remove('core:reports:show:previewDialog');
+  
+  core.events.remove("core:report:content:show");
+  core.events.remove("core:report:content:add");
+  
+  core.events.remove("core:report:load:form");
+  core.events.remove("core:report:load:new");
+  core.events.remove("core:report:ready");
+  core.events.remove("core:report:render");
+}
+
+Reports.prototype.bindEvents = function(){
+  var webForms = this;
+  document.addEventListener('DOMContentLoaded', function(){ 
+    
+    core.events.on("core:reports:render", function(){
+      webForms.render();
+    });
+
+    core.events.on("core:reports:start", function(){
+      webForms.start();
+    });
+
+    core.events.on("core:reports:stop", function(){
+      webForms.stop();
+    });
+
+    core.events.on("core:reports:destroy", function(){
+      webForms.destroy();
+    });
+
+    core.events.on("core:reports:content:clear", function(){
+      webForms.content.element.innerHTML = '';
+    });
+
+    core.events.on("core:reports:show:saveDialog", function(){
+      console.log('Report :: core:reports:show:saveDialog');
+      webForms.saveDialog();
+    });
+
+    core.events.on("core:reports:show:deleteDialog", function(){
+      console.log('Report :: core:reports:show:deleteDialog');
+      webForms.deleteDialog();
+    });
+
+    core.events.on("core:reports:show:configDialog", function(){
+      console.log('Report :: core:reports:show:configDialog');
+      webForms.configDialog();
+    });
+
+    core.events.on("core:reports:show:previewDialog", function(){
+      console.log('Report :: core:reports:show:previewDialog');
+      webForms.previewDialog();
+    });
+
+    core.events.on("core:reports:infoPanel:show", function( config ){
+      console.log( 'core:reports:infoPanel:show', config );
+      webForms.renderInfoPanel(config);
+    });
+
+    core.events.on("core:reports:loaded", function( data ){
+      core.events.publish( "core:preloader:task:ready" );
+      console.log( 'core:reports:loaded', data );
+
+      // var forms = [];
+      
+      // try{
+      //   forms = JSON.parse( data );
+      // } catch (e){
+      //   throw new Error( 'Error while reports loading', e );
+      // }
+
+      if ( data.length ) {
+        for (var i = data.length - 1; i >= 0; i--) {
+          webForms.add( data[i] );
+        }
+
+        // webForms.renderContent();
+      }
+    });
+
+    core.events.on("core:report:ready", function( data ){
+      console.log( 'Report :: core:report:ready > ', data );
+      var webForm = {};
+
+      try {
+        webForm = JSON.parse( data );
+        webForms.show( webForm );
+      } catch (e) {
+        // throw new Error(e);
+      }
+    });
+    
+    core.events.on("core:report:render", function( form ){
+      console.log( 'Report :: core:report:render > ', form );
+      core.events.emit( "core:dom:content:wrapper:show");
+    });
+
+    core.events.on("core:report:content:show", function( form ){
+      console.log('Reports :: core:report:content:show', form );
+      // webForms.show({
+      //   _id : form
+      // });
+      webForms.renderEditor( form );
+      // webForms.load( form )
+    });
+
+    core.events.on("core:report:content:add", function( item ){
+      console.log('------Reports :: core:report:content:add', item, webForms.content );
+      if ( webForms.content.hasOwnProperty('element') ) {
+        webForms.content.element.appendChild( item );
+        core.events.emit( "core:dom:material:update" );
+      }
+    });
+
+    core.events.on("core:report:load:form", function( form ){
+      console.log('Reports :: core:report:load:form', form );
+      webForms.show({
+        _id : form
+      });
+    });
+
+    core.events.on("core:report:load:new", function( form ){
+      console.log('Reports :: core:report:load:new', form );
+      webForms.show( form );
+    });
+
+    core.events.on("core:report:load:data", function( form ){
+      console.log('Reports :: core:report:load:data', form );
+      // webForms.loadForm( form );
+    });
+
+    // new form
+    core.events.on("core:reports:new", function(){
+      console.log( 'Report :: core:report:new > ');
+      core.events.emit( "core:dom:content:wrapper:show");
+      webForms.createNewForm();
+    });
+
+    core.events.on("core:reports:new:hash", function(){
+      console.log( 'Report :: core:report:new:hash > ');
+      var hash = [ webForms.route, '/new' ].join('');
+      core.events.emit( "core:router:check", hash );
+    });
+
+  });
 };
 
 module.exports = Reports;

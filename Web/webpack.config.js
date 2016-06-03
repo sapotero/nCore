@@ -19,6 +19,12 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new webpack.PrefetchPlugin( './public/assets/js/modules/web-forms/web-forms.js' ),
+    new webpack.PrefetchPlugin( './public/assets/js/modules/router/router.js' ),
+    new webpack.PrefetchPlugin( './public/assets/js/modules/draggy/draggy.js' ),
+    new webpack.PrefetchPlugin( './public/assets/js/core/element/element.js' ),
+  ]
   // plugins: [
   //   new webpack.optimize.UglifyJsPlugin({
   //     include: /\.min\.js$/,

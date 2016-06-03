@@ -180,6 +180,12 @@ Shortcut.prototype.bindShortcut = function() {
   this.setEvents();
 }
 
+Shortcut.prototype.removeShortcut = function() {
+  this.element.removeEventListener( this.options['type'], this.setCallback.bind(this), false);
+  this.element.detachEvent('on' +   this.options['type'], this.setCallback.bind(this) );
+  this.element[ 'on' + this.options['type'] ] = false;
+}
+
 var ShortcutManager = function ShortcutManager(){
   this.shortcuts = [];
   this.bindEvents();
@@ -263,7 +269,7 @@ ShortcutManager.prototype.CONFIG = {
   DEFAULT_OPTIONS : {
     'type'             : 'keydown',
     'propagate'        : false,
-    'disable_in_input' : false,
+    'disableOnInput'   : false,
     'target'           : document,
     'keycode'          : false
   }
@@ -281,9 +287,26 @@ ShortcutManager.prototype.add = function( shortcut, callback, options ){
   this.shortcuts.push( shortcut );
 }
 
+// ShortcutManager.prototype.clear = function( shortcut ){
+//   this.shortcuts = [];
+// }
+
+ShortcutManager.prototype.clear = function( shortcut ) {
+  if ( this.shortcuts.length ) {
+    for (var i = 0; i < this.shortcuts.length; i++) {
+      var shortcut = this.shortcuts[i];
+
+      shortcut.removeShortcut();
+    }
+  }
+
+  this.shortcuts = [];
+}
+
 ShortcutManager.prototype.start = function() {
   core.events.emit( "core:preloader:task:ready" );
 };
+
 ShortcutManager.prototype.stop = function() {
   // console.log( 'ShortcutManager: stop' );
 };
@@ -292,6 +315,7 @@ ShortcutManager.prototype.stop = function() {
   console.log( 'ShortcutManager: stop' );
   this.detachEvents();
 };
+
 ShortcutManager.prototype.destroy = function() {
   console.log( 'ShortcutManager: destroy' );
   this.element.remove();
@@ -306,6 +330,7 @@ ShortcutManager.prototype.destroy = function() {
 ShortcutManager.prototype.detachEvents = function() {
   document.addEventListener('DOMContentLoaded', function(){
     core.events.remover( "core:shortcut:add" );
+    core.events.remover( "core:shortcut:clear" );
     core.events.remover( "core:shortcut:start" );
     core.events.remover( "core:shortcut:stop" );
     core.events.remover( "core:shortcut:restart" );
@@ -325,6 +350,11 @@ ShortcutManager.prototype.bindEvents = function() {
       console.log('core:shortcut:load');
       shortcut.start();
     });
+
+    core.events.on("core:shortcut:clear", function(){
+      console.log('core:shortcut:clear');
+      shortcut.clear();
+    });
     
     core.events.on("core:shortcut:start", function(){
       console.log('core:shortcut:start');
@@ -343,6 +373,4 @@ ShortcutManager.prototype.bindEvents = function() {
   });
 };
 
-
 module.exports = ShortcutManager;
-

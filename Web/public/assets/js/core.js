@@ -49,6 +49,10 @@ core = (function(){
     this.debug    = true;
 
     this.config = {
+      reports : {
+        index  : '/documents.json',
+        update : '/documents/'
+      },
       webforms : {
         index  : '/webforms.json',
         update : '/webforms/'

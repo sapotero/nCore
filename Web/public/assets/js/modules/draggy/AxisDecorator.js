@@ -9,7 +9,7 @@ AxisDecorator.prototype = new PositionDecorator();
 AxisDecorator.prototype.getX = function() {
   var axisX = this.Positions.getOptions().axisX;
 
-  if (axisX == true) {
+  if (axisX === true) {
     return this.Positions.getX();
   }
 
@@ -18,7 +18,7 @@ AxisDecorator.prototype.getX = function() {
 AxisDecorator.prototype.getY = function() {
   var axisY = this.Positions.getOptions().axisY;
 
-  if (axisY == true) {
+  if (axisY === true) {
     return this.Positions.getY();
   }
 

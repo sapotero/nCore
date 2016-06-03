@@ -1,6 +1,6 @@
 "use strict";
 
-var WebForm = function(config){
+var Report = function(config){
   this.element     = document.createElement('div');
   this.raw         = {};
   this.body        = '';
@@ -15,20 +15,20 @@ var WebForm = function(config){
   this.new         = config.new         || false;
 };
 
-WebForm.prototype.getBody = function(){
+Report.prototype.getBody = function(){
   core.events.emit("core:drag:export");
 }
-WebForm.prototype.setBody = function( body ){
-  // console.log( 'WebForm.prototype.setBody ->', body );
+Report.prototype.setBody = function( body ){
+  // console.log( 'Report.prototype.setBody ->', body );
   this.body = body;
 }
-WebForm.prototype.saveImage = function(){
-  console.log( 'WebForm.prototype.saveImage ->' );
+Report.prototype.saveImage = function(){
+  console.log( 'Report.prototype.saveImage ->' );
   var scope = this;
   domtoimage.toPng( core.dom.content.element, { height: 600, width: 600 } ).then(function ( image ) {
     
     scope.image = image;
-    core.utils.put( core.config.webforms.update + scope._id + '.json' , { image : image }, function(){} );
+    core.utils.put( core.config.reports.update + scope._id + '.json' , { image : image }, function(){} );
     
   }).catch(function (error) {
     console.error('oops, something went wrong!', error);
@@ -36,7 +36,7 @@ WebForm.prototype.saveImage = function(){
 }
 
 
-WebForm.prototype.config = function(){
+Report.prototype.config = function(){
   this.getBody();
   this.saveImage();
 
@@ -54,8 +54,8 @@ WebForm.prototype.config = function(){
   return config;
 }
 
-WebForm.prototype.load = function( data ){
-  console.log( 'WebForm -> load', data );
+Report.prototype.load = function( data ){
+  console.log( 'Report -> load', data );
   this.raw = data;
 
   this.detachEvents();
@@ -63,16 +63,16 @@ WebForm.prototype.load = function( data ){
   this.initEditor();
 };
 
-WebForm.prototype.save = function(){
-  core.utils.put( core.config.webforms.update + this._id + '.json' , this.config(), function( data ){
+Report.prototype.save = function(){
+  core.utils.put( core.config.reports.update + this._id + '.json' , this.config(), function( data ){
     console.log( 'data' );
   });
 }
-WebForm.prototype.create = function(){
+Report.prototype.create = function(){
   var config = this.config();
   var scope  = this;
 
-  core.utils.post( core.config.webforms.index, config, function( data ){
+  core.utils.post( core.config.reports.index, config, function( data ){
     // console.log( 'data++++', config );
     console.log( 'data', data );
 
@@ -86,25 +86,25 @@ WebForm.prototype.create = function(){
   });
 }
 
-WebForm.prototype.update = function( elements ){
-  console.log( 'WebForm.prototype.update', elements );
+Report.prototype.update = function( elements ){
+  console.log( 'Report.prototype.update', elements );
 
   for (var i = 0; i < elements.length; i++) {
     var input = elements[i];
-    core.events.emit( "core:web-form:set:" + input.name, input.value );
-    console.log( "core:web-form:set:" + input.name, input.value );
+    core.events.emit( "core:report:set:" + input.name, input.value );
+    console.log( "core:report:set:" + input.name, input.value );
   }
 
   this.new ? this.create() : this.save();
 };
 
-WebForm.prototype.reload = function(){
+Report.prototype.reload = function(){
   this.detachEvents();
   this.attachEvents();
-  core.events.emit('core:web-form:show', this );
+  core.events.emit('core:report:show', this );
 };
 
-WebForm.prototype.initEditor = function(){
+Report.prototype.initEditor = function(){
   this._body = [];
 
   if ( this.hasOwnProperty('raw') && this.raw.hasOwnProperty('body') ) {
@@ -132,22 +132,22 @@ WebForm.prototype.initEditor = function(){
   this.bindEditorHotkeys();
 }
 
-WebForm.prototype.bindEditorHotkeys = function(){
+Report.prototype.bindEditorHotkeys = function(){
 
   core.events.emit( "core:current:set", this );
-  core.events.emit('core:web-form:content:show', this );
+  core.events.emit('core:report:content:show', this );
 
   core.events.emit("core:shortcut:clear");
   core.events.emit( "core:shortcut:add", {
     shortcut: 'shift+s',
     callback: function(){
-      core.events.emit('core:web-form:save');
+      core.events.emit('core:report:save');
     }
   });
   core.events.emit( "core:shortcut:add", {
     shortcut: 'shift+n',
     callback: function(){
-      core.events.emit('core:web-forms:new:hash');
+      core.events.emit('core:reports:new:hash');
     }
   });
   core.events.emit( "core:shortcut:add", {
@@ -158,25 +158,25 @@ WebForm.prototype.bindEditorHotkeys = function(){
   });
 };
 
-WebForm.prototype.detachEvents = function(){
-  console.log('WebForm -> detachEvents');
-  core.events.remove("core:web-form:export:result");
-  core.events.remove("core:web-form:add:body");
-  core.events.remove("core:web-form:save");
-  core.events.remove("core:web-form:set:name");
-  core.events.remove("core:web-form:set:body");
-  core.events.remove("core:web-form:set:action");
-  core.events.remove("core:web-form:set:description");
+Report.prototype.detachEvents = function(){
+  console.log('Report -> detachEvents');
+  core.events.remove("core:report:export:result");
+  core.events.remove("core:report:add:body");
+  core.events.remove("core:report:save");
+  core.events.remove("core:report:set:name");
+  core.events.remove("core:report:set:body");
+  core.events.remove("core:report:set:action");
+  core.events.remove("core:report:set:description");
 
 };
-WebForm.prototype.attachEvents = function(){
-  console.log('WebForm -> attachEvents');
+Report.prototype.attachEvents = function(){
+  console.log('Report -> attachEvents');
   
   var form = this;
   
   // document.addEventListener('DOMContentLoaded', function(){
-    core.events.on("core:web-form:set:name", function( name ){
-      console.log( 'WebForm <- core:web-form:set:name',  name);
+    core.events.on("core:report:set:name", function( name ){
+      console.log( 'Report <- core:report:set:name',  name);
       form.name = name;
       
       form.title = core.elements.create({
@@ -188,39 +188,39 @@ WebForm.prototype.attachEvents = function(){
       core.events.emit( "core:dom:set:title", form.title );
     });
 
-    core.events.on("core:web-form:export:result", function( body ){
-      // console.log( 'WebForm <- core:web-form:export:result', body );
+    core.events.on("core:report:export:result", function( body ){
+      // console.log( 'Report <- core:report:export:result', body );
       form.setBody(body);
     });
 
-    core.events.on("core:web-form:set:action", function( action ){
-      console.log( 'WebForm <- core:web-form:set:action', action );
+    core.events.on("core:report:set:action", function( action ){
+      console.log( 'Report <- core:report:set:action', action );
       form.action = action;
     });
 
-    core.events.on("core:web-form:save", function( action ){
-      console.log( 'WebForm <- core:web-form:save', action );
+    core.events.on("core:report:save", function( action ){
+      console.log( 'Report <- core:report:save', action );
       form.save();
     });
 
-    core.events.on("core:web-form:set:description", function( description ){
-      console.log( 'WebForm <- core:web-form:set:description', description );
+    core.events.on("core:report:set:description", function( description ){
+      console.log( 'Report <- core:report:set:description', description );
       form.description = description;
     });
-    core.events.on("core:web-form:set:body", function( body ){
-      console.log( 'WebForm <- core:web-form:set:body',  body);
+    core.events.on("core:report:set:body", function( body ){
+      console.log( 'Report <- core:report:set:body',  body);
       form.body = body;
     });
 
-    core.events.on('core:web-form:add:body', function ( _root ) {
-      console.log('**** core:web-form:add:body', _root)
+    core.events.on('core:report:add:body', function ( _root ) {
+      console.log('**** core:report:add:body', _root)
       form._body.push( {element: _root} );
 
-      // core.events.emit( "core:web-form:content:add", _root );
+      // core.events.emit( "core:report:content:add", _root );
       
     });
   // });
 };
 
 
-module.exports = WebForm
+module.exports = Report
